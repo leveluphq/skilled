@@ -1,0 +1,7 @@
+```go
+func OutDegrees(graph [][]int) []int {
+    degrees := make([]int, len(graph))
+    for node, neighbors := range graph { degrees[node] = len(neighbors) }
+    return degrees
+}
+```

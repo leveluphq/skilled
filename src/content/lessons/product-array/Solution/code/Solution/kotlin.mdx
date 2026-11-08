@@ -1,0 +1,29 @@
+```kotlin
+class Solution {
+    fun buildProductArray(nums: LongArray): LongArray {
+        val results = LongArray(nums.size) { 1L }
+        var leftRunningProduct = 1L
+
+        // First use our results array as the running right product array.
+        // We fill from the right side.
+        for (i in 1 until nums.size) {
+            val endIdx = nums.size - 1 - i
+            results[endIdx] = results[endIdx + 1] * nums[endIdx + 1]
+        }
+
+        // Refill the results with the product at each point
+        for (i in nums.indices) {
+            val productExceptSelf = leftRunningProduct * results[i]
+
+            // We use results[i] above so now it can be replaced
+            results[i] = productExceptSelf
+
+            // Now that we have used our left product,
+            // we update it to include the current element.
+            leftRunningProduct = leftRunningProduct * nums[i]
+        }
+
+        return results
+    }
+}
+```

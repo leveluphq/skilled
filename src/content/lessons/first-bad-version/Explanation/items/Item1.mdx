@@ -1,0 +1,26 @@
+import BigO from 'content/blocks/BigO';
+import { Container } from 'style/elements';
+
+Typically <BigO.n /> time is a decent solution and an optimization over worse complexities like <BigO.n2 />.
+In this question, we can actually take advantage of how the versions are arranged to improve on this brute force approach.
+
+Let's visualize what the data would look like if we had many many versions.
+Let's imagine there are thousands or even millions of working versions before reaching the first broken commit.
+
+<Container>
+
+```javascript
+G = good (working)
+B = bad (broken)
+
+G G G G G ... G G ... G G G G B B B B
+```
+
+</Container>
+
+
+This is A LOT of repeated work.
+We can see that the data is ordered and that all the working versions come first, and then once the first broken version is introduced, they're all bad.
+We're touching a lot of versions that are the same when we would love to skip large chunks of them.
+
+**Whenever we see an ordered array, the first thing we should think of is binary search.**

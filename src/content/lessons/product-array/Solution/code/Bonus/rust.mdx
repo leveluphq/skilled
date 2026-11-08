@@ -1,0 +1,33 @@
+```rust
+impl Solution {
+    pub fn build_product_array_with_division(mut nums: Vec<i64>) -> Vec<i64> {
+        // Zeroes are now an edge case because we can't divide by them
+        let mut num_zeros = 0;
+        // Init product to 1
+        let mut product = 1;
+
+        for &element in &nums {
+            if element == 0 {
+                num_zeros += 1;
+            } else {
+                product *= element;
+            }
+        }
+
+        for element in nums.iter_mut() {
+            // If no zeroes, don't worry about edge cases
+            if num_zeros == 0 {
+                *element = product / *element;
+            } else if num_zeros == 1 && *element == 0 {
+                // Handle the 1 zero where it will have the only non-zero product
+                *element = product;
+            } else {
+                // If we have more than one 0, they're all 0
+                *element = 0;
+            }
+        }
+
+        nums
+    }
+}
+```

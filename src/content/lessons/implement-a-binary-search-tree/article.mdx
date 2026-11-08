@@ -1,0 +1,68 @@
+import { Section } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Null from 'content/blocks/Null';
+import Image from 'content/blocks/Image';
+import BinaryNode from './code/BinaryNode';
+import TreeShell from './code/TreeShell';
+import Insert from './code/Insert';
+import Search from './code/Search';
+import TreeSolution from './code/TreeSolution';
+
+<Section>
+
+Building a binary search tree is an excellent exercise to understand how to navigate trees and feel comfortable using them in interviews.
+Our tree will contain an `insert` and `search` method.
+We will assume they can operate in <BigO.logn /> time, but we won't explicitly enforce this through balancing.
+
+We will use a binary tree node that has the following implementation:
+
+<BinaryNode />
+
+We will use a tree implementation which maintains our `root` node,
+and we will add the logic to `insert` and `search` for nodes.
+
+<TreeShell />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>insert(data)</SubsectionHeader>
+
+To insert a node, we'll call the method with the data that we want this item to hold.
+If it is the first node inserted (the root doesn't exist), then we set this value as the root.
+
+If it's not the first node,
+we begin to traverse the tree to the left or right.
+If the data we want to insert is less than the current node, we go left.
+If the data we want to insert is greater than the current node, we go right.
+If we hit a <Null />, we found the end of the path which is the location where this item should exist to be sorted correctly, and we insert the value there.
+
+<Image src="/images/insert-bst.gif" alt="Inserting into a binary search tree follows left or right comparisons until an empty child position is reached." width={600} height={151} />
+
+<Insert />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>search(data)</SubsectionHeader>
+
+This method will return a node if we find its value in the BST, or otherwise it returns <Null />.
+We traverse through the left and right nodes by comparing the value we're looking for to the value of the current node.
+
+<Search />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Complete Binary Search Tree Implementation</SubsectionHeader>
+
+Here is our complete binary search tree.
+You can also interact with the code in a <a href="https://repl.it/@TreyHuffine/BinarySearchTree-Implementation-JavaScript" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+<TreeSolution />
+
+</Section>

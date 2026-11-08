@@ -1,0 +1,16 @@
+```swift
+func get(_ key: String) -> Int? {
+    let index = hash(key)
+    let bucket = table[index]
+
+    // Check if the key exists in the bucket, and return its value if found
+    for i in 0..<bucket.count {
+        if bucket[i].key == key {
+            return bucket[i].value
+        }
+    }
+
+    // Return nil if the key is not found
+    return nil
+}
+```

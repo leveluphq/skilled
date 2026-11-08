@@ -1,0 +1,25 @@
+```javascript
+const iterativeDepthFirstSearch = (startingNode) => {
+  // Init our stack and set of visited nodes
+  const dfsStack = [startingNode];
+  const visitedNodes = new Set();
+
+  while (dfsStack.length > 0) {
+    const node = dfsStack.pop();
+
+    // A node can be added to the stack more than once, so skip it if we already visited it
+    if (visitedNodes.has(node)) {
+      continue;
+    }
+
+    visit(node);
+    visitedNodes.add(node);
+
+    node.edges.forEach(childNode => {
+      if (!visitedNodes.has(childNode)) {
+        dfsStack.push(childNode);
+      }
+    });
+  }
+};
+```

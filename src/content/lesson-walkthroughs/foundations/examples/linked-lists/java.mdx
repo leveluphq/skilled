@@ -1,0 +1,18 @@
+```java
+import java.util.*;
+
+class MiddleValueExample {
+static Integer middleValue(List<Integer> values) {
+    class ListNode {
+        int value;
+        ListNode next;
+        ListNode(int value, ListNode next) { this.value = value; this.next = next; }
+    }
+    ListNode head = null;
+    for (int index = values.size() - 1; index >= 0; index--) head = new ListNode(values.get(index), head);
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
+    return slow == null ? null : slow.value;
+}
+}
+```

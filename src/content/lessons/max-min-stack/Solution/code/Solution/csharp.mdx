@@ -1,0 +1,54 @@
+```csharp
+public class MaxMinStack {
+    private readonly Stack<int> stack;
+
+    // Stacks for internal tracking of the max/min
+    private readonly Stack<int> maxValueStack;
+    private readonly Stack<int> minValueStack;
+
+    public MaxMinStack() {
+        stack = new Stack<int>();
+        maxValueStack = new Stack<int>();
+        minValueStack = new Stack<int>();
+    }
+
+    public int Peek() {
+        return stack.Peek();
+    }
+
+    public int Push(int item) {
+        stack.Push(item);
+
+        if (maxValueStack.Count == 0 || item >= GetStackMax()) {
+            maxValueStack.Push(item);
+        }
+        if (minValueStack.Count == 0 || item <= GetStackMin()) {
+            minValueStack.Push(item);
+        }
+
+        return item;
+    }
+
+    public int Pop() {
+        int item = stack.Pop();
+
+        if (item == GetStackMax()) {
+            maxValueStack.Pop();
+        }
+        if (item == GetStackMin()) {
+            minValueStack.Pop();
+        }
+
+        return item;
+    }
+
+    // Effectively a "Peek()" for the max/min values of the stack
+    public int GetStackMax() {
+        return maxValueStack.Peek();
+    }
+
+    public int GetStackMin() {
+        return minValueStack.Peek();
+    }
+}
+```

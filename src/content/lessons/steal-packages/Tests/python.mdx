@@ -1,0 +1,75 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty"
+        input = []
+        self.actual_result = steal_packages(input)
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "one item"
+        input = [5]
+        self.actual_result = steal_packages(input)
+        self.expected_result = 5
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "alternating values"
+        input = [2, 3, 5, 1]
+        self.actual_result = steal_packages(input)
+        self.expected_result = 7
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "skip two houses"
+        input = [1, 10, 3, 2, 5]
+        self.actual_result = steal_packages(input)
+        self.expected_result = 15
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "all same value"
+        input = [1, 1, 1, 1, 1]
+        self.actual_result = steal_packages(input)
+        self.expected_result = 3
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "always increasing"
+        input = [1, 2, 3, 4, 5]
+        self.actual_result = steal_packages(input)
+        self.expected_result = 9
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "always decreasing"
+        input = [5, 4, 3, 2, 1]
+        self.actual_result = steal_packages(input)
+        self.expected_result = 9
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+def runtests():
+    unittest.main(exit=False)
+```

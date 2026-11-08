@@ -1,0 +1,26 @@
+```javascript
+class MaxMinStack {
+  // Any of the initial methods can be updated
+  constructor() {
+    this.stack = [];
+  }
+  peek() {
+    return this.stack[this.stack.length - 1];
+  }
+  push(item) {
+    this.stack.push(item);
+    return item;
+  }
+  pop() {
+    return this.stack.pop();
+  }
+
+  // You must implement the methods below
+  getStackMax() {
+    // Return the largest integer currently in the stack (don't remove it)
+  }
+  getStackMin() {
+    // Return the smallest integer currently in the stack (don't remove it)
+  }
+}
+```

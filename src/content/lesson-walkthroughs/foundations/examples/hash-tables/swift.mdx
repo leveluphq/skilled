@@ -1,0 +1,7 @@
+```swift
+func frequencyCounts(_ values: [Int]) -> [Int] {
+    var counts: [Int: Int] = [:]
+    for value in values { counts[value, default: 0] += 1 }
+    return values.map { counts[$0]! }
+}
+```

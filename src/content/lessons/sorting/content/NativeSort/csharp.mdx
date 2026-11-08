@@ -1,0 +1,17 @@
+```csharp
+// Array.Sort sorts the items in place (List<T>.Sort does the same for a list)
+int[] numbers = [1, 50, 10000, 510, 5050, 60];
+Array.Sort(numbers); // [1, 50, 60, 510, 5050, 10000]
+
+// Pass a comparison to sort in descending order
+Array.Sort(numbers, (a, b) => b.CompareTo(a)); // [10000, 5050, 510, 60, 50, 1]
+
+// Strings sort as expected
+string[] months = ["March", "Jan", "Feb", "Dec"];
+Array.Sort(months); // ["Dec", "Feb", "Jan", "March"]
+
+// Use a key selector to sort objects by a property (OrderBy returns a new sorted sequence)
+var items = new[] { new { score = 20 }, new { score = 100 }, new { score = 5 } };
+var sortedItems = items.OrderBy(item => item.score).ToArray();
+// => [{ score = 5 }, { score = 20 }, { score = 100 }]
+```

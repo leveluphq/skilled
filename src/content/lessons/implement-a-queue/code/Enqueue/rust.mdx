@@ -1,0 +1,14 @@
+```rust
+fn enqueue(&mut self, item: i32) {
+    let new_last_node = Rc::new(RefCell::new(Node::new(item)));
+
+    match &self.last {
+        // The queue is empty, so the new node is both the first and last item
+        None => self.first = Some(Rc::clone(&new_last_node)),
+        // The current last node references the new node behind it
+        Some(last) => last.borrow_mut().prev = Some(Rc::clone(&new_last_node)),
+    }
+
+    self.last = Some(new_last_node);
+}
+```

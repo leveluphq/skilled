@@ -1,0 +1,37 @@
+```swift
+// A Swift array holds a single type, so an item in our nested array
+// is either an integer or an array of more items
+enum NestedItem {
+    case integer(Int)
+    case array([NestedItem])
+}
+
+func recursiveFlatten(_ array: [NestedItem]) -> [Int] {
+    return array.reduce([]) { flattenedArray, item in
+        switch item {
+        case .array(let items):
+            return flattenedArray + recursiveFlatten(items)
+        case .integer(let value):
+            return flattenedArray + [value]
+        }
+    }
+}
+
+func iterativeFlatten(_ array: [NestedItem]) -> [Int] {
+    var output: [Int] = []
+    var toBeFlattened: [NestedItem] = [.array(array)]
+
+    while !toBeFlattened.isEmpty {
+        let current = toBeFlattened.removeFirst()
+
+        switch current {
+        case .array(let items):
+            toBeFlattened = items + toBeFlattened
+        case .integer(let value):
+            output.append(value)
+        }
+    }
+
+    return output
+}
+```

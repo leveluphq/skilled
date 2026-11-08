@@ -1,0 +1,86 @@
+Product Array returns the product of all other values at each position, without division. For `longArrayOf(2, 3, 4)`, the result is `[12, 8, 6]`. The course allows the returned array outside the auxiliary-space budget, so we can use it to hold intermediate prefix products.
+
+The Kotlin starter uses LongArray. This implementation keeps products as Long and indexes as Int, reads the input without modifying it, and allocates one output array. All running and final products are assumed to stay within the signed Long range.
+
+## Write each prefix before advancing it
+
+During the forward pass, prefix is the product strictly to the left of the current index. Assign that value to the result, then include the current input. The reverse pass applies the equivalent product strictly to the right.
+
+```kotlin
+class Solution {
+    fun buildProductArray(nums: LongArray): LongArray {
+        val results = LongArray(nums.size)
+        var prefix = 1L
+        for (i in nums.indices) {
+            results[i] = prefix
+            prefix *= nums[i]
+        }
+
+        var suffix = 1L
+        for (i in nums.indices.reversed()) {
+            results[i] *= suffix
+            suffix *= nums[i]
+        }
+        return results
+    }
+}
+```
+
+A LongArray starts with zeros. The first loop uses assignment, so every position receives its actual left product before the reverse loop reads it. Multiplying the initial zero entries instead would make all answers zero.
+
+## Use indices for the empty-array boundary
+
+`nums.indices` describes valid array positions. Reversing that range visits the same positions from right to left. When the array is empty, there are no valid positions in either loop, so the output remains empty.
+
+This avoids manually constructing a decreasing counter with a potentially mistaken start or end. It also avoids confusing the last valid index with the number of entries. For a singleton, both excluded segments are empty, and the result is `[1]`.
+
+The indices belong to the input, but the output has exactly the same length, so they are valid for both arrays. This equality of lengths is part of the local proof that the indexed reads and writes are in bounds.
+
+## Trace the two contributions
+
+For `[2, 3, 4]`, prefix begins at one. The first scan writes `[1, 2, 6]`, representing the products of the left segments. The current element is added to the scalar only after its own output is written.
+
+The suffix begins at one at the far right. The final answer remains `6`. Incorporating `4` makes the middle answer `2 * 4 = 8`. Incorporating `3` makes the first answer `1 * 12 = 12`.
+
+Changing either update order includes a value that should be excluded. Building complete prefix and suffix arrays would work too, but would spend another linear allocation when the result already has room for the left-side state.
+
+## Preserve primitive storage and input values
+
+LongArray stores primitive long values on the JVM, while `Array<Long>` uses a generic array representation with boxed values. This exercise's signature therefore avoids boxing each product into a separate Long wrapper.
+
+Declaring `val results = nums` would not copy an array. Both names would reference the same mutable storage, and the first pass would overwrite values needed by the second. A new LongArray provides separate storage even though the variable holding it is a val.
+
+The [Kotlin arrays guide](https://kotlinlang.org/docs/arrays.html) describes primitive arrays and content comparison. Immutability of the reference and mutability of its entries are separate concerns: val prevents reassigning the variable, not assigning `results[i]`.
+
+## Test zeros and content equality
+
+```kotlin
+fun checkExamples() {
+    val solution = Solution()
+    val cases = listOf(
+        longArrayOf() to longArrayOf(),
+        longArrayOf(7) to longArrayOf(1),
+        longArrayOf(2, 3, 4) to longArrayOf(12, 8, 6),
+        longArrayOf(2, 0, 4) to longArrayOf(0, 8, 0),
+        longArrayOf(0, 3, 0) to longArrayOf(0, 0, 0),
+        longArrayOf(-2, 3, -4) to longArrayOf(-12, 8, -6)
+    )
+    for ((input, expected) in cases) {
+        val before = input.copyOf()
+        check(solution.buildProductArray(input).contentEquals(expected))
+        check(input.contentEquals(before))
+    }
+}
+```
+
+Call the helper from a local main function. Array `==` would not establish that every numeric entry matches, so use contentEquals. The copied input checks the method's preservation guarantee.
+
+One zero produces a nonzero result only at that zero's position; two zeros make every output zero. These behaviors follow from multiplying excluded segments and require no special branch. Negative inputs likewise follow ordinary multiplication signs.
+
+## State the numeric and storage assumptions
+
+Long increases the available range compared with Int but remains fixed-width. Overflow does not automatically turn this into arbitrary-precision arithmetic. Assume every prefix, suffix, and output fits, including the full running products computed by the final scalar updates.
+
+For fixed-width values within that contract, the function takes `O(n)` arithmetic operations and constant extra scalar state beyond its `O(n)` output. Arbitrary exact products would require a different numeric representation and a different arithmetic-cost discussion.
+
+When practicing, write down what each scalar excludes before reconstructing the loops. Then check an empty input, one zero, and two zeros. Those cases expose range, initialization, and update-order errors without requiring a large example.

@@ -1,0 +1,61 @@
+```javascript
+const OPEN = 0;
+const BLOCKED = 1;
+const EXIT = 2;
+
+function hasExitPath(roomMatrix) {
+  // Return false if the matrix is invalid
+  if (!roomMatrix || roomMatrix.length === 0 || roomMatrix[0].length === 0) {
+    return false;
+  }
+
+  // Init our memoize matrix
+  const memoizedPathValidity = new Array(roomMatrix.length).fill(null).map(() => []);
+
+  // Recursively walk through the room to check if there is a valid path
+  const isValidPath = walkThroughRoom(roomMatrix, 0, 0, memoizedPathValidity);
+
+  return isValidPath;
+};
+
+// Recursive helper function
+function walkThroughRoom(roomMatrix, row, col, memo) {
+  // Base case 1: Outside of room, so there can't be a path through this
+  const isOutsideRoom = row > roomMatrix.length - 1 || col > roomMatrix[0].length - 1;
+  if (isOutsideRoom) {
+    return false;
+  }
+
+  // Base case 2: A path successfully reached the end, so propagate this upward
+  const isOnValidPath = memo[row][col] === true;
+  const isExitNode = roomMatrix[row][col] === EXIT;
+  if (isOnValidPath || isExitNode) {
+    // Set the current node as true as well
+    memo[row][col] = true;
+    return true;
+  }
+
+  // Base case 3: We reached a blocking node
+  const isOnInvalidPath = memo[row][col] === false;
+  const isBlockingNode = roomMatrix[row][col] === BLOCKED;
+  if (isOnInvalidPath || isBlockingNode) {
+    memo[row][col] = false;
+    return false;
+  }
+
+  // Recursive case: move down and right
+  const downResult = walkThroughRoom(roomMatrix, row + 1, col, memo);
+  const rightResult = walkThroughRoom(roomMatrix, row, col + 1, memo);
+
+  if (downResult === false && rightResult === false) {
+    // If both this node's right and down are false, we memoize this to false
+    memo[row][col] = false;
+  } else {
+    // If either of the paths are true, we set this node as true since at least one can reach the exit
+    memo[row][col] = true;
+  }
+
+  // Returns true if either is successful
+  return downResult || rightResult;
+};
+```

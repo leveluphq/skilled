@@ -1,0 +1,96 @@
+TypeScript collection code needs two contracts: which values exist at runtime, and what the checker lets you assume about them. A type such as `Map<string, number>` communicates key and value types, but a particular lookup can still miss. A readonly array can still share mutable element objects with another reference.
+
+The examples use standard maps, sets, arrays, and discriminated unions. They are intended to compile with strict checking and `noUncheckedIndexedAccess`. The [TypeScript preparation guide](/interview-prep/typescript) covers the broader interview workflow; this guide focuses on collection state and missing values.
+
+## Give each collection one state meaning
+
+A map can store a frequency, an earliest index, a best-known distance, or a previously computed answer. Those values have different meanings even when all are numbers. State the meaning of one entry before writing its update rule.
+
+For a frequency map, a missing value means zero occurrences, so nullish coalescing fits the domain. A stored zero remains zero. For a cached numeric result, zero may be a completed answer rather than a cache miss; membership or an explicit result state may be required instead.
+
+```typescript
+type Lookup<T> = { found: false } | { found: true; value: T };
+
+function frequencies<T>(values: readonly T[]): Map<T, number> {
+  const counts = new Map<T, number>();
+  for (const value of values) {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+  return counts;
+}
+
+function readEntry<K, V>(
+  entries: ReadonlyMap<K, { readonly value: V }>,
+  key: K,
+): Lookup<V> {
+  const entry = entries.get(key);
+  if (entry === undefined) return { found: false };
+  return { found: true, value: entry.value };
+}
+```
+
+The wrapper object in `readEntry` lets undefined remain a valid payload. A missing entry returns undefined from the map, while a present entry is an object even if its value field is undefined. Narrowing on found then distinguishes those outcomes without a non-null assertion.
+
+This representation allocates an object for each stored entry. Use it when that explicit state is useful, rather than wrapping every ordinary map by habit. With a standard Map whose values cannot be undefined, a direct lookup and undefined check is already sufficient. With arbitrary payloads, a stable map's `has` check can distinguish presence too, though the checker does not infer a more precise `get` return merely from a separate method call.
+
+## Preserve key identity
+
+Map keys use JavaScript's key equality and object identity rules. Two fresh objects with matching fields are different keys. Two separately constructed coordinate arrays are also different keys, so `seen.has([row, column])` will not find a previously stored fresh array with the same numbers.
+
+For a dense rectangular grid, use a boolean matrix or an encoded numeric index. For a sparse grid, choose a stable coordinate representation with an unambiguous encoding. An arbitrary string concatenation needs separators or another scheme that cannot confuse different coordinate pairs.
+
+The type `Map<Coordinate, boolean>` does not change those runtime semantics. A structural TypeScript type describes which fields a coordinate has; it does not make JavaScript compare two coordinate objects by field contents. This distinction also affects Set membership in graph traversal.
+
+## Make array-boundary assumptions visible
+
+With `noUncheckedIndexedAccess`, reading an array index can add undefined to the result type because the index might not exist. [The compiler option documentation](https://www.typescriptlang.org/tsconfig/noUncheckedIndexedAccess.html) describes this additional uncertainty. A loop condition does not always give the checker a proof that a separately indexed read exists.
+
+A bounds guard can establish the runtime case when undefined is not a valid element. When undefined is a legitimate element, checking the retrieved value alone cannot distinguish a hole or missing index from a present undefined. A tagged entry representation, an explicit bounds-and-density invariant, or another interface can preserve the distinction.
+
+Avoid scattering assertions through a function until it compiles. Name the exact invariant supporting each assertion. If the input may be sparse, a claim that every integer below length exists is false: array length also covers holes.
+
+## Type a graph traversal without changing its schedule
+
+The following traversal accepts a readonly map of neighbor arrays and a start label of the same type. Its own queue starts dense and only appends actual labels. The checked loop index is therefore always an existing queue position.
+
+```typescript
+function bfsOrder<T>(graph: ReadonlyMap<T, readonly T[]>, start: T): T[] {
+  const queue: T[] = [start];
+  const seen = new Set<T>([start]);
+  const order: T[] = [];
+  for (let head = 0; head < queue.length; head += 1) {
+    // Only this function writes the dense queue, and head is in bounds.
+    const node = queue[head] as T;
+    order.push(node);
+    for (const neighbor of graph.get(node) ?? []) {
+      if (!seen.has(neighbor)) {
+        seen.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+  return order;
+}
+```
+
+The single assertion removes the possibility of a missing queue position while preserving T itself, which may include undefined as a valid label. It does not assert that every possible T is non-null. A generic helper that silently asserted every arbitrary array read would lack this local queue invariant.
+
+Missing adjacency keys mean no outgoing edges. Discovery happens when a neighbor is appended, so cycles and converging paths do not create repeated queue entries. Expected time is O(V + E) with bounded-key hash operations, and the queue, visited set, and output retain O(V) values.
+
+Readonly prevents writes through these checked parameters. It does not freeze the actual graph or stop another owner from mutating it. The function assumes a stable input for the duration of the synchronous traversal. It also retains consumed queue entries until return; the [JavaScript queue guide](/guides/javascript-queue) explains compaction for a longer-lived queue.
+
+## Separate readonly views from independent copies
+
+A readonly array annotation restricts mutation through that reference. Copying the array creates independent outer storage but still shares element objects. A nested object can remain writable unless its own type restricts writes, and even a deeply readonly type is a compile-time view rather than a runtime freezer.
+
+For backtracking, the working path and the saved result need different lifetimes. Saving an outer array copy is enough when element values can be shared. If each result must own independent mutable nested objects, the copy policy must cover them too. A type alias cannot supply that operation by itself.
+
+Similarly, asserting parsed JSON as a graph does not inspect its structure. Validate keys, neighbor arrays, and label types at an untrusted input boundary. A pure interview function can accept the valid-input guarantee from its statement, but that guarantee should be explicit rather than invented by an assertion.
+
+## Test the missing and identity cases
+
+Count repeated values, an empty input, and values that are themselves undefined. For `readEntry`, compare a missing key with a present wrapper containing undefined, then narrow on found before reading the payload. A present zero should also remain a successful result.
+
+For BFS, use a cycle, a neighbor-only vertex, an isolated start, and an undefined start label in a graph whose generic type permits it. Test distinct object keys with equal-looking fields to verify the identity contract. Compare the reachable set and traversal order with a direct reference using the same neighbor ordering.
+
+Compile with the intended strict options as well as running the examples. Runtime tests expose collection behavior; type checking exposes assumptions the signatures no longer support. Finish by implementing [Two Sum](/course/target-two-sum) and [BFS](/course/breadth-first-search), then explain each lookup's absent case and each assertion's supporting invariant.

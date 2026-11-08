@@ -1,0 +1,31 @@
+```javascript
+class Node {
+  data: any;
+  prev: Node | null;
+
+  constructor(data: any) {
+    this.data = data;
+    this.prev = null;
+  }
+}
+
+class Queue {
+  first: Node | null;
+  last: Node | null;
+
+  constructor() {
+    this.first = null;
+    this.last = null;
+  }
+
+  peek(): Node | null {
+    // get the first item of the list
+  }
+  enqueue(item: any): Node {
+    // add an item to the end of the list
+  }
+  dequeue(): Node | null {
+    // remove the first item from the list
+  }
+}
+```

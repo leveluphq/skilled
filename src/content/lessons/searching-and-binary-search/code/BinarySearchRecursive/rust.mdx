@@ -1,0 +1,29 @@
+```rust
+// Recursive Binary Search
+// (the bounds are signed, as the upper bound can move to before the first item)
+fn recursive_binary_search(array: &[i32], target: i32, lower_bound: i32, upper_bound: i32) -> i32 {
+    // Base case 1: element not found
+    if lower_bound > upper_bound {
+        return -1;
+    }
+
+    let midpoint_index = (lower_bound + upper_bound) / 2;
+    let midpoint_item = array[midpoint_index as usize];
+
+    // Base case 2: target found
+    if midpoint_item == target {
+        return midpoint_index;
+    }
+
+    // Recursive case: tighten your bounds based on target location
+    if midpoint_item < target {
+        return recursive_binary_search(array, target, midpoint_index + 1, upper_bound);
+    }
+
+    if midpoint_item > target {
+        return recursive_binary_search(array, target, lower_bound, midpoint_index - 1);
+    }
+
+    -1
+}
+```

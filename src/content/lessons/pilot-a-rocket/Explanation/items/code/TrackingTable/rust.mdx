@@ -1,0 +1,12 @@
+```rust
+let previous_node_in_path = HashMap::from([
+    ("base", None),
+    ("sat0", Some("base")),
+    ("sat1", Some("sat0")),
+    ("sat3", Some("sat0")), // Ignore sat2's connection
+    ("sat4", Some("sat0")), // Ignore sat2's and sat3's connection
+    ("sat2", Some("sat1")),
+    ("sat5", Some("sat4")),
+    ("ship", Some("sat5")),
+]);
+```

@@ -1,0 +1,85 @@
+Product Array returns the product of all other values at each position, without division. For `[2, 3, 4]`, the answer is `[12, 8, 6]`. The course uses `long long` values in C++ and excludes the returned vector from the auxiliary-space allowance.
+
+We can store each prefix product in that returned vector, then multiply in a running suffix. The input is read through a const reference. All running and final products are assumed to fit in `long long`; signed overflow in C++ is not a safe fallback for exact integer arithmetic.
+
+## Use the output for reusable prefix state
+
+Before index `i` is processed, `prefix` is the product of values strictly before `i`. Assign it before including the current value. The reverse pass applies the analogous product strictly after the current index.
+
+```cpp
+#include <stdexcept>
+#include <vector>
+
+class Solution {
+public:
+    std::vector<long long> buildProductArray(const std::vector<long long>& nums) {
+        std::vector<long long> results(nums.size());
+        long long prefix = 1;
+        for (std::size_t i = 0; i < nums.size(); ++i) {
+            results[i] = prefix;
+            prefix *= nums[i];
+        }
+
+        long long suffix = 1;
+        for (std::size_t remaining = nums.size(); remaining > 0; --remaining) {
+            const std::size_t i = remaining - 1;
+            results[i] *= suffix;
+            suffix *= nums[i];
+        }
+        return results;
+    }
+};
+```
+
+The vector starts with zero-valued entries, but the first pass assigns every position directly. A first pass that multiplied these initial zeros would never recover a nonzero answer. Using scalar identity `1` and direct assignment makes the intended initialization explicit.
+
+## Make reverse indexing safe for empty vectors
+
+Vector sizes use an unsigned type. A loop initialized as `size() - 1` underflows when the vector is empty, and a condition such as `i >= 0` stays true for an unsigned index. Both mistakes can lead to invalid memory access.
+
+The reverse loop above counts the number of positions remaining. It enters only when that number is positive, then subtracts one to obtain a valid index. Empty input skips the body entirely, and nonempty input visits each position down to zero exactly once.
+
+This form also avoids narrowing a potentially large size into a signed integer just to obtain a reverse counter. A reverse iterator is another option, but the input and output positions must still remain aligned.
+
+## Trace how the two segments meet
+
+For `[2, 3, 4]`, the first pass writes `[1, 2, 6]`. These entries contain the products of the left segments: empty, `[2]`, and `[2, 3]`. The reverse scalar begins at `1`, the product of an empty right segment.
+
+The last output stays `6`; suffix then becomes `4`. The middle output becomes `2 * 4 = 8`; suffix becomes `12`. Finally, the first output becomes `1 * 12 = 12`. At no point is a result multiplied by the value at its own position.
+
+Two separately allocated prefix and suffix vectors would encode the same idea, but would require extra linear storage. The result vector already provides a place to keep the left-side contribution until it is needed.
+
+## Preserve zeros, signs, and the caller's input
+
+For `[2, 0, 4]`, only the zero's own output excludes it, producing `[0, 8, 0]`. For `[0, 3, 0]`, every output includes a zero, so every result is zero. Negative values follow normal multiplication and require no separate sign counter.
+
+The input reference is const because the second pass still needs the original values. An in-place overwrite of `nums` during the first pass would replace those values with prefixes and corrupt the reverse calculation. Returning the result vector by value gives the caller ownership of the answer; ordinary move/elision behavior avoids requiring an extra full copy of its elements.
+
+A singleton produces `[1]`, using the empty-product convention. Empty input produces an empty vector. These boundary behaviors emerge from the identities and loop ranges instead of requiring branches.
+
+## Use exact examples within the supported range
+
+```cpp
+void checkExamples() {
+    Solution solution;
+    const std::vector<std::vector<long long>> inputs{
+        {}, {7}, {2, 3, 4}, {2, 0, 4}, {0, 3, 0}, {-2, 3, -4}
+    };
+    const std::vector<std::vector<long long>> expected{
+        {}, {1}, {12, 8, 6}, {0, 8, 0}, {0, 0, 0}, {-12, 8, -6}
+    };
+    for (std::size_t i = 0; i < inputs.size(); ++i) {
+        if (solution.buildProductArray(inputs[i]) != expected[i]) {
+            throw std::runtime_error("Incorrect product array");
+        }
+    }
+}
+```
+
+Call the helper from a local test `main`, then compare small exhaustive inputs against a nested-loop reference. Keep the reference arithmetic inside the supported range too. Testing undefined signed overflow and observing one compiler's output is not a correctness check.
+
+## State the numeric and complexity limits
+
+Two passes use `O(n)` fixed-width arithmetic operations and constant working state beyond the `O(n)` returned vector. This assumes all running prefixes, suffixes, and output products remain representable. Even an unused final full product is computed by this version and must satisfy the assumption.
+
+The [C++ expression rules](https://eel.is/c++draft/expr.pre) describe behavior when an expression's result falls outside its type's representable range. Exact arbitrary-size products need a different numeric type or library and a revised arithmetic-cost model. Before practicing, explain the unsigned reverse-loop boundary and why the current value is included only after its output uses each running product.

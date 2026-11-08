@@ -1,0 +1,20 @@
+```go
+func stealPackages(packageValues []int) int {
+	maxAtTwoHousesBefore := 0
+	maxProfit := 0
+
+	for _, currentValue := range packageValues {
+		// Temp variable to remember the max before reaching this house
+		maxBeforeReachingCurrentHouse := maxProfit
+
+		// Find the max between the previous house or the current house + the house two spots back
+		maxProfit = max(maxAtTwoHousesBefore+currentValue, maxProfit)
+
+		// The max of the house before this one becomes the max of the house two spots back
+		// when entering the next iteration of the loop
+		maxAtTwoHousesBefore = maxBeforeReachingCurrentHouse
+	}
+
+	return maxProfit
+}
+```

@@ -1,0 +1,89 @@
+This bracket validator checks parentheses, square brackets, and braces while ignoring ordinary text. A string with no brackets is valid. `([)]` is invalid because the brackets cross, even though the number of openers and closers is balanced.
+
+In TypeScript, we can model the unfinished opening brackets with `string[]` and the matching relation with `Map<string, string>`. The function returns a Boolean and follows the exercise starter's name. It does not parse TypeScript source code or assign special meaning to quotes and comments.
+
+## Type the stack and matching table explicitly
+
+The matching map is keyed by closing bracket. Its retrieved value tells us which opener must be at the top of the stack. A set recognizes openers; a character found in neither container is ordinary text and leaves the stack unchanged.
+
+```typescript
+const hasValidBrackets = (string: string): boolean => {
+  const stack: string[] = [];
+  const openings = new Set<string>(['(', '[', '{']);
+  const matching = new Map<string, string>([
+    [')', '('],
+    [']', '['],
+    ['}', '{'],
+  ]);
+
+  for (const char of string) {
+    if (openings.has(char)) {
+      stack.push(char);
+    } else {
+      const expected = matching.get(char);
+      if (expected !== undefined && stack.pop() !== expected) {
+        return false;
+      }
+    }
+  }
+
+  return stack.length === 0;
+};
+```
+
+The empty stack has an explicit element type. That prevents its meaning from depending on how an empty literal happens to be inferred in a particular context. Every pushed entry comes from the input string, and every comparison is between a character string and an expected opener.
+
+## Handle an empty pop without a cast
+
+`Array.pop()` can return undefined. Here an undefined result cannot equal an expected opener, so a closer encountered on an empty stack returns false. No non-null assertion is needed, and no exception handling is needed for the empty case.
+
+The short-circuit condition matters. When `expected` is undefined, the current character is not a recognized closer and `stack.pop()` is never called. Removing that guard would let ordinary text consume unmatched openers, changing the exercise's meaning.
+
+A stricter union type for the six delimiters is also possible, but an arbitrary input character is still a `string`. A type assertion claiming it is always a closer would hide the very classification the algorithm must perform. The string-keyed map keeps that classification in executable code.
+
+## Trace nested and crossing delimiters
+
+For `a[({b})]c`, the first letter is ignored. The stack then receives `[`, `(`, and `{`. The `}` retrieves `{` from the matching table and pops that opener. The `)` removes `(`, and the `]` removes `[`. The final letter does nothing, leaving an empty stack.
+
+For `([)]`, the stack becomes `['(', '[']`. The next closer is `)`, whose expected opener is `(`. Popping produces `[`, so the function returns false immediately. An opener deeper in the stack cannot be used without permitting crossing brackets.
+
+For `(()`, every closer encountered finds a match, but one opener remains after the scan. The final empty check rejects it. This is a different failure path from a mismatched or unmatched closer and deserves its own test.
+
+## Check exact Boolean results
+
+```typescript
+const cases: Array<[string, boolean]> = [
+  ['', true],
+  ['ordinary text', true],
+  ['a + (b * [c])', true],
+  ['([]{})', true],
+  ['([)]', false],
+  [']', false],
+  ['(()', false],
+  ['🙂{x[y](z)}', true],
+];
+for (const [input, expected] of cases) {
+  if (hasValidBrackets(input) !== expected) {
+    throw new Error('Unexpected bracket result');
+  }
+}
+if (!hasValidBrackets('('.repeat(20000) + ')'.repeat(20000))) {
+  throw new Error('Deep nesting failed');
+}
+```
+
+The deeply nested input exercises heap-backed stack storage without recursive function calls. The array lives inside the function, so an early false return cannot leave state behind for a later invocation. Test a failing call followed by a valid one when trying a refactor that moves state into an object.
+
+## Keep type safety and runtime validation distinct
+
+The parameter annotation does not reject null or a number supplied by untyped code at runtime. The exercise contract supplies a string. If a production boundary accepts arbitrary JSON, validate that boundary before calling the function rather than adding unchecked casts inside the scan.
+
+TypeScript's [narrowing documentation](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) describes how executable tests refine possible types. Here the undefined comparison makes a map retrieval usable while preserving its actual absence behavior.
+
+`for...of` iterates the JavaScript string by code point. All six delimiters are ASCII, so ordinary Unicode text can be ignored without a grapheme parser. A quoted bracket still counts; recognizing language literals or comments would require additional parsing states.
+
+## Explain what the stack remembers
+
+After every valid prefix, the array contains exactly the openers still waiting to be closed, in their encounter order. The last entry is the only legal match for the next closer. Counts alone cannot preserve that ordering, which is why a counter-based implementation accepts some invalid strings.
+
+The scan takes `O(n)` time under ordinary array-operation assumptions. Auxiliary storage is `O(d)` for maximum unfinished nesting depth, with worst-case `O(n)` space. Reconstruct the loop from that invariant, then use `([)]` and `(()` to check both failure paths before moving to the course editor.

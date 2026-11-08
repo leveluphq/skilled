@@ -1,0 +1,18 @@
+```kotlin
+fun get(key: String): Int? {
+    val index = hash(key)
+    val bucket = table[index]
+
+    // Check if the key exists in the bucket, and return its value if found
+    if (bucket != null) {
+        for (i in 0 until bucket.size) {
+            if (bucket[i].key == key) {
+                return bucket[i].value
+            }
+        }
+    }
+
+    // Return null if the key is not found
+    return null
+}
+```

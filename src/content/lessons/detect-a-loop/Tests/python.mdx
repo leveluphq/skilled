@@ -1,0 +1,156 @@
+```python
+import unittest
+test_results = []
+
+class ListNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty list"
+        input = { "values": [], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_2(self):
+        self.description = "one node"
+        input = { "values": [1], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_3(self):
+        self.description = "one node that points to itself"
+        input = { "values": [1], "loop_index": 0 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "two nodes"
+        input = { "values": [1, 2], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_5(self):
+        self.description = "two nodes in a loop"
+        input = { "values": [1, 2], "loop_index": 0 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "odd number of nodes"
+        input = { "values": [1, 2, 3], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "no loop (example 1)"
+        input = { "values": [42, 100, 4, 7], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "loop starts in the middle (example 2)"
+        input = { "values": [0, 1, 2, 3, 4, 5, 6, 7], "loop_index": 2 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_9(self):
+        self.description = "tail points back to the head"
+        input = { "values": [42, 100, 4, 7], "loop_index": 0 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_10(self):
+        self.description = "tail points to itself"
+        input = { "values": [42, 100, 4, 7], "loop_index": 3 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_11(self):
+        self.description = "every node has the same data"
+        input = { "values": [5, 5, 5, 5, 5], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_12(self):
+        self.description = "repeated data"
+        input = { "values": [7, 3, 7, 3, 7, 3], "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_13(self):
+        self.description = "loop with repeated data"
+        input = { "values": [5, 5, 5, 5, 5], "loop_index": 2 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_14(self):
+        self.description = "long list with no loop"
+        input = { "values": list(range(1000)), "loop_index": None }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_15(self):
+        self.description = "long list with a loop"
+        input = { "values": list(range(1000)), "loop_index": 500 }
+        self.actual_result = has_loop(self.buildLinkedList(input["values"], input["loop_index"]))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    # Links the nodes in order, then points the tail back to the node at loop_index (None means there is no loop)
+    def buildLinkedList(self, values, loop_index):
+        nodes = [ListNode(value) for value in values]
+
+        for i in range(len(nodes) - 1):
+            nodes[i].next = nodes[i + 1]
+
+        if loop_index != None:
+            nodes[-1].next = nodes[loop_index]
+
+        return nodes[0] if len(nodes) > 0 else None
+
+def runtests():
+    unittest.main(exit=False)
+```

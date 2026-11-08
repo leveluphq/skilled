@@ -1,0 +1,14 @@
+```python
+def my_algorithm(input_array):
+    n = len(input_array)
+
+    # We touch all n items, requiring O(n) operations
+    for i in range(n):
+        # We don't care what happens in here as long as it's not another loop
+
+# my_algorithm([1])  -->  input size = n = 1  -->  O(1) operations
+# my_algorithm([1, 2])  -->  input size = n = 2  -->  O(2) operations
+# my_algorithm([1, 2, 3])  -->  input size = n = 3  -->  O(3) operations
+# ...
+# my_algorithm([1, 2, 3, ..., n])  -->  input size = n  -->  O(n) operations
+```

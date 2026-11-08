@@ -1,0 +1,100 @@
+Dynamic programming reuses answers to smaller problems. The difficult part is deciding what an answer represents and which facts determine it. Once the state and transitions are correct, a cache or table is usually a short implementation detail.
+
+Consider a row of package values. You may take any subset, but taking one package prevents taking either adjacent package. Return the greatest total value, allowing an empty selection worth zero. This is the non-adjacent-sum form of the [Steal Packages exercise](/course/steal-packages). The recurrence below follows from the two decisions available at each position.
+
+## Define a state with a complete meaning
+
+Let best(i) mean the greatest total obtainable from the suffix starting at index i. This definition fixes what remains to be decided. Taking an entry before i has already been handled by the choice that led to this state.
+
+At i, either skip the entry and solve best(i + 1), or take its value and solve best(i + 2). The second move skips the adjacent entry. Choose the larger total.
+
+The base case is best(i) = 0 when i is past the array. That convention supports an empty selection and makes negative values straightforward: skipping them may be best. If a different exercise requires taking at least one value, the base case or state must express that requirement.
+
+An index is a sufficient state here because future options depend only on the remaining suffix. In other problems, the future may also depend on remaining capacity, a previous choice, or another constraint. Omitting one of those facts from the cache key can combine states that have different answers.
+
+## Write the recurrence before adding a cache
+
+A direct recursive solution has two branches at each unresolved index. It is useful for checking the reasoning on small inputs, but it solves the same suffix repeatedly. For example, best(2) can be reached by skipping twice or by taking index zero.
+
+For `[2, 7, 9, 3, 1]`, choosing index zero leaves the suffix at index two. Choosing index one leaves the suffix at index three. The best total is 12 from values 2, 9, and 1. The input's largest single entry is not enough to decide the whole problem.
+
+A greedy “take the largest remaining value” rule can fail. For `[4, 5, 4]`, taking 5 prevents both 4s, while taking the two outer entries totals 8. The recurrence evaluates choices with their consequences instead of making a locally largest choice.
+
+## Memoize each suffix result
+
+```javascript
+function maxNonAdjacentSum(values) {
+  const memo = new Map();
+  function best(index) {
+    if (index >= values.length) return 0;
+    if (memo.has(index)) return memo.get(index);
+    const skip = best(index + 1);
+    const take = values[index] + best(index + 2);
+    const result = Math.max(skip, take);
+    memo.set(index, result);
+    return result;
+  }
+  return best(0);
+}
+```
+
+Use `memo.has(index)` rather than a truthiness check on `memo.get(index)`. Zero can be a valid computed answer. Recomputing zero-valued states defeats the cache on an input where taking nothing is optimal.
+
+The memo belongs to one invocation of the function. A module-level cache keyed only by index would accidentally reuse answers from another input array. A complete cache key includes every input fact that affects the answer, or the cache lifetime must keep those other facts fixed.
+
+There are O(n) suffix indices. Each uncached state performs constant local work and makes calls whose results are reused. Under the usual map model, total time is O(n), with O(n) memo entries and up to O(n) recursion depth. Caching repeated work does not remove stack-depth limits.
+
+## Evaluate the same states from the bottom up
+
+Since best(i) depends on i + 1 and i + 2, compute those later suffixes before i. A table filled from right to left follows that dependency order.
+
+```javascript
+function maxNonAdjacentSumTable(values) {
+  const dp = new Array(values.length + 2).fill(0);
+  for (let i = values.length - 1; i >= 0; i -= 1) {
+    dp[i] = Math.max(dp[i + 1], values[i] + dp[i + 2]);
+  }
+  return dp[0];
+}
+```
+
+The extra two zero entries make both dependencies valid at the end of the array. They encode the same base case as the recursive version. Changing the traversal direction without changing the recurrence would read entries before they contain the intended results.
+
+Bottom-up evaluation removes the recursion stack. It still retains O(n) table entries, which can be useful if you later need to reconstruct the actual selected indices.
+
+## Reduce storage only after understanding dependencies
+
+The recurrence only needs the next two suffix results. Replace the table with two variables while preserving their meanings across the loop.
+
+```javascript
+function maxNonAdjacentSumCompact(values) {
+  let next = 0;
+  let afterNext = 0;
+  for (let i = values.length - 1; i >= 0; i -= 1) {
+    const current = Math.max(next, values[i] + afterNext);
+    afterNext = next;
+    next = current;
+  }
+  return next;
+}
+```
+
+Before processing i, `next` represents best(i + 1), and `afterNext` represents best(i + 2). Compute the current result before shifting those meanings. Updating `next` too early can make the take branch use the wrong state.
+
+This version uses O(1) additional working storage and O(n) time under the fixed-size-number model. It returns only the total. Reconstructing the chosen subset needs more information, recomputation, or a different output strategy. Storage optimization can change which outputs are convenient to produce.
+
+## Count states and work per state separately
+
+A cache does not make every algorithm linear. If a state uses two indices over inputs of lengths n and m, there may be O(nm) states. If each state scans n possible transitions, that work multiplies the state count.
+
+Creating slices or serialized keys can also add costs. A recurrence written with constant-size index state may have a different implementation cost from one that copies the remaining array at every call. Explain the data representation as well as the mathematical recurrence.
+
+Top-down evaluation can avoid states that are never reached. Bottom-up evaluation often makes evaluation order and memory usage easier to inspect. The choice depends on the state graph, input sizes, and the language's recursion constraints. Neither direction repairs an incomplete state definition.
+
+## Test choices, boundaries, and the reconstruction contract
+
+Check an empty array, a single positive value, a single negative value, all-negative values, repeated equal values, and the greedy counterexample `[4, 5, 4]`. Compare all three implementations on small randomly generated inputs.
+
+For a stronger check, enumerate every subset of a short input, reject subsets containing adjacent indices, and compare the maximum total with the DP result. That slow reference is useful precisely because it expresses the contract independently of the recurrence.
+
+Then change the exercise to require at least one selected entry, or to return selected indices. Decide which parts of the state, base case, or retained table must change before editing the code. Practice the prerequisites in [subproblems](/course/subproblems-and-overlapping-subproblems), [memoization](/course/memoization), and [top-down versus bottom-up evaluation](/course/bottom-up-vs-top-down).

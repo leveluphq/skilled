@@ -1,0 +1,102 @@
+A longest-substring problem in Go needs a definition of character before it needs a window template. String indexes address bytes. Range decodes runes from UTF-8 and reports byte offsets. Neither operation automatically counts the user-perceived characters represented by grapheme clusters.
+
+The primary function below returns the length of the longest contiguous sequence of distinct Unicode code points. It accepts valid UTF-8 and rejects invalid byte sequences. A second implementation handles ASCII-only input, where byte positions and code-point positions agree.
+
+## State the result unit and input policy
+
+For `"a🙂b"`, a byte length is six and a code-point length is three. The requested answer here is three. For a sequence containing a combining mark, each code point remains a separate value even when several code points display as one cluster.
+
+This function does not normalize text. A precomposed accented letter and a sequence consisting of a base letter plus a combining mark have different code-point sequences. If an exercise wants normalization or grapheme-level uniqueness, that is a different preprocessing and segmentation contract.
+
+Go strings can contain arbitrary bytes. Ranging over invalid UTF-8 can produce replacement rune values, which may collapse distinct invalid byte sequences into the same apparent character. The explicit validation step avoids quietly changing that input into a different counting problem. The [utf8 package](https://pkg.go.dev/unicode/utf8#ValidString) provides the validation operation.
+
+```go
+package main
+
+import (
+    "errors"
+    "unicode/utf8"
+)
+
+func longestUniqueRunes(text string) (int, error) {
+    if !utf8.ValidString(text) {
+        return 0, errors.New("expected valid UTF-8")
+    }
+    lastNext := make(map[rune]int)
+    left, best, position := 0, 0, 0
+    for _, value := range text {
+        if next := lastNext[value]; next > left {
+            left = next
+        }
+        if length := position - left + 1; length > best {
+            best = length
+        }
+        lastNext[value] = position + 1
+        position++
+    }
+    return best, nil
+}
+
+func longestUniqueASCII(text string) (int, error) {
+    var lastNext [128]int
+    left, best := 0, 0
+    for right := 0; right < len(text); right++ {
+        value := text[right]
+        if value >= utf8.RuneSelf {
+            return 0, errors.New("expected ASCII input")
+        }
+        if next := lastNext[value]; next > left {
+            left = next
+        }
+        if length := right - left + 1; length > best {
+            best = length
+        }
+        lastNext[value] = right + 1
+    }
+    return best, nil
+}
+```
+
+Both functions return zero with no error on empty input. On invalid input, the returned zero accompanies an error and is not a valid partial answer. Callers must inspect that error rather than interpreting every zero as an empty substring.
+
+The rune implementation maintains a separate ordinal position. Using the range loop's byte offset in its length arithmetic would mix units. It does not need to allocate a full rune slice because the scan and the remembered positions are enough for a length result.
+
+## Explain the remembered position plus one
+
+The map stores the position immediately after each rune's latest occurrence. A missing map entry therefore has zero, which is also the correct initial left boundary. At the current rune, move left forward only if its remembered next position is beyond the existing boundary.
+
+For `"abba"`, after processing the second b, left moves to position two. When the final a arrives, its earlier occurrence would suggest position one, which is behind the current left boundary. The comparison prevents moving backward and admitting a repeated b again.
+
+The invariant is that the window from left through the current rune contains no repeated code point. Any duplicate of the incoming rune is excluded by moving past its latest earlier occurrence. Removing an older prefix cannot introduce a duplicate among the remaining values.
+
+The best length is updated after adjusting left. Updating it before the duplicate is removed would count an invalid window. Saving the new last position happens after using the old one, preserving the meaning of the lookup.
+
+## Keep byte offsets for a substring result
+
+This API returns only a length. Returning the original substring also requires byte boundaries because slicing a Go string uses byte indexes. A rune ordinal cannot be passed directly as a byte boundary for a string containing multibyte characters.
+
+One extension is to retain each rune's byte-start offset alongside its ordinal position and remember the best byte interval. Another is to materialize runes and map the chosen rune interval back to the original bytes. Both approaches need an explicit endpoint convention, and materializing extra arrays adds storage.
+
+A substring view can also keep the original string's backing data alive depending on how it is retained and copied. Choose whether the caller needs a view or an independently copied string, especially when a small result may outlive a much larger input.
+
+## Use the ASCII specialization only under its contract
+
+The fixed array gives one last-next position for every ASCII byte. It includes control characters such as a zero byte, not only printable letters. A non-ASCII byte causes an error instead of indexing beyond the array or treating the byte as a complete character.
+
+Do not select this implementation merely because early sample inputs use English letters. The statement's alphabet guarantee must support the choice. For valid ASCII, both functions should agree on every result. That cross-check is useful because the implementations use different iteration and state storage.
+
+An alphabet-limited frequency table can also solve other window tasks, but its state meaning changes. A last-position table is enough for uniqueness; a window allowing a bounded number of duplicates may need frequencies and a separate count of invalid values.
+
+## Analyze bytes read and values retained
+
+Let B be the input byte length, R its number of decoded runes, and U the number of distinct runes encountered. UTF-8 validation reads O(B) bytes. The scan performs expected O(R) map operations under the bounded-rune-key model. Total work is O(B + R), which is O(B) for valid UTF-8, with O(U) auxiliary map entries.
+
+The ASCII implementation reads each byte once and uses a fixed 128-entry array. It takes O(B) time and constant auxiliary storage under that fixed alphabet. Neither function constructs every candidate substring, so there is no hidden quadratic output allocation.
+
+A brute-force reference can examine every start and extend a set until the first repeat. That slower method is useful for short test strings even though it is unsuitable for large input. Agreement with a different implementation is stronger evidence than repeating the same last-position recurrence in a test.
+
+## Test text units and window boundaries
+
+Include empty text, one rune, all-equal runes, `"abba"`, repeated emoji, an ASCII control byte, and a combining sequence. Enumerate short strings over an alphabet containing ASCII, an emoji, an accented code point, and a combining mark; compare the rune result with the direct reference.
+
+Pass invalid UTF-8 to the rune implementation and non-ASCII text to the ASCII implementation, checking the error in each case. For ASCII-only generated strings, require both versions to agree. Then compare the invariant with the [sliding-window guide](/patterns/sliding-window) and use the [Go preparation guide](/interview-prep/go) to review map presence, slices, and text offsets before attempting another window problem.

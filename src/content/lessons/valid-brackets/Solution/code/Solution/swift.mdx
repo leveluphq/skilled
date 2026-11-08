@@ -1,0 +1,32 @@
+```swift
+class Solution {
+    func hasValidBrackets(_ s: String) -> Bool {
+        let matchingBrackets: [Character: Character] = [
+            "(": ")",
+            "[": "]",
+            "{": "}",
+        ]
+        // The keys are the opening brackets
+        let openingBrackets = Set(matchingBrackets.keys)
+        // The values are the closing brackets
+        let closingBrackets = Set(matchingBrackets.values)
+        var bracketStack: [Character] = []
+
+        for character in s {
+            if openingBrackets.contains(character) {
+                bracketStack.append(character)
+            } else if closingBrackets.contains(character) {
+                // popLast() gives nil when the stack is empty,
+                // which means there's no bracket to close
+                guard let latestBracket = bracketStack.popLast(),
+                      character == matchingBrackets[latestBracket] else {
+                    return false
+                }
+            }
+        }
+
+        // check if we opened/closed all brackets which creates an empty stack.
+        return bracketStack.isEmpty
+    }
+}
+```

@@ -1,0 +1,19 @@
+```cpp
+bool hasValidShape(vector<vector<int>>& board) {
+    // If we don't have any rows or columns, it must be false
+    if (board.empty() || board[0].empty()) {
+        return false;
+    }
+
+    // # of rows and columns must be equal to be a square
+    int rowCount = board.size();
+    int columnCount = board[0].size();
+    bool isSquare = rowCount == columnCount;
+
+    if (!isSquare) {
+        return false;
+    }
+
+    // ...
+}
+```

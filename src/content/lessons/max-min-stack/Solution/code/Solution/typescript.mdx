@@ -1,0 +1,50 @@
+```javascript
+class MaxMinStack {
+  stack: number[];
+  private _maxValueStack: number[];
+  private _minValueStack: number[];
+
+  constructor() {
+    this.stack = [];
+
+    // Stacks for internal tracking of the max/min
+    this._maxValueStack = [];
+    this._minValueStack = [];
+  }
+  peek(): number {
+    return this.stack[this.stack.length - 1];
+  }
+  push(item: number): number {
+    this.stack.push(item);
+
+    if (this._maxValueStack.length === 0 || item >= this.getStackMax()) {
+      this._maxValueStack.push(item);
+    }
+    if (this._minValueStack.length === 0 || item <= this.getStackMin()) {
+      this._minValueStack.push(item);
+    }
+
+    return item;
+  }
+  pop(): number {
+    const item = this.stack.pop();
+
+    if (item === this.getStackMax()) {
+      this._maxValueStack.pop();
+    }
+    if (item === this.getStackMin()) {
+      this._minValueStack.pop();
+    }
+
+    return item;
+  }
+
+  // Effectively a "peek()" for the max/min values of the stack
+  getStackMax(): number {
+    return this._maxValueStack[this._maxValueStack.length - 1];
+  }
+  getStackMin(): number {
+    return this._minValueStack[this._minValueStack.length - 1];
+  }
+}
+```

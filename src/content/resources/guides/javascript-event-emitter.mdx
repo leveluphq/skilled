@@ -1,0 +1,89 @@
+An event emitter stores listeners under event names and invokes them when an event is emitted. A useful implementation must also answer what happens when listeners subscribe, unsubscribe, throw, or emit recursively during dispatch. Those cases determine whether once listeners really run once and whether a component can reliably clean up a subscription.
+
+The emitter below uses synchronous dispatch in registration order. It supports duplicate registrations as separate subscriptions, returns an unsubscribe function from on and once, and accepts any Map key as an event name. Each emission snapshots its candidate subscriptions. New subscriptions wait until the next emission, while a subscription removed before its turn is skipped.
+
+## Store subscription records rather than only functions
+
+A Set of functions would collapse duplicate registrations of the same function. That may be a valid API, but this contract permits duplicates. Store a separate record for each subscription, with its listener, once flag, active state, and removal operation. Removing one returned subscription leaves another registration of the same function intact.
+
+The off method below removes every registration of the given function for one event. That differs from the returned unsubscribe function, which removes exactly its own record. Naming both behaviors in tests prevents a cleanup call from unexpectedly removing an unrelated subscriber that happens to use the same callback function.
+
+```javascript
+class Emitter {
+  constructor() { this.events = new Map(); }
+  subscribe(name, listener, once) {
+    if (typeof listener !== 'function') throw new TypeError('Expected a listener');
+    if (!this.events.has(name)) this.events.set(name, new Set());
+    const group = this.events.get(name);
+    const record = { listener, once, active: true, remove: null };
+    record.remove = () => {
+      if (!record.active) return;
+      record.active = false;
+      group.delete(record);
+      if (group.size === 0 && this.events.get(name) === group) this.events.delete(name);
+    };
+    group.add(record);
+    return record.remove;
+  }
+  on(name, listener) { return this.subscribe(name, listener, false); }
+  once(name, listener) { return this.subscribe(name, listener, true); }
+  off(name, listener) {
+    for (const record of this.events.get(name) || [])
+      if (record.listener === listener) record.remove();
+  }
+  emit(name, ...args) {
+    const snapshot = [...(this.events.get(name) || [])];
+    let count = 0;
+    for (const record of snapshot) {
+      if (!record.active) continue;
+      if (record.once) record.remove();
+      Reflect.apply(record.listener, undefined, args);
+      count++;
+    }
+    return count;
+  }
+  clear() {
+    for (const group of this.events.values())
+      for (const record of group) record.active = false;
+    this.events.clear();
+  }
+}
+```
+
+## Remove once listeners before calling them
+
+A once listener can emit the same event from inside its callback. If it is removed only after returning, the nested emission sees it still registered and calls it again. Removing it before invocation prevents that recursive reentry.
+
+There is another reentrancy case: an ordinary listener can recursively emit before the outer emission reaches a later once listener. The inner emission may consume that once subscription first. The outer snapshot still contains its record, but its active flag is now false, so the outer loop skips it. A snapshot without that active-state check could invoke the once listener twice.
+
+This contract therefore means once per subscription across nested synchronous emissions, not once per snapshot. Recursive emissions can still recurse without bound if an ordinary listener emits the same event unconditionally. The emitter does not queue those calls or impose a recursion limit for the application.
+
+## Define mutations during dispatch
+
+If listener A adds listener C while handling an event, C is absent from that emission's snapshot and waits for a later emission. If A removes listener B before B's turn, B's record is inactive and is skipped. If A removes and readds B, the new subscription is a new record and also waits for a later emission.
+
+Calling clear marks all records inactive before removing the event groups. That makes even the current snapshot stop calling remaining subscriptions. A previously returned unsubscribe function stays safe after clear because removal is idempotent. It also cannot delete a newer event group: the identity check ensures it only removes the group it originally belonged to.
+
+## Choose error and promise behavior
+
+A synchronous listener exception propagates from emit and stops that emission. Earlier listeners may already have changed application state, and later listeners remain registered for future emissions. A once listener that throws has still been removed. This policy favors direct error visibility over quietly continuing after an unexpected failure.
+
+Returned promises are not awaited. An async listener's rejection needs its own handling, or an explicitly asynchronous emitter with a documented aggregation rule. Calling Promise.all on listener results would change error timing and completion behavior; invoking listeners sequentially with await would also change when later listeners start.
+
+No receiver object is promised to listeners. Reflect.apply passes undefined as the receiver; ordinary non-strict JavaScript functions can still apply their language-defined receiver conversion. Bind a method before subscribing if it requires its owning object. Passing an unbound method and assuming the emitter supplies that object creates a separate this bug.
+
+## Keep cleanup tied to ownership
+
+The unsubscribe function is a useful lifecycle boundary. A component can store it when mounting and call it when unmounting, without reconstructing the event name and callback identity later. An inline replacement function is not the same registration, even if its source text looks identical.
+
+Removing empty event groups avoids retaining unused event names forever. Active subscriptions still retain their listener closures and everything those closures reference. The emitter cannot know when a subscriber is no longer needed; the owner must unsubscribe or clear the whole emitter at an appropriate lifecycle point.
+
+For example, a listener can close over a large view model after its panel has closed. Removing the panel's DOM nodes does not remove that listener from this custom emitter. Store the unsubscribe function beside the panel's other cleanup operations and invoke it when that ownership ends. Reopening the panel should create a new subscription rather than accumulating another active copy on every visit. A test that opens and closes the same logical panel several times can verify the final listener count through emitted calls.
+
+## Test operation sequences
+
+Test registration order, argument forwarding, duplicate function registrations, unsubscribing one duplicate, and off removing all duplicates. Emit an unknown event and expect zero calls. Call an unsubscribe function twice and confirm the second call is harmless. Include symbol event names and object payloads whose identity should be preserved.
+
+Then test mutation during dispatch: adding a listener, removing a later listener, clearing all listeners, and removing then readding one. Add both recursive once cases described above. Check that an exception stops the current emission and that a once listener stays removed after throwing.
+
+Emission takes O(k) candidate work and O(k) snapshot storage for k listeners registered under that event at the start. Ordinary subscription and direct unsubscribe use expected constant-time Map and Set operations. Off scans the selected event's records. Connect this exercise to [closures and this](/guides/javascript-closures-and-this) to explain listener retention, and to [event delegation](/guides/frontend-event-delegation) when comparing a custom emitter with browser DOM event propagation.

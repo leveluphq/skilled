@@ -1,0 +1,38 @@
+import Image from 'content/blocks/Image';
+import { MaxWidthImage } from '../../styles';
+
+Let's begin by tracing this out by hand and understanding what is happening.
+
+<Image src="/images/walk-full-matrix.gif" alt="A spiral traversal records matrix values while moving around shrinking outer boundaries." width={600} height={338} />
+
+Or if we viewed it as paths:
+
+<MaxWidthImage>
+  <Image src="/images/direction-of-walk.png" alt="A spiral matrix walk moves right across the top, down the right edge, left across the bottom, and up the left edge." width={1034} height={1030} />
+</MaxWidthImage>
+
+Let's start from the beginning.
+We start at the top-left (0,0) point.
+We walk across the first row from the first column to the last column.
+We are at the top-right point (0,3).
+
+Once we reach this point, we have come to the end of the first side.
+Now we walk down the final column across all the rows.
+Once we reach the final row, we have completed traversing this side and are at the bottom-right point (3,3).
+
+We then walk in the reverse order through the final row from the last column to the first column, reaching the bottom-left point (3,0).
+
+To complete this first loop, we walk up the left side.
+However, since we have already visited (0,0), we end this loop at point (1,0).
+
+To summarize, we walk the entire length of each side right-down-left-up for the perimeter.
+On the up-traversal though, we stop 1 spot back since we had already visited that point.
+
+Now if we want to continue our traversal, we see that our problem looks identical to how we started.
+We need to walk the "new" perimeter and move the final index of each side inward by one.
+
+<MaxWidthImage>
+  <Image src="/images/completed-loop.png" alt="After the outer matrix boundary is visited, the next traversal continues through the unvisited inner cells." width={1040} height={1032} />
+</MaxWidthImage>
+
+Can you take this logic and transcribe it into code?

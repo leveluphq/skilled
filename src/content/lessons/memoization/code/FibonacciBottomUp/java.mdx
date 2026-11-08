@@ -1,0 +1,12 @@
+```java
+static long fibonacci(int n) {
+    Map<Integer, Long> memo = new HashMap<>(Map.of(0, 0L, 1, 1L));
+
+    for (int i = 2; i <= n; i++) {
+        long currentFib = memo.get(i - 1) + memo.get(i - 2);
+        memo.put(i, currentFib);
+    }
+
+    return memo.get(n);
+}
+```

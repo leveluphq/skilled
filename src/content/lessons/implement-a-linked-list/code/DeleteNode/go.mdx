@@ -1,0 +1,39 @@
+```go
+// The input is the index number, and the output will be the head node.
+func deleteNode(head *Node, index int) *Node {
+	// If we want to delete the current head node,
+	// we just return the node after the current head.
+	if index == 0 {
+		return head.Next
+	}
+
+	precedingNode := head
+
+	// Find the node that precedes the index of the node that we want to delete
+	for range index - 1 {
+		precedingNode = precedingNode.Next
+	}
+
+	// Skip past our node to be removed
+	// Equivalent to precedingNode.Next = precedingNode.Next.Next
+	nodeToBeRemoved := precedingNode.Next
+	precedingNode.Next = nodeToBeRemoved.Next
+
+	// There are now no nodes in the linked list that are pointing to nodeToBeRemoved.
+	// The node that was before it is now pointing to the one after it.
+
+	return head
+}
+
+head := &Node{Data: 42}
+head.Next = &Node{Data: 9000}
+head.Next.Next = &Node{Data: 10}
+head.Next.Next.Next = &Node{Data: 20}
+// 42 -> 9000 -> 10 -> 20
+
+head = deleteNode(head, 2)
+// 42 -> 9000 -> 20
+
+head = deleteNode(head, 0)
+// 9000 -> 20
+```

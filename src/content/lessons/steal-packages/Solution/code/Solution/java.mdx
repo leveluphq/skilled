@@ -1,0 +1,22 @@
+```java
+class Solution {
+    public int stealPackages(int[] packageValues) {
+        int maxAtTwoHousesBefore = 0;
+        int maxProfit = 0;
+
+        for (int currentValue : packageValues) {
+            // Temp variable to remember the max before reaching this house
+            int maxBeforeReachingCurrentHouse = maxProfit;
+
+            // Find the max between the previous house or the current house + the house two spots back
+            maxProfit = Math.max(maxAtTwoHousesBefore + currentValue, maxProfit);
+
+            // The max of the house before this one becomes the max of the house two spots back
+            // when entering the next iteration of the loop
+            maxAtTwoHousesBefore = maxBeforeReachingCurrentHouse;
+        }
+
+        return maxProfit;
+    }
+}
+```

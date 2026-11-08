@@ -1,0 +1,23 @@
+```rust
+fn run(id: &str) -> f64 {
+    calculate_price(Item::new(id))
+}
+
+fn calculate_price(item: Item) -> f64 {
+    item.price + calculate_tax(item.price)
+}
+
+fn calculate_tax(price: f64) -> f64 {
+    price * 0.1
+}
+
+run("id1");
+
+
+|  price * 0.1                            |
+|  item.price + calculate_tax(item.price) |
+|  calculate_price(item)                  |
+|  run("id1")                             |
+------------------------------------------
+   Call Stack
+```

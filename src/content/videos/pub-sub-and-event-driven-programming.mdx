@@ -1,0 +1,19 @@
+The lesson builds an in-memory publish-subscribe object with `subscribe`, `publish`, and `unsubscribe`. An event name selects a collection of callbacks. Publishing passes data to those callbacks, while unsubscribing removes a previously registered callback. This small implementation explains local dispatch; it does not promise durable delivery, retries, or cross-process messaging.
+
+## Store callbacks under the event they observe
+
+Subscribing creates the event's callback collection if needed, then stores the supplied function. Multiple callbacks can listen to one name, and one function may be registered for several names. Publishing an event with no subscribers can return without invoking anything. Publishing a known event calls its callbacks with the provided data.
+
+For an event called `saved`, register two functions that record the received payload. Publish once and check that both receive the same payload according to the API's dispatch order. Do not assume each callback receives a deep copy: a shared mutable payload can let one callback affect what a later callback sees.
+
+## Keep the identity needed for removal
+
+Unsubscribe needs the same function reference originally registered. Creating another arrow function with identical text creates another function object and does not identify the original subscription. Retain the reference or design subscribe to return a cleanup handle. The lesson's callback-based removal follows its own stated policy for matching registrations.
+
+Subscription lifetime matters in an application. A listener can retain the objects captured by its closure. Removing a view without removing its listeners may keep callbacks active and retained. Test that a callback stops running after cleanup and that unrelated subscribers still receive later events.
+
+## Specify dispatch edge cases before extending the design
+
+What happens if a callback subscribes or unsubscribes while publication is in progress? Does an exception stop later callbacks? Can the same callback be registered twice? Those are API decisions, and a basic array loop does not establish every possible policy. Recursive publication adds another case because it can run before the outer dispatch finishes.
+
+The [event-emitter guide](/guides/javascript-event-emitter) provides a more explicit contract for duplicate registrations, dispatch mutations, cleanup, and recursive once handlers. Use the [current Pub-Sub lesson](/course/pub-sub-and-event-driven-programming) to build the smaller version first, then add an edge case only after describing its expected sequence of calls.

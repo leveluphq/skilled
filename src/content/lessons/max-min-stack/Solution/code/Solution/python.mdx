@@ -1,0 +1,39 @@
+```python
+class MaxMinStack:
+    # Any of the initial methods can be updated
+    def __init__(self):
+        self.stack = []
+
+        self._max_value_stack = []
+        self._min_value_stack = []
+
+    def peek(self):
+        return self.stack[-1]
+
+    def push(self, item):
+        self.stack.append(item)
+
+        if (len(self._max_value_stack) == 0 or item >= self.get_stack_max()):
+            self._max_value_stack.append(item)
+        if (len(self._min_value_stack) == 0 or item <= self.get_stack_min()):
+            self._min_value_stack.append(item)
+
+        return item
+
+    def pop(self):
+        item = self.stack.pop()
+
+        if item == self.get_stack_max():
+            self._max_value_stack.pop()
+        if item == self.get_stack_min():
+            self._min_value_stack.pop()
+
+        return item
+
+    # Effectively a "peek()" for the max/min values of the stack
+    def get_stack_max(self):
+        return self._max_value_stack[-1]
+
+    def get_stack_min(self):
+        return self._min_value_stack[-1]
+```

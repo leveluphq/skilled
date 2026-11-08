@@ -1,0 +1,11 @@
+```java
+Map<String, String> previousNodeInPath = new HashMap<>();
+previousNodeInPath.put("base", null);
+previousNodeInPath.put("sat0", "base");
+previousNodeInPath.put("sat1", "sat0");
+previousNodeInPath.put("sat3", "sat0"); // Ignore sat2's connection
+previousNodeInPath.put("sat4", "sat0"); // Ignore sat2's and sat3's connection
+previousNodeInPath.put("sat2", "sat1");
+previousNodeInPath.put("sat5", "sat4");
+previousNodeInPath.put("ship", "sat5");
+```

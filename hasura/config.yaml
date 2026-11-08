@@ -1,0 +1,26 @@
+version: 3
+# The endpoint and admin secret are supplied via environment variables so that no
+# credential is committed to the repository. The Hasura CLI reads both from the
+# environment (or hasura/.env, see .env.example) and they take precedence over
+# any value set here.
+#
+#   HASURA_GRAPHQL_ENDPOINT      (defaults to the local engine below)
+#   HASURA_GRAPHQL_ADMIN_SECRET  (required)
+endpoint: http://localhost:8080
+api_paths:
+  v1_query: v1/query
+  v2_query: v2/query
+  v1_metadata: v1/metadata
+  graphql: v1/graphql
+  config: v1alpha1/config
+  pg_dump: v1alpha1/pg_dump
+  version: v1/version
+metadata_directory: metadata
+migrations_directory: migrations
+seeds_directory: seeds
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://localhost:3000
+  codegen:
+    framework: ""
+    output_dir: ""

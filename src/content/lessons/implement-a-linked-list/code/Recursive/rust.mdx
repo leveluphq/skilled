@@ -1,0 +1,14 @@
+```rust
+fn find_tail_node_recursively(node: &Node) -> &Node {
+    match &node.next {
+        // Stopping condition when we find the tail node.
+        // We know that the `next` will be None for the tail.
+        None => node,
+        // Continue to call our function recursively with the `next` node.
+        Some(next_node) => find_tail_node_recursively(next_node),
+    }
+}
+
+// Some(tail node), or None if the list is empty
+let tail_node = head.as_deref().map(find_tail_node_recursively);
+```

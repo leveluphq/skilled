@@ -1,0 +1,37 @@
+```swift
+let n = 1_000_000_000 // or some large number
+let arrayOfN = [Int](repeating: 0, count: n)
+
+// O(n^3)
+for i in 0..<n {
+    for j in 0..<n {
+        for k in 0..<n {
+            // ...
+        }
+    }
+}
+
+// O(n^3)
+arrayOfN.forEach { i in
+    arrayOfN.forEach { j in
+        arrayOfN.forEach { k in
+            // ...
+        }
+    }
+}
+
+// O(n)
+for i in 0..<n {
+    // ...
+}
+for j in 0..<n {
+    // ...
+}
+for k in 0..<n {
+    // ...
+}
+
+// Nested is 1000000000 ^ 3 = 1000000000000000000000000000
+// Sequential is 3000000000
+// Sequential is MUCH MUCH smaller
+```

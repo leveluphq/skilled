@@ -1,0 +1,22 @@
+```rust
+// O(1) prepend
+fn prepend(head: Option<Box<Node>>, data: i32) -> Option<Box<Node>> {
+    // Create a new node to prepend
+    let mut prepended_node = Box::new(Node::new(data));
+    // Set its next to the current node
+    prepended_node.next = head;
+
+    // Return our new node
+    Some(prepended_node)
+}
+
+// Each node owns the one after it, so we build the list from the back
+let mut head = None;
+for data in [20, 10, 9000, 42] {
+    head = Some(Box::new(Node { data, next: head }));
+}
+// 42 -> 9000 -> 10 -> 20
+
+head = prepend(head, 8);
+// 8 -> 42 -> 9000 -> 10 -> 20
+```

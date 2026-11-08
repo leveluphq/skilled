@@ -1,0 +1,18 @@
+import Image from 'content/blocks/Image';
+
+We need to maintain a sequence of both maximum and minimum values.
+Let's walk through an example to understand what our maximum and minimum values would be at any point for the stack.
+
+<Image src={"/images/max-min-stack-intuition.gif"} alt="A stack demonstration tracks the current minimum and maximum while values are pushed and popped." width={600} height={338} />
+
+So if we translated this to a data structure, we can see that to track the max/min, we're actually creating _additional stacks_.
+We just need to know the _last_ max or min value for any given item in the primary stack.
+So each time we `push` an item to our main `stack`, we also push the current maximum and minimum to two additional stacks that we are maintaining.
+The current max/min can either be the previous max/min that is at the top of the new stacks, or if the new item we push to the main stack creates a new max/min, we push this item as either the current max or min.
+
+To know the maximum and minimum at any point, all we would need to do is check the top value of these two new maximum and minimum stacks.
+
+However, we don't even need to store the value for all the items. We only need to add an item to the max or min stack if it is a _new_ max or min for the most recent value, or if a duplicate of the current max or min is added.
+Then if we `pop` off either value from our primary stack, we simply just need to also `pop` it from our max or min stack.
+
+<Image src="/images/optimized-max-min.png" alt="Separate minimum and maximum stacks retain the values needed to answer extrema queries after removals." width={1928} height={1046} />

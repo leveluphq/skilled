@@ -1,0 +1,46 @@
+```javascript
+const tests = [
+  {
+    input: [],
+    expected: 0,
+    description: 'empty',
+  },
+  {
+    input: [5],
+    expected: 5,
+    description: 'one item',
+  },
+  {
+    input: [2, 3, 5, 1],
+    expected: 7,
+    description: 'alternating values',
+  },
+  {
+    input: [1, 10, 3, 2, 5],
+    expected: 15,
+    description: 'skip two houses',
+  },
+  {
+    input: [1, 1, 1, 1, 1],
+    expected: 3,
+    description: 'all same value',
+  },
+  {
+    input: [1, 2, 3, 4, 5],
+    expected: 9,
+    description: 'always increasing',
+  },
+  {
+    input: [5, 4, 3, 2, 1],
+    expected: 9,
+    description: 'always decreasing',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = stealPackages(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

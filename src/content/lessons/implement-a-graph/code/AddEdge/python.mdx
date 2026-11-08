@@ -1,0 +1,7 @@
+```python
+def add_edge(self, source, destination):
+    self.adjacency_list[source].append(destination)
+
+    if self.undirected:
+        self.adjacency_list[destination].append(source)
+```

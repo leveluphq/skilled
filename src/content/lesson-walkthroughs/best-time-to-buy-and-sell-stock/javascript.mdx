@@ -1,0 +1,60 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Given prices in chronological order, return the largest profit from at most one purchase followed by one sale. Buying must happen before selling. Choosing no trade is allowed, so an empty list, one price, or a falling market returns zero. For `[7, 1, 5, 3, 6, 4]`, buy at 1 and sell later at 6 for a profit of 5.
+
+## Begin with the pair search
+
+A direct solution tries every purchase day and every later sale day. That establishes the contract clearly, but considers O(n²) pairs. When examining a particular sale day, the best purchase is always the lowest price among earlier days. Every more expensive earlier purchase yields no greater profit for that same sale.
+
+Keep that minimum as a running value. Also keep the best profit found so far, initially zero. For each price, compare its difference from the previous minimum with the current best profit, then update the minimum. This order makes the chronology easy to explain. Allowing a zero-length trade on the same day would also yield only zero, but cannot create a positive profit.
+
+## Trace the two pieces of state
+
+At price 7, the minimum is 7 and the best profit stays zero. Price 1 cannot produce a profitable sale, but becomes the new minimum. Price 5 gives profit 4. Price 3 gives profit 2, so the best remains 4. Price 6 improves the best to 5. The final price 4 gives only 3.
+
+The minimum does not reset after finding a profitable trade. A later sale can still use the same earlier purchase. Nor should the algorithm add positive differences between adjacent days. Adding those differences permits several separate trades, which violates the one-purchase, one-sale limit.
+
+## Prove that the scan keeps the best trade
+
+Before considering a sale day, the stored minimum is the smallest price in the already visited prefix. Subtracting it therefore finds the best trade whose sale occurs on the current day. Taking the maximum with the stored profit keeps the best trade over every sale day considered so far.
+
+At the end, every legal sale day has been examined. Each was paired with its best legal earlier purchase, so their maximum is the global optimum. Initializing profit to zero handles the option of making no trade. Returning a negative difference would force a loss that the problem does not require.
+
+## Handle initialization and numeric bounds
+
+Some implementations return early for fewer than two prices; others choose a sentinel minimum or let the empty loop preserve zero. Read the actual initialization in the code before adapting it. Accessing the first element of an empty array is an error in several languages, even though the mathematical recurrence handles empty input naturally.
+
+Price subtraction can overflow a narrow integer if a broader contract admits extreme signed values. The course uses bounded prices; a financial application would also need a clear decimal or integer-unit policy. This algorithm optimizes a sequence of supplied values. It does not account for fees, short selling, taxes, multiple positions, or trading predictions.
+
+## Costs and diagnostic tests
+
+The scan takes O(n) time and keeps two numeric values, so auxiliary space is O(1). It does not sort or change the input. Sorting would destroy chronology: a low price after the highest price cannot fund a sale that already happened.
+
+Test `[9, 7, 4]` for zero, `[2, 8]` for six, `[8, 2]` for zero, and `[3, 3, 3]` for zero. Include a best sale before the final day and a new minimum near the end. Compare short generated arrays with the exhaustive pair search. As a follow-up, ask how the state changes when two complete transactions are allowed; the single minimum alone no longer captures all legal histories.
+
+## JavaScript implementation
+
+The empty loop preserves a zero profit for empty input. No array sorting is used, so the original chronology remains available throughout.
+
+JavaScript uses `Number` for these integer inputs. Keep intermediate arithmetic within the safe integer range when adapting the problem. Arrays and objects are mutable references: assigning another variable does not copy their contents. The course calls the exported-by-name function or class shown here, so preserve that entry name when running the code.
+
+```javascript
+const getMaxProfit = (prices) => {
+  let maxProfit = 0;
+  let minPrice = prices[0];
+
+  for (let price of prices) {
+    const profitAtCurrentDay = price - minPrice;
+    maxProfit = Math.max(maxProfit, profitAtCurrentDay);
+    minPrice = Math.min(price, minPrice);
+  }
+
+  return maxProfit;
+}
+```
+
+## Practice this implementation
+
+[Open Best Time to Buy and Sell Stock](/course/best-time-to-buy-and-sell-stock) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more JavaScript conventions and practice problems, use the [JavaScript interview guide](/interview-prep/javascript).

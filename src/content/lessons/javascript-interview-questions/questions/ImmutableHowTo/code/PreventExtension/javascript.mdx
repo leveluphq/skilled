@@ -1,0 +1,14 @@
+```javascript
+var obj = {
+  hello: 'world',
+};
+
+Object.preventExtensions(obj);
+
+obj.test = 123;
+console.log(obj.test); // undefined
+
+// You are still allowed to change existing properties
+obj.hello = 'Skilled.dev';
+console.log(obj) // { hello: 'Skilled.dev' }
+```

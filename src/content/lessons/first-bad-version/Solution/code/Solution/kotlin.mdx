@@ -1,0 +1,23 @@
+```kotlin
+// isBadVersion(version) is provided by VersionControl
+class Solution : VersionControl() {
+    fun firstBadVersion(n: Int): Int {
+        var lowerBound = 1 // Starts at v1
+        var upperBound = n
+
+        while (lowerBound < upperBound) {
+            // Half the distance from lowerBound, since (lowerBound + upperBound) / 2
+            // can overflow an Int
+            val midpoint = lowerBound + (upperBound - lowerBound) / 2
+
+            if (isBadVersion(midpoint)) {
+                upperBound = midpoint
+            } else {
+                lowerBound = midpoint + 1
+            }
+        }
+
+        return lowerBound
+    }
+}
+```

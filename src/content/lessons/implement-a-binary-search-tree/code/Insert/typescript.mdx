@@ -1,0 +1,35 @@
+```javascript
+insert(data: number): BinarySearchTree {
+  const node = new BinaryNode(data);
+
+  // First insert becomes root
+  if (this.root === null) {
+    this.root = node;
+    return this;
+  }
+
+  let currentNode = this.root;
+
+  while(true) {
+    if(data < currentNode.data) {
+      // Insert the node if you reach a leaf and return
+      if(currentNode.left === null) {
+        currentNode.left = node;
+        return this;
+      }
+
+      // Continue by traversing left
+      currentNode = currentNode.left;
+    } else {
+      // Insert the node if you reach a leaf and return
+      if(currentNode.right === null) {
+        currentNode.right = node;
+        return this;
+      }
+
+      // Continue by traversing right
+      currentNode = currentNode.right;
+    }
+  }
+}
+```

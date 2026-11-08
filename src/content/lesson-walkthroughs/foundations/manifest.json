@@ -1,0 +1,1318 @@
+[
+  {
+    "lesson": "arrays",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Arrays in {language}",
+    "summary": "Understand array indexing, insertion, iteration, and resizing, then practice the invariants used in array and matrix interview problems.",
+    "baseNotes": "videos/arrays.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/arrays/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The spread expression creates a new dense array before splice inserts the value. Splice changes that copy in place, and its second argument of zero requests no removals. JavaScript also accepts negative splice positions, but this example's shared contract limits index to zero through length; validate external indices before relying on the same behavior in another language.",
+      "typescript": "The readonly input annotation prevents this function from calling a mutating array method through that parameter. Spreading it produces a mutable number array, so splice is legal on the copy. Readonly is a compile-time restriction and does not freeze the caller's object at runtime. The documented valid-index range still needs validation when the input comes from untrusted data.",
+      "python": "list.copy creates the independent outer list used for insertion. Python's list.insert tolerates some out-of-range positions, but the cross-language example accepts only positions from zero through len(values). Keeping that precondition avoids teaching Python's clamping behavior as a universal array rule. The elements are integers here; copying a list of mutable objects would still share those objects.",
+      "java": "The input is a List of boxed Integer values. Constructing an ArrayList copies its elements into a separate growable list, and add(index, item) shifts the suffix of that copy. The method accepts an insertion position equal to size. It does not mutate the original List, even if that input is an unmodifiable collection such as List.of.",
+      "cpp": "The const reference parameter avoids an initial argument copy and prevents mutation through values. The local auto copy owns a separate vector of integers. Inserting at copy.begin() + index may move elements and reallocate that vector, invalidating its earlier iterators. No iterator is retained across insertion here. A valid index is a precondition; invalid iterator arithmetic is unsafe.",
+      "csharp": "new `List<int>`(values) copies the integer elements into a separate list before Insert shifts them. `List<T>` itself is a reference type, so merely assigning values to another variable would have shared the same list instead. The method's input/output separation depends on constructing that copy. Test reference independence as well as the sequence returned for first and final insertion positions.",
+      "go": "A slice header can share its backing array with another slice, so appending to a borrowed slice would not establish independence. This function allocates a new result of length len(values)+1 and copies each side around the inserted item. Both copy operations stay within the newly allocated buffer. Invalid slice bounds panic, so the documented index precondition matters.",
+      "kotlin": "The `List<Int>` parameter offers a read-only interface, while toMutableList creates a separate list for add(index, item). A read-only List does not guarantee that no other owner can mutate its backing object. This function's copy is what protects the returned structure from aliasing that input container. Integer payloads keep the example free of nested-object copy questions.",
+      "swift": "Swift Array has value semantics, so assigning values to copy creates a logically independent array. Its storage may initially be shared through copy-on-write; insertion makes the required mutation independent. The caller's value remains unchanged. insert(_:at:) accepts the end position, but an invalid negative or oversized index traps, so callers must respect the stated boundary contract.",
+      "rust": "The borrowed slice does not transfer ownership or permit mutation. to_vec creates the owned result, and Vec::insert shifts elements at the chosen position. The example converts its signed index to usize after assuming a valid nonnegative position. For an external signed index, check that assumption before conversion; casting a negative value would create an unusably large unsigned index."
+    },
+    "description": "Learn array insertion in {language}. Trace a copied result, explain shifting costs, and check empty inputs and endpoint positions without changing the original."
+  },
+  {
+    "lesson": "implement-an-array",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a dynamic array in {language}",
+    "summary": "Build an array abstraction and reason about indexed access, insertion, removal, capacity, and the costs of moving existing elements.",
+    "baseNotes": "videos/implement-an-array.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-an-array/code/ArrayComplete/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The object-backed store uses numeric property names, with delete removing obsolete entries after pop and remove. get returns undefined for an absent property. The right-to-left insertion loop prevents overwriting the suffix before it is copied. This implementation does not expose native array capacity or contiguous storage. Avoid describing its object assignments as the actual resize mechanism used by JavaScript engines.",
+      "typescript": "The numeric index signature describes the object-backed positions, while any permits arbitrary payloads in this original teaching API. insert explicitly includes undefined in its return type for an invalid position. Static annotations do not establish contiguous allocation. The length invariant and deletion of obsolete keys supply the implementation's actual logical-array behavior.",
+      "python": "The backing dictionary indexes integer positions, and get uses direct subscripting, so an absent index raises KeyError. pop and remove instead return None for their empty or invalid cases. The completed source deletes obsolete dictionary entries after shifting, preventing drained arrays from retaining old keys. These distinct failure policies should be considered before exposing this teaching class as a reusable collection API.",
+      "java": "`DynamicArray<T>` stores boxed position keys in a HashMap and generic payload references as values. get returns null for a missing key, and pop/remove use the same absent marker. A nullable payload would therefore need another presence policy. The private length tracks logical positions independently of map capacity. insert exposes the backing map, which a production encapsulated API would normally avoid.",
+      "cpp": "The backing unordered_map and optional removal results are included in the standalone source. get uses at and throws for an absent index, while pop/remove return nullopt on failure. Those policies are intentionally documented instead of being treated as identical to JavaScript undefined. The class owns its map by value; it does not need manual node cleanup or a contiguous-vector capacity strategy.",
+      "csharp": "`DynamicArray<T>` stores values in `Dictionary<int, T>`. Get uses the dictionary indexer and throws on a missing key. Pop and Remove return default(T) on failure, which is indistinguishable from a valid zero when T is int. Instantiate with int? to preserve absence for this integer trace, or redesign a public API around Try-style results before permitting every payload type.",
+      "go": "Get returns the map lookup's integer value, so a missing position appears as zero. Pop and Remove instead return an explicit (value, found) pair. A caller needing to distinguish absent Get from a stored zero must use a presence-aware lookup or enforce the logical bounds first. The map-backed class demonstrates index shifts, not Go slice capacity growth or backing-array layout.",
+      "kotlin": "`HashMap<Int, Int>` provides nullable lookup, letting get, pop, and remove distinguish a missing result from zero. insert returns the backing map on success and null for an invalid position. Because that map is mutable and exposed, callers could violate the length invariant; the lesson assumes they use the methods. A production wrapper should keep representation mutation behind its API.",
+      "swift": "The [Int: Int] dictionary uses optional lookup results, so nil denotes absence while zero remains a valid payload. The class has reference semantics, although its dictionary field uses Swift value semantics internally. insert returns a dictionary value after shifting and accepts only existing indices. This teaching representation does not demonstrate Array's contiguous storage or copy-on-write capacity implementation.",
+      "rust": "`HashMap<usize, i32>` owns the active entries and Option distinguishes missing values. insert returns a borrowed map view tied to the mutable call, so the caller cannot freely mutate the array while retaining that borrow. Indices are unsigned; reject negative external values before conversion. The map representation demonstrates shifts and logical length, while Vec would model contiguous capacity management more directly."
+    },
+    "description": "Implement a map-backed teaching array in {language}. Trace push, pop, insertion, and removal, including logical length, missing indices, and obsolete entries."
+  },
+  {
+    "lesson": "big-o-time-and-space-complexity",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Big O time and space complexity in {language}",
+    "summary": "Analyze how interview solutions grow with input size. Compare loops, recursion, auxiliary memory, and common complexity classes.",
+    "baseNotes": "videos/big-o-time-and-space-complexity.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/big-o-time-and-space-complexity/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "slice(index) copies the remaining elements into a new array on every iteration. Those are shallow copies, but integers need no additional deep-copy policy. The outer suffix array also stores n array references. Using subarray on a typed array would instead create a view and change the allocation and mutation contract; it would not be the same example with a faster spelling.",
+      "typescript": "The return type number[][] describes independent mutable arrays of numeric results. The readonly parameter restricts this function's access to the original input, while slice constructs each output row. TypeScript does not encode the quadratic total length in that type. You still have to sum the suffix lengths to justify time and space, regardless of how short the loop looks.",
+      "python": "A list slice values[index:] allocates a new list. The nested result therefore owns separate outer list storage for every suffix. Its integer elements are referenced rather than recursively copied, which is sufficient for this immutable payload contract. Replacing slices with iterators would defer work and alter what callers receive, so that design needs a separate complexity and lifetime explanation.",
+      "java": "The code constructs an ArrayList from each suffix view before retaining it. Keeping a subList view alone would share structural state with the original list and would not provide the same independent-copy contract. Integer objects can be shared safely for this example. Count the copied list slots across all suffixes even though the numeric payload objects are boxed references.",
+      "cpp": "Each suffix vector is constructed from an iterator range in the const input vector. The elements are copied into owned storage, so there are no borrowed iterator lifetimes in the returned result. The final vector of vectors owns all of those buffers. Moving temporary vectors into it can avoid extra buffer copies, but cannot remove the quadratic number of stored integers.",
+      "csharp": "Each suffix is materialized as a new `List<int>`, so the result contains independently owned list containers. Integer values are copied directly. A lazy sequence of suffix enumerations would defer allocation and traversal, but it would expose different behavior when the input later changes. The shown eager result makes the output-space cost visible at the point the method returns.",
+      "go": "Appending each suffix into a newly created slice prevents the result from aliasing the input backing array. Simply retaining values[index:] would create overlapping views instead. The result is a slice of slices, whose headers add linear overhead on top of the quadratic integer buffers. Check independence by mutating a returned suffix and observing that the input stays unchanged.",
+      "kotlin": "The example converts each subList range to a separate list before storing it. The intermediate range can be a view, but the retained result is a copy. This distinction affects both mutation behavior and the amount of allocated storage. `List<Int>` uses boxed integers on the JVM in this generic form; the asymptotic analysis counts copied collection positions.",
+      "swift": "Array(values[index...]) materializes each suffix as an Array rather than retaining an ArraySlice. Swift value semantics protect independent mutation, while actual storage sharing is an implementation detail. ArraySlice would have different indexing and buffer-retention implications. The returned nested arrays contain a quadratic number of integer positions, so output storage remains part of the cost explanation.",
+      "rust": "to_vec clones each borrowed suffix into an owned `Vec<i32>`, and collect builds the outer vector. Because i32 is Copy, this is a direct element copy with no nested ownership to explain. Borrowing slices instead would require tying the result's lifetime to the input and would return a different type. The current owned result can outlive the original input vector."
+    },
+    "description": "Analyze time and space complexity in {language} with a suffix-copy example. Count nested work, returned storage, and allocation instead of counting loops alone."
+  },
+  {
+    "lesson": "hash-tables",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Hash Tables in {language}",
+    "summary": "Learn how hashing maps keys to storage, why collisions matter, and how maps and sets support common interview optimizations.",
+    "baseNotes": "videos/hash-tables.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/hash-tables/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "Map stores numeric keys directly, avoiding string conversion through object property names. The nullish fallback supplies zero only when get returns undefined; it does not treat a stored zero as missing. The second pass follows values rather than Map iteration, which preserves the required per-input-position order even if repeated keys were first encountered in a different sequence.",
+      "typescript": "`Map<number, number>` records the key and count types. The non-null assertion in the output pass relies on a runtime invariant: the first pass inserted every input value. It does not insert or validate anything by itself. If those passes could observe a mutated input or an external map, that assertion would need a stronger design or an explicit missing-key branch.",
+      "python": "The dictionary update uses get(value, 0) to distinguish a missing key by supplying a default. The final comprehension reads keys known to exist after the first pass. Python integers can grow beyond fixed-width limits, but dictionary entries and output list positions still consume memory. The function returns one count for every original element, not dictionary values in key order.",
+      "java": "`HashMap<Integer, Integer>` boxes both keys and counts. getOrDefault provides the initial zero before put writes the incremented count. The second pass reads from the original List and appends to a separate output list. Autounboxing is safe there because the first pass established each key. Iterating counts.values would lose the requested correspondence with original input positions.",
+      "cpp": "operator[] inserts a zero-initialized count for a missing integer key before incrementing it. In the output pass, at(value) expresses that every key must already exist and avoids accidental insertion. unordered_map iteration order is irrelevant because output follows the input vector. Rehashing may occur during counting; no iterators into the map are held across those updates.",
+      "csharp": "TryGetValue reports presence separately while assigning the default integer zero on a miss. The code then stores count + 1. This makes zero initialization explicit without catching lookup exceptions. A second loop uses the original input order to build the output. Dictionary iteration order is therefore outside the result contract, and the caller's `List<int>` is never modified.",
+      "go": "Reading a missing map[int]int entry returns zero, so counts[value]++ correctly handles the first occurrence. This convenience would be insufficient if zero itself needed to distinguish presence, as it does in some memoization tasks. The output slice is allocated to the exact input length and filled by index. Neither map iteration order nor append growth controls result ordering.",
+      "kotlin": "mutableMapOf holds counts, and the Elvis expression supplies zero for a missing entry. getValue in the output pass throws if a supposedly established key is missing, making the invariant stronger than a silent fallback. The final map operation runs over the input list, not the count map. Generic Int values are boxed on the JVM in these collections.",
+      "swift": "Dictionary's default subscript permits an in-place increment with counts[value, default: 0] += 1. The output map follows the input array. Its forced unwrap is justified by the completed first pass inserting every encountered key; it would be unsafe without that invariant. The dictionary is local, so this function does not accumulate counts across independent calls.",
+      "rust": "HashMap::entry provides mutable access to an existing count or inserts its default zero. The loop copies i32 values from the borrowed input slice. The output iterator then indexes only established keys and collects owned integers. A missing-key index would panic, so preserving the complete first pass is essential. No borrow into the map survives an insertion or potential reallocation."
+    },
+    "description": "Count frequencies with a hash map in {language}. Preserve input order, distinguish missing keys from zero, and explain expected lookup time and retained storage."
+  },
+  {
+    "lesson": "implement-a-hash-table",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a hash table in {language}: collisions, updates, and removal",
+    "summary": "Build a hash-table implementation, store and retrieve key/value pairs, and examine how collisions affect correctness and performance.",
+    "baseNotes": "videos/implement-a-hash-table.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-a-hash-table/code/HashTableComplete/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "Buckets are arrays of key/value records, so collisions require a key comparison inside the bucket. A missing lookup returns undefined rather than a numeric sentinel. String.charCodeAt supplies UTF-16 units to the small additive hash. Positive bucket count is a precondition. This hash is deliberately simple and predictable, so it should not replace Map for application data with adversarial keys.",
+      "typescript": "The any[][] table preserves the original lesson's flexible bucket payloads, but it does not strongly describe each record's key and value fields. A reusable typed version could introduce an `Entry<T>` interface and an explicit optional lookup result. The shown runtime collision scan still determines correctness. A type annotation cannot make an additive fixed-bucket hash well distributed or automatically resized.",
+      "python": "The table contains one bucket position per configured size, and collisions store key/value pairs in that bucket. Python string iteration yields Unicode characters, so ord does not necessarily match a JavaScript UTF-16-unit hash for non-ASCII text. Key/value retrieval remains internally consistent. None represents missing results, so storing None itself would need an additional presence mechanism in a general-purpose API.",
+      "java": "`HashTable<V>` stores generic values in private Entry records and separate bucket lists. Lookup compares String keys by content rather than reference identity. A null return denotes absence, making nullable payloads ambiguous without another result type. The standalone source imports java.util collections explicitly. Its fixed positive size and simple hash are teaching assumptions, not the resizing and distribution policies of HashMap.",
+      "cpp": "The source includes its vector, string, utility, and optional dependencies so the class can compile as a standalone definition. Buckets own key/value pairs by value. get and remove return `optional<int>`, distinguishing zero from absence. Erasing a pair can move later bucket entries, so callers should not retain references into those vectors across mutation. The simple hash remains collision-prone by design.",
+      "csharp": "Private Entry objects hold string keys and TValue payloads inside bucket lists. Get and Remove return default(TValue) when absent, so int? is useful for the cross-language integer trace to keep null separate from zero. A production API could expose TryGetValue instead. The class performs linear collision scans and does not inherit Dictionary's capacity or hashing behavior merely by using a similar name.",
+      "go": "Bucket entries store string keys and any values. Get and Remove return nil when absent, which is distinct from an integer zero stored in an interface. A stored nil would need another presence result. The hash iterates text according to its implementation rather than promising a shared Unicode bucket index across languages. Use positive table size and test deliberately colliding ASCII keys.",
+      "kotlin": "Each bucket contains Entry objects with an immutable key and mutable Int value, so updating a key changes its existing pair. Nullable Int lookup separates absence from zero. The table size is fixed and must be positive. Kotlin/JVM character iteration uses UTF-16 Char units, so matching Unicode bucket indices with code-point-based versions is outside the shared correctness contract.",
+      "swift": "The hash iterates Unicode scalars after Foundation normalizes the key with precomposedStringWithCanonicalMapping. This keeps its bucket choice consistent with [Swift String equality](https://docs.swift.org/swift-book/LanguageGuide/StringsAndCharacters.html): composed \u00e9 and decomposed e followed by a combining accent compare equal and must reach the same bucket. Hashing the raw scalar sums would separate those equal keys, breaking lookup and update. Normalization adds work and temporary text storage proportional to the key length. The buckets contain string/integer pairs, and get/remove return Int? so zero stays distinct from absence. This fixed-size additive hash still omits resizing and stronger distribution policies.",
+      "rust": "Each bucket is an `Option<Vec<(String, i32)>>`, and get_or_insert_with creates the vector only when needed. Stored keys are owned Strings, while method parameters borrow &str. Returning `Option<i32>` avoids ambiguity for zero. remove moves out the selected pair after finding its key. Character-based hashing may differ from byte-oriented versions without changing the map behavior of this instance."
+    },
+    "description": "Build a hash table in {language} with separate chaining. Follow colliding keys through lookup, update, and deletion, and explain the limits of a fixed teaching hash."
+  },
+  {
+    "lesson": "strings",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Strings in {language}",
+    "summary": "Study string traversal, character representation, immutability, and construction costs before practicing text interview problems.",
+    "baseNotes": "videos/strings.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/strings/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The function collects references to the original string in an array and joins them once. That avoids explicitly concatenating an ever-growing prefix in a loop. The pieces array adds O(k) slots, even when the string is empty, so account for O(k + mk) work/storage across construction and output. JavaScript string length measures UTF-16 code units, not visible characters.",
+      "typescript": "The string[] annotation constrains the temporary pieces array, and number describes the repeat count without proving it is an integer or nonnegative. A boundary accepting arbitrary numbers must validate those properties explicitly. Runtime joining is the same operation as in JavaScript. The temporary array uses O(k) slots in addition to the final string's UTF-16 storage.",
+      "python": "The pieces list retains k references and join allocates the final text once. With an empty string, those temporary references still account for O(k) overhead even though the result is empty. Python strings are immutable, so sharing the original string in pieces is safe. Repeating complete strings does not require indexing or normalizing individual Unicode characters.",
+      "java": "StringBuilder accumulates the copies before toString creates the returned immutable String. The builder's buffer and final string contribute to peak memory, and growth can involve additional copying. Java string indexing and length use UTF-16 code units. That distinction does not split text here because append receives the whole input string on each iteration rather than individual indexed units.",
+      "cpp": "The function appends whole strings into an owned std::string. It does not reserve capacity up front, so allocation and growth are left to that buffer. size counts bytes, not visible characters; appending a complete UTF-8 string preserves its encoded sequence. The input is borrowed as const and remains unchanged. The nonnegative repeat count must be small enough for the output to fit in memory.",
+      "csharp": "StringBuilder appends the complete input on each iteration and then produces an immutable string. Its Length is measured in UTF-16 code units. A char index would not necessarily identify one user-perceived character, but this function does not need such an index. The nonnegative, bounded repeat count is a caller precondition rather than something the int type can establish.",
+      "go": "The example uses a strings.Builder for repeated writes. Go strings store bytes, so len(text) reports byte length even when the text contains multibyte UTF-8. Whole-string writes preserve the bytes without decoding runes. The builder reduces repeated prefix copying, but the requested output still needs to fit memory; a very large repeat count remains expensive even with an efficient API.",
+      "kotlin": "buildString supplies a StringBuilder receiver for the block, and append adds the whole input on each repetition. The block returns its finished text as a String. Kotlin/JVM string indices describe UTF-16 code units, which differ from code points for supplementary characters. This operation avoids indexing individual units. Callers accepting external counts still need a nonnegative, practical output-size bound.",
+      "swift": "String(repeating:count:) expresses the whole-string operation directly. Swift String works with extended grapheme clusters at its Character interface, but the function never indexes those characters. Its output still scales with the encoded text being repeated. A negative count violates the operation's precondition. Keep output-size limits separate from the fact that the parameter has the correct static Int type.",
+      "rust": "The function borrows an &str and appends its contents to an owned String. Both represent valid UTF-8, and push_str copies complete text without indexing bytes as characters. The loop assumes a nonnegative count; converting a negative external request into a huge unsigned allocation would be a separate bug. The returned String owns its bytes and has no borrowed dependency on the input."
+    },
+    "description": "Practice string construction in {language} with a repeat-text example. Explain builders, copies, Unicode representation, output size, and boundary cases."
+  },
+  {
+    "lesson": "palindromes-permutataions-anagrams",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Palindromes, permutations, and anagrams in {language}",
+    "summary": "Distinguish palindrome order, permutation arrangements, and anagram frequency counts, then choose the state each text problem needs.",
+    "baseNotes": "videos/palindromes-permutataions-anagrams.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/palindromes-permutataions-anagrams/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The regular expression retains only ASCII ranges before lowercasing. String indexing is safe for the resulting restricted alphabet because each retained character occupies one UTF-16 code unit. Applying the same indexing logic to unrestricted Unicode would need a new text contract. Empty normalized text starts with right equal to \u22121, so the comparison loop correctly performs no iterations.",
+      "typescript": "The filtered string and numeric positions have ordinary TypeScript types, but those types do not describe the ASCII restriction. That guarantee comes from the regular expression at runtime. The two-pointer comparison therefore relies on an executable normalization step. Changing the regex to a broader Unicode predicate should trigger a review of indexing, case folding, and expected outputs together.",
+      "python": "The comprehension uses explicit ASCII range comparisons before lowercasing. str.isalnum would accept a broader set of characters and would change this page's promised behavior. The normalized text is a new string, so the function allocates linear additional storage. Negative one is a valid computed right boundary for an empty string here because the loop checks it before indexing.",
+      "java": "The normalization loop reads UTF-16 char units and retains only explicit ASCII letters and digits. Supplementary characters are discarded as nonmatching units, which is consistent with this narrow contract. StringBuilder holds the normalized result. Uppercase ASCII is converted using its fixed offset, avoiding a locale-dependent transformation that could broaden the behavior being demonstrated by the code.",
+      "cpp": "The loop treats input units as unsigned char and applies explicit ASCII comparisons. It does not pass a potentially negative signed char into a locale character-classification function. UTF-8 bytes outside ASCII are ignored under the stated contract. The clean buffer owns its bytes, and the signed right index allows an empty buffer to produce \u22121 before the loop guard.",
+      "csharp": "The function accumulates retained char values in a `List<char>`. Its explicit ranges implement the ASCII policy; char.IsLetterOrDigit would include additional Unicode characters. After filtering, indexing compares one stored ASCII char at a time. The original string remains unchanged. A punctuation-only input leaves an empty list and succeeds without trying to access a nonexistent final character.",
+      "go": "Byte indexing is intentional here because the accepted alphabet is ASCII. Every byte outside those ranges is discarded, including bytes belonging to non-ASCII UTF-8 characters. The filtered []byte buffer supports direct two-pointer indexing. This approach should not be copied into a task that promises general Unicode letter handling, where decoding runes and defining normalization would be required.",
+      "kotlin": "The filter keeps explicit ASCII ranges before lowercase runs on the remaining text. That order means the case conversion never has to handle arbitrary-script expansion for the retained content. String indexing then compares the restricted UTF-16 units. The input is unchanged, and the normalized string is additional storage. Empty and punctuation-only inputs both reach the no-comparison success case.",
+      "swift": "The function scans text.utf8 into an array of UInt8 values, retaining only ASCII byte ranges. It therefore avoids integer indexing into Swift String, whose Character indices have different semantics. The lowercase offset is safe because it is applied only to uppercase ASCII bytes. The returned Boolean intentionally ignores accented letters and emoji rather than claiming general Unicode palindrome detection.",
+      "rust": "bytes and the is_ascii_alphanumeric predicate make the alphabet restriction explicit. to_ascii_lowercase preserves each retained byte's width, and collecting into `Vec<u8>` allocates the normalized sequence. Iterator equality compares forward and reverse order without creating a second reversed vector. Replacing the ASCII predicate with a Unicode character predicate would require revisiting the byte-oriented representation and its intended results."
+    },
+    "description": "Check an ASCII-normalized palindrome in {language}. Trace two-pointer comparisons, case handling, ignored characters, and the limits of the text contract."
+  },
+  {
+    "lesson": "recursion",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Recursion in {language}",
+    "summary": "Trace recursive execution, define a smaller subproblem, and connect base cases and return values to a clear correctness argument.",
+    "baseNotes": "videos/recursion.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/recursion/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The base case returns one only at n === 0, so the recursive chain includes factorial(1) calling factorial(0). JavaScript Number uses floating-point arithmetic, even when the values happen to be exact integers. The shared zero-through-twelve contract keeps these examples comparable with fixed-width versions. Type and range validation would need to happen before accepting arbitrary strings, fractions, or negative values.",
+      "typescript": "The number annotation does not prove that n is an integer, nonnegative, or within a safe arithmetic range. The base case and decrement establish termination only for the stated inputs. TypeScript erases these annotations, leaving the same call-stack behavior as JavaScript. A sufficiently large n can overflow the runtime stack before the function returns any useful result.",
+      "python": "The function uses Python's arbitrary-precision integer arithmetic, so its numeric range extends beyond the fixed-width versions. Its recursive depth is still limited by the interpreter and available stack. The shared small-input contract deliberately avoids making cross-language promises about those limits. An iterative version would remove this call chain but would still pay for increasingly large integer multiplication.",
+      "java": "The method returns int, so overflow would wrap once the exact factorial exceeds the signed 32-bit range. The documented upper input of twelve keeps the result representable. There is one active Java frame per unresolved multiplication, so recursion uses linear stack space. A larger exact-number exercise would need BigInteger plus a new arithmetic-cost discussion, not only a wider return annotation.",
+      "cpp": "The int return type is used only for inputs whose exact result fits. Signed integer overflow would be undefined behavior, so the bounded contract is part of correctness rather than a cosmetic testing choice. Recursive calls retain pending multiplications on the stack. There is no promised tail-call optimization, and this multiplication-after-return structure is not a simple tail-recursive accumulator.",
+      "csharp": "The method uses int and a zero base case. Inputs through twelve keep the result in range without depending on checked or unchecked overflow behavior. The recursive expression keeps a multiplication waiting in each caller frame, giving linear stack depth. For a product accepting user input, validate the integer range at the boundary or choose an explicit larger-number representation.",
+      "go": "The function's int width depends on the target architecture. Restricting inputs through twelve keeps the result within even a signed 32-bit range. Each call waits for the smaller factorial, so the example retains linear call-stack work. Go can grow goroutine stacks, but that runtime mechanism does not make recursion use constant memory or remove the numeric bound.",
+      "kotlin": "Kotlin/JVM Int is a signed 32-bit value, and multiplication can overflow for larger factorials. The zero-through-twelve contract keeps this example exact. The function is not marked tailrec, and the multiplication following the recursive result would prevent the simple accumulator-style optimization anyway. Track both the base case and the pending caller operations when explaining its memory use.",
+      "swift": "The Int result must fit the platform's integer range; ordinary overflowing arithmetic can trap. The shared small range avoids relying on platform-specific width or overflow operators. Recursion retains the earlier calls until their multiplications complete. Swift does not make this source-level recursive function constant-space merely because each frame has a small fixed number of local values.",
+      "rust": "The function returns i32, so the bounded input range keeps multiplication exact under both debug and release builds. Overflow behavior can otherwise differ with compiler settings. The recursive body has a pending multiplication after its child returns, retaining a linear number of frames. Ownership is simple because the function passes and returns copied integer values rather than borrowed structures."
+    },
+    "description": "Trace recursive factorial in {language} from the base case through returning calls. Explain termination, stack space, integer limits, and boundary tests."
+  },
+  {
+    "lesson": "logarithms-and-time-complexity",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Logarithmic time in {language}: repeated halving and search",
+    "summary": "Understand why repeated halving produces logarithmic work and apply that reasoning to search intervals and recursive algorithms.",
+    "baseNotes": "videos/logarithms-and-time-complexity.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/logarithms-and-time-complexity/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "Math.floor(n / 2) performs the integer reduction explicitly. Replacing it with a bitwise shift would coerce Number values to a 32-bit integer representation and silently narrow the accepted range. The example instead assumes positive safe integers. Counting divisions in a loop also avoids using an imprecisely rounded floating-point logarithm as the source of an exact step count.",
+      "typescript": "The parameter remains a runtime JavaScript Number despite its TypeScript annotation. Math.floor ensures the intended halving rule for positive integer inputs. A number type alone also admits NaN, infinities, and fractions, so a public-input wrapper must narrow that domain. The returned count measures completed reductions and is zero when the initial value is already one.",
+      "python": "The //= operator performs floor division, which agrees with integer truncation for the positive inputs used here. Python integers can grow arbitrarily large, so for huge values even arithmetic and storage have bit-length costs beyond the fixed-width model. The loop still makes one reduction per binary digit above the leading digit. The example does not accept zero or negative inputs.",
+      "java": "Integer division by two truncates toward zero, which matches floor for positive int inputs. The loop changes a local copy of n and retains only a step counter. Both values have fixed-width storage. Testing a power of two and its immediate neighbors catches confusion between floor and ceiling counts more reliably than testing only convenient round decimal values.",
+      "cpp": "Dividing a positive int by two discards the fractional part. The loop never relies on floating-point logarithms or signed right-shift rules. Its bounded integer representation keeps each reduction constant-time under the stated cost model. A caller must enforce a positive starting value if zero and negative inputs should be rejected, because the simple loop would otherwise return zero.",
+      "csharp": "Integer division gives the intended positive-input truncation, and the local n is replaced after each step. The method uses no collection or recursive frame chain. It therefore has constant additional storage in the fixed-width model. The exact answer is a count of reductions, so a starting value of one returns zero rather than counting the initial observation as a step.",
+      "go": "The int parameter is copied into the function and repeatedly divided by two. For positive values, Go's integer division matches the required floor reduction. Its architecture-dependent width sets the available input range but does not change the loop invariant. Check seven, eight, and nine to expose the point where another binary digit adds exactly one step.",
+      "kotlin": "The implementation copies the input into a mutable local value and uses integer division. Kotlin/JVM Int has a fixed 32-bit range, so extremely large mathematical inputs would require a different representation. Within the positive domain, no rounding library is needed. The counter advances only when a division occurs, preserving the zero-step result for an initial value of one.",
+      "swift": "The function keeps a mutable local integer because parameters are not reassigned directly. Positive Int division discards the remainder, implementing the specified sequence. The loop condition prevents unnecessary division of one. This source uses fixed-width arithmetic and constant retained state; changing the input type to an arbitrary-precision number would also change the cost model for each reduction.",
+      "rust": "The mutable i32 local is repeatedly divided by two, with no allocation or borrowing involved. For the positive domain, Rust's truncation rule produces floor division. The function returns the number of transitions before reaching one. If an external caller supplies a signed value, validate positivity instead of treating the loop's incidental zero result on negative input as a meaningful logarithm."
+    },
+    "description": "Understand logarithmic loops in {language} by counting integer halvings. Test powers of two, explain rounding, and derive the exact step count."
+  },
+  {
+    "lesson": "searching-and-binary-search",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Binary search in {language}: invariants and boundary tests",
+    "summary": "Search sorted data by narrowing a candidate interval. Practice boundaries, midpoint updates, and the conditions that guarantee progress.",
+    "baseNotes": "videos/searching-and-binary-search.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/searching-and-binary-search/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The code uses a half-open interval with high initialized to values.length, so the array may be empty without inventing an invalid last index. Math.floor determines the integer midpoint. The final bounds guard runs before reading values[low]. The numeric comparison assumes a sorted finite-number array; NaN would violate the ordering assumptions used to eliminate portions of the interval.",
+      "typescript": "readonly number[] prevents mutation through the parameter, while low and high remain ordinary JavaScript numbers. The compiler cannot prove that the array is sorted or free of NaN. Those are runtime preconditions. The final expression returns a first matching index or \u22121, and the half-open bounds keep the potential insertion position equal to length safe to inspect.",
+      "python": "Integer // computes the midpoint without a floating-point conversion. The right boundary is len(values), and every update shortens the half-open interval. The function returns the first duplicate match by keeping equal middle values in the remaining left-side candidate range. Python's negative indexing is never used as a search shortcut; \u22121 is returned only as the absent result.",
+      "java": "The `List<Integer>` example is intended for random-access lists such as ArrayList. Its logarithmic comparison count does not make indexing a LinkedList constant-time. low + (high - low) / 2 also avoids adding the two bounds before dividing. The final low < size check prevents get(size) when the target would be inserted after the final value.",
+      "cpp": "The const vector reference provides random access without copying the input. Bounds use a signed index compatible with the small supported examples, and the final size guard runs before subscripting. The function assumes the vector fits that index type. For an unrestricted library range, choose iterator or size types deliberately rather than silently narrowing a potentially larger container length.",
+      "csharp": "`List<int>` supplies constant-time indexed reads, and the method keeps the input unchanged. high is an excluded upper bound, which handles an empty list naturally. Equality moves high left during the search, so the returned match is the earliest duplicate. A final equality check is still necessary because lower-bound search can locate a valid insertion position for a missing target.",
+      "go": "The slice length is the excluded high boundary. Indexing occurs only while the interval is nonempty and after the final low < len(values) guard. The function does not sort or copy the slice, so its logarithmic search assumes ascending input provided by the caller. Because slices share backing arrays, concurrent mutation would require an external synchronization policy.",
+      "kotlin": "`List<Int>` provides the indexing syntax, but the logarithmic-time claim assumes a random-access implementation. high starts at values.size, and equality keeps the middle position as a candidate for the earliest match. The input's read-only interface does not prove another owner cannot mutate it. Keep the data stable for the duration of the search and validate sorting separately if needed.",
+      "swift": "`Array<Int>` offers integer random-access indices, so the half-open interval arithmetic matches its storage model. An empty array begins with low equal to high and never enters the loop. The final guard prevents indexing at endIndex. Swift's general Collection protocols can use different index types, so copying this Int arithmetic into a generic collection extension would need another design.",
+      "rust": "The function borrows &[i32], so the search neither owns nor mutates the values. Its internal indices are usize, while the public result is a signed integer so \u22121 can denote absence. The small-example contract avoids narrowing an enormous index on return. Equality narrows the upper boundary, preserving the first occurrence among duplicates rather than returning whichever middle match appears first."
+    },
+    "description": "Write first-occurrence binary search in {language}. Trace half-open bounds, duplicate values, missing targets, and the random-access assumption behind O(log n)."
+  },
+  {
+    "lesson": "sorting",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Sorting in {language}",
+    "summary": "Compare sorting approaches, runtime assumptions, and the ways sorted order changes an interview problem\u2019s available solutions.",
+    "baseNotes": "videos/sorting.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/sorting/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The numeric comparator is essential: default Array.sort converts values to strings for ordering. Spreading values first creates a separate array, and sorting mutates that copy. Inputs here are finite numbers within the tested range. A comparator receiving NaN or values requiring a special ordering would need another contract. The result is a shallow container copy, sufficient for integer payloads.",
+      "typescript": "The readonly input rejects direct sort calls through that parameter. Spreading produces a mutable number[] on which the numeric comparator is applied. Readonly does not perform a runtime freeze, so the implementation's explicit copy supplies the nonmutation guarantee. Neither the type annotation nor the comparator promises a particular internal sorting algorithm across every JavaScript engine version.",
+      "python": "sorted(values) returns a separate list and leaves the supplied list unchanged. The elements are integers, so their ordinary numeric order is the intended comparator. Python's sorting stability matters when equal keys belong to distinct records, but this example has only scalar payloads. Do not introduce an object-identity or deep-copy guarantee that sorted itself does not provide.",
+      "java": "The method copies values into an ArrayList and sorts that new container. Generic Integer elements are boxed, and their natural order is numeric. The caller can supply an unmodifiable input because no mutation is attempted through it. Sorting records with a custom comparator would require consistency and tie-policy discussion beyond this integer example's ascending-order and multiset-preservation contract.",
+      "cpp": "Copying the vector creates an owned integer buffer, and std::sort reorders that copy in place. The const reference input remains unchanged. std::sort is not a stable sort, which would matter for records with equal keys and additional identity. This scalar example does not depend on stability. Count the copied vector's storage separately from any internal sorting workspace.",
+      "csharp": "The method constructs a new `List<int>` before calling Sort on it. Assigning the input reference to another variable would not provide the same protection. Numeric values need no custom comparer here. List.Sort is an in-place operation on the new list; the method's nonmutating interface comes from that copy, not from the name or static type of Sort itself.",
+      "go": "The implementation copies the input slice before applying sort.Ints. A slice assignment alone would preserve shared backing storage and allow the sort to reorder the caller's data. The output therefore owns an independent element buffer. The standard-library import is required in a standalone program. No claim about record stability is needed because the elements are plain integer values.",
+      "kotlin": "sorted returns a new list in ascending numeric order, keeping the original List unchanged through this operation. Kotlin's read-only interface alone would not establish that separation if the function had merely returned the input. The result uses generic Int elements on the JVM. For an in-place alternative, a mutable collection and an explicit changed mutation contract would be required.",
+      "swift": "sorted() returns a new Array value in ascending order. Swift's value semantics protect the input even when buffers can be shared internally before mutation. The scalar Int contract avoids custom comparator rules. A version using sort() would mutate a variable in place instead, so choosing between those operations is part of the function's public behavior and memory discussion.",
+      "rust": "to_vec creates an owned copy from the borrowed slice, and sort reorders it before returning ownership to the caller. Rust also offers sort_unstable with different stability and workspace choices, but this function uses sort. Both would preserve the integer multiset; record-order guarantees would differ. The borrowed input remains untouched, and the result can outlive the original input owner."
+    },
+    "description": "Return a numerically sorted copy in {language}. Preserve duplicates and the original input, choose the right library operation, and account for copied storage."
+  },
+  {
+    "lesson": "linked-lists",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Linked Lists in {language}",
+    "summary": "Understand linked-list structure, traversal costs, and the pointer relationships behind insertion, deletion, and reversal.",
+    "baseNotes": "videos/linked-lists.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/linked-lists/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The local ListNode class stores ordinary object references. Construction works backward through the input so each new head preserves the original sequence. Both runners initially reference the same head without cloning nodes. The null guard protects fast.next.next, and returning a payload rather than a node avoids exposing the internally built list to callers after the function completes.",
+      "typescript": "ListNode | null makes the empty-link case explicit. The slow non-null assertion inside the loop relies on the invariant that slow cannot have reached the end while fast still has two positions available. It is not a runtime check. Returning number | null keeps an empty result distinguishable from a valid zero-valued middle node in the constructed list.",
+      "python": "The local class and its next attribute form a singly linked chain. reversed(values) changes construction order without modifying the input list. The return annotation uses Optional[int], which also works on Python 3.9. Identity checks against None distinguish a missing node from any payload. Repeated integer values do not affect which physical links the two runners follow.",
+      "java": "The local ListNode class uses ordinary Java references, and its payload is a primitive int. The method returns Integer so null can represent the empty result without reserving a numeric sentinel. Reverse indexed construction assumes a random-access input List for linear total work. Passing a LinkedList would make those repeated get calls more expensive even though the node traversal remains linear.",
+      "cpp": "unique_ptr owns each next node, while slow and fast are nonowning raw pointers used only during the function. Moving the prior head into a new node transfers ownership rather than copying the chain. std::`optional<int>` returns the payload safely before the owned nodes are destroyed. Very deep ownership chains can also have recursive destruction costs beyond this small worked example.",
+      "csharp": "The private ListNode class creates a reference-linked chain, while int? distinguishes an absent result from a zero payload. The null guard runs before the two-step fast advance. Node construction allocates one object per input value, so the function's total storage is linear even though its traversal retains only two runner variables. No node escapes through the returned integer result.",
+      "go": "The local node type uses a *node link, and nil is the empty-list marker. Returning *int allows absence to be nil while preserving zero as a valid result. The function takes the address of a copied answer value; Go's lifetime management makes that returned pointer valid after the function returns. It does not expose a mutable pointer into the internal list node.",
+      "kotlin": "The nullable node type and safe calls express missing links explicitly. The loop checks fast and its next node before advancing two links; slow advances one. The return is Int?, preserving a distinct empty result. Building nodes from reversed indices leaves values unchanged. A List implementation with slow indexed access would add construction costs beyond those of an ArrayList input.",
+      "swift": "ListNode is a class so links and runner assignments share node identity. Its immutable next reference makes this constructed chain acyclic by design. Optional binding checks the two positions fast needs before advancing, and the returned Int? separates absence from zero. ARC manages the node lifetimes, but allocating the entire chain still contributes O(n) storage to the full function.",
+      "rust": "The chain owns each node through `Option<Box<ListNode>>`. as_deref creates borrowed traversal references without moving those boxes, allowing slow and fast to observe the same immutable chain. The result copies only the i32 payload into `Option<i32>`. Dropping a very long boxed chain can itself involve deep destruction, so this compact teaching representation should not be mistaken for an unbounded-input storage design."
+    },
+    "description": "Find a linked list's middle in {language} with slow and fast runners. Define the even-length result, handle an empty list, and separate construction from traversal."
+  },
+  {
+    "lesson": "pointers",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Pointers in {language}",
+    "summary": "Reason about references, node identity, and reachability so pointer updates do not lose the remainder of a list or tree.",
+    "baseNotes": "videos/pointers.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/pointers/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "const prevents reassignment of original, but it does not freeze the object's value property. alias is a let binding so it can later refer to a second object. The first write mutates the shared allocation; the later assignment changes that binding only. This distinction also appears in callbacks that retain an object while another variable is reassigned elsewhere.",
+      "typescript": "Structural typing gives both object literals compatible shapes, allowing alias to be reassigned. It does not make the objects identical or copy their storage. The const original binding still refers to a mutable object. A readonly property annotation would restrict writes through a typed reference, while Object.freeze would add a different runtime constraint; neither is part of this example.",
+      "python": "Both names initially refer to one mutable dictionary. Updating alias['value'] changes that dictionary, while assigning another dictionary to alias changes only the name binding. Python does not need a pointer dereference operator to express shared object identity. Replacing the dictionary with an immutable integer would produce a different mutation story, so keep the payload container visible in the explanation.",
+      "java": "The local Box is a reference type. Assigning original to alias copies the reference, so both variables initially reach the same object. Assigning new Box(9) to alias does not alter original's reference. The primitive int field is copied into each trace position, leaving a historical numeric observation rather than a list of references that later mutations could change.",
+      "cpp": "shared_ptr is chosen to demonstrate two owners of one allocation safely. Copying it shares ownership; assigning a new shared_ptr to alias releases that owner's old reference without destroying the object still owned by original. The arrow operator accesses the shared Box. This example does not use raw-pointer lifetime tricks, and its behavior should not be generalized to copying a Box value.",
+      "csharp": "Box is a class, so assigning it to alias copies a reference. A struct with the same field would have value-copy behavior and would change the first mutation's result. The trace stores int values at each observation point, preserving the earlier value even after the object changes. No unsafe pointer operations are needed for this reference-identity example.",
+      "go": "Taking &box{1} creates a pointer to the first box, and assigning it to alias copies that pointer. Go permits field access through the pointer without an explicit dereference at each use. Rebinding alias to &box{9} creates a second allocation. A plain box value assignment would copy the struct instead, so the pointer choice is essential to the trace.",
+      "kotlin": "Box is a class with a mutable value property. val original fixes the reference binding but does not make the referenced object immutable. var alias can later refer to another instance. The trace copies each Int observation immediately. Replacing var with val for alias would reject the reassignment at compile time without changing the shared object's existing mutation behavior.",
+      "swift": "The example intentionally declares Box as a class. A Swift struct would use value semantics, preventing the initial alias mutation from changing original in the same way. let fixes the original reference while its var property remains mutable. ARC keeps the first object alive through original after alias is rebound to the second object; no manual retain or release is required.",
+      "rust": "Rc::clone shares an allocation rather than cloning its integer contents. RefCell permits checked interior mutation through the shared owner, and borrow_mut temporarily supplies mutable access. Runtime borrow violations would panic, so each borrow here stays short. Reassigning alias to a new Rc changes only that owner. Rc is single-threaded; this example does not establish a concurrent sharing policy."
+    },
+    "description": "Trace shared mutation and reference rebinding in {language}. Follow two aliases through one object update and a new allocation, with explicit ownership notes."
+  },
+  {
+    "lesson": "implement-a-linked-list",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a linked list in {language}: head, tail, and node identity",
+    "summary": "Build linked nodes and list operations, maintain head and tail relationships, and test empty and single-node structures.",
+    "baseNotes": "videos/implement-a-linked-list.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-a-linked-list/code/DoublyLinkedList/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The head, tail, and neighbor fields are ordinary object references. Replacing an endpoint must also update the old endpoint's reciprocal link. The nonempty constructor makes those old endpoints available for prepend and append. Garbage collection handles reachable object lifetimes, including cycles, but holding any exposed node can retain other nodes through both directions. The class does not provide removal in this excerpt.",
+      "typescript": "DoublyNode | null describes nullable neighbor links, while the constructor establishes nonnull head and tail for the supported nonempty list, with matching endpoint types. The original methods rely on that invariant when updating the previous endpoint. A strict reusable type design could encode or check those endpoint assumptions more explicitly. Forward values alone cannot prove the backward links or stored length remain correct after mutation.",
+      "python": "Each node exposes data, next, and prev attributes. Prepend and append retain the old endpoint before replacing it, then repair the reciprocal link. Python's reference management can collect cycles, but exposed references still affect lifetime and traversal. The constructor always creates one entry. Tests should compare both directions and object identity for reciprocal links, especially when several nodes contain equal payload values.",
+      "java": "`DoublyLinkedList<T>` holds private endpoints and length, while nodes carry generic payload references. The constructor establishes a singleton and methods return the newly added endpoint node. Tests inspect reciprocal links as well as values; a production public API could offer iterators without exposing representation fields. Garbage collection manages the cycles, but retained nodes can keep neighboring entries reachable through those links.",
+      "cpp": "This version owns raw allocated nodes and deletes the remaining forward chain in its destructor. Copy construction and copy assignment are disabled to avoid two lists believing they own the same nodes. Returned node pointers are borrowed observations valid only while their owner remains alive. The backward links do not own separate allocations. No removal API transfers node ownership in this excerpt.",
+      "csharp": "The list and node classes use reference semantics, with public fields exposing the representation directly for the lesson. Equal payloads do not imply equal nodes, so reciprocal-link checks should compare references. The constructor creates one entry and there is no empty-list removal path here. Garbage collection handles unreferenced cycles, while externally retained nodes can keep a larger portion of the structure reachable.",
+      "go": "DoublyNode exposes Data, Next, and Prev, while the list's endpoint and length fields stay package-private. The pointer links refer to shared nodes rather than struct copies. Go's garbage collector manages cyclic structures, but stale references still retain reachable data. Tests in the same package can verify both endpoints and reciprocal links without changing the teaching API to expose more state.",
+      "kotlin": "DoublyNode is a mutable reference object with nullable neighbors. The list constructor initializes nonnull head and tail, supporting the endpoint updates in prepend and append. Int payloads do not identify nodes uniquely, so use referential identity for structural checks. JVM garbage collection handles cycles; that does not make retaining a returned node free of the rest of its reachable chain.",
+      "swift": "The previous link is weak so the two-way chain does not create an ARC ownership cycle. Forward next links and the list endpoints keep active nodes alive. A weak previous link becomes nil if its target is released. The nonempty constructor and endpoint invariants make prepend/append safe, while the class intentionally does not implement every removal or insertion operation in this excerpt.",
+      "rust": "`Rc<RefCell<DoublyNode>>` permits shared endpoints and checked interior link updates. Previous links use Weak, preventing a reference-count cycle from retaining the whole chain. Upgrade is needed before following a weak link. Keep RefCell borrow scopes short when checking reciprocal neighbors. The list owns its nodes through forward strong links and endpoints, and its constructor always establishes one initial entry."
+    },
+    "description": "Build a doubly linked list in {language}. Trace prepend and append, verify reciprocal links and both endpoints, and explain ownership and retention."
+  },
+  {
+    "lesson": "queues",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Queues in {language}",
+    "summary": "Learn queue operations, implementation choices, and the role of first-in-first-out order in breadth-first traversal and scheduling.",
+    "baseNotes": "videos/queues.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/queues/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The queue is a copied array plus a head cursor. Reading queue[head++] avoids repeated shift operations and leaves the caller's array unchanged. This short-lived function retains the whole copied buffer until completion, including consumed slots. A long-lived queue implementation would need a separate storage-reclamation strategy. The returned array records values in the same order they were enqueued.",
+      "typescript": "readonly number[] describes the input view, while spreading produces the local queue buffer. The head index marks consumed entries without mutating or shifting that buffer. TypeScript annotations do not reclaim earlier elements as the cursor advances. This example is a finite fill-and-drain trace, so retaining the buffer until return is consistent with its linear-space contract.",
+      "python": "collections.deque supplies append and popleft behavior suited to queue order. Initializing it from values leaves the input list unchanged. The loop tests whether entries remain before removing one, so a zero payload never affects emptiness. The output is a new list. deque avoids the repeated suffix movement that list.pop(0) would introduce when draining a large input.",
+      "java": "ArrayDeque implements the `Deque<Integer>` interface used by the example. removeFirst reads the oldest entry, while construction preserves the source collection's iteration order. Null entries are outside ArrayDeque's supported contents; the shared example uses integer values. Testing isEmpty before removal avoids the empty-deque exception. Boxing affects representation overhead but does not change the FIFO sequence contract.",
+      "cpp": "std::deque owns a copy of the integer input and supports front access followed by pop_front. The value is copied into output before removal invalidates access to that removed element. The input vector is borrowed as const. This code retains no deque references across mutations, avoiding lifetime questions that would arise if callers were handed references to removed entries.",
+      "csharp": "`Queue<int>` copies the input sequence into its own queue storage. Dequeue removes the oldest value, and Count protects the empty case before each call. A valid zero is handled exactly like any other integer. The method returns a separate `List<int>`; it does not expose the queue or mutate the supplied list. Queue capacity management belongs to the library implementation.",
+      "go": "append([]int{}, values...) creates a separate element buffer for this integer input. A head cursor then reads the buffer without shifting or reslicing it. The output allocation reserves enough capacity for the full drain. Since no references are stored in these entries, consumed values do not retain an object graph, but the buffer itself remains allocated until the function finishes.",
+      "kotlin": "The example explicitly uses java.util.ArrayDeque on the JVM, making its deque dependency clear. Construction follows the input list's order and removeFirst drains from the same end. isNotEmpty protects removal from an empty deque. The generic Int representation may box values. A missing result is not encoded with zero because this function controls removal through the emptiness check.",
+      "swift": "The queue is an Array value with a separate head index. Advancing that index avoids Array.removeFirst repeatedly moving or reorganizing front storage. Swift may initially share the immutable input buffer, but value semantics preserve the caller's value. The output is built separately. For a queue that lives across many calls, choose explicit buffer compaction or a deque implementation.",
+      "rust": "VecDeque is initialized from copied integers and drained with pop_front. The while let pattern handles Option directly, so None ends the loop while Some(0) remains a valid item. Borrowing the input slice does not transfer ownership. The output owns copied payloads and can outlive the original data; it has no references into the temporary queue's ring buffer."
+    },
+    "description": "Practice FIFO queue behavior in {language}. Compare efficient front removal with a head cursor, preserve repeated values, and count fill-and-drain costs."
+  },
+  {
+    "lesson": "stacks",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Stacks in {language}",
+    "summary": "Learn stack operations and use last-in-first-out state for nested structures, traversal, and interview problem solving.",
+    "baseNotes": "videos/stacks.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/stacks/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The local stack is filled with push and drained with pop, using the array's end for both operations. The loop checks length before popping, separating emptiness from falsy payloads such as zero. The original input is untouched. This also demonstrates why using unshift or shift at the front would be a different, potentially more expensive representation for the same LIFO contract.",
+      "typescript": "The stack and result are mutable number arrays, while the input is readonly. TypeScript's pop result can include undefined, so the code asserts presence only inside a nonempty-length loop. That assertion reflects the loop invariant and adds no runtime validation. Retaining this guard is necessary if the function is refactored to accept externally mutable or asynchronous stack state.",
+      "python": "The example copies values into a list and repeatedly uses pop from its end. Python's list is an appropriate growable stack representation for this contract. The while stack condition checks collection emptiness, not the truthiness of the next integer. The returned list reverses the values while preserving duplicates, and the caller's original list remains in its initial order.",
+      "java": "`Deque<Integer>` is backed by ArrayDeque, with addLast and removeLast using the same end. The older Stack class is unnecessary for this local LIFO trace. The isEmpty guard protects removal and keeps valid zero values independent of the empty state. Boxed Integer payloads add representation overhead, while the order and linear storage analysis remain the same.",
+      "cpp": "The vector's back operation reads the top value and pop_back removes it. The read is copied into output before removal, so no dangling reference is retained. The nonempty guard is required because back and pop_back do not provide an optional empty result. The separate local vector preserves the const input and makes the stack's owned storage explicit.",
+      "csharp": "`Stack<int>` provides Push and Pop directly. Count guards every Pop, since empty removal throws instead of returning a sentinel. The method appends copied integer payloads to a result list. A stack constructed or enumerated through another API may expose a different iteration order, so the example's behavior is established by these explicit push/pop operations rather than an assumed collection conversion.",
+      "go": "The local slice is an independent copy of the input. The final index identifies the top value, which is appended to output before the slice is shortened. Reslicing changes the visible length, not necessarily the allocated capacity. Integer payloads avoid retained-reference cleanup here. A stack of pointers could also need to clear removed slots to release otherwise reachable objects.",
+      "kotlin": "The mutable list uses add at the end and removeAt(lastIndex) at that same end. isNotEmpty prevents lastIndex from being \u22121 when removal occurs. The input List is only traversed, so its order is preserved. The output list records removed values. Generic Int values may be boxed on the JVM, without changing the example's LIFO behavior or asymptotic storage.",
+      "swift": "Array.append adds the next top value and popLast returns an optional result. while let consumes Some values, including zero, until nil indicates an empty stack. Swift value semantics keep the input independent, and no force unwrap is needed. The stack and output each retain up to a linear number of Int values during this fill-and-drain demonstration.",
+      "rust": "The borrowed slice is copied into an owned Vec, and pop returns `Option<i32>`. while let Some(value) handles the empty case without a reserved integer marker. Each removed integer is moved or copied into the output, and no reference to a removed vector slot escapes. The result owns all its values, so it can safely outlive both the temporary stack and input."
+    },
+    "description": "Practice LIFO stack behavior in {language}. Trace push and pop, separate empty state from zero payloads, and explain node ownership and end-operation costs."
+  },
+  {
+    "lesson": "implement-a-queue",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a queue in {language}: FIFO links and empty transitions",
+    "summary": "Implement enqueue and dequeue behavior while maintaining first-in-first-out order and handling empty-queue transitions.",
+    "baseNotes": "videos/implement-a-queue.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-a-queue/code/QueueComplete/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "Node objects carry data and a prev link toward newer items. first and last refer to the same object for a singleton queue. Dequeue must clear last on that final removal and then advance first to null. The returned node can retain its later chain through prev, so a production value-returning API could make ownership and retention simpler for consumers.",
+      "typescript": "The nullable QueueNode fields describe empty endpoints, while enqueue relies on the invariant that either both endpoints are absent or both are valid. The original annotation does not encode that relationship as a discriminated union. Peek and dequeue return QueueNode | null, preserving zero payloads. Reading the new language page does not change editor state or claim this article has a runnable exercise.",
+      "python": "The queue uses None for empty endpoints and returns Node objects from peek and dequeue. The payload is accessed through data rather than treating the returned node as an integer. Checking object identity for a singleton is essential to the endpoint update. A removed node may retain its prev reference, so holding it can keep newer entries reachable even after removal.",
+      "java": "`Queue<T>` returns `Node<T>` references, and null denotes an empty result. Its private endpoints share a node in the singleton case; identity comparison detects the final removal. Generic payloads do not need to be comparable. The standalone source includes Node, allowing the queue definition to compile without relying on a separate editor shell or an undeclared reference type.",
+      "cpp": "The queue owns nodes still linked from first and releases them in its destructor. Copying the queue is disabled to prevent duplicate ownership. dequeue transfers ownership of its returned raw pointer to the caller, which must delete it after use; peek remains borrowed. The removed node's prev field is nonowning in that ownership policy. Tests delete removed nodes after reading their payloads.",
+      "csharp": "Peek and Dequeue return a Node reference or null, so a zero data field is unambiguous. The public first and last fields make endpoint invariants visible in this teaching class. The final removal clears last, and updating first completes the empty state. Garbage collection handles allocation lifetime, but a returned node may still retain references to entries behind it.",
+      "go": "The queue returns *Node values with Data and Prev fields. nil denotes absence, so no integer sentinel is needed. First and last stay package-private and share the same pointer for one entry. The pointer identity check handles the last removal before first advances. The garbage collector manages node allocation, although any retained removed pointer can keep its linked successors reachable.",
+      "kotlin": "Node? return values distinguish an empty queue from any Int payload. The first and last properties represent a shared singleton node, not two copies. The equality used for these node objects follows reference identity because the class supplies no structural equality override. The source includes the Node definition, and an empty/refill trace verifies both nullable endpoints after final removal.",
+      "swift": "Optional Node references represent empty endpoints. The singleton check uses identity so equal integer payloads in different nodes cannot trigger the final-removal path incorrectly. ARC manages the forward chain, and the queue's first/last references keep active entries alive. The returned removed node can retain a successor reference. A value-returning API could avoid exposing that retention behavior to application callers.",
+      "rust": "The endpoints share `Rc<RefCell<Node>>` ownership, and ptr_eq identifies the singleton allocation. Dequeue takes the first owner and detaches its successor with take before returning a copied i32. Copying the payload into a local also ends the RefCell borrow before the removed owner is dropped. `Option<i32>` distinguishes empty from zero without exposing node ownership to the caller."
+    },
+    "description": "Implement a linked queue in {language}. Trace FIFO order, the last removal, and refilling an empty queue while preserving first and last endpoint invariants."
+  },
+  {
+    "lesson": "implement-a-stack",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a stack in {language}: push, pop, and ownership",
+    "summary": "Implement push, pop, and peek, maintain the top of the stack, and reason about operation costs and empty-state behavior.",
+    "baseNotes": "videos/implement-a-stack.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-a-stack/code/StackLinkedList/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The last field is the top reference. Push creates a node pointing toward the older top, and pop moves last to that link. Peek does not mutate it. Null marks an empty result; the returned Node may contain zero or another falsy payload. A consumer retaining a popped node can also retain the older chain through that node's prev field.",
+      "typescript": "Stack.last and StackNode.prev use explicit nullable types. Pop returns the removed node or null, while push returns the new node. The compiler annotations do not establish that user code leaves public links untouched. The example assumes mutations happen through the class methods. A production stack can return payloads and hide nodes to reduce accidental representation changes and unwanted chain retention.",
+      "python": "The stack's last attribute references the top Node, and None marks emptiness. Pop reads that node before advancing the endpoint, preserving the returned data. The original code leaves its prev link attached, so a retained removed node can keep older entries alive. Checking a node's presence rather than its payload ensures zero-valued entries are not mistaken for an empty stack.",
+      "java": "`Stack<T>` stores one private `Node<T>` endpoint and returns node references from its methods. The generic payload does not participate in the link logic. A null top gives an absent peek/pop, while the final removal resets that top to the older null link. This standalone definition includes Node rather than requiring an editor shell. It is separate from java.util.Stack.",
+      "cpp": "The class owns the chain still reachable from last and deletes it in its destructor. Copy construction and assignment are disabled. pop transfers ownership of a returned raw node to the caller, which must delete it after reading; peek is a borrowed pointer. The nonowning prev pointer does not recursively delete older nodes. Tests avoid retaining pointers across owner destruction.",
+      "csharp": "The stack and Node use reference semantics with a nullable top represented by null. Push allocates one node and links it to the prior top. Pop returns the node while advancing last, leaving the old node's prev reference attached. Garbage collection manages unreachable storage, but exposed node references can extend chain lifetimes. The integer payload does not define emptiness.",
+      "go": "The stack returns *Node from Peek and Pop, with nil for absence. Last is package-private, while Data and Prev are exposed on nodes. Push replaces a pointer rather than copying the old chain. Go manages node lifetimes automatically, but a popped node's retained Prev pointer can keep older entries reachable. The operation model checks zero payloads separately from empty state.",
+      "kotlin": "Node? represents an empty Peek or Pop result, while Push returns the newly allocated Node. Each next operation replaces or reads one top reference, preserving constant structural work. The node's prev remains attached after removal, which can retain older entries if the caller keeps the node. JVM garbage collection does not discard data still reachable through those returned references.",
+      "swift": "Optional Node references describe the top and empty results. Push gives the new node a strong reference to the old top, forming an acyclic chain. ARC releases nodes when no owners remain, but a returned popped node can still retain older entries through prev. The example focuses on endpoint mechanics; returning only Int? would provide a narrower application-facing API.",
+      "rust": "`Option<Box<Node>>` gives the stack exclusive ownership of its chain. take moves out the old top during push/pop, avoiding shared ownership or RefCell. Pop transfers the older link back into last and returns a copied integer, so callers never own an exposed node. Option preserves zero as valid data. The owned chain still occupies linear memory despite constant-time endpoint updates."
+    },
+    "description": "Implement a linked stack in {language}. Follow the top link through push, peek, and pop, including empty state, returned nodes, and retained chains."
+  },
+  {
+    "lesson": "trees",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Trees in {language}",
+    "summary": "Learn tree terminology and recursive structure, then prepare for traversal, depth, ancestor, and binary-search-tree exercises.",
+    "baseNotes": "videos/trees.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/trees/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The input is a dense array whose missing nodes are explicit null values. Undefined holes are outside this representation contract. The helper checks the array bound before reading a slot, then returns \u22121 for a missing subtree. Math.max combines child heights. The number arithmetic assumes practical array sizes where computing child indices remains an exact safe-integer operation.",
+      "typescript": "The union number | null describes the distinction between a payload and an absent node. readonly limits writes through the parameter, and the nested helper captures that stable input. A numeric payload of zero remains a real node because the code compares explicitly with null. The return type is an edge height, including \u22121 for an empty tree rather than a nullable result.",
+      "python": "Optional[int] keeps null slots compatible with Python 3.9 type annotations. The helper checks is None rather than truthiness, preserving zero-valued nodes. Recursion captures the original list and passes only indices. A compact level-order representation from another platform must be converted first; Python's flexible list syntax does not change the heap-indexed parent/child positions used by this function.",
+      "java": "`List<Integer>` permits null slots and boxed numeric payloads. The helper checks for null before treating a position as a node, so a stored zero is not mistaken for absence. The local Walker class retains access to values. Linear traversal time assumes constant-time get operations, as with ArrayList; a linked List implementation would change the cost of indexed access.",
+      "cpp": "std::`optional<int>` explicitly represents whether a slot contains a node, including a node whose value is zero. The recursive lambda captures the const input reference only for this function's lifetime. std::function provides a named recursive callable. Child indices use size_t; this small-example representation assumes index arithmetic stays within range rather than accepting arbitrarily huge sparse arrays.",
+      "csharp": "`List<int?>` stores nullable integer slots. The local Height function returns \u22121 for a missing subtree, while a zero-valued node still contributes one level above its children. Short-circuit evaluation protects the indexed read after the bounds test. The helper does not allocate new nodes or a new tree; its additional storage comes from active recursive calls.",
+      "go": "A nil *int slot means there is no node; a pointer to an integer zero represents a real node. The recursive function variable is declared before assignment so its body can call itself. The function follows heap-indexed positions without modifying the slice. The pointed-to payload values do not affect height, so they are never needed for branch selection.",
+      "kotlin": "`List<Int?>` makes null explicit, and the helper compares against null before exploring children. A zero payload is still present. The local recursive function captures values without constructing node objects. As with other generic List examples, the linear traversal bound assumes efficient indexed access. The \u22121 base result establishes an edge-height convention that differs from a node-count height.",
+      "swift": "The [Int?] array holds explicit missing slots, and the helper returns \u22121 for either an out-of-bounds child or a nil position. Array indexing is constant-time in this representation. Swift's optional comparison preserves a zero payload as a real node. Each recursive call retains its earlier work, so a skewed tree has linear call-stack depth despite the compact source.",
+      "rust": "The borrowed slice contains `Option<i32>` slots. is_none tests presence independently of the copied integer payload. The helper borrows the same input through each recursive call and passes usize positions, allocating no node objects. Recursion still uses O(h) active frames. The heap-position representation and practical index bounds are preconditions, not properties established by the slice's static type alone."
+    },
+    "description": "Compute binary-tree edge height in {language}. Read heap-indexed nullable slots, handle an empty root, and account for reachable nodes and recursion depth."
+  },
+  {
+    "lesson": "tree-traversal-in-order-pre-order-post-order",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Tree traversal in {language}: in-order, pre-order, and post-order",
+    "summary": "Compare traversal orders by changing when each node is processed. Trace recursive calls and distinguish traversal from search-tree ordering.",
+    "baseNotes": "videos/tree-traversal-in-order-pre-order-post-order.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/tree-traversal-in-order-pre-order-post-order/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The helper pushes a payload between its left and right recursive calls. Explicit null tests preserve nodes containing zero, while the bound guard prevents reading beyond the array. The output is newly allocated. Sparse holes are outside this example's dense nullable-slot contract. Moving the push statement changes visit order, so test a nonsymmetric tree when comparing traversal variants.",
+      "typescript": "The non-null assertion on values[index] reflects the earlier guard for an absent slot. It has no runtime effect. readonly describes this function's input access, and number[] describes the owned result being accumulated. Keep values stable during traversal so the guarded slot cannot change before its payload is appended. The type does not verify that the tree is a BST.",
+      "python": "The nested walk helper captures both values and the output list. It appends after the left call and before the right call, requiring no global accumulator. is None distinguishes missing slots from zero payloads. The returned list is a traversal sequence, not an automatically sorted result. Its order depends on shape unless the caller also establishes the BST invariant.",
+      "java": "The local Walker class closes over the input and output lists. Null slots stop a branch before any unboxing is attempted. The payload is appended between recursive calls, preserving in-order traversal. Use a random-access List implementation for the advertised indexed traversal cost. The new ArrayList owns the output positions while boxed Integer payload objects can be shared safely.",
+      "cpp": "The recursive std::function captures the const input and mutable output by reference within their valid lifetime. Dereferencing an optional occurs only after its presence guard. Appending copied int values produces an owned result with no borrowed dependency on the input vector. Recursion uses stack space in addition to that result, and a long chain can exhaust that stack.",
+      "csharp": "The local Walk function captures the input and output list. Nullable slots are checked before Value is read, and the append occurs between the two child calls. The method returns a separate list of nonnullable integers. Duplicate or zero payloads are preserved exactly. The nullable representation describes shape, while the values themselves do not control traversal branch order.",
+      "go": "A nil pointer slot ends a branch, and a nonnil pointer is dereferenced only when appending its payload. The recursive closure captures the output slice, including any new header created by append growth. The original slice and payloads are not mutated. This is heap-indexed traversal; a packed queue serialization with omitted child slots would require conversion first.",
+      "kotlin": "The Elvis return extracts a nonnull value before visiting either child. That local value is then appended after the left branch. The output is a fresh mutable list returned through a read-only List interface. Repeated payload values remain separate visits. The code's use of integer list indices assumes a suitable random-access representation for the stated linear traversal cost.",
+      "swift": "guard let extracts a payload or exits the branch, keeping nil distinct from zero. The nested helper captures the output array and appends between child calls. Swift Array provides the integer positions this representation expects; the same arithmetic would not apply directly to String or an arbitrary Collection. The returned Array value contains every reachable payload once in in-order sequence.",
+      "rust": "The helper borrows the nullable input slice and takes a mutable output vector separately. let Some(value) copies the i32 payload out only when present. Sequential recursive calls reuse the same mutable output borrow safely. No tree ownership is transferred, and the returned Vec owns its integer results. Absent parents stop traversal even when later array positions contain unused values."
+    },
+    "description": "Trace in-order binary-tree traversal in {language}. Explain nullable child positions, visit order, recursion space, and when the output is actually sorted."
+  },
+  {
+    "lesson": "binary-search-trees",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Binary Search Trees in {language}",
+    "summary": "Understand the ordering rules that guide binary-search-tree operations and how tree height affects search performance.",
+    "baseNotes": "videos/binary-search-trees.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/binary-search-trees/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The loop follows one heap-indexed path and uses explicit null comparison, so zero remains a valid key. Strict numeric equality identifies a match. The array must represent an already ordered tree; the function does not inspect unvisited subtrees to validate it. Dense explicit null slots and finite numeric keys keep undefined holes and NaN outside the search contract.",
+      "typescript": "The union type records missing nodes, while the non-null assertion after the loop guard expresses the known present slot. That assertion adds no validation. The function returns Boolean presence rather than a node or index, avoiding an additional duplicate-identity policy. A sorted-tree precondition is still required because TypeScript cannot establish ordering across the input array's positions.",
+      "python": "The loop checks bounds and is not None before reading a payload. It returns a Boolean, so an existing zero-valued key is not confused with an absent result. Only one branch is chosen after each comparison. The array layout remains heap-indexed, not compact level order, and the caller is responsible for supplying a valid ordering rather than merely a list of integers.",
+      "java": "Integer payloads are unboxed only after the null-slot check. List.get must be efficient for the O(h) search claim, so use an ArrayList-like input representation. The method returns true on any matching key and false at a missing child. It does not verify duplicates or rebalance the tree; those are separate construction and validation responsibilities.",
+      "cpp": "The loop uses optional presence rather than the numeric payload's truthiness. size_t tracks the current slot, and only one child index is computed after a nonmatching comparison. The input is borrowed as const and no collection is allocated. Practical index bounds and an already valid BST are preconditions. Invalid ordering can cause a present target to be skipped entirely.",
+      "csharp": "The nullable integer list represents absent children explicitly. Value is read only inside a guarded nonnull position, so zero-valued keys work normally. The method returns Boolean membership without changing the supplied list. Neither nullable typing nor the loop proves the global BST invariant; a separate validator would need to inspect the relevant subtree bounds across all reachable nodes.",
+      "go": "Each nonnil *int slot supplies a key for comparison, while nil ends the path. The function does not allocate or change the pointed-to values. Integer slice indices implement the heap layout directly. Concurrent payload mutation would break the stable-order assumption and needs an external synchronization policy; the simple search example assumes its input stays fixed throughout the call.",
+      "kotlin": "The local value is extracted with an Elvis break when a slot is null. This keeps the branch logic nonnullable and preserves zero keys. The read-only List interface does not itself prove ordering or exclusivity of ownership. Search assumes a stable valid BST and efficient indexed access; changing either assumption requires changing the correctness or complexity explanation.",
+      "swift": "The while condition combines an array-bound check with optional binding of the slot. A zero key is a successful binding. The function retains only an index and current value, using constant additional state. Swift's Array value semantics protect this call's input view, but they do not establish ordering. A malformed tree can still return false for a key stored elsewhere.",
+      "rust": "Pattern matching extracts a copied i32 key from Option without borrowing a mutable node. The input slice remains immutable throughout the iterative search. A missing slot ends the path, including a null root with stray later values. The function assumes valid child-index arithmetic and BST ordering; those are semantic preconditions beyond the Option and slice types."
+    },
+    "description": "Search a binary search tree in {language}. Follow one ordered path, handle absent children, and relate search cost to height without assuming balance."
+  },
+  {
+    "lesson": "implement-a-binary-search-tree",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a binary search tree in {language}: insert and search",
+    "summary": "Build a binary search tree, preserve its ordering contract during updates, and test search paths and empty-tree behavior.",
+    "baseNotes": "videos/implement-a-binary-search-tree.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-a-binary-search-tree/code/TreeSolution/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The standalone source includes BinaryNode and uses object links for children. Insert sends equal values right, while search stops at a matching value. The returned tree from insert supports the lesson's fluent style without copying nodes. Public root and link fields remain mutable, so the algorithm assumes callers do not independently violate ordering between operations. No balancing is performed.",
+      "typescript": "BinaryNode | null describes optional child links, and number describes the comparison keys. The original teaching method returns the same tree after insertion, while search returns a node or null. TypeScript cannot prove the ordering invariant or exclude NaN through number alone. Use finite integer keys for the shared trace and preserve the documented equal-key-to-right insertion rule.",
+      "python": "The root and child links use None for absent nodes. Insert creates a node once and follows one path until it finds an empty child link. Search returns a BinaryNode rather than a Boolean or numeric sentinel. A payload of zero is valid. Reference management keeps the tree alive through reachable nodes, while sorted insertion still creates an unbalanced chain.",
+      "java": "The source includes the package-private BinaryNode definition and a tree with a private root. Insert returns this tree, and search returns a node or null. Primitive int keys have a total numeric order within this example. Private fields limit direct outside changes, but the class still provides no balancing guarantee. Tests inspect in-order contents and duplicate preservation as well as successful searches.",
+      "cpp": "The tree owns its allocated nodes and deletes them in an iterative destructor, avoiding recursive cleanup on a skewed chain. Copying is disabled to prevent duplicate ownership of the same raw pointers. search returns a borrowed BinaryNode pointer that must not outlive the tree. Insertions preserve existing node allocations, but the class offers neither removal nor automatic balancing in this excerpt.",
+      "csharp": "BinaryNode is a reference class with public integer and child fields. Insert returns the same BinarySearchTree instance, and Search returns a node reference or null. Equal keys follow the right branch during insertion. Garbage collection handles allocations without guaranteeing balanced shape. Consumers should not rewrite public child fields if they expect later searches to rely on the original ordering invariant.",
+      "go": "The BinaryNode definition exposes Data, Left, and Right, while the tree's root stays package-private. Insert returns the same tree pointer and Search returns *BinaryNode or nil. Pointer links preserve node identity without copying subtrees. The implementation is iterative, but its stored shape can still be a linear chain. The shared tests include duplicates and monotone insertion orders.",
+      "kotlin": "Nullable BinaryNode links represent absent children. Insert returns this tree, preserving the fluent API without constructing another owner or copy. Search returns BinaryNode? rather than a payload sentinel. The mutable node fields make ordering an invariant maintained by convention and methods, not by the type system alone. Equal Int keys go right, and no rotation repairs a skewed tree.",
+      "swift": "BinaryNode is a class so child assignments retain shared object identity. Optional references represent absent children, and search returns an optional node. Insert returns the existing tree object after linking one new node. ARC manages lifetime, while the forward-only child ownership avoids a parent-child reference cycle. The ordering policy permits duplicates on the right and does not provide balancing.",
+      "rust": "The tree exclusively owns `Option<Box<BinaryNode>>` links. Insert walks a mutable link reference until it can install the new Box, without Rc or interior mutability. Search returns a borrowed node reference tied to the tree's lifetime. Equal values follow right links. The iterative operations avoid recursive traversal, although the owned boxed chain still has destruction-depth considerations for extremely skewed inputs."
+    },
+    "description": "Build a binary search tree in {language}. Trace insertion and search, preserve duplicate keys on the right, and test skewed shapes without assuming balancing."
+  },
+  {
+    "lesson": "graphs",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Graphs in {language}",
+    "summary": "Model relationships with graph nodes and edges, compare representations, and prepare for reachability and traversal exercises.",
+    "baseNotes": "videos/graphs.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/graphs/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "graph.map reads each neighbor array's length, returning one degree per vertex in outer-array order. It never enumerates individual neighbors, so this operation takes O(V) time even when there are many edges. Dense arrays are assumed: a sparse outer array would have different map behavior and would not satisfy the complete vertex-position representation used by the examples.",
+      "typescript": "The nested readonly array type prevents mutation through either graph or its neighbor lists inside this function. It does not validate the integer vertex identifiers or eliminate duplicate adjacency entries. The result number[] is newly allocated. Degree depends only on each stored list's length, so an unreachable vertex still receives an output position just like any other vertex.",
+      "python": "The comprehension uses len on each neighbor list, producing degrees in vertex-position order. It counts duplicate entries and self-loops exactly as stored without needing a set. Python list lengths are available without scanning their elements. The function does not validate neighbor identifiers because it never follows them; a traversal accepting the same graph needs that separate precondition.",
+      "java": "The method reads size from each neighbor List and appends the degree to a new result list. For ordinary collection implementations, size is available directly without traversing each edge. Integer vertex IDs are not followed here, so the example does not validate their range. The outer list's iteration order establishes which result position belongs to which vertex.",
+      "cpp": "The const vector-of-vectors input exposes each adjacency list's stored size. The output converts those sizes to int under the small-example range assumption. A library handling lists beyond that range should preserve a wider size type or validate conversion. No neighbor is dereferenced as a vertex index, and the function allocates only the degree result.",
+      "csharp": "Each neighbor `List<int>` exposes Count, so the method can compute one degree without visiting that list's contents. The result is a separate `List<int>` aligned with the outer graph order. Repeated edges and self-loops remain counted entries. A missing neighbor vertex ID does not fail this counting operation, although it would violate the preconditions of the traversal examples.",
+      "go": "The function allocates an output slice with one slot per vertex and assigns len(neighbors) into each slot. Slice length is stored in its header, so counting does not scan the edges. A nil neighbor slice and an empty neighbor slice both have degree zero. The graph's outer positions still define the existing vertices, regardless of those inner representations.",
+      "kotlin": "Mapping each neighbor list to its size preserves the outer vertex order and allocates a result list. The code counts adjacency entries rather than deduplicating neighboring vertices. `List<Int>` does not prove those IDs are valid or that the graph is undirected. A separately enforced representation contract is needed before algorithms follow these identifiers into the outer list.",
+      "swift": "The graph is a value-semantic nested Array, and map returns each inner array's count. No copies of all edge elements are required merely to read these counts. Self-loops and repeated entries contribute according to storage. The output is an [Int] in vertex order, so it avoids dictionary iteration questions. Neighbor range validation belongs to algorithms that actually follow them.",
+      "rust": "The function borrows a slice of neighbor vectors and maps each stored len into an i32 degree. That conversion assumes the small example's list sizes fit i32. The result owns its counts, while the graph remains borrowed and unchanged. No adjacency element is visited, so counting takes O(V) even when the representation contains many duplicate edges."
+    },
+    "description": "Read graph adjacency lists in {language} and compute out-degrees. Define vertex IDs, parallel edges, self-loops, representation costs, and input assumptions."
+  },
+  {
+    "lesson": "depth-first-search",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Depth-First Search in {language}",
+    "summary": "Traverse a graph by following branches, track visited nodes to handle cycles, and reason about recursive or explicit stack state.",
+    "baseNotes": "videos/depth-first-search.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/depth-first-search/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The stack is an array using push and pop. A Set records completed first visits, and neighbors are pushed from the end toward the beginning so the next pop follows listed order. The graph and its neighbor arrays remain unchanged. Shared descendants can create duplicate pending entries, which are skipped at pop time rather than emitted twice in the output.",
+      "typescript": "readonly nested arrays restrict graph mutation through this function. `Set<number>` separates visited state from payload values, and stack.pop is asserted present only inside a nonempty loop. A valid start is checked explicitly, while neighbor IDs remain a precondition. The types do not enforce that graph neighbors are integers within bounds, so external graph data needs validation before traversal.",
+      "python": "The list stack uses end-pop, while reversed(graph[node]) changes push order without modifying the adjacency list. Membership in a set suppresses repeated expansion at pop time. Empty or invalid starts return an empty list. The algorithm does not recurse, but its pending stack can still hold many edge-derived entries; iteration removes call-stack depth, not all traversal memory.",
+      "java": "ArrayDeque supplies end insertion and removal, implementing a stack through the Deque interface. HashSet.add returns false for an already visited vertex, allowing the loop to skip duplicate pending entries. Reverse indexed neighbor access assumes random-access adjacency lists for the advertised edge-linear bound. The method does not reorder those lists or mutate the input graph.",
+      "cpp": "The stack and output are vectors, while visited is a `vector<bool>` initialized for every graph vertex. That initialization adds O(V) time and storage even if the start reaches only a small component. Reverse iterators preserve adjacency order on the LIFO stack. All followed neighbor IDs must be valid, because unchecked vector subscripting is used for graph and visited access.",
+      "csharp": "`Stack<int>` models pending DFS work and `HashSet<int>`.Add reports whether a popped vertex is newly visited. The neighbors are scanned backward before pushing, preserving the stated recursive-style order. No input list is mutated. A shared descendant can be pending more than once, so skip behavior at pop time is part of the correctness argument and stack-space discussion.",
+      "go": "The stack slice is shortened at its final index, and the visited Boolean slice has one entry for every graph vertex. Its allocation initializes all V entries, adding O(V) work even for a small reachable component. Reverse neighbor iteration determines traversal order. Valid neighbor bounds are assumed; the start guard alone does not validate the entire adjacency representation.",
+      "kotlin": "The mutable list acts as a stack through add and removeAt(lastIndex). asReversed provides the reverse neighbor order without sorting the graph. A mutable set suppresses vertices already expanded. The input graph uses read-only interfaces, and traversal returns a separate list. Efficient indexed stack and adjacency operations are assumed for the stated bounds on this JVM collection example.",
+      "swift": "Array.popLast returns an optional next vertex, and Set.insert reports whether it was newly visited. reversed changes push order without mutating the neighbor array. This combination preserves the desired first-neighbor DFS sequence while safely skipping duplicate pending entries. The function uses explicit heap-backed collections rather than recursive calls, but those collections still retain reachable pending work and output.",
+      "rust": "The Vec stack is drained with pop and the Boolean visited vector is initialized for all vertices. That means O(V) initialization and storage, even if few vertices are reachable. Iterating neighbors in reverse preserves the declared visit order. Signed neighbor IDs are converted to usize only under the valid-identifier precondition; a negative external edge must be rejected before traversal."
+    },
+    "description": "Implement iterative DFS in {language}. Preserve listed neighbor order, skip repeated visits, trace a shared descendant, and explain pending-stack costs."
+  },
+  {
+    "lesson": "breadth-first-search",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Breadth-First Search in {language}",
+    "summary": "Traverse by distance with a queue, avoid duplicate discoveries, and reconstruct shortest paths when edges have equal cost.",
+    "baseNotes": "videos/breadth-first-search.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/breadth-first-search/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "An array plus a head cursor implements the FIFO queue without repeated shift operations. The start is marked in a Set before traversal, and every neighbor is marked before enqueueing. This ensures at most one queue entry per reachable vertex. The queue retains earlier numeric slots until return, which is acceptable for this finite traversal but relevant to a long-lived service queue.",
+      "typescript": "`Set<number>` records discovery, while readonly nested arrays restrict graph mutations through the parameter. The queue uses an integer head rather than shifting front storage. The start guard does not validate every neighbor ID, so valid edges remain a caller precondition. TypeScript does not encode shortest-path layer invariants; enqueue-time marking and FIFO order establish them at runtime.",
+      "python": "collections.deque supplies popleft, and a set tracks discovery. Marking at enqueue time prevents a diamond-shaped graph from adding its shared descendant twice. The input adjacency lists are only read. Returning the traversal order does not reconstruct paths; storing a parent when each neighbor is first discovered would add that information without changing which vertices enter the queue.",
+      "java": "ArrayDeque implements FIFO order with addLast and removeFirst. HashSet.add combines the discovery check and insertion, so only a newly added neighbor is enqueued. Boxed Integer values represent vertex IDs. The method returns an ArrayList of visit order and leaves the graph unchanged. The advertised bounds assume ordinary efficient adjacency-list iteration and valid vertex identifiers.",
+      "cpp": "std::deque supplies front removal, while `vector<bool>` stores one discovery flag for every graph vertex. Initializing that vector costs O(V) time and storage before reachable traversal begins. A neighbor is marked before push_back, suppressing duplicate queue entries. Unchecked indexing assumes valid nonnegative IDs; validating only the starting vertex does not establish the same property for every edge.",
+      "csharp": "`Queue<int>` gives the FIFO order, and `HashSet<int>`.Add returns true only at first discovery. The code enqueues a neighbor in that successful branch. Count protects Dequeue on the empty boundary. The output is a fresh list, and input adjacency lists are unchanged. Separate distance or parent storage would be needed if callers want more than this visit sequence.",
+      "go": "The queue slice is read through an increasing head index, avoiding front shifts. The visited Boolean slice is allocated for all V vertices, so initialization adds O(V) work regardless of reachability. Marking before append prevents duplicate pending entries. Queue storage retains consumed integer slots through completion; no cleanup is needed for object references because these entries are numeric IDs.",
+      "kotlin": "java.util.ArrayDeque is used explicitly on the JVM. A mutable set's add result gates enqueueing, so a vertex enters the queue only at first discovery. Neighbor list iteration preserves the supplied ordering within each layer. The function does not return distance labels or paths, and read-only collection types alone do not validate the external graph's vertex ID range.",
+      "swift": "A queue Array and head cursor preserve FIFO order without removeFirst. Set.insert(...).inserted detects first discovery and runs before append. That prevents duplicate entries from shared descendants or repeated edges. Swift value semantics keep the input graph unchanged. The queue can retain all discovered numeric positions until completion, contributing O(Vr) storage together with the result and visited set.",
+      "rust": "VecDeque provides pop_front and push_back, and the visited vector marks neighbors before enqueueing. The Boolean vector covers all graph vertices, adding O(V) initialization and storage even for a small reachable component. Option from pop_front handles an empty queue naturally. Valid neighbor IDs are assumed before signed-to-usize conversion; malformed edges need a separate external-input validation step."
+    },
+    "description": "Implement BFS in {language} with FIFO order and enqueue-time discovery. Trace graph layers, cycles, shared descendants, and visited-storage costs."
+  },
+  {
+    "lesson": "implement-a-graph",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Implement a graph in {language}: adjacency lists and edge removal",
+    "summary": "Represent vertices and edges, maintain neighbor relationships, and prepare a graph structure for traversal and reachability queries.",
+    "baseNotes": "videos/implement-a-graph.mdx",
+    "examples": [
+      {
+        "title": "Complete implementation",
+        "source": "lessons/implement-a-graph/code/GraphSolution/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The object maps vertex names to neighbor arrays. Use the named A/B/C vertices in the shared trace; this original object-backed API is not hardened for prototype-like external keys. addVertex replaces any existing list, and removeVertex filters incoming references from all other lists. A production arbitrary-key graph should use Map and define duplicate-vertex behavior before exposing untrusted names.",
+      "typescript": "The string index signature describes adjacency lists but does not guarantee a requested endpoint exists. addEdge assumes both vertices were added first, and addVertex resets an existing entry. Those runtime preconditions remain necessary despite the types. The original object-backed structure is suitable for the lesson's named vertices; Map would give a clearer arbitrary-string-key boundary for a reusable graph API.",
+      "python": "The adjacency dictionary stores a list for each vertex, and removal filters every remaining list after deleting the vertex's entry. Missing endpoints and repeated add_vertex calls are outside the shared insertion contract. Dictionaries preserve their own iteration behavior, but structural checks compare vertex/edge counts rather than treating map order as graph meaning. Duplicate edge entries remain until removed or filtered.",
+      "java": "The graph uses a private `HashMap<String, List<String>>` and supports a Boolean undirected constructor. String keys use content equality. Removal iterates remaining entries and removes every matching incoming edge. Both endpoints must exist before adding an edge. A repeated addVertex overwrites that list, so a reusable API should choose an explicit replacement or rejection policy rather than assuming idempotent insertion.",
+      "cpp": "The standalone source includes its map, vector, string, and algorithm headers. Vertex removal uses the erase-remove pattern, keeping this example compatible with C++17 rather than requiring C++20 std::erase. The graph owns adjacency containers by value. Iteration order of unordered_map is not a traversal promise. Duplicate edges and the doubled undirected self-loop remain consequences of the shown append policy.",
+      "csharp": "`Dictionary<string, List<string>>` stores the adjacency representation. AddEdge indexes existing endpoints, so callers create vertices first. RemoveVertex deletes the selected key and removes incoming occurrences from every remaining list. Public fields allow direct representation mutation in the teaching API. A production wrapper should encapsulate those lists if it needs to enforce vertex existence and edge-policy invariants consistently.",
+      "go": "The snippet imports slices and uses DeleteFunc to filter incoming edges. That standard-library helper requires Go 1.21 or later; a full standalone file also needs package main or another package declaration. Adjacency slices store string values, and map iteration order is irrelevant to graph meaning. Create endpoints once before adding edges, and compare structural results independently of iteration order.",
+      "kotlin": "The HashMap stores `MutableList<String>` adjacency entries. addVertex assigns a new list, so calling it twice discards that vertex's previous outgoing entries. addEdge expects existing endpoints under the shared contract. Removal filters all incoming references. The val map binding prevents rebinding the property, not mutation of its contents, so the teaching class remains structurally mutable through that public map.",
+      "swift": "The adjacency dictionary holds Array values, and mutation writes updated lists through dictionary access. Class Graph has reference semantics even though those nested containers use value semantics. Construct vertices before adding edges and avoid repeating addVertex, which replaces the list. Dictionary iteration order is not used as a graph-order guarantee. The undirected flag controls whether both endpoint arrays receive each edge.",
+      "rust": "The graph owns a `HashMap<char, Vec<char>>`, using character vertex IDs for the small trace. entry(...).or_default can create a missing endpoint, but the shared cross-language contract still creates all vertices first. retain removes every incoming occurrence after vertex deletion. The Boolean constructor explicitly selects directed or undirected behavior because Rust has no default argument syntax for this method."
+    },
+    "description": "Build an adjacency-list graph in {language}. Trace directed and undirected edges, self-loops, parallel entries, and removal of incoming and outgoing edges."
+  },
+  {
+    "lesson": "subproblems-and-overlapping-subproblems",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Subproblems and Overlapping Subproblems in {language}",
+    "summary": "Identify repeated smaller decisions and define state precisely before using caching or a dynamic-programming table.",
+    "baseNotes": "videos/subproblems-and-overlapping-subproblems.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/subproblems-and-overlapping-subproblems/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The inner function closes over one calls binding for the entire top-level invocation. Incrementing it at entry counts base cases and the root call as well as internal branching calls. A fresh counter is created each time fibCalls runs. Number arithmetic is exact for the small tested range, but the exponential call count makes increasing the input expensive before type syntax changes anything.",
+      "typescript": "The nested function's return annotation describes its numeric result, while the shared calls variable measures actual invocations. Returning number[] does not encode which slot is the Fibonacci value and which is the count; the prose and examples establish that order. The bounded nonnegative input contract is a runtime assumption. No cache or compiler annotation removes repeated subproblems here.",
+      "python": "nonlocal calls makes the nested function update the enclosing counter rather than create a new local binding. Every entry increments before checking the base case. Python's large integers do not remove the exponential number of recursive calls. The published small range keeps the illustration quick, and a new counter per top-level call makes its observations independent of earlier runs.",
+      "java": "The local Counter class stores mutable call count alongside its recursive method. This avoids trying to mutate a captured primitive local variable, which Java would reject without another holder. The returned two-element List contains the value followed by the count. Both use int arithmetic under the small supported range, and the counter is new for every invocation.",
+      "cpp": "The recursive std::function captures calls by reference within the top-level function's lifetime. Incrementing that counter on every entry includes base cases. The returned vector copies two integer observations after recursion finishes, so it retains no reference to the local counter. Signed arithmetic remains within range for the bounded examples; larger counts would need both a numeric and runtime-cost review.",
+      "csharp": "The local recursive function captures and increments calls. Each public method invocation creates a fresh captured variable, keeping repeated runs independent. The returned `List<int>` stores the final value first and call count second. Because every recursive entry increments before its base-case branch, the count measures actual invocations rather than only additions or only non-base nodes in the call tree.",
+      "go": "The function variable is declared before assignment so its closure can call itself recursively. The closure shares one calls integer with the enclosing invocation. Both recursive branches complete before the returned slice records the final count. Architecture-dependent int width is irrelevant within the small tested range, but it should not support a claim that arbitrary Fibonacci call counts always fit.",
+      "kotlin": "The local fib function captures a mutable calls variable and increments it at entry. Returning listOf(answer, calls) records the completed observations rather than live references to mutable state. Kotlin/JVM Int has fixed width, so the bounded input range protects both result and count. The code intentionally recomputes overlapping branches to make their cost visible before introducing memoization.",
+      "swift": "The nested function captures the local counter, and the outer call reads it only after recursion returns. The two returned Int values are snapshots in an Array. Ordinary Int arithmetic must remain representable, so the shared small input range matters. The function's exponential branching is intentional; tail-call or loop optimizations would not be assumed to turn it into memoization.",
+      "rust": "The recursive helper receives &mut i32 for the counter explicitly instead of capturing mutable state in a self-recursive closure. Each branch borrows that counter sequentially, then returns its numeric answer. This makes mutation ownership visible without changing the recurrence. The final Vec contains copied observations and no borrowed data. All arithmetic stays within the documented small input range."
+    },
+    "description": "Count naive Fibonacci calls in {language}. Trace overlapping states, include base-case work, and identify the cache key before applying memoization."
+  },
+  {
+    "lesson": "memoization",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Memoization in {language}",
+    "summary": "Turn repeated recursive work into reusable results. Choose complete cache keys and distinguish missing results from valid zero values.",
+    "baseNotes": "videos/memoization.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/memoization/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "Map.has distinguishes an absent state from a cached result of zero. The helper stores base cases as well as larger states, so memo.size measures every distinct computed state. The cache belongs to one fibMemoStats call and is not global. A correct final number alone would not demonstrate this work reduction; the returned size provides an additional observable check.",
+      "typescript": "`Map<number, number>` describes state keys and results. The non-null assertion after has relies on the established presence check, including a cached zero. It is not a truthiness shortcut. The local helper and cache disappear after the call except for their returned numeric observations. TypeScript does not remove recursive stack depth or enforce a safe maximum n through the number annotation.",
+      "python": "The in membership check tests whether a state was cached before reading its answer. This preserves F(0) = 0 without mistaking it for a miss. The local dictionary is fresh on each top-level invocation. Python arbitrary-precision arithmetic allows larger values than fixed-width versions, but recursive depth and the cost of larger additions still matter as inputs grow.",
+      "java": "containsKey separates cache presence from the Integer value being stored, and the local Solver class can mutate the captured map through its reference. Every computed state, including a base state, is inserted. memo.size therefore reports distinct work for this one invocation. The int representation and recursive stack keep the shared small-input contract relevant even after repeated subproblems are removed.",
+      "cpp": "A `vector<optional<int>>` represents cached states directly. Testing an optional asks whether it contains a value, so a stored zero is still a hit. The separate computed counter increases only when a previously absent state is filled. Allocating n + 1 optional slots costs O(n) before recursion, even if a particular tiny input touches just one state.",
+      "csharp": "Dictionary.TryGetValue provides both a presence result and the cached integer, preserving zero correctly. The local Fib function inserts each state once and returns memo.Count with the answer. The cache is local to this method call. Avoid a shared static cache unless the API also defines its lifetime, concurrency behavior, and retained-memory policy across unrelated requests.",
+      "go": "The comma-ok map lookup distinguishes a missing state from its default integer zero. The recursive closure is assigned after declaring its function variable. The map is created per call, and len(memo) reports the number of computed states including base cases. A package-level cache would have different lifecycle and synchronization requirements from this independent teaching function.",
+      "kotlin": "containsKey and getValue separate presence from payload, so zero is retained as a valid cached result. The local recursive function shares one mutable map and writes each previously absent state. The returned size counts base states too. Int arithmetic remains fixed-width, and top-down evaluation still has linear recursion depth; memoization improves repeated work without changing those constraints.",
+      "swift": "Optional binding on memo[value] succeeds even when the stored integer is zero. The nested helper mutates one local Dictionary, then the outer function returns its count with the answer. Swift's value semantics do not clone the dictionary on every recursive call because the helper captures that local variable. The recursive stack still grows with the longest dependency chain.",
+      "rust": "The helper takes a mutable HashMap borrow explicitly. A cache hit copies the i32 answer out before any later recursive insertion, avoiding a retained immutable borrow across mutation. Both subcalls borrow the map sequentially. The returned Vec contains the answer and map length as integers. Cached zero is preserved through Option matching rather than a numeric sentinel."
+    },
+    "description": "Memoize Fibonacci in {language} and count distinct computed states. Preserve cached zero, define cache lifetime, and explain remaining recursion depth."
+  },
+  {
+    "lesson": "bottom-up-vs-top-down",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Bottom-Up vs. Top-Down in {language}",
+    "summary": "Compare memoized recursion with tabulation, choose a valid evaluation order, and reason about stack and table storage.",
+    "baseNotes": "videos/bottom-up-vs-top-down.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/bottom-up-vs-top-down/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The array starts with one zero, and one is appended only when requested. Later push calls extend the table after reading two already initialized positions. The result is the full sequence, not only its final value. Number arithmetic is exact only within a suitable range; the shared examples keep inputs small rather than treating every Number as an arbitrary-precision integer.",
+      "typescript": "number[] records the table's element type but does not establish that every dependency position exists. The initialization and loop order establish that invariant at runtime. The function assumes a nonnegative integer input within the supported range. Returning the entire table requires linear output storage even though a different last-value-only API could use two rolling numeric variables.",
+      "python": "The table list is initialized with zero, then extended conditionally with one. range(2, n + 1) includes the requested final index without adding unwanted base entries for n = 0. Python integers can grow, so large-number addition eventually costs more than a fixed-width operation. The simple O(n) addition count should be read with that numeric-model qualification.",
+      "java": "An ArrayList stores the full table of boxed Integer values. Every get reads an earlier index that has already been appended. The zero case returns a one-element list, preserving the requested table boundary. Fixed-width int arithmetic limits exact large inputs, and boxing affects memory overhead. Neither consideration changes the dependency order demonstrated by the bottom-up loop.",
+      "cpp": "The vector owns the complete table and starts with exactly one base entry. Conditional push_back adds the second entry only when needed. Later pushes may reallocate, but the code reads values by index without retaining element references across growth. Integer results must stay in range. The returned vector transfers ownership of the complete sequence to its caller.",
+      "csharp": "`List<int>` grows as each new recurrence value is appended. Earlier positions are read only after initialization, so no uninitialized sentinel is needed. The method returns the table itself, making O(n) result space intentional. The Int32 arithmetic contract remains bounded; changing to a large-number type would preserve dependencies while adding a different cost for each addition.",
+      "go": "The slice begins with []int{0} and appends one only for n at least one. Later appends may allocate another backing array, but all dependency reads use the current slice header. The returned slice owns access to its resulting buffer. int width varies by architecture, so the shared small range avoids making a platform-dependent promise about larger exact Fibonacci values.",
+      "kotlin": "The mutable list starts at zero, and the range 2..n is empty when n is below two. This preserves the one-entry result for n = 0. Each recurrence reads established earlier entries before adding the next. The returned List interface is read-only to its consumer, but that type does not make arithmetic unbounded or eliminate the table's linear storage.",
+      "swift": "The Array starts with zero and grows through append. A while loop makes the inclusive final index explicit and avoids constructing an invalid range for small n. Swift Int arithmetic must remain within range. The returned Array has value semantics, but its n + 1 positions still occupy linear result storage; copy-on-write is not a reason to omit that cost.",
+      "rust": "The owned Vec starts with zero, then conditionally adds one. Index reads produce copied i32 operands before push can reallocate the buffer, so no element borrow survives mutation. The signed input is assumed nonnegative before conversion to usize for the range. Validate that assumption at an external boundary to avoid a negative value becoming a huge unsigned bound."
+    },
+    "description": "Build a bottom-up Fibonacci table in {language}. Follow dependency order, test zero input, and compare full-table storage with rolling-state alternatives."
+  },
+  {
+    "lesson": "dynamic-programming",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ],
+    "title": "Dynamic Programming in {language}",
+    "summary": "Develop a recurrence, identify repeated states, and connect memoization and tabulation to interview problem-solving strategies.",
+    "baseNotes": "videos/dynamic-programming.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/dynamic-programming/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The table is filled with amount + 1 before setting the zero base state. That distinguishes unreachable amounts from a valid answer of zero. Numeric arrays and Math.min implement the recurrence directly. The contract assumes positive integer denominations and a bounded nonnegative integer amount; Number typing alone would not prevent a fraction or infinity from breaking allocation or indexing.",
+      "typescript": "number[] describes the table but cannot distinguish unreachable entries from established minima. The sentinel and increasing outer loop supply those semantics. Types also do not prove coins are positive integers. A wrapper accepting external data must validate denominations and amount before allocation. Within the stated contract, the final \u22121 result means unreachable rather than an exception or missing array position.",
+      "python": "The list table uses an integer sentinel above every possible valid coin count. Python's arbitrary-precision integers avoid fixed-width overflow, but a huge amount can still request an impractical list. Positive denominations ensure every dependency index is smaller than its current state. The empty-coin case leaves only dp[0] reachable, which the final return handles without special numeric guessing.",
+      "java": "Arrays.fill initializes the int[] table to an impossible count, followed by an explicit zero base state. The `List<Integer>` denominations are unboxed during iteration. The amount + 1 size and sentinel both require a bounded amount, even before memory limits are considered. This is a pseudo-polynomial table in the numeric amount, not in the bit length of its input encoding.",
+      "cpp": "The vector is initialized with amount + 1 entries and the same value as its sentinel. The guard avoids extending an unreachable predecessor, and positive coins keep dependency indices valid. Input amount must be bounded before signed size conversion and allocation. The function returns a numeric minimum only, so reconstructing the actual selected coins would require additional predecessor storage.",
+      "csharp": "Array.Fill establishes unreachable entries before best[0] becomes zero. Each candidate is considered only when the predecessor is reachable. The int amount must be nonnegative, bounded for amount + 1, and practical to allocate. The returned \u22121 is an explicit unreachable result, while zero is the valid answer for amount zero even when there are no denominations.",
+      "go": "make initializes the table to zero, so the code explicitly replaces every positive amount with the impossible sentinel. Leaving those default zeros would falsely make every amount look free. The zero base state stays unchanged. Positive coin values prevent negative or forward dependencies, and a bounded amount keeps both slice allocation and integer arithmetic within the supported domain.",
+      "kotlin": "IntArray creates a primitive integer table initialized by the sentinel lambda, avoiding generic boxing for these states. best[0] is then set to zero. The inclusive amount loop is empty for zero, leaving its base result intact. Coin values must be positive and amount reasonably bounded; the Int and `List<Int>` types alone cannot enforce these mathematical and allocation preconditions.",
+      "swift": "Array(repeating:count:) initializes every state as unreachable, and the explicit zero base case starts the recurrence. The while loop safely handles amount zero without forming a descending closed range. Int arithmetic and allocation require practical bounded inputs. Each positive denomination refers to an earlier table entry, and the final comparison converts only the unreachable sentinel into \u22121.",
+      "rust": "The borrowed coin slice is read without mutation, and an owned Vec holds state minima. The code converts amount and each coin to usize under a positive-coin, nonnegative-amount contract. Validate signed external values before those casts; a negative denomination is not a meaningful large coin. The predecessor guard preserves the sentinel, and the function returns \u22121 only for unreachable targets."
+    },
+    "description": "Solve minimum coin count in {language}. Trace the recurrence, represent unreachable states, test a greedy counterexample, and explain amount-based table costs."
+  },
+  {
+    "lesson": "why-does-javascript-get-its-own-topic",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "JavaScript runtime interview concepts for {language}",
+    "summary": "Connect general algorithm skills with JavaScript-specific behavior, browser programming, and practical utility implementations.",
+    "baseNotes": "videos/why-does-javascript-get-its-own-topic.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/why-does-javascript-get-its-own-topic/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The typeof check rejects objects, strings, and null before the range comparisons. Number.isFinite avoids coercing numeric-looking strings, unlike some older global numeric helpers. Returning null keeps a valid zero distinguishable from failure. This function validates an already numeric score; parsing a form string would require an explicit conversion step and decisions about whitespace, decimal syntax, and invalid text.",
+      "typescript": "unknown forces narrowing before the implementation treats value as a number. After typeof and Number.isFinite checks, the range comparison uses a known numeric value and returns number | null. A type assertion would remove a compiler complaint without performing these checks. The executable JavaScript policy remains identical, so compile-time safety and runtime acceptance can be reviewed separately at this boundary."
+    },
+    "description": "Practice runtime validation in {language}. Narrow an unknown score, reject coercion and nonfinite values, and distinguish executable checks from static types."
+  },
+  {
+    "lesson": "javascript-interview-questions",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "{language} interview questions: scope, identity, and runtime behavior",
+    "summary": "Practice explaining JavaScript behavior and implementation choices alongside algorithm exercises and practical coding questions.",
+    "baseNotes": null,
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/javascript-interview-questions/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The var loop intentionally keeps its shared final index so the quiz can expose the closure distinction. Object mutation and alias reassignment are separate statements, making their effects independently observable. Number constructs NaN from text, avoiding a reliance on undeclared identifiers or coercive equality. All results are ordinary returned data, so this quiz can be tested without scheduling timers or inspecting console output.",
+      "typescript": "The annotations describe object shape and callback return values without changing the quiz's runtime behavior. TypeScript permits the deliberate var loop, so correct types do not imply correct closure intent. Number('not a number') produces a runtime NaN for the equality comparison. The function returns an inferred object shape whose arrays and Boolean fields can be checked just as in JavaScript."
+    },
+    "description": "Practice {language} scope, identity, and equality questions with an executable quiz. Explain closure bindings, object mutation, reassignment, and NaN comparisons."
+  },
+  {
+    "lesson": "fix-this",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "Fix this and closure bugs in {language}",
+    "summary": "Trace JavaScript receivers and callback invocation so you can explain and repair unexpected this values in interview code.",
+    "baseNotes": "videos/fix-this.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/fix-this/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "bind creates one saved function with the presenter fixed as its receiver. It still reads the object's current name on invocation, giving live-object behavior rather than a name snapshot. The let loop creates a separate index binding per seat callback. Names remain captured through the original array reference, so consumers should keep that input stable if they expect the displayed seating text to stay fixed.",
+      "typescript": "The Presenter parameter property declares and initializes its name field, and readPresenter inherits the bound method's string result. The readonly names annotation restricts mutations through this parameter, while it does not freeze a caller's array at runtime. Each seat callback is typed as () => string. These annotations describe the repair; bind and the let loop perform the actual runtime work."
+    },
+    "description": "Fix receiver and closure bugs in {language}. Bind a presenter callback, preserve per-iteration seat positions, and test what changes when captured objects mutate."
+  },
+  {
+    "lesson": "array-methods",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "{language} array methods: map, filter, find, some, and every",
+    "summary": "Practice array-method behavior, callback arguments, iteration, and edge cases by implementing familiar JavaScript operations.",
+    "baseNotes": "videos/array-methods.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/array-methods/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "find can return undefined, so the wrapper converts only that nullish result into null. Using || would be unsafe for a different predicate that can legitimately find zero. includes tests value membership directly, while every and some express different quantified predicates. The function assumes a dense finite-number array and intentionally avoids sparse-hole or coercive-comparison questions in this worked result.",
+      "typescript": "readonly number[] prevents direct mutation through the parameter, and the returned object's fields are inferred from the selected methods. find's number | undefined result becomes number | null through the nullish fallback. Types do not prove the array is dense or its values finite. The executable tests cover empty and mixed values, while the prose states those additional input assumptions explicitly."
+    },
+    "description": "Practice map, filter, find, includes, some, and every in {language}. Compare result shapes, empty-array behavior, short-circuiting, and input preservation."
+  },
+  {
+    "lesson": "build-a-javascript-promise",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "Build a teaching promise in {language}: callbacks and scheduling",
+    "summary": "Explore asynchronous state, fulfillment, rejection, and chaining by building a teaching implementation of promise behavior.",
+    "baseNotes": "videos/build-a-javascript-promise.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/build-a-javascript-promise/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The class stores a tagged result object, keeping pending state separate from fulfilled values such as zero or undefined. Its observe method requires both callbacks and returns nothing. setTimeout schedules each observation, including handlers registered after settlement. Callback return values are ignored, and callback exceptions escape their task. These deliberate limits distinguish the exercise from native then chaining and thenable adoption.",
+      "typescript": "The `Settlement<T>` discriminated union lets the compiler narrow value and reason by state. unknown represents an arbitrary rejection reason, and T describes the fulfilled payload. The observer signatures return void because this API does not construct a chain from returned values. Timer scheduling, first-settlement behavior, and executor exception handling remain runtime operations; the generic type does not supply native Promise semantics."
+    },
+    "description": "Build a teaching promise in {language}. Store one settlement, schedule early and late observers, catch executor errors, and distinguish it from native chaining."
+  },
+  {
+    "lesson": "pub-sub-and-event-driven-programming",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "Build a publish-subscribe dispatcher in {language}",
+    "summary": "Implement event subscription and publication, track listeners, and connect the pattern to event-driven JavaScript applications.",
+    "baseNotes": "videos/pub-sub-and-event-driven-programming.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/pub-sub-and-event-driven-programming/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "Map avoids collisions between event names and object prototype properties. A unique subscription object separates duplicate registrations of the same function, allowing each disposer to remove exactly one occurrence. publish iterates a sliced snapshot, so changes to registration during a callback affect later publications. Listener exceptions are synchronous and stop delivery; returned promises are neither awaited nor automatically handled by this dispatcher.",
+      "typescript": "`Dispatcher<T>` fixes one payload type for an instance, and each event name shares that T. It does not describe a separate payload schema for every event name; a typed event-map extension would be another API. Private fields restrict normal typed access to the subscription lists. Unique records, snapshot iteration, and idempotent disposal implement the same runtime behavior as the JavaScript version."
+    },
+    "description": "Build a publish-subscribe dispatcher in {language}. Define duplicate subscriptions, disposal, snapshot delivery, callback errors, and retained-listener costs."
+  },
+  {
+    "lesson": "debounce",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "Implement debounce in {language}: latest calls, cancel, and flush",
+    "summary": "Implement a debounce that waits for activity to settle. Trace timers, preserve arguments and this, and compare it with throttling.",
+    "baseNotes": "videos/debounce.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/debounce/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The wrapper is a regular function so this comes from each caller and can be applied to the retained invocation. Pending arguments use a separate null marker, preserving false, zero, and undefined payloads. cancel and flush are methods on the returned function object. This standalone version checks timer presence before clearing it and releases retained call state before invoking the callback for safe reentry.",
+      "typescript": "The generic This, Args, and Result parameters preserve receiver, argument tuple, and flush-result relationships. `ReturnType<typeof setTimeout>` accommodates the timer-handle type supplied by the current environment. The receiver assertion is justified only when a pending argument tuple exists, because both are captured together. Ordinary wrapper calls return void; flush may return the callback result or undefined when nothing was pending."
+    },
+    "description": "Implement trailing debounce in {language} with cancel and flush. Preserve the latest arguments and receiver, trace deadlines, and handle callback reentry."
+  },
+  {
+    "lesson": "throttle",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "title": "Implement throttle in {language}: leading and trailing calls",
+    "summary": "Limit callback frequency during repeated events. Explain cooldown windows, trailing updates, and how throttling differs from debounce.",
+    "baseNotes": "videos/throttle.mdx",
+    "examples": [
+      {
+        "title": "Worked example",
+        "source": "lesson-walkthroughs/foundations/examples/throttle/{language}.mdx"
+      }
+    ],
+    "notes": {
+      "javascript": "The timer is set before invoking the leading callback, making nested wrapper calls pending instead of recursively immediate. Subsequent calls overwrite only the retained arguments and receiver, without resetting that timer. A trailing invocation starts the next cooldown first. cancel clears both timer and pending references. These choices specify this wrapper's behavior more precisely than the name throttle alone.",
+      "typescript": "The generic signature retains the caller's receiver and argument tuple, while the wrapper intentionally returns void even if the callback produces a value. Result is still part of the callback type rather than a promise of synchronous return propagation. The timer-handle alias adapts to browser or Node declarations. Null tracks absence of pending arguments independently of valid falsy values in the tuple."
+    },
+    "description": "Implement leading-and-trailing throttle in {language}. Keep fixed cooldown windows, deliver the latest pending call, preserve the receiver, and cancel safely."
+  }
+]

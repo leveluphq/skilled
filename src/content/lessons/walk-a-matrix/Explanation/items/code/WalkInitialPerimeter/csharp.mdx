@@ -1,0 +1,27 @@
+```csharp
+// All rows in the matrix
+int rowCount = matrix.Length;
+// All columns in the 0th row
+int columnCount = matrix[0].Length;
+
+// Walk right (top row)
+for (int column = 0; column < columnCount - 1; column++) {
+    int nodeInFirstRow = matrix[0][column];
+}
+
+// Walk down (right column)
+for (int row = 0; row < rowCount - 1; row++) {
+    int nodeInLastColumn = matrix[row][columnCount - 1];
+}
+
+// Walk left (bottom row)
+for (int column = columnCount - 1; column >= 0; column--) {
+    int nodeInLastRow = matrix[rowCount - 1][column];
+}
+
+// Walk up (left column)
+// NOTE: notice stop before the 0th node at (1,0)
+for (int row = rowCount - 2; row >= 1; row--) {
+    int nodeInFirstColumn = matrix[row][0];
+}
+```

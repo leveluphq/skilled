@@ -1,0 +1,125 @@
+A search box receives a key event every time someone types. If the user enters `graph`, five requests can leave the browser before the user has finished the word. A scroll handler has a different problem: events may keep arriving for several seconds, and the interface still needs periodic updates during the gesture.
+
+Debounce waits for a quiet interval. Throttle limits the frequency of calls while activity continues. The difference is easiest to understand by writing down the input times and deciding which output times the application needs. Try that with the [event timeline](/tools/debounce-throttle), then use the implementations below to connect the behavior to code.
+
+## Choose the behavior before writing the wrapper
+
+For a trailing debounce with a 250 ms wait, events at 0, 80, and 160 ms produce one callback at 410 ms. Each event replaces the previous deadline. A new event at 600 ms starts another quiet interval and produces a callback at 850 ms if nothing follows it.
+
+For a leading throttle with a 250 ms wait, the event at 0 ms can run immediately. Events at 80 and 160 ms fall inside the same cooldown and are ignored when trailing calls are disabled. An event at 600 ms can run immediately because the cooldown has expired.
+
+A useful contract specifies more than the word “throttle.” Decide whether the first event runs immediately, whether the latest suppressed event runs at the end of a window, and whether arguments and `this` must survive the wrapper. Also decide what should happen when a component unmounts or a pending request becomes irrelevant.
+
+A trailing debounce fits typeahead requests, validation after typing, and work that depends on the settled value. A throttle fits progress reporting or repeated work that should continue during a long interaction. A debounce can postpone work indefinitely while events keep arriving; that consequence matters for an autosave design.
+
+## Build a trailing debounce
+
+The wrapper needs one timer identifier and the latest arguments and receiver. Each call cancels the old timer and schedules a new one. Keeping the pending invocation outside the timer callback also makes cancellation and flushing explicit.
+
+```javascript
+function debounce(fn, wait) {
+  if (typeof fn !== 'function') throw new TypeError('Expected a function');
+  if (!Number.isFinite(wait) || wait < 0 || wait > 2147483647)
+    throw new RangeError('wait must fit the timer range');
+  let timer = null;
+  let latestArgs = null;
+  let latestReceiver;
+
+  function invoke() {
+    const args = latestArgs;
+    const receiver = latestReceiver;
+    latestArgs = null;
+    latestReceiver = undefined;
+    if (args !== null) return fn.apply(receiver, args);
+  }
+
+  function debounced(...args) {
+    latestArgs = args;
+    latestReceiver = this;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      invoke();
+    }, wait);
+  }
+
+  debounced.cancel = function () {
+    clearTimeout(timer);
+    timer = null;
+    latestArgs = null;
+    latestReceiver = undefined;
+  };
+
+  debounced.flush = function () {
+    if (timer === null) return;
+    clearTimeout(timer);
+    timer = null;
+    return invoke();
+  };
+
+  return debounced;
+}
+```
+
+The outer wrapper is a regular function so its caller can supply a receiver. The pending state retains that receiver and the current arguments until invocation. An arrow used as the outer wrapper would capture `this` from where the wrapper was created, which is a different contract.
+
+Setting `timer` to null and releasing the old pending arguments before invoking `fn` also leaves a sensible state if the callback calls the debounced function again. The newly scheduled timer and arguments belong to that new call. Flushing returns the immediate callback result; flushing without pending work returns undefined and does not repeat an earlier callback.
+
+Create the wrapper once for the period in which calls should be combined. Calling `debounce(search, 250)` separately inside every key handler creates independent timers, so no call can cancel another call's timer. In a component, keep the function stable with the lifecycle mechanism appropriate to the framework, and cancel pending work when it is no longer needed.
+
+The wrapper does not return the eventual result of `fn`. Its synchronous return value is undefined. Returning a promise to every caller would require a separate policy: should all callers receive the final result, should superseded calls reject, or should each call have a different result? Explain that policy before extending the implementation.
+
+## Build a leading throttle
+
+A leading-only throttle is a good first implementation because its contract has no pending trailing callback. Track the earliest time at which another call is allowed.
+
+```javascript
+function throttleLeading(fn, wait, now = () => performance.now()) {
+  let nextAllowed = -Infinity;
+
+  return function (...args) {
+    const time = now();
+    if (time < nextAllowed) return;
+    nextAllowed = time + wait;
+    return fn.apply(this, args);
+  };
+}
+```
+
+The optional clock makes the function straightforward to test. With a fake `now`, calls at 0, 80, 160, and 600 ms should invoke `fn` at 0 and 600. `performance.now()` is a monotonic elapsed-time clock, which suits comparisons between events in the same page.
+
+This implementation intentionally drops calls during the cooldown. If the final scroll position or input value must eventually be processed, add trailing behavior or choose a different wrapper. A leading-only throttle that drops the last update can leave a display showing an older value after the user stops.
+
+## What leading and trailing options mean
+
+Leading behavior handles the first event in a new burst or available window. Trailing behavior handles the most recent pending event after the relevant waiting period. For debounce, each event moves the quiet-period deadline. For throttle, intervening events should not keep pushing the next permitted callback into the future, or continuous activity would turn it into a debounce.
+
+When both edges are enabled, a single event should usually produce one callback. A second event inside the window gives the wrapper a pending update to deliver later. Without that distinction, a naive implementation calls the function twice even though the input only changed once.
+
+For example, use events at 0, 80, 160, 600, and 680 ms with a 250 ms wait in the [visualizer](/tools/debounce-throttle). Enable both edges. Compare the callback timestamps and the input timestamp each callback receives. Then change to the single-event preset. The outputs should tell you whether your interpretation of trailing behavior matches the wrapper's documented contract.
+
+Libraries can differ in their treatment of boundary events and maximum wait. State those details when comparing an implementation with a library. There is no benefit in arguing about the name of a function while silently using different contracts.
+
+## Cancellation, flushing, and stale requests
+
+Cancellation discards pending work. Flushing executes pending work immediately. They solve different lifecycle problems. Closing a search panel might cancel its pending query. A save action might flush the pending update before navigating away.
+
+A cancel method should clear the timer and release any references retained only for the pending call. A flush method needs access to the latest arguments and receiver outside the timer callback. It should clear the timer before invoking the callback, then ensure the callback cannot be invoked again by that old timer.
+
+Debouncing requests also does not guarantee that responses arrive in order. Suppose a request for `gra` starts, then the debounced request for `graph` starts later. The first response can arrive last. Use an abort mechanism or an explicit request/version check before applying a response to the interface. Reducing request frequency and deciding whether a response is still relevant are separate pieces of the implementation.
+
+## Test the timing contract
+
+Use a fake clock instead of waiting real milliseconds in a unit test. Advance to just before a deadline and assert that no callback has happened. Advance to the deadline and assert the callback's arguments. Then exercise the next window.
+
+Cover an empty stream, one event, a burst, continuous activity, a long pause, and a call exactly on a boundary. Verify `this`, the final arguments, cancellation, and a callback that invokes the wrapper again. If both edges are configurable, test all four combinations, including both disabled.
+
+A deterministic model must choose an order when a timer and an input event have the same timestamp. The visualizer runs due timers first. Real browser scheduling can run callbacks later when other work occupies the main thread; elapsed-time arithmetic does not make timers exact. MDN's [setTimeout reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout) describes those scheduling limits.
+
+## Explain the solution in an interview
+
+Begin with one input trace and the output you intend to produce. Name the state the wrapper retains, then show how each event changes that state. For debounce, that state is a pending deadline and the latest call. For throttle, it includes the next permitted execution time and, when needed, a pending trailing call.
+
+The wrapper uses constant additional state, assuming the callback's arguments are treated as a single retained call. Actual memory still depends on the objects those arguments reference. Timer callbacks and the wrapped function have their own execution costs.
+
+After implementing the small version, discuss cancellation and leading/trailing behavior as extensions. Use the [debounce lesson](/course/debounce) and [throttle lesson](/course/throttle) to practice writing each function without looking at the code, then test the timestamp trace you started with.

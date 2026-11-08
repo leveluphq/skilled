@@ -1,0 +1,79 @@
+A URL shortener stores a destination under a compact public key and redirects a later request to that destination. A useful interview design starts with those two operations and the guarantees they need. Adding a cache, queue, or globally distributed ID service before naming the workload makes the design harder to evaluate.
+
+Use this worked design as a reasoning exercise. It describes a hypothetical service, not an existing Skilled feature or a production capacity claim. The initial scope is link creation and public redirection. Custom aliases, expiration, analytics, abuse controls, and geographic replication become explicit extensions with their own tradeoffs.
+
+## Clarify the product contract
+
+Ask whether anyone can create a link, whether creation requires an account, and whether links can change destination after creation. Decide whether repeated submissions of one destination should create separate keys. Two users may want distinct links for attribution, ownership, or expiration even when the destination text matches.
+
+Define the read behavior for an unknown, expired, or disabled key. A public redirect should not reveal administrative information about the owner. Decide whether deleted keys can ever be reused; reuse can send an old bookmark to an unrelated future destination. Keeping a tombstone or never reusing identifiers avoids that particular ambiguity.
+
+Begin with one write endpoint and one read route. Creation validates the destination and stores a mapping. The read route looks up the key, checks its status, and returns a redirect. HTTP versus HTTPS destinations, credential-bearing URLs, and allowed custom schemes need an explicit validation policy before storing arbitrary text as a destination.
+
+## Choose a record and a uniqueness boundary
+
+A mapping can contain a unique key, destination, owner identifier, creation time, optional expiration time, and status. A database uniqueness constraint is the final boundary against duplicate keys, including concurrent requests. Checking for a key and then inserting without such a constraint has a race between those steps.
+
+One key strategy encodes a unique numeric ID into a compact alphabet. Another draws random keys and retries on a uniqueness conflict. Random generation makes enumeration less predictable, but requires a collision policy. Encoding a unique integer is deterministic and collision-free under one agreed alphabet and canonical representation, but can reveal sequence information.
+
+```javascript
+const SHORT_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+function encodeShortId(id) {
+  if (typeof id !== 'bigint' || id < 0n) throw new TypeError('Expected a nonnegative bigint');
+  if (id === 0n) return '0';
+  const digits = [];
+  while (id > 0n) {
+    digits.push(SHORT_ALPHABET[Number(id % 62n)]);
+    id /= 62n;
+  }
+  return digits.reverse().join('');
+}
+function decodeShortId(key) {
+  if (typeof key !== 'string' || key.length === 0) throw new TypeError('Expected a key');
+  let id = 0n;
+  for (const character of key) {
+    const digit = SHORT_ALPHABET.indexOf(character);
+    if (digit < 0) throw new TypeError('Invalid key character');
+    id = id * 62n + BigInt(digit);
+  }
+  return id;
+}
+```
+
+The encoder is only a representation function. It does not allocate globally unique IDs, authorize reads, or hide sequential values. The decoder accepts leading zeros; a public service requiring canonical keys can compare the decoded value's encoding with the supplied text. A key is a locator, and possession of a guessable key should not substitute for authorization on private data.
+
+## Keep the initial architecture small
+
+A stateless application and one durable database can implement the initial contract. Index the unique key so the redirect path can perform a direct lookup. Separate the application's read and write operations in code before adding separate deployed services. Operational separation has a cost and should solve an observed or specified requirement.
+
+<figure>
+  <img src="/images/algorithms/url-shortener-architecture.svg" alt="A browser calls a stateless app backed by durable key mappings; an optional hot-key cache and async analytics queue extend the design." width="1000" height="480" loading="lazy" />
+  <figcaption>The database holds the authoritative mapping. Add the dashed cache and analytics paths when their workload and failure policies justify them.</figcaption>
+  <p><a href="/images/algorithms/url-shortener-architecture.svg">Open the diagram at full size</a></p>
+</figure>
+
+Estimate capacity with stated hypothetical inputs. Multiply expected links by average stored record size for a storage estimate, then account for indexes and replication separately. Estimate redirect requests per second independently of link creation requests. A read-heavy ratio can motivate a cache, but a ratio alone does not prove that the database is overloaded.
+
+For IDs with k encoded digits, the shown conversion loops process k digits. BigInt arithmetic cost also grows with numeric width. In a bounded-ID design, that width is a deliberate system limit. An alphabet size of 62 increases representational capacity with each character, but database allocation and retention rules determine how many keys the service can safely issue.
+
+## Add caching with an invalidation rule
+
+A cache can hold popular active mappings. On a cache miss, read the database and populate the cache. Decide whether missing keys should be negatively cached and for how long. Otherwise random-key traffic can repeatedly force database lookups even when popular valid links are served from memory.
+
+Mutable destinations and disabled links require invalidation. A long-lived cached redirect can keep sending users to a destination after an owner changes or disables it. Short cache lifetimes bound staleness but increase database traffic. Explicit invalidation can react faster but needs reliable delivery and recovery from missed events.
+
+Browser and intermediary redirect caching is another layer. Selecting a permanent or temporary redirect changes how clients may retain the result. Choose that HTTP behavior from the product's mutability policy, and verify the exact status semantics against the protocol documentation when implementing the service.
+
+## Separate analytics from redirect correctness
+
+Counting a click should not force the redirect path to wait for an expensive aggregate update if the product tolerates delayed analytics. An event queue can move that work off the critical path. State the delivery and duplication policy: retrying an event may count twice unless aggregation handles repeated identifiers.
+
+The redirect service still needs monitoring for lookup latency, error rate, and unavailable dependencies. Define a failure mode when the analytics path is down. If redirect success is the primary contract, dropping or delaying analytics can be preferable to blocking every user on that secondary system. Do not claim exact counts while also discarding events without acknowledging that policy.
+
+## Review abuse, failure, and regional tradeoffs
+
+A public shortening service can distribute harmful destinations. Creation limits, destination review, disable controls, and an appeal process are product requirements alongside lookup performance. If another feature fetches destination previews, server-side request validation needs additional care; redirecting a browser and fetching a URL from your own infrastructure expose different resources.
+
+For multiple regions, decide where a newly created mapping becomes visible before returning success. Replication delay can make an immediately shared link fail in another region. Route reads to an authoritative region, replicate synchronously, or accept and document a bounded delay. Each choice affects latency and availability differently.
+
+Finish a design review by walking a create request, a cache-hit redirect, a miss, an expired key, a uniqueness conflict, and a dependency failure. Use the [interview explanation guide](/guides/explain-your-interview-solution) to connect each decision to a requirement, and the [hash-table topic](/topics/hashtables) to relate direct key lookup to the data structures you already practice.

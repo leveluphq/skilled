@@ -1,0 +1,19 @@
+The meeting example contains two separate bugs. `getPresenterName` should read the first user's name, and each user's `printSeatNumber` callback should print that user's index. The exercise limits changes to the Meeting class and asks for minimal refactoring. Those constraints let you fix the causes without redesigning the entire example.
+
+## Preserve the method's intended receiver
+
+Assigning a user's `getName` method to a property on the meeting copies a function reference. It does not automatically retain the original user as the function's receiver. Calling that function as a meeting method supplies the meeting as `this`, so a lookup intended for the user's name reads the wrong object.
+
+Binding the function to the presenter creates a callable that retains that intended receiver. A wrapper that explicitly calls the user's method can also preserve it, but the lesson uses a small targeted fix. Trace the actual call expression before applying bind everywhere: arrow functions have lexical `this`, and different call forms follow different receiver rules.
+
+## Give each callback its own loop binding
+
+The seat callbacks are created in a loop using `var`. They close over the same function-scoped index binding. By the time they execute, the loop has advanced that binding to its terminating value, so every callback prints the same out-of-range index.
+
+Using `let` in the loop declaration gives the callbacks per-iteration bindings. An immediately invoked function with an index argument can create a separate binding too, but requires more code. The fix concerns which binding each callback reads later; it is not a general rule that closures copy every value at creation time.
+
+## Test the failures independently
+
+First test the presenter result while leaving the seat callbacks alone. Then invoke every seat callback after the loop has finished and expect the sequence of original indexes. Calling callbacks immediately inside the loop would hide the lifetime issue and would not reproduce the reported failure.
+
+Open the [current lesson](/course/fix-this) for the original input and complete changes. The [JavaScript preparation guide](/interview-prep/javascript) connects receiver and closure behavior with further practice. When explaining your fix, name the object used as `this` and the exact variable binding retained by each callback; those two facts account for the observed output.

@@ -1,0 +1,94 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty"
+        input = {
+                "matrix":   [[]],
+                "target": 1
+                }
+        self.actual_result = search_matrix(input["matrix"], input["target"])
+        self.expected_result = [-1, -1]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "standard case"
+        input = {
+                "matrix":   [
+                            [0, 2, 5, 8, 10],
+                            [1, 4, 9, 15, 20],
+                            [3, 7, 14, 19, 21],
+                            [17, 22, 23, 24, 25]
+                            ],
+                "target": 19
+                }
+        self.actual_result = search_matrix(input["matrix"], input["target"])
+        self.expected_result = [2, 3]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "search to top left"
+        input = {
+                "matrix":   [
+                            [0, 2, 5, 8, 10],
+                            [1, 4, 9, 15, 20],
+                            [3, 7, 14, 19, 21],
+                            [17, 22, 23, 24, 25]
+                            ],
+                "target": 0,
+                }
+        self.actual_result = search_matrix(input["matrix"], input["target"])
+        self.expected_result = [0, 0]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "search to top right"
+        input = {
+                "matrix":   [
+                            [0, 2, 5, 8, 10],
+                            [1, 4, 9, 15, 20],
+                            [3, 7, 14, 19, 21],
+                            [17, 22, 23, 24, 25]
+                            ],
+                "target": 10,
+                }
+        self.actual_result = search_matrix(input["matrix"], input["target"])
+        self.expected_result = [0, 4]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "item does not exist"
+        input = {
+                "matrix": [
+                            [0, 2, 5, 8, 10],
+                            [1, 4, 9, 15, 20],
+                            [3, 7, 14, 19, 21],
+                            [17, 22, 23, 24, 25]
+                        ],
+                "target": 6,
+                }
+        self.actual_result = search_matrix(input["matrix"], input["target"])
+        self.expected_result = [-1, -1]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

@@ -1,0 +1,16 @@
+```csharp
+public Node Enqueue(int item) {
+    var newLastNode = new Node(item);
+    bool isEmptyList = this.first == null && this.last == null;
+
+    if (isEmptyList) {
+        this.first = newLastNode;
+        this.last = newLastNode;
+    } else {
+        this.last.prev = newLastNode;
+        this.last = newLastNode;
+    }
+
+    return newLastNode;
+}
+```

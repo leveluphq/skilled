@@ -1,0 +1,60 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The recording uses object references to explain how several variables can reach the same object. In JavaScript, this does not involve exposing a raw memory address or performing pointer arithmetic. It describes the identity relationship that matters when you connect nodes, pass an object to a function, or mutate a shared record.
+
+## Draw objects separately from variable names
+
+Suppose `child` holds an object, and a parent object's child property is assigned that same reference. There is still one child object. Mutating a field through either reference changes the object seen through the other. Creating a second object with equal fields would instead produce a distinct identity.
+
+Assignment changes which value a variable or property holds. Reassigning the local variable `child` to a different object does not rewrite the parent's property. Deleting the parent's property removes that route to the original object, but another variable may still reach it. Trace arrows after each operation rather than assuming that a change to one name changes every reference.
+
+## Follow the value passed into a function
+
+JavaScript passes values as arguments. When a value is an object reference, the function receives that reference value and can use it to mutate the shared object. Reassigning the parameter itself changes only the local binding. This distinction explains why a function may successfully change a node's data but still need to return a new head after replacing the first node.
+
+A shallow copy also preserves references to nested objects. Changing a top-level field on the copy is separate from changing a field inside one of those shared nested objects. The [deep-clone guide](/guides/javascript-deep-clone) shows why copying an object graph requires an explicit contract for cycles, aliases, descriptors, and supported types.
+
+## Relate references to ownership and lifetime
+
+A garbage-collected runtime can reclaim objects that are no longer reachable under its memory model; removing one reference does not establish that all references are gone or that collection happens immediately. Other languages use ownership, reference counting, or explicit allocation APIs. Keep those mechanisms separate when translating an explanation between languages.
+
+Practice by drawing a three-node chain, saving a reference to its middle node, and then changing the head. Identify which nodes each remaining name can reach. Continue with [Linked Lists](/watch/linked-lists), where those identity relationships determine whether a mutation preserves or loses the remaining chain.
+
+## Distinguish shared mutation from rebinding
+
+The example records four values: `[1, 2, 2, 9]`. An original object starts with value 1. A second reference initially points to that same object. Mutating through the second reference changes what the original reference sees to 2. Rebinding the second reference to a new object containing 9 leaves the original object at 2.
+
+This trace is about object identity. A copied integer behaves differently because changing the copy does not mutate a shared object. The exact syntax varies by language: a pointer, a class reference, or an Rc-backed shared allocation can all express this particular example.
+
+## Draw the references before changing the code
+
+Use one box for the original allocation and two arrows pointing at it. The mutation changes the box. The reassignment moves only one arrow to a second box. Drawing two boxes from the beginning would incorrectly predict that the first mutation is isolated.
+
+The example uses constant-size data and O(1) work. It deliberately avoids pointer arithmetic, unsafe memory, and borrowed references that outlive their owner. In Rust, the shared-mutation version needs an explicit ownership/interior-mutability mechanism; copying a Box or borrowing it mutably is not interchangeable with a freely shared reference. In Swift, choosing a class instead of a struct is part of making the trace work. When reviewing a larger algorithm, ask both who can reach an object and who can mutate it. Those are separate questions.
+
+## Kotlin example and implementation choices
+
+Box is a class with a mutable value property. val original fixes the reference binding but does not make the referenced object immutable. var alias can later refer to another instance. The trace copies each Int observation immediately. Replacing var with val for alias would reject the reassignment at compile time without changing the shared object's existing mutation behavior.
+
+### Worked example
+
+```kotlin
+fun aliasTrace(): List<Int> {
+    class Box(var value: Int)
+    val original = Box(1)
+    var alias = original
+    val trace = mutableListOf(original.value)
+    alias.value = 2
+    trace.add(original.value)
+    alias = Box(9)
+    trace.add(original.value)
+    trace.add(alias.value)
+    return trace
+}
+```
+
+## Continue in Kotlin
+
+[Open Pointers](/course/pointers) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Kotlin example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Kotlin interview preparation guide](/interview-prep/kotlin) connects these language choices with further practice and the cross-language operation reference.

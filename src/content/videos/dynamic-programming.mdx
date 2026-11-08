@@ -1,0 +1,19 @@
+Dynamic programming reuses answers to well-defined subproblems. A complete solution needs a state definition, base cases, a recurrence, and an evaluation order. The recording brings those pieces together using Fibonacci. The later course problems vary the recurrence so you can practice the reasoning beyond that first example.
+
+## Say what one stored answer means
+
+For a count problem, an entry might store the number of valid ways to reach a position. For a minimum problem, it might store the least cost for an amount. For a boolean problem, it may store whether a destination is reachable. These meanings determine the combination rule: summing counts, taking a minimum, and testing whether any branch succeeds are different operations.
+
+A state must contain enough information to determine the future. If the remaining choices depend on a previously selected item, include that restriction in the state or prove that a smaller summary captures it. Two histories can share a cached answer only when they represent the same remaining question.
+
+## Derive the recurrence from legal choices
+
+In [Three Moves](/watch/three-moves), the last move can have length one, two, or three, so the count combines those predecessor counts. Zero length contributes one empty sequence. In [Steal Packages](/watch/steal-packages), selecting a house excludes its neighbor, so the recurrence compares taking the current value with skipping it. The values stored in the two problems have different meanings despite similar-looking tables.
+
+In [Vending Machine](/watch/vending-machine), an unreachable amount needs a distinct representation. Adding one to an unchecked maximum sentinel can overflow in fixed-width arithmetic. Guard impossible states before combining them, and keep zero as a legitimate answer for a zero target.
+
+## Prove order and estimate the actual work
+
+Top-down memoization evaluates requested dependencies and stores results. Bottom-up evaluation visits states in an order where dependencies are complete. Count distinct states and transitions per state to estimate time. Include cache storage, recursion depth, and any returned reconstruction in the space analysis.
+
+Test tiny cases against a deliberately simple exhaustive solution. Small generated inputs can catch a plausible recurrence that accidentally counts unordered combinations, skips a legal choice, or treats false as an uncached state. Use the [dynamic programming tool](/tools/dynamic-programming) to explain each stored value aloud before moving to a larger example.

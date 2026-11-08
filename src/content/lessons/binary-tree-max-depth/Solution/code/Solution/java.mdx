@@ -1,0 +1,34 @@
+```java
+class Solution {
+    // A node on the stack, along with its depth
+    private record NodeAtDepth(BinaryNode node, int depth) {}
+
+    public int findMaxDepth(BinaryNode root) {
+        Deque<NodeAtDepth> stack = new ArrayDeque<>();
+        int maxDepth = -1; // Value to return if no node is given
+
+        if (root != null) {
+            // Updates to the correct root depth of 0
+            maxDepth = maxDepth + 1;
+            // Add the root to the stack
+            stack.push(new NodeAtDepth(root, maxDepth));
+        }
+
+        while (!stack.isEmpty()) {
+            // Remove top item on the stack and extract the node and its depth
+            NodeAtDepth top = stack.pop();
+            BinaryNode node = top.node();
+            int depth = top.depth();
+
+            // If the node exists, compare it to the current max and add its children to the stack
+            if (node != null) {
+                maxDepth = Math.max(maxDepth, depth);
+                stack.push(new NodeAtDepth(node.right, depth + 1));
+                stack.push(new NodeAtDepth(node.left, depth + 1));
+            }
+        }
+
+        return maxDepth;
+    }
+}
+```

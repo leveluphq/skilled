@@ -1,0 +1,84 @@
+C++ gives interview solutions direct control over value storage, references, and collection operations. That control also makes lifetime and boundary mistakes part of the algorithm review. Prepare a small standard-library toolkit and explain what remains valid when a container grows or an index changes.
+
+The examples use C++17 features, including `std::optional`, and standard headers rather than a compiler-specific umbrella header. The course editor's starter signature remains the contract for its exercise. Confirm the configured compiler standard before using features introduced later.
+
+## Use vectors without keeping stale references
+
+A `std::vector` stores its elements contiguously and supports indexed access. Appending may grow its allocation. A reallocation invalidates references, pointers, and iterators into the previous storage, so code that saves `auto& current = values[i]` and then appends must not assume current remains usable.
+
+`reserve` requests capacity without creating elements. A vector with capacity ten and size zero still has no valid element at index zero. Use `resize` when you need initialized elements to index, or append actual values. The [vector capacity specification](https://eel.is/c++draft/vector.capacity) distinguishes size from capacity and describes reallocation invalidation.
+
+For backtracking, `results.push_back(path)` copies a vector value and preserves that saved path independently. A result containing pointers into a mutable path has a different lifetime contract. For a function that only reads an input vector, a const reference communicates that it need not copy the entire input.
+
+## Keep boundary arithmetic in one index model
+
+A half-open binary search uses an upper boundary equal to the length. It never needs to compute length minus one on an empty vector, and every branch makes progress. Indexes use `std::size_t` consistently.
+
+The map-based Two Sum example uses a wider arithmetic type for a complement computed from int values. It returns an optional pair of indexes, so no-match is separate from a successful pair containing index zero.
+
+```cpp
+#include <cstddef>
+#include <optional>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+std::size_t lowerBound(const std::vector<int>& values, int target) {
+    std::size_t lo = 0;
+    std::size_t hi = values.size();
+    while (lo < hi) {
+        const std::size_t mid = lo + (hi - lo) / 2;
+        if (values[mid] >= target) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
+}
+
+std::optional<std::pair<std::size_t, std::size_t>> twoSum(
+    const std::vector<int>& values, int target) {
+    std::unordered_map<long long, std::size_t> previous;
+    for (std::size_t index = 0; index < values.size(); ++index) {
+        const long long complement = static_cast<long long>(target) - values[index];
+        const auto found = previous.find(complement);
+        if (found != previous.end()) return std::make_pair(found->second, index);
+        previous[values[index]] = index;
+    }
+    return std::nullopt;
+}
+```
+
+`lowerBound` assumes ascending sorted values and returns the length if every value is smaller than the target. Duplicate matches move the upper boundary left instead of returning any equal midpoint. It takes logarithmic comparisons and constant auxiliary space. For production library code, `std::lower_bound` already provides an insertion-boundary operation; an interview implementation should still explain its invariant.
+
+The Two Sum arithmetic assumes the conventional platform model where int values fit within the wider long long subtraction used here. On the course's ordinary 32-bit-int platforms, every difference of two ints fits. Do not generalize this implementation to arbitrary long long inputs without considering subtraction overflow separately.
+
+## Distinguish map lookup from insertion
+
+`unordered_map::find` checks presence without creating a missing entry. Access through `operator[]` inserts a default-initialized mapped value for a missing key. That can be useful for incrementing a frequency but harmful when a lookup is supposed to leave the map unchanged.
+
+A default index of zero is also indistinguishable from a legitimate zero index if you treat the returned value alone as a presence flag. The example compares the iterator with `end`, then reads the stored index. The lookup occurs before the current value is inserted, preserving the distinct-position requirement.
+
+Unordered containers offer average constant-time lookup under the usual hashing assumptions, with linear worst-case operations. Ordered maps provide a different logarithmic-operation contract and ordered iteration. Name the structure you chose when stating the overall complexity; “a map is O(1)” omits both the implementation and the cost model. The [unordered-container requirements](https://eel.is/c++draft/unord.req) specify the average and worst-case distinction.
+
+Rehashing can invalidate iterators even when an insertion's logical result looks small. Do not retain a lookup iterator across later insertions unless the container's guarantees make that safe. Reading a copied index before mutation is often enough for a short algorithm.
+
+## Watch signed and unsigned boundaries
+
+Container sizes are unsigned. Subtracting one from an empty size wraps in unsigned arithmetic; mixing that result with a signed loop variable can make a reverse loop surprising. A half-open loop or a reverse iterator avoids inventing an invalid last index.
+
+Signed arithmetic overflow has its own language rules and should not be used as a normal wraparound mechanism. Promote operands before an operation when the result needs a wider type. Casting an already-overflowed result is too late. If every permitted input may already occupy the widest chosen signed type, use an explicit overflow check or another representation.
+
+Bounds-checked access through `at` can help diagnose invalid indexes, while `operator[]` relies on the caller's valid-index invariant. Switching accessors does not repair an algorithm that discards the wrong half or visits a grid neighbor outside its dimensions.
+
+## Learn queue, heap, and string conventions
+
+A `std::queue` provides FIFO processing through its adaptor interface. A default `std::priority_queue` exposes a maximum; a minimum-priority configuration uses an appropriate comparison such as `std::greater`. Choose heap orientation from which candidate must be inspected or evicted, especially for a bounded top-K set.
+
+A `std::string` is a sequence of char elements. When those elements contain UTF-8, an index addresses a byte-sized code unit, not necessarily a complete Unicode code point. For ASCII-constrained exercises, byte traversal is sufficient. Arbitrary Unicode segmentation requires a specified representation and additional handling.
+
+A fixed-size frequency array indexed by char also needs care on platforms where char is signed. A negative char value is not a valid direct array index. Make the alphabet constraint or an unsigned conversion explicit instead of relying on whichever inputs happened to be tested.
+
+## Test the assumptions you can name
+
+For boundary search, test empty input, duplicates, a target before the first value, a missing middle target, and a target beyond the last value. Compare with `std::lower_bound`. For Two Sum, compare pair validity with exhaustive pairs on short arrays and include extreme int values, repeated values, no answer, and an index-zero answer.
+
+Compile the examples with warnings enabled and practice running an address/undefined-behavior sanitizer when your environment supports it. Warnings do not prove correctness, but they can expose a signed comparison or invalid lifetime before a larger test hides it. Then work through [First Bad Version](/course/first-bad-version), [Count Islands](/course/count-islands), and the [binary-search guide](/patterns/binary-search), preserving their stated input and output contracts.

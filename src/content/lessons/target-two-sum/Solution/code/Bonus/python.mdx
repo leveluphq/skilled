@@ -1,0 +1,21 @@
+```python
+def get_target_indexes(array, target):
+    results = []
+    array_element_at_index = {}
+
+    for i in range(len(array)):
+        current_value = array[i]
+        matched_value = target - current_value
+        matched_index = array_element_at_index.get(matched_value, -1)
+
+        if matched_index >= 0:
+            results.append([matched_index, i])
+
+            array_element_at_index[current_value] = -1
+            array_element_at_index[matched_value] = -1
+
+        # Add values after we see them
+        array_element_at_index[current_value] = i
+
+    return results
+```

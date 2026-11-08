@@ -1,0 +1,12 @@
+```rust
+struct Node {
+    data: i32,
+    next: Option<Box<Node>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, next: None }
+    }
+}
+```

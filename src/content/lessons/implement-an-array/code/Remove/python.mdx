@@ -1,0 +1,24 @@
+```python
+def remove(self, index):
+    # Ensure the array has items
+    if self.length == 0:
+        return None
+
+    # Ensure we're removing an item inside the array
+    if index > self.length - 1 or index < 0:
+        return None
+
+    item_to_be_removed = self.data[index]
+
+    # Shift items inward one index towards the one we remove
+    for i in range(index, self.length - 1):
+        self.data[i] = self.data[i+1]
+
+    # The item we want to delete is just overwritten to the value of the index that comes after it.
+
+    # Since all items were shifted inward one spot, we need to remove the last index/item since our array size shrinks by 1
+    self.data[self.length - 1] = None
+    self.length -= 1
+
+    return item_to_be_removed
+```

@@ -1,0 +1,15 @@
+```swift
+let str = "hello, world"
+
+// O(n) by copying str's characters to create a new string
+let newStr = str + "!" // hello, world!
+
+// Old
+| h | e | l | l | o | , | w | o | r | l | d |
+
+// Creates new items in memory
+| h | e | l | l | o | , | w | o | r | l | d | ! |
+
+// Note: a Swift string declared with var is mutable,
+// so var str += "!" appends in place in amortized O(1) time
+```

@@ -1,0 +1,9 @@
+```csharp
+void PostOrderTraversal(BinaryTreeNode node) {
+    if (node != null) {
+        PostOrderTraversal(node.left);
+        PostOrderTraversal(node.right);
+        VisitNode(node);
+    }
+}
+```

@@ -1,0 +1,17 @@
+```java
+public Node<T> dequeue() {
+    Node<T> removedItem = this.first;
+
+    if (removedItem == null) {
+        return null;
+    }
+
+    if (this.first == this.last) {
+        this.last = null;
+    }
+
+    this.first = removedItem.prev;
+
+    return removedItem;
+}
+```

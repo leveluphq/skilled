@@ -1,0 +1,91 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty"
+        input = { "items": [], "target": 5 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "one item found"
+        input = { "items": [5], "target": 5 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "one item not found"
+        input = { "items": [5], "target": 2 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "found larger array left"
+        input = { "items": [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], "target": 5 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = 2
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "found larger array after rotation"
+        input = { "items": [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], "target": 9 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = 6
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "found right array 1"
+        input = { "items": [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], "target": 1 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = 8
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "not found larger array"
+        input = { "items": [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], "target": 10 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "first item found"
+        input = { "items": [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], "target": 3 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result =  0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_9(self):
+        self.description = "last item found"
+        input = { "items":  [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], "target": 2 }
+        self.actual_result = find_target_index(input["items"], input["target"])
+        self.expected_result = 9
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

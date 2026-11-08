@@ -1,0 +1,13 @@
+```javascript
+const obj = {};
+
+Object.defineProperty(obj, 'hello', {
+  value: 'world',
+  writable: false,
+  configurable: false,
+});
+
+console.log(obj.hello); // 'world'
+obj.hello = 'Skilled.dev';
+console.log(obj.hello); // 'world'
+```

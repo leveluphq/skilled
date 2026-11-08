@@ -1,0 +1,11 @@
+```java
+import java.util.*;
+
+class SortCopyExample {
+static List<Integer> sortCopy(List<Integer> values) {
+    List<Integer> copy = new ArrayList<>(values);
+    copy.sort(Integer::compare);
+    return copy;
+}
+}
+```

@@ -1,0 +1,65 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Depth-first search explores a branch before returning to pending alternatives. A recursive implementation gets that behavior from nested calls; an iterative implementation manages a stack explicitly. The recording compares those forms. The visit order also depends on neighbor order, so two valid DFS implementations need not print vertices in the same sequence.
+
+## Separate discovery from expansion
+
+On a graph with cycles, record enough visited state to avoid expanding a vertex repeatedly. A recursive DFS commonly marks a vertex when its call begins. The current iterative lesson marks a vertex when popping it, then skips entries already visited. That policy helps retain the intended branch-following behavior when several pending paths lead to the same vertex.
+
+Marking on push is another useful policy for some iterative traversals, but it can produce a different predecessor tree or visit order. Decide which behavior the exercise requires before changing the timing. If you want an iterative traversal that reproduces recursive entry and exit behavior exactly, explicit frames can retain a node's next-neighbor position.
+
+## Trace the stack on a converging graph
+
+Use a graph in which A connects to B and C, and both branches can reach D. Track the stack and visited set after each step. A stack may contain more than one pending entry for D under a mark-on-pop policy, but D should be expanded only once. Reversing the order in which neighbors are pushed also reverses which pending branch is explored next.
+
+A plain visited set is enough for reachability. Detecting directed cycles needs more information about the active path or equivalent state; reaching an already completed vertex does not by itself establish a cycle in the current path. State the traversal's purpose before adding a cycle-detection claim.
+
+## Count work and stored pending entries
+
+With adjacency lists and each vertex expanded once, a complete traversal of a reachable component takes O(V + E) work. Recursive depth can reach V. The exact stack bound for an iterative version depends on whether duplicate pending entries are allowed, so inspect that policy when discussing auxiliary space.
+
+Use the [graph traversal tool](/tools/graph-traversal) to inspect ordering. Then compare [Count Islands](/watch/count-islands), where DFS labels connected land, with [Robot Maze](/watch/robot-maze), where movement rules and remembered failed states change the search.
+
+## Predict the order before running DFS
+
+For adjacency lists `[[1, 2], [3], [3], []]` and start 0, the example returns `[0, 1, 3, 2]`. It uses an explicit stack and pushes neighbors in reverse listed order. The next pop therefore follows the first listed neighbor, matching the order of a recursive depth-first traversal.
+
+A vertex is recorded when it is first popped. Already visited pops are skipped. This policy permits duplicate pending stack entries when different paths discover the same vertex, but each vertex's adjacency list is expanded once. A self-loop or cycle therefore cannot create endless traversal.
+
+## Account for edges waiting on the stack
+
+With a visited set created as needed, time is O(Vr + Er) for the reachable part of the graph. Versions initializing a visited array for the whole graph add O(V) time and storage up front. The visited set and returned order use O(Vr) space. This particular push-all-neighbors approach can retain O(Er) pending entries; an explicit stack of traversal frames can track recursive progress differently. Avoid calling every iterative DFS constant-space or automatically bounding its pending stack by the number of unique vertices.
+
+An invalid start returns an empty result. Neighbor identifiers are assumed valid. Check a cycle, a diamond with a shared descendant, an isolated start, a self-loop, and a disconnected vertex. Traversal visits the start's reachable component only. To cover a whole disconnected graph, add an outer loop over unvisited starts and explain how that affects the result order.
+
+## TypeScript example and implementation choices
+
+readonly nested arrays restrict graph mutation through this function. `Set<number>` separates visited state from payload values, and stack.pop is asserted present only inside a nonempty loop. A valid start is checked explicitly, while neighbor IDs remain a precondition. The types do not enforce that graph neighbors are integers within bounds, so external graph data needs validation before traversal.
+
+### Worked example
+
+```typescript
+function dfsOrder(graph: readonly (readonly number[])[], start: number): number[] {
+  if (start < 0 || start >= graph.length) return [];
+  const stack = [start];
+  const visited = new Set<number>();
+  const output: number[] = [];
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (visited.has(node)) continue;
+    visited.add(node);
+    output.push(node);
+    for (let index = graph[node].length - 1; index >= 0; index--) {
+      const neighbor = graph[node][index];
+      if (!visited.has(neighbor)) stack.push(neighbor);
+    }
+  }
+  return output;
+}
+```
+
+## Continue in TypeScript
+
+[Open Depth-First Search](/course/depth-first-search) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the TypeScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [TypeScript interview preparation guide](/interview-prep/typescript) connects these language choices with further practice and the cross-language operation reference.

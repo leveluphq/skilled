@@ -1,0 +1,18 @@
+```java
+import java.util.*;
+
+class FibCallsExample {
+static List<Integer> fibCalls(int n) {
+    class Counter {
+        int calls = 0;
+        int fib(int value) {
+            calls++;
+            return value < 2 ? value : fib(value - 1) + fib(value - 2);
+        }
+    }
+    Counter counter = new Counter();
+    int answer = counter.fib(n);
+    return List.of(answer, counter.calls);
+}
+}
+```

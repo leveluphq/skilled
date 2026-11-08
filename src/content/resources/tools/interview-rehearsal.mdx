@@ -1,0 +1,43 @@
+Practice the whole coding-interview conversation: clarify a task, propose an approach, implement it, test it, and review your explanation. Choose one of three public problem contracts and a twenty-, thirty-five-, forty-five-, or sixty-minute budget. The timer starts only when you press Start rehearsal.
+
+The page includes prompts, example checks, notes, a self-review rubric, and a Markdown download. Open the course exercise in another tab to use its normal editor and runner. The rehearsal does not automatically execute your notes or assign a hiring score; actual execution and lesson access follow the deployment's course settings.
+
+## Reserve time for clarification and testing
+
+A thirty-five-minute session can begin with five minutes of clarification and examples, continue with about twenty minutes of implementation, and leave ten minutes for testing and explanation. Adjust those allocations to the task rather than treating them as an interview rule.
+
+Read the prompt aloud and identify its output. In this course's Two Sum contract, the requested result contains all matching index pairs and values are unique. That differs from a familiar variant asking for one pair. Product except self prohibits division and uses the empty-product convention. Valid brackets ignores ordinary text while recognizing a fixed ASCII delimiter alphabet.
+
+The clarifying-prompt disclosure helps if you are practicing alone. Try writing your own questions before opening it. A partner can instead read the task and answer only the questions you ask, using the supplied contract as the shared reference.
+
+## Explain a baseline before improving it
+
+Describe a direct correct method and its cost. For Two Sum, enumerating distinct pairs makes the index meaning and quadratic baseline explicit. An optimized complement map needs a separate explanation of what has been stored and why a lookup cannot match the current element with itself.
+
+State the invariant before typing the loop. For brackets, the stack contains unmatched opening delimiters in their encounter order. For product except self, each directional scalar excludes the current position when it updates that position's output.
+
+If you cannot explain a line without reading it, slow down and trace a small input. A clear correction is more useful practice than quietly replacing the whole solution with one you recently memorized. Record the uncertainty in the notes field and turn it into a test or follow-up.
+
+## Use the timer without losing the work
+
+The timer measures wall-clock time while it is running, including time spent coding in another tab. Browser background throttling may delay a visible update, but the next update compares the current time with the stored deadline rather than assuming every timer callback ran on schedule.
+
+Pause when interrupted and resume when ready. Finish and review stops the timer early. Reset timer and review clears the timing state and rubric selections while retaining your notes. Changing the exercise also resets the timing and review state; the page keeps existing notes so a mistaken selection does not discard written work.
+
+Notes remain in the current page's memory. Leaving or reloading the page discards them unless you download them first. There is no account synchronization or server-side draft. The download includes the selected prompt, budget, notes, and checked rubric items as ordinary Markdown you can keep with your own study records.
+
+## Test the contract with small counterexamples
+
+Begin with an ordinary example and then choose a case tied to a possible mistake. For brackets, equal counts do not establish valid nesting: `([)]` is invalid. For product except self, two zeros challenge a division-based strategy. For Two Sum, a complement stored at index zero challenges a truthiness check.
+
+Check side effects too. If input preservation is promised, keep a copy and compare it afterward. If output order is flexible, normalize only that order; do not erase repeated required results or change indexes into values.
+
+The [edge-case practice](/tools/edge-case-practice) supplies more assumption-driven tests. Use the [practice worksheet](/reference/interview-practice-worksheet) when you want room for a full trace and a baseline-versus-improved comparison.
+
+## Review evidence rather than count checked boxes
+
+The rubric asks about clarification, examples, a baseline, an invariant, tests, cost analysis, and the next practice task. Check an item only when you can point to something you said, wrote, or tested. A total number of checks is not an estimate of interview performance.
+
+An unchecked item should produce a specific action. “Get better at graphs” is hard to schedule. “Implement parent reconstruction after a BFS and test an unreachable target” tells you what the next attempt must demonstrate. Keep that action in the downloaded notes.
+
+The [mock-interview rubric](/reference/mock-interview-rubric) explains how to review these dimensions with a partner. After a solo attempt, use [explaining your solution](/guides/explain-your-interview-solution) to practice a concise walkthrough of the invariant, one dry run, and the complexity argument. Repeat the problem later from a blank editor, then change a constraint to check whether you can adapt the approach.

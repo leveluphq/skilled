@@ -1,0 +1,16 @@
+```kotlin
+fun findTailNodeRecursively(node: Node): Node {
+    val nextNode = node.next
+
+    // Stopping condition when we find the tail node.
+    // We know that the `next` will be null for the tail.
+    if (nextNode == null) {
+        return node
+    }
+
+    // Continue to call our function recursively with the `next` node.
+    return findTailNodeRecursively(nextNode)
+}
+
+val tailNode = findTailNodeRecursively(head)
+```

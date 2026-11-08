@@ -1,0 +1,25 @@
+```rust
+// NOTE: self.is_bad_version(version) is provided by the test runner
+// and will be called correctly when used in this solution.
+
+impl Solution {
+    pub fn first_bad_version(&self, total_versions: i32) -> i32 {
+        let mut lower_bound = 1; // Starts at v1
+        let mut upper_bound = total_versions;
+
+        while lower_bound < upper_bound {
+            // Not (lower_bound + upper_bound) / 2, which overflows an i32
+            // when there are billions of versions
+            let midpoint = lower_bound + (upper_bound - lower_bound) / 2;
+
+            if self.is_bad_version(midpoint) {
+                upper_bound = midpoint;
+            } else {
+                lower_bound = midpoint + 1;
+            }
+        }
+
+        lower_bound
+    }
+}
+```

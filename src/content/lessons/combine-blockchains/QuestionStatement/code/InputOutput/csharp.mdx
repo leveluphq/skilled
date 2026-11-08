@@ -1,0 +1,23 @@
+```csharp
+public class ListNode {
+    public int data; // the unix timestamp of when the block was added
+    public ListNode next;
+
+    public ListNode(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+// Input
+var skilledChainHead = new ListNode(42);
+skilledChainHead.next = new ListNode(159);
+// many more additions to each...
+
+var devCoinHead = new ListNode(123);
+devCoinHead.next = new ListNode(482);
+// many more additions to each...
+
+// Output: CombineBlockchains(skilledChainHead, devCoinHead)
+42 -> 123 -> 159 -> 482 // ... and so on
+```

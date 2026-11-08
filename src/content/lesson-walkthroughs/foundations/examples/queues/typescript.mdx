@@ -1,0 +1,9 @@
+```typescript
+function fifoOrder(values: readonly number[]): number[] {
+  const queue = [...values];
+  const output: number[] = [];
+  let head = 0;
+  while (head < queue.length) output.push(queue[head++]);
+  return output;
+}
+```

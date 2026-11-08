@@ -1,0 +1,124 @@
+```javascript
+class BinaryNode {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+const tests = [
+  {
+    input: new BinaryNode(42),
+    expected: true,
+    description: 'handles only a root',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(20);
+      root.left.left = new BinaryNode(20);
+      root.left.left.right = new BinaryNode(17);
+
+      root.right = new BinaryNode(50);
+      root.right.left = new BinaryNode(70);
+
+      return root;
+    })(),
+    expected: false,
+    description: 'false case with duplicate node',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(55);
+      root.right.right.right = new BinaryNode(65);
+      root.right.right.right.right = new BinaryNode(75);
+      root.right.right.right.right.right = new BinaryNode(85);
+
+      return root;
+    })(),
+    expected: true,
+    description: 'unbalanced true case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(55);
+      root.right.right.right = new BinaryNode(65);
+      root.right.right.right.right = new BinaryNode(95);
+      root.right.right.right.right.right = new BinaryNode(85);
+
+      return root;
+    })(),
+    expected: false,
+    description: 'unbalanced false case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(20);
+      root.left.left = new BinaryNode(17);
+      root.left.left.left = new BinaryNode(12);
+      root.left.left.right = new BinaryNode(18);
+      root.left.right = new BinaryNode(25);
+      root.left.right.left = new BinaryNode(24);
+      root.left.right.right = new BinaryNode(27);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(70);
+      root.right.right.right = new BinaryNode(80);
+
+      return root;
+    })(),
+    expected: true,
+    description: 'multiple nodes at the same level true case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(9);
+
+      root.left = new BinaryNode(5);
+      root.left.left = new BinaryNode(1);
+      root.left.right = new BinaryNode(10);
+
+      root.right = new BinaryNode(22);
+      root.right.right = new BinaryNode(30);
+
+      return root;
+    })(),
+    expected: false,
+    description: 'false case where a left descendant is larger than an ancestor',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(9);
+
+      root.left = new BinaryNode(5);
+      root.left.left = new BinaryNode(1);
+      root.left.right = new BinaryNode(7);
+
+      root.right = new BinaryNode(22);
+      root.right.left = new BinaryNode(8);
+      root.right.right = new BinaryNode(30);
+
+      return root;
+    })(),
+    expected: false,
+    description: 'false case where a right descendant is smaller than an ancestor',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = isBST(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

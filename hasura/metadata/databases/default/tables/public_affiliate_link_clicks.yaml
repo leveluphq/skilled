@@ -1,0 +1,21 @@
+table:
+  name: affiliate_link_clicks
+  schema: public
+object_relationships:
+- name: affiliateUser
+  using:
+    foreign_key_constraint_on: affiliateUserId
+select_permissions:
+- permission:
+    allow_aggregations: true
+    columns:
+    - affiliateIdUsed
+    - affiliateUserId
+    - createdAt
+    - destinationPagePath
+    - id
+    - referralUrl
+    filter:
+      affiliateUserId:
+        _eq: X-Hasura-User-Id
+  role: user

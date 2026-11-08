@@ -1,0 +1,16 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class ContainsBSTExample {
+public static bool ContainsBST(List<int?> values, int target) {
+    int index = 0;
+    while (index < values.Count && values[index] != null) {
+        int value = values[index].Value;
+        if (value == target) return true;
+        index = target < value ? 2 * index + 1 : 2 * index + 2;
+    }
+    return false;
+}
+}
+```

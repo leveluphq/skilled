@@ -1,0 +1,21 @@
+```csharp
+public class ListNode {
+    public int data;
+    public ListNode next;
+
+    public ListNode(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+// Input
+var head = new ListNode(42); // ... then add more nodes
+// k = 5     4     3    2    1    0
+       42 -> 52 -> 4 -> 6 -> 1 -> 9000
+
+
+// Output: MirrorDelete(head, 2)
+// Remove k = 2 which is the 6
+42 -> 52 -> 4 -> 1 -> 9000
+```

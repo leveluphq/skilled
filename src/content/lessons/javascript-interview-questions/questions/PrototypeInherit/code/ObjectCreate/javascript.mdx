@@ -1,0 +1,31 @@
+```javascript
+const person = {
+  getName() {
+    return this.name;
+  },
+  getAge() {
+    return this.age;
+  }
+}
+
+// This sets bob.__proto__ = person;
+const bob = Object.create(person);
+// This sets dan.__proto__ = person;
+const dan = Object.create(person);
+
+console.log(bob.__proto__); // { getName, getAge }
+console.log(dan.__proto__); // { getName, getAge }
+
+// They have the same __proto__ (not a copy)
+console.log(bob.__proto__ === person); // true
+console.log(dan.__proto__ === bob.__proto__); // true
+
+bob.name = 'Bob';
+bob.age = 42;
+console.log(`My name is ${bob.getName()} and I am ${bob.getAge()}`);
+
+// If we change person, the objects that inherit from it will receive the properties/methods
+person.TEST = '123';
+
+console.log(bob.TEST);
+```

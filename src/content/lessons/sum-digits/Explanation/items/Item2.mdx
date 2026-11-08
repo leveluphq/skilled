@@ -1,0 +1,39 @@
+import BigO from 'content/blocks/BigO';
+import { Container } from 'style/elements';
+import RecursiveOverview from './code/RecursiveOverview';
+
+We now have the logic to extract the individual digits from an integer.
+
+We don't know the length of an integer (total number of digits).
+The only way to know we have summed them all is to continue dividing by 10 until our number reaches 0,
+meaning we have used all of its digits.
+
+When you need to iterate for an unknown number of steps, the options are either recursion or a `while` loop.
+
+With recursion, we are often worried about adding the space complexity of the call stack,
+but in this instance, the call stack only grows by one call for each digit.
+
+The number of steps is the number of digits in the integer, which grows much more slowly than its value.
+For example, the largest unsigned 64-bit integer is `2^64 - 1 = 18,446,744,073,709,551,615`, but it only has 20 digits.
+As a result, our time and space complexity are <BigO.n letter="d" /> where `d` is the number of digits in the input.
+
+<Container>
+
+```javascript
+number = 1 8 , 4 4 6 , 7 4 4 , 0 7  3  , 7  0  9  , 5  5  1  , 6  1  5
+         | |   | | |   | | |   | |  |    |  |  |    |  |  |    |  |  |
+digits = 1 2   3 4 5   6 7 8   9 10 11   12 13 14   15 16 17   18 19 20 = d
+
+d = 20 digits to iterate over
+```
+
+</Container>
+
+Comparing the `while` loop and recursive solution, they follow similar logic.
+You take the modulo of the integer and then divide it by 10.
+
+We'll use the recursive solution because it actually maps out directly to our logic earlier.
+Just remember **you always need to have a base case**,
+and here we stop calling the recursive function and return 0 once the input integer reaches 0.
+
+<RecursiveOverview />

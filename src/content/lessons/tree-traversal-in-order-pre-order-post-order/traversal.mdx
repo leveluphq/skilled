@@ -1,0 +1,53 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { Section } from 'style/elements/lesson';
+import BinaryTreeNode from './code/BinaryTreeNode';
+import VisitNode from './code/VisitNode';
+import PreOrderTraversal from './code/PreOrderTraversal';
+import PostOrderTraversal from './code/PostOrderTraversal';
+import InorderSection from './inorder.mdx';
+
+<SubsectionHeader>Traversal Implementations</SubsectionHeader>
+
+For all the cases, we will only consider a binary tree that has a `left` and `right` pointer.
+
+You will notice that the code for each solution below looks very similar - almost identical.
+The only difference is when we "visit" a node which is when we use the current node's data in our algorithm.
+
+Since we are using recursion, we are building up a stack of function calls, and it will unwind when we reach the leaf nodes which is the base case.
+What determines the order is if we "visit" the node before the recursive call, after visiting the `left` node recursively, or after visiting both the `left` and `right` nodes recursively.
+
+The input function will be the following node implementation:
+
+<BinaryTreeNode />
+
+In our case we will consider visiting the node as just printing its data:
+
+<VisitNode />
+
+<InorderSection />
+
+### Pre-Order Traversal
+
+Pre-order traversal will always visit the current node before visiting its children.
+The root is the first node visited. It follows the left path and visits each node as it encounters them.
+After that, it follows the right paths and still visits the nodes as it encounters them before continuing on with the path.
+
+Use this if you want to explore a given level before reaching the leaf node of a path.
+
+<PreOrderTraversal />
+
+<Image src="/images/pre-order-traversal.gif" alt="Pre-order traversal visits the current node before its left and right subtrees." width={480} height={489} />
+
+### Post-Order Traversal
+
+For post-order traversal, you visit a node's children before visiting that node.
+This means that you will use it when you want to reach the leaves first.
+You visit the entire left subtree, then the entire right subtree, and then the root node of the subtree.
+
+<PostOrderTraversal />
+
+<Image src="/images/post-order-traversal.gif" alt="Post-order traversal visits both child subtrees before visiting their parent." width={480} height={493} />

@@ -1,0 +1,34 @@
+```go
+func recursiveFlatten(array []any) []int {
+	flattenedArray := []int{}
+
+	for _, item := range array {
+		// if the item is a slice, flatten it with a recursive call
+		if nested, ok := item.([]any); ok {
+			flattenedArray = append(flattenedArray, recursiveFlatten(nested)...)
+		} else {
+			flattenedArray = append(flattenedArray, item.(int))
+		}
+	}
+
+	return flattenedArray
+}
+
+func iterativeFlatten(array []any) []int {
+	output := []int{}
+	toBeFlattened := []any{array}
+
+	for len(toBeFlattened) > 0 {
+		current := toBeFlattened[0]
+		toBeFlattened = toBeFlattened[1:]
+
+		if nested, ok := current.([]any); ok {
+			toBeFlattened = slices.Concat(nested, toBeFlattened)
+		} else {
+			output = append(output, current.(int))
+		}
+	}
+
+	return output
+}
+```

@@ -1,0 +1,11 @@
+```go
+str := "Dev"
+
+// Indexing a Go string gives a byte: the character's UTF-8 encoded value
+fmt.Println(str[0]) // 68
+fmt.Println(str[1]) // 101
+fmt.Println(str[2]) // 118
+
+// Converting to runes gives each character's Unicode code point
+fmt.Println([]rune(str)) // [68 101 118]
+```

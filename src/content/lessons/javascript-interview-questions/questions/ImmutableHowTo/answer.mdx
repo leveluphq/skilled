@@ -1,0 +1,41 @@
+import ImmutableExample from './code/ImmutableExample';
+import ConfiguredProperty from './code/ConfiguredProperty';
+import PreventExtension from './code/PreventExtension';
+import Seal from './code/Seal';
+import Freeze from './code/Freeze';
+
+Immutability means that if we want to update a value,
+we create a new variable that contains the new value instead of changing a previously declared variable.
+Immutability is a core pattern in functional programming, and it gives us more confidence in our code because we know data cannot change throughout the lifetime of the program.
+
+JavaScript doesn't offer immutable arrays or objects by default, but there are functions we can use to prevent objects from being altered and patterns we can follow to prevent data from being mutated.
+Strings in JavaScript are immutable.
+
+Some examples of maintaining immutability in JS are:
+
+<ImmutableExample />
+
+> Note that Object.assign and the spread operator just make a shallow copy of the object.
+> If you have nested arrays and/or objects, they will still point to the original value.
+
+JavaScript also offers a lower-level configuration of objects.
+
+You can use `Object.defineProperty` to set the CRUD access on individual properties.
+Setting `writable: false` means that you can't change the value of a property,
+and setting `configurable: false` means you can't change the type or delete it from the object.
+
+<ConfiguredProperty />
+
+You can use `Object.preventExtensions` to block an object from adding new properties.
+
+<PreventExtension />
+
+You can use `Object.seal` which is the same as `Object.preventExtensions`, but it also sets all the properties to `configurable: false`.
+You cannot add new properties, change the type of existing properties, or delete properties.
+
+<Seal />
+
+Using `Object.freeze` gives you the highest level of immutability.
+You cannot add, change, or delete properties.
+
+<Freeze />

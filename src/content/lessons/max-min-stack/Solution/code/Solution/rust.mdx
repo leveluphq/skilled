@@ -1,0 +1,58 @@
+```rust
+struct MaxMinStack {
+    stack: Vec<i32>,
+
+    // Stacks for internal tracking of the max/min
+    max_value_stack: Vec<i32>,
+    min_value_stack: Vec<i32>,
+}
+
+impl MaxMinStack {
+    fn new() -> Self {
+        MaxMinStack {
+            stack: Vec::new(),
+            max_value_stack: Vec::new(),
+            min_value_stack: Vec::new(),
+        }
+    }
+
+    fn peek(&self) -> i32 {
+        *self.stack.last().expect("the stack is empty")
+    }
+
+    fn push(&mut self, item: i32) -> i32 {
+        self.stack.push(item);
+
+        if self.max_value_stack.is_empty() || item >= self.get_stack_max() {
+            self.max_value_stack.push(item);
+        }
+        if self.min_value_stack.is_empty() || item <= self.get_stack_min() {
+            self.min_value_stack.push(item);
+        }
+
+        item
+    }
+
+    fn pop(&mut self) -> i32 {
+        let item = self.stack.pop().expect("the stack is empty");
+
+        if item == self.get_stack_max() {
+            self.max_value_stack.pop();
+        }
+        if item == self.get_stack_min() {
+            self.min_value_stack.pop();
+        }
+
+        item
+    }
+
+    // Effectively a "peek()" for the max/min values of the stack
+    fn get_stack_max(&self) -> i32 {
+        *self.max_value_stack.last().expect("the stack is empty")
+    }
+
+    fn get_stack_min(&self) -> i32 {
+        *self.min_value_stack.last().expect("the stack is empty")
+    }
+}
+```

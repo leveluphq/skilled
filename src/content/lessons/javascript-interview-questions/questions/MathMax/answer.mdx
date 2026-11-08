@@ -1,0 +1,25 @@
+import ExampleParams from './code/ExampleParams';
+import ExampleArray from './code/ExampleArray';
+import Spread from './code/Spread';
+import Apply from './code/Apply';
+
+The `Math.max` method takes an arbitrarily long list of parameters and returns the largest.
+
+<ExampleParams />
+
+We instead want it to work with an array.
+
+<ExampleArray />
+
+The above returns `NaN`, so we'll write our own function `arrayMax` that still uses `Math.max` to find the largest number in an array.
+
+The simplest solution is the spread operator `...`.
+It will decompose an array into its individual items.
+
+<Spread />
+
+This question has historically been used to test an understanding of `apply`.
+It will pass an array as individual items to a function.
+`Math.max` is also a static method which means it is called without instantiating an object and does not require access to `this`, so we pass `null` as the first argument.
+
+<Apply />

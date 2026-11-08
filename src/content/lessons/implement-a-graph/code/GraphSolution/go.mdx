@@ -1,0 +1,38 @@
+```go
+import "slices"
+
+type Graph struct {
+	adjacencyList map[string][]string
+	undirected    bool
+}
+
+// Go has no default arguments, so pass true for an undirected graph
+func NewGraph(undirected bool) *Graph {
+	return &Graph{
+		adjacencyList: map[string][]string{},
+		undirected:    undirected,
+	}
+}
+
+func (g *Graph) AddVertex(vertex string) {
+	g.adjacencyList[vertex] = []string{}
+}
+
+func (g *Graph) AddEdge(source, destination string) {
+	g.adjacencyList[source] = append(g.adjacencyList[source], destination)
+
+	if g.undirected {
+		g.adjacencyList[destination] = append(g.adjacencyList[destination], source)
+	}
+}
+
+func (g *Graph) RemoveVertex(vertex string) {
+	delete(g.adjacencyList, vertex)
+
+	for node, edges := range g.adjacencyList {
+		g.adjacencyList[node] = slices.DeleteFunc(edges, func(v string) bool {
+			return v == vertex
+		})
+	}
+}
+```

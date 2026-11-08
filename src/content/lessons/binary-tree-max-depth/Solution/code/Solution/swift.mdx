@@ -1,0 +1,29 @@
+```swift
+class Solution {
+    func findMaxDepth(_ root: BinaryNode?) -> Int {
+        var stack: [(node: BinaryNode?, depth: Int)] = []
+        var maxDepth = -1 // Value to return if no node is given
+
+        if root != nil {
+            // Updates to the correct root depth of 0
+            maxDepth = maxDepth + 1
+            // Add the root to the stack
+            stack.append((node: root, depth: maxDepth))
+        }
+
+        while !stack.isEmpty {
+            // Remove top item on the stack and extract the node and its depth
+            let (node, depth) = stack.removeLast()
+
+            // If the node exists, compare it to the current max and add its children to the stack
+            if let node {
+                maxDepth = max(maxDepth, depth)
+                stack.append((node: node.right, depth: depth + 1))
+                stack.append((node: node.left, depth: depth + 1))
+            }
+        }
+
+        return maxDepth
+    }
+}
+```

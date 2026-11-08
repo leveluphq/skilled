@@ -1,0 +1,8 @@
+```go
+func FifoOrder(values []int) []int {
+    queue := append([]int{}, values...)
+    output := make([]int, 0, len(queue))
+    for head := 0; head < len(queue); head++ { output = append(output, queue[head]) }
+    return output
+}
+```

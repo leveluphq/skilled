@@ -1,0 +1,18 @@
+```go
+func sumDigits(number int) int {
+	// ** Base case ** - we know to stop when our number no longer has digits
+	if number == 0 {
+		return 0
+	}
+
+	// Recursive case:
+	//   1. Extract the digit in the one's place using % 10
+	//   2. Remove the one's place by dividing by 10 (integer division drops the remainder)
+	//   3. Sum it recursively with the rest of the digits in the integer
+	onesPlaceValue := number % 10
+	trimmedItems := number / 10
+	sumOfRemainingItems := sumDigits(trimmedItems) // recursive call
+
+	return onesPlaceValue + sumOfRemainingItems
+}
+```

@@ -1,0 +1,21 @@
+import IfExample from './code/IfExample';
+import Falsy from './code/Falsy';
+
+Since JavaScript is a loosely typed language, we can use variables of any type and JavaScript will try to coerce them (transform their type) to whatever is needed in a particular situation.
+For example, an `if (conditional) {...}` statement is expecting a boolean, but you can pass any variable type to it, and it will still work.
+
+<IfExample />
+
+What is happening is that JavaScript is converting the string above to a boolean. A string containing characters is converted to `true` and an empty string is converted to `false`.
+Then the `if` statement handles the resulting coercion.
+
+Every variable type is converted in this manner.
+The values that convert to `true` are considered "truthy".
+The values that convert to `false` are considered "falsy".
+
+Below is a list of all the falsy values in JavaScript.
+Everything else is considered truthy.
+
+<Falsy />
+
+It's worth noting that empty arrays `[]` and empty objects `{}` are considered truthy.

@@ -1,0 +1,14 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class LifoOrderExample {
+public static List<int> LifoOrder(List<int> values) {
+    var stack = new Stack<int>();
+    var output = new List<int>();
+    foreach (int value in values) stack.Push(value);
+    while (stack.Count > 0) output.Add(stack.Pop());
+    return output;
+}
+}
+```

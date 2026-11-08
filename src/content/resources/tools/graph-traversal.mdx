@@ -1,0 +1,49 @@
+This playground shows how breadth-first search and recursive depth-first search explore the same directed graph. Edit the neighbor lists, choose a starting node, and advance one visit at a time. The drawing, visit order, frontier, and parent table describe different parts of the search state.
+
+BFS uses a queue and marks nodes when they are discovered. DFS follows the neighbor order recursively and displays the currently active call path. The tool visits the component reachable from your chosen start; it does not automatically restart on disconnected nodes.
+
+## Enter a graph as an adjacency list
+
+Use a JSON object where each key is a node name and its array lists outgoing neighbors. An edge from A to B does not imply an edge from B to A. Add both entries if the relationship should be undirected.
+
+Names can contain up to 16 characters. The tool accepts at most 24 nodes and 100 directed edges so its diagram remains inspectable. A neighbor mentioned without its own key becomes a node with no outgoing edges. Repeated entries for the same outgoing neighbor are consolidated.
+
+An empty object represents an empty graph. No traversal can start until it contains a node. Invalid JSON or a non-array neighbor list produces an error while retaining the last successfully applied graph. Press Apply graph after editing so the displayed traversal corresponds to a known valid input.
+
+## Read the visit order and frontier separately
+
+The current node is blue. Earlier visited nodes are yellow. Unvisited nodes retain the neutral fill. Visit order records the nodes already processed, while the BFS queue can contain nodes that have been discovered but not processed yet.
+
+For BFS, the queue's first displayed entry is the next node to process. Visiting the current node can append previously unseen neighbors to the back. Their parent is recorded at that discovery point, which is why the parent map may already know a queued node before its visit appears in the output.
+
+For DFS, the displayed stack is the active recursive call path from the root to the current node. It is not a queue of every node the algorithm might visit later. When a branch returns, its caller resumes the neighbor loop. The next visit can therefore show a shorter path before descending into another branch.
+
+## Compare shortest paths with discovery paths
+
+Choose Different path lengths and start at A with target F. BFS can discover a short route through C. DFS follows B's branch first because B appears first in A's neighbor list, so it can discover a longer route through D and E before reaching F.
+
+The path table uses the search's recorded parents. A BFS parent chain gives a shortest path by edge count in this equal-cost graph. A DFS parent chain gives the route used to discover the node; it is not necessarily shortest.
+
+A target marked “not discovered yet” may become reachable later in the traversal. After all reachable nodes have been processed, a target with no parent chain is unreachable from this start. Changing the target only changes which recorded path is displayed; changing the start or algorithm resets the traversal.
+
+## Add a cycle and a disconnected node
+
+The cycle preset contains A to B to C to A, plus an outgoing route to D. The visited rule prevents the edge back to A from causing an infinite traversal. X remains separate and unvisited when the search starts at A.
+
+Then choose X as the start. Only X is reachable from itself under the listed outgoing edges. A graph can contain several nodes without all of them belonging to one reachable region. For a full-graph traversal, an outer loop would start a new search for each still-unseen component.
+
+Try a self-loop and observe that the node is not visited repeatedly. Try an undirected connection by listing both directions. The same membership rule handles the returning edge, although the graph's interpretation and edge count differ.
+
+## Use neighbor order as part of the contract
+
+Both algorithms examine each node's neighbors in the order you enter them. Reversing A's neighbor array can change the visit sequence and the chosen parent among equally valid alternatives. It does not change reachability.
+
+If a task demands a particular sorted traversal, sorting the neighbor lists is additional work. If it accepts any shortest route, a different BFS parent path can still be valid. Tests should reflect the requested contract rather than one incidental traversal order.
+
+The [BFS versus DFS guide](/guides/bfs-vs-dfs) supplies code and correctness arguments. In particular, it explains why first discovery in BFS establishes shortest edge count and why an iterative stack implementation may need extra care to reproduce recursive DFS order exactly.
+
+## Transfer the model to grid exercises
+
+A matrix can generate neighbors from row and column coordinates instead of storing arrays for each cell. Bounds, blocked cells, and permitted directions define which edges exist. A visited set or an explicit in-place mark prevents the same region from being explored repeatedly.
+
+Practice [Count Islands](/course/count-islands) after tracing a cycle here. Then use [Pilot a Rocket](/course/pilot-a-rocket) to practice retaining parents for a shortest unweighted route. State the representation, visited rule, frontier structure, and output contract before implementing either exercise.

@@ -1,0 +1,21 @@
+```csharp
+public TValue Remove(string key) {
+    int index = Hash(key);
+    List<Entry> bucket = table[index];
+
+    // Find the key in the bucket, delete the key-value pair, and return its value
+    if (bucket != null) {
+        for (int i = 0; i < bucket.Count; i++) {
+            if (bucket[i].key == key) {
+                TValue value = bucket[i].value;
+                bucket.RemoveAt(i);
+
+                return value;
+            }
+        }
+    }
+
+    // Return the default value (null for reference types) if the key didn't exist
+    return default;
+}
+```

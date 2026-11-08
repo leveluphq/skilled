@@ -1,0 +1,36 @@
+```java
+int rowCount = matrix.length;
+int columnCount = matrix[0].length;
+int startRow = 0;
+int endRow = rowCount - 1;
+int startColumn = 0;
+int endColumn = columnCount - 1;
+
+// Walk right (top row)
+for (int column = startColumn; column <= endColumn; column++) {
+    int nodeInFirstRow = matrix[startRow][column];
+}
+// We have walked across the entirety of the starting row, so increment the index.
+startRow++;
+
+// Walk down (right column)
+for (int row = startRow; row <= endRow; row++) {
+    int nodeInLastColumn = matrix[row][endColumn];
+}
+// We have walked across end column, so we decrement the index.
+endColumn--;
+
+// Walk left (bottom row)
+for (int column = endColumn; column >= startColumn; column--) {
+    int nodeInLastRow = matrix[endRow][column];
+}
+// We have walked across end row, so we decrement the index.
+endRow--;
+
+// Walk up (left column)
+for (int row = endRow; row >= startRow; row--) {
+    int nodeInFirstColumn = matrix[row][startColumn];
+}
+// We have walked across the starting column, so we increment the index
+startColumn++;
+```

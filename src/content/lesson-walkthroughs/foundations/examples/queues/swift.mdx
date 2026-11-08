@@ -1,0 +1,9 @@
+```swift
+func fifoOrder(_ values: [Int]) -> [Int] {
+    let queue = values
+    var head = 0
+    var output: [Int] = []
+    while head < queue.count { output.append(queue[head]); head += 1 }
+    return output
+}
+```

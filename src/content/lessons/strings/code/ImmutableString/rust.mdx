@@ -1,0 +1,14 @@
+```rust
+let mut s = String::from("hello, world");
+
+// Unlike JavaScript or Python, Rust's String is mutable: it's a growable buffer like a Vec,
+// so this adds the character in place in amortized O(1) time instead of copying the string
+s.push('!'); // hello, world!
+
+// Before
+| h | e | l | l | o | , | w | o | r | l | d |
+
+// The same memory, with one more character
+// (the String only copies itself to a bigger space when it runs out of room)
+| h | e | l | l | o | , | w | o | r | l | d | ! |
+```

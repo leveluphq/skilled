@@ -1,0 +1,53 @@
+import { Container } from 'style/elements';
+
+We're performing a lot of unnecessary work by comparing every buy price against every possible future sell price.
+
+We can instead track the optimal answer at each point.
+We know that if we ever encounter a new smallest price as we iterate through, we would always buy at this price when comparing to any price after this day.
+This doesn't mean finding the new smallest price will always yield the max profit by selling it in the future, it just means that if we were to sell after this day,
+we would want to use the smallest price we found up to this point.
+
+<Container>
+
+```javascript
+day:     1   2    3    4  5
+price:   20  15   100  2  6
+```
+
+</Container>
+
+So as we walk through the input prices:
+- Our first min price is 20 which is also the current minimum price
+- At day 2, we have a new minimum price of 15 so we update this value
+- At day 3, we get a max profit of `100 - 15 = $85`
+- At day 4, we update our min price to 2
+- At day 5, we find a profit of `6 - 2 = $4` which doesn't replace our current max profit
+
+So the answer to the above example is a max profit of $85.
+We know that we can only sell an item after we buy, so that's why we can't buy at a price of $2 on day 4 and sell at the price of $100 on day 3 which came before.
+We utilize the order of the input array to make the best buy/sell decision at any point.
+
+Now let's tweak that slightly and add a sixth day.
+
+<Container>
+
+```javascript
+day:     1   2    3    4  5  6
+price:   20  15   100  2  6  202
+```
+
+</Container>
+
+We perform the exact same steps previously up to day 5.
+Then at day 6, we see that we can sell `202 - 2 = $200` and find a new max profit.
+So by tracking the minimum price, we always ensure that we're making the best choice at any point from the current day onward.
+
+We are walking through the input sequentially.
+We are comparing the smallest buy price that has occurred up to any point with the largest sell price afterward.
+
+**The key to this is that we're tracking the smallest price and largest price at the current day and using the order of the input prices.**
+We are finding the optimal values locally at any given point.
+It's possible the actual max profit was in the past (ie. the <b>difference</b> between the smallest and largest was greater at previous days),
+but by tracking the locally optimal prices, we ensure that if a better buy/sell option occurs, we're set up to recognize it.
+
+The concept of finding the optimal answer locally at each point is known as a <a href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" rel="noopener noreferrer">greedy algorithm</a>.

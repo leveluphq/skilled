@@ -1,0 +1,24 @@
+```rust
+// A Rust function can't use a variable from outside it, so we pass the memo in
+let mut memo: HashMap<u64, u64> = HashMap::new();
+
+fn count_by_two(n: u64, memo: &mut HashMap<u64, u64>) -> u64 {
+    // Check if we previously memoized the result and return early in O(1) time
+    if let Some(&count) = memo.get(&n) {
+        return count;
+    }
+
+    let mut count = 0;
+
+    for i in 0..=n {
+        count += 2;
+
+        // Store the result for this value
+        // It will return instantly if count_by_two is later called with one of these values
+        memo.insert(i, count);
+    }
+
+    // We calculated and stored this value (and all previous values) in the for loop
+    memo[&n]
+}
+```

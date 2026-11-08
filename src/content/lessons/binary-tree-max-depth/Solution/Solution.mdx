@@ -1,0 +1,50 @@
+import BigO from 'content/blocks/BigO';
+import Null from 'content/blocks/Null';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import RecursiveSolution from './code/RecursiveSolution';
+import SolutionCode from './code/Solution';
+
+We'll traverse through the tree iteratively by storing the unvisited nodes in a stack by pushing its `left` and `right` children to the stack.
+Alongside each node, we'll also store its depth which is just its parent's depth incremented by 1.
+If we encounter a <Null /> value, we know that we reached the end of a path and ignore it.
+Otherwise, we maintain the maximum depth by comparing it to the depth at each node, and this will yield the solution once we traverse all the nodes.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space.
+</p>
+
+We visit all `n` nodes which requires <BigO.n /> time.
+In a worst case, our stack will contain all `n` items in an unbalanced tree.
+
+For the unbalanced tree case, you would continue to add two nodes and only remove one.
+So by the time you reach a leaf node, you would have <BigO.n letter="n / 2" />.
+If your tree is reasonably balanced, the space complexity would be <BigO.logn /> because large chunks of the tree would not be handled (added to the stack) until you pop off the items from other subtrees.
+
+<VariationsSubtitle />
+
+Understanding node depth is a popular concept in tree interview questions.
+Make sure you understand how to track and manage the depth at any point.
+
+Other common questions include:
+
+- Solve this same problem recursively or using BFS
+- Sum the depth of all nodes
+- Find the maximum depth of an arbitrary tree (not binary)
+
+### Bonus
+
+The recursive solution is elegant and shows that the maximum depth is just a sum of the levels in the call stack by following all the right and left paths.
+We take the maximum of either the `left` or `right` at each recursive call, and once the stack unwinds to the original root, we will know our depth.
+
+<RecursiveSolution />
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

@@ -1,0 +1,28 @@
+```swift
+class Solution {
+    func findHackerEmail(_ emails: [String]) -> String {
+        var emailCountTable: [String: Int] = [:]
+        var maxCount = 0
+        var hackerEmail = ""
+
+        // Create a hash table that tracks the count of each email
+        // This is an O(n) operation
+        for email in emails {
+            // Increment the count for the email,
+            // starting from 0 if we haven't seen it yet
+            emailCountTable[email, default: 0] += 1
+        }
+
+        // Iterate the hash table to find the email that appears the most
+        // This is an O(n) operation
+        for (email, count) in emailCountTable {
+            if count > maxCount {
+                maxCount = count
+                hackerEmail = email
+            }
+        }
+
+        return hackerEmail
+    }
+}
+```

@@ -1,0 +1,18 @@
+```cpp
+#include <vector>
+#include <memory>
+#include <algorithm>
+
+std::vector<int> aliasTrace() {
+    struct Box { int value; };
+    auto original = std::make_shared<Box>(Box{1});
+    auto alias = original;
+    std::vector<int> trace{original->value};
+    alias->value = 2;
+    trace.push_back(original->value);
+    alias = std::make_shared<Box>(Box{9});
+    trace.push_back(original->value);
+    trace.push_back(alias->value);
+    return trace;
+}
+```

@@ -1,0 +1,41 @@
+Array problems often ask you to reduce repeated work while preserving a precise relationship between indices. A direct scan is a useful baseline. The next step might reuse a prefix result, track a minimum, move two boundaries, or process a matrix without revisiting cells.
+
+Begin with the [array lesson](/course/arrays) if indexed access, insertion, and resizing are unfamiliar. Then choose an exercise that exposes one kind of state at a time. The order below moves from traversal to reusable work and constrained lookups.
+
+## Know what an array operation costs
+
+An array provides convenient indexed access under the usual array model. Inserting near the beginning may move existing entries, and growing storage can involve occasional copying. Those differences affect an algorithm that performs the operation repeatedly.
+
+A loop can also hide work inside sorting, slicing, concatenation, or a callback. Inspect the actual operations before describing a solution as linear. The [complexity reference](/reference/data-structure-time-complexity) separates worst-case, expected, and amortized assumptions.
+
+If the exercise asks for original indices, sorting values may discard information you still need. If it forbids mutation, an in-place partition is not valid unless you copy first and include that storage. Clarify both requirements before optimizing.
+
+## Start with matrix boundaries
+
+[Walk a Matrix](/course/walk-a-matrix) gives you practice representing position with a row and column. Write the valid range of each coordinate before changing direction or advancing a boundary. Test a single row, a single column, and a non-square matrix under the lesson's input contract.
+
+For a spiral or other directional traversal, define which boundaries have already been consumed. Moving the top boundary can change whether a later bottom-row pass is still needed. A symmetrical example can hide repeated visits that a one-row matrix reveals.
+
+Draw a small matrix with distinct values and mark each visit. The trace should establish that every required cell is processed once and no invalid coordinate is read.
+
+## Reuse work between output positions
+
+[Product Array](/course/product-array) asks for the product of the other values at each position without division. A quadratic baseline recomputes nearly the same products repeatedly. Prefix and suffix information can reuse that work.
+
+Explain whether the current prefix includes the value at the current index. That convention determines update order. Test one zero, multiple zeros, negative values, and the smallest allowed input. Include every additional prefix/suffix array in the space analysis, even if the final output has its own storage exemption.
+
+[Best Time to Buy and Sell Stock](/course/best-time-to-buy-and-sell-stock) maintains a different prefix fact: the best earlier buying opportunity. The “earlier” condition prevents a sale from using a future minimum. A decreasing-price array helps test the no-profitable-trade case.
+
+## Add structure when the contract supports it
+
+A [two-pointers approach](/patterns/two-pointers) can eliminate candidate endpoints in sorted data. A [sliding window](/patterns/sliding-window) maintains a contiguous interval and state about its contents. Both can produce linear scans, but their movement rules need different proofs.
+
+For a fixed-size window, moving the boundary has a predetermined schedule. For a variable window, validity must change predictably as values enter and leave. Negative values can invalidate a sum-based shrinking argument even though they cause no problem for a fixed-size sum.
+
+[Valid Sudoku Board](/course/valid-sudoku-board) adds several overlapping constraints. Track rows, columns, and subgrids separately so a single value is checked against every relevant group.
+
+## Check the explanation before adding another problem
+
+State what your indices and retained values mean after each processed prefix. Count total pointer moves rather than relying on indentation to identify complexity. When a failure occurs, use the first index where that state becomes false.
+
+Use the [30-day plan](/study-plans/30-day-coding-interview-plan) to revisit an array exercise after working on another topic. An independent retry with the edge case that first broke your solution is a more useful check than recognizing the previous code.

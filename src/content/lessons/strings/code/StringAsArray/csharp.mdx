@@ -1,0 +1,11 @@
+```csharp
+string str = "Hello, world!";
+char[] array = ['H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!'];
+
+// Transform an array to a string and compare it to the original string
+Console.WriteLine(str == new string(array));
+// True
+
+char[] characters = str.ToCharArray(); // Transform a string to an array
+// ['H','e','l','l','o',',',' ','w','o','r','l','d','!']
+```

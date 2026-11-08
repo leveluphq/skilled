@@ -1,0 +1,56 @@
+```swift
+class DoublyNode {
+    var data: Int
+    var next: DoublyNode?
+    // weak, so two neighboring nodes don't keep each other in memory forever
+    weak var prev: DoublyNode?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+class DoublyLinkedList {
+    var length: Int
+    var head: DoublyNode
+    var tail: DoublyNode
+
+    init(_ data: Int) {
+        let initialNode = DoublyNode(data)
+
+        length = 1
+        head = initialNode
+        tail = initialNode
+    }
+
+    // O(1)
+    func prepend(_ data: Int) -> DoublyNode {
+        let prependedNode = DoublyNode(data)
+        let previousHead = head
+
+        head = prependedNode
+        head.next = previousHead
+
+        previousHead.prev = head
+
+        length += 1
+
+        return head
+    }
+
+    // O(1)
+    func append(_ data: Int) -> DoublyNode {
+        let appendedNode = DoublyNode(data)
+        let previousTail = tail
+
+        tail = appendedNode
+        tail.prev = previousTail
+
+        previousTail.next = tail
+
+        length += 1
+
+        return appendedNode
+    }
+}
+```

@@ -1,0 +1,225 @@
+import * as React from 'react';
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { SvgSimple } from 'content/blocks/SvgWrapper/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import SimpleTree from 'svg/SimpleTree';
+import GraphSingleNode from 'svg/GraphSingleNode';
+import DirectedCyclicGraph from 'svg/DirectedCyclicGraph';
+import DisjointGraph from 'svg/DisjointGraph';
+import TreeVsBst from 'svg/TreeVsBst';
+import CompleteBinaryTree from 'svg/CompleteBinaryTree';
+import FullBinaryTree from 'svg/FullBinaryTree';
+import PerfectBinaryTree from 'svg/PerfectBinaryTree';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import BinaryTreeNode from './code/BinaryTreeNode';
+import TreeNode from './code/TreeNode';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+
+<Section>
+
+A tree is a data structure made up of connected nodes.
+Each node is simple — it can hold data and can point to child nodes.
+Trees start at a single root node and branches outward where each child node can have its own children.
+
+By comparison, an array is linear and starts at the 0 index and sequentially lists items up to the final index.
+With a tree, it starts at the root but each node can have many children which creates multiple paths as opposed to a single linear path.
+This is why we call a tree a non-linear data structure and is based on hierarchy instead of a sequence.
+
+The most popular implementation of a tree is a binary tree where each node can have at most two children.
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+<CheatSheetTables table={<BigOTable {...bigO} />} dataStructure={<SvgSimple fill="none"><SimpleTree /></SvgSimple>} />
+
+> NOTE: Trees can have many implmentations, and the Big O above is just a reference for the basic tree with no assumed structure.
+> If we instead have a balanced binary search tree, lookup, search, and delete become <BigO.logn />, while an unbalanced one can degrade to <BigO.n /> in the worst case. Space stays <BigO.n />.
+
+<div style={{marginTop: '24px'}}>
+
+<ProsCons pros={pros} cons={cons} />
+
+</div>
+
+**Trees in Interviews**
+
+- How to iterate through a tree: in-order, pre-order, and post-order traversal
+- Binary trees are the most common implementation
+- <BigO.logn /> search/insert/delete with a balanced binary search tree (BST)
+- Create or validate a BST
+- Understand the difference between DFS and BFS and when to use each (becomes very important in <Link href={`/${PageRoot.Course}/graphs`} passHref><a>graphs</a></Link>)
+- Understand the depth of a tree
+- Edge cases: empty tree, single node, two nodes, skewed tree (a single long path almost like a <Link href={`/${PageRoot.Course}/linked-lists`} passHref><a>linked list</a></Link>)
+- Use trees to represent hierarchy, model different decisions/paths, maintain sorted data
+- Different implementations of trees: binary tree, binary search tree, balanced vs unbalanced, complete binary tree, full binary tree, perfect binary tree
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Trees" />
+
+Trees are something we interact with every day, even if we don't realize it.
+Some common examples of trees include:
+
+- The file system on your computer
+- If someone posts on Reddit, this post (root node) can have many comments, and each of these comments can have replies.
+  These replies can have additional replies, and this all forms a tree that can have an arbitrarily large number of sibling and child nodes below the root.
+- The DOM is a tree that starts with the `<html>` node, has a child `<head>` and `<body>` nodes,
+  and these contain the `div`, `p`, and other tags we use to create web pages.
+- An <a href="https://www.google.com/search?q=org+chart&tbm=isch" target="_blank" rel="noopener noreferrer">org chart</a> in a company starts with the CEO at the root, under him are the executives, the managers report to the executives, and the employees report to the managers.
+
+<Image src="/images/dom-tree.png" credit="The DOM represented as a tree" alt="An HTML document forms a tree with head and body branches and nested element children." width={2176} height={1124} />
+
+<React.Fragment>
+{/* If you want to visualize more of these examples, check the last section of this page. */}
+</React.Fragment>
+
+A tree is composed of nodes, and these nodes contain any type of data.
+In interviews, this "data" is typically an integer for simplicity but it could take on any data type.
+The nodes will also have <ConceptModal content={<PointersConcept />}>pointers</ConceptModal> to their children.
+The pointer can either be stored in a variable like a `left` and `right` pointer for a binary tree, or for a tree where nodes can have any number of descendants, it can be an array of `children` pointers.
+
+In interviews, binary trees tend to be the most common tree implementation.
+
+Binary tree node:
+
+<BinaryTreeNode />
+
+<Image src="/images/binary-tree.png" maxWidth="320px" alt="A binary tree node has separate left and right child references." width={864} height={864} />
+
+Tree node (any number of children):
+
+<TreeNode />
+
+<Image src="/images/standard-tree.png" maxWidth="400px"  alt="A general tree node holds a children array that can reference more than two child nodes." width={1204} height={888} />
+
+Some common terms used with trees are:
+
+- **Node**: An item in the tree.
+- **Edge**: A connection between nodes.
+- **Root node**: A single node that is the top-most parent.
+- **Children**: Any node can have children which are just nodes that come directly after it in the tree.
+  We access the children through pointers from the parent.
+- **Leaf node**: A node without children. This indicates we have reached the end of a given path.
+- **Level**: Number of nodes a depth is from the root, where the root node is level 0.
+- **Height**: The largest level (furthest from the root).
+
+<Image src="/images/tree-defined.png" alt="A tree diagram labels its root, internal nodes, leaves, levels, and height." width={2186} height={1086} />
+
+To be a categorized as a tree, the data structure must meet the following constraints:
+
+- A tree can only have one root node which has no parent
+- Every edge is either directly or indirectly originated from the root
+- A node cannot point to itself as a child
+- A node can only have one parent
+- All nodes must be connected
+- A tree can have zero or more nodes
+
+Below are some examples of **invalid trees**:
+
+The root node points to itself (which also means the root has a parent and is invalid):
+
+<SvgWrapper>
+  <GraphSingleNode />
+</SvgWrapper>
+
+Node B has more than one parent:
+
+<SvgWrapper>
+  <DirectedCyclicGraph />
+</SvgWrapper>
+
+There is more than one root node and the tree is not connected:
+
+<SvgWrapper>
+  <DisjointGraph />
+</SvgWrapper>
+
+Trees are actually a specialized case of <Link href={`/${PageRoot.Course}/graphs`} passHref><a>graphs</a></Link>, and these constraints are specifically what makes a graph a tree.
+So all trees are graphs, but not all graphs are trees.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Types of Trees</SubsectionHeader>
+
+We can put additional constraints, the most common being a binary tree where a node can have at most two children.
+Other classifications include where the nodes are located and how they are arranged.
+
+### Tree vs Binary Tree
+
+If any node has more than two children, then we just generally call it a tree.
+A binary tree means that any given node can have at most two children.
+
+<SvgWrapper stroke="hackyfix">
+  <SvgSimple stroke="hackyfix" fill="none"><TreeVsBst /></SvgSimple>
+</SvgWrapper>
+
+### Complete Binary Tree
+
+A complete tree is one where every level must be filled except optionally the last level.
+If the last level is not full, then it must filled from left to right.
+
+<SvgWrapper stroke="hackyfix">
+  <SvgSimple stroke="hackyfix" fill="none">
+    <CompleteBinaryTree />
+  </SvgSimple>
+</SvgWrapper>
+
+### Full Binary Tree
+
+A full binary tree means every node has either zero or two children.
+
+<SvgWrapper stroke="hackyfix">
+  <SvgSimple stroke="hackyfix" fill="none"><FullBinaryTree /></SvgSimple>
+</SvgWrapper>
+
+### Perfect Binary Tree
+
+A perfect binary tree is both full and complete.
+All leaf nodes must be on the same level, and that level must be filled.
+
+<SvgWrapper stroke="hackyfix">
+  <SvgSimple stroke="hackyfix" fill="none"><PerfectBinaryTree /></SvgSimple>
+</SvgWrapper>
+
+### Binary Tree vs. Binary Search Tree (BST)
+
+The key phrase here is "search".
+
+A **binary tree** means each node can have at most two children.
+
+A **binary search tree** means that each node can have at most two children _AND_ all the descendants to the left of any given node are smaller, and all the descendants to the right are larger.
+Another way of stating that for any node `n` is `all left children < n < all right children`.
+This means the tree is ordered.
+
+<Image src="/images/bst-vs-not-bst.jpg" alt="Two binary trees compare valid search ordering with a misplaced node that violates an ancestor&#x27;s bound." width={745} height={376} />
+
+The left tree is a BST, and the right tree is just a normal binary tree but does not qualify as a BST.
+
+A BST can be formed with any of the previous types (ie. balanced, full, perfect), but it also must have the additional constraint of being ordered.
+So as an example, we could could have a complete binary search tree.
+
+BSTs are a very important implementation and appear the most frequently in interviews.
+You can learn more about them in their <Link href={`/${PageRoot.Course}/binary-search-trees`} passHref><a>own module</a></Link>.
+
+</Section>

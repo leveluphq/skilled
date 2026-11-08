@@ -1,0 +1,11 @@
+```python
+def pop(self):
+    if self.length == 0:
+        return None
+
+    popped_item = self.data[self.length - 1]
+    self.data[self.length - 1] = None
+    self.length -= 1
+
+    return popped_item
+```

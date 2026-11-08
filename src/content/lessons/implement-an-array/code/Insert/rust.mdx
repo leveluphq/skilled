@@ -1,0 +1,24 @@
+```rust
+fn insert(&mut self, index: usize, item: i32) -> Option<&HashMap<usize, i32>> {
+    // Ensure we're inserting inside a valid array length
+    // (a usize index can't be negative)
+    if index >= self.length {
+        return None;
+    }
+
+    // Create our new length
+    self.length += 1;
+
+    // Shift items up one spot from the insertion index to the new final spot in the array.
+    // We iterate from the back since this is our new empty item
+    for i in (index + 1..self.length).rev() {
+        self.data.insert(i, self.data[&(i - 1)]);
+    }
+
+    // Add the new item
+    self.data.insert(index, item);
+
+    // Return the array
+    Some(&self.data)
+}
+```

@@ -1,0 +1,18 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    pub fn find_max_depth(root: Option<Rc<RefCell<BinaryNode>>>) -> i32 {
+        let Some(node) = root else {
+            return -1;
+        };
+        let node = node.borrow();
+
+        let left_depth = Self::find_max_depth(node.left.clone());
+        let right_depth = Self::find_max_depth(node.right.clone());
+
+        left_depth.max(right_depth) + 1
+    }
+}
+```

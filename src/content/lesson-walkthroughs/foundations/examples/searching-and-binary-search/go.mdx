@@ -1,0 +1,11 @@
+```go
+func BinarySearch(values []int, target int) int {
+    low, high := 0, len(values)
+    for low < high {
+        middle := low + (high-low)/2
+        if values[middle] < target { low = middle+1 } else { high = middle }
+    }
+    if low < len(values) && values[low] == target { return low }
+    return -1
+}
+```

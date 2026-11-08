@@ -1,0 +1,35 @@
+```swift
+class Solution {
+    func buildProductArrayWithDivision(_ nums: [Int]) -> [Int] {
+        // Arrays are values in Swift, so we fill in a copy of the input
+        var input = nums
+        // Zeroes are now an edge case because we can't divide by them
+        var numZeros = 0
+        // Init product to 1
+        var product = 1
+
+        for element in input {
+            if element == 0 {
+                numZeros += 1
+            } else {
+                product = product * element
+            }
+        }
+
+        for i in 0..<input.count {
+            // If no zeroes, don't worry about edge cases
+            if numZeros == 0 {
+                input[i] = product / input[i]
+            } else if numZeros == 1 && input[i] == 0 {
+                // Handle the 1 zero where it will have the only non-zero product
+                input[i] = product
+            } else {
+                // If we have more than one 0, they're all 0
+                input[i] = 0
+            }
+        }
+
+        return input
+    }
+}
+```

@@ -1,0 +1,50 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import BonusCode from './code/Bonus';
+
+The Big O complexity puts a constraint on how we want to solve this problem.
+Since we don't want any additional data structures besides a `results` array,
+we'll use this as part of our solution.
+
+First we iterate through the `input` once and fill our `results` with the running product from the right side.
+
+Then we iterate through the input again and replace the current value at each index of the `results` array with the actual answer.
+We track the running product of the left side as a number by multiplying by the current value at each step.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+This question can be solved in linear time <BigO.n /> and constant space <BigO.constant />.
+
+The solution walks through all `n` items of the input twice sequentially which is <BigO.n /> time.
+Since we don't create any new data structures and the `results` doesn't count against our complexity,
+we get <BigO.constant /> for space.
+
+<VariationsSubtitle />
+
+- Reverse an array in-place
+- Remove duplicates in-place
+- Swap items in an array
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />
+
+### Bonus
+
+Let's see how we would solve this if division were allowed.
+We can say that the value at any index in the answer is the product of all the items in the input array divided by the value of the item at that index of the input array.
+
+`answer[i] = product(input) / input[i]`.
+
+We can write this solution in-place. That means we'll transform the input array instead of creating a `results` array.
+
+First we get the product of all the items for the input.
+Then we iterate through the input array and change each item to our total product divided by that value.
+We can then return the results array.
+
+<BonusCode />

@@ -1,0 +1,88 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A throttle limits execution during a stream of calls. A leading call can execute immediately, and a trailing call can preserve the latest invocation that arrived while the throttle was waiting. The exact leading and trailing policy belongs in the function's contract because different useful throttles produce different timelines.
+
+## Track the active window
+
+With a 100-millisecond window and leading plus trailing execution, a call at time zero can run immediately. Calls at 20 and 70 arrive during the waiting period. A trailing implementation stores the latest of those calls for the window boundary. It should execute with the arguments from time 70, rather than replaying every suppressed call.
+
+The current lesson uses an explicit `hasStoredEvent` flag. A stored argument cannot reliably double as a pending-call marker: zero, false, an empty string, undefined, and no argument can all be legitimate invocations. A truthiness check can silently drop a required trailing execution.
+
+## Preserve receiver and argument semantics
+
+Store the complete latest argument list and the receiver when the wrapper is called. When the pending call executes, invoke the original function with that receiver. A function expecting several arguments should not be reduced to a single event value merely because a browser event handler was the first use case.
+
+Timers run through the event loop and can fire later than their nominal deadline. Calls exactly at a boundary need a stated ordering policy in a deterministic test. Check a long stream, a short burst, one isolated call, and a call made immediately after a completed window.
+
+## Test the correction from the recording
+
+Make calls with 0, false, an empty string, and no arguments while a window is active. Confirm that the pending invocation still runs under the chosen trailing policy. Then create two separate throttled wrappers and verify that their timers and stored arguments remain independent.
+
+The [event timeline](/tools/debounce-throttle) lets you compare leading and trailing settings without changing the lesson editor. The [debounce and throttle guide](/guides/debounce-vs-throttle) explains when a quiet-period debounce or a rate-limited throttle fits the work. Use the updated course implementation when copying code, including the explicit pending-call flag described above.
+
+## Follow leading and trailing windows
+
+The standalone throttle enables both leading and trailing behavior. With a 100 ms wait, a call at 0 runs immediately. Calls at 20 and 80 replace the pending call, and the latest one runs at 100 if the timer can execute then. Those intervening calls do not move that deadline to 180.
+
+After the trailing invocation, another cooldown begins. If no further call arrives, its timer merely clears the cooldown and does not repeat the previous callback. A single input therefore produces a single output. Cancel ends the cooldown and discards a pending call; a subsequent call can run immediately.
+
+## Preserve reentry and falsy payloads
+
+The timer is installed before the wrapped callback runs. If that callback invokes the wrapper again, the nested call becomes pending instead of recursively triggering another immediate leading call. Pending arguments use a null marker, so false, zero, and undefined remain valid payloads. The latest caller's receiver is retained with its arguments.
+
+Use a fake clock for single events, bursts, continuing activity, exact boundaries, cancellation, and callback reentry. Due timers run before later test input at the same simulated timestamp in the accompanying checks. Real event-loop execution can be delayed. This contract uses timer windows and does not offer maxWait or configurable edges. The wrapper uses a fixed number of retained references, while callback work and the objects reachable through arguments have their own costs.
+
+## JavaScript example and implementation choices
+
+The timer is set before invoking the leading callback, making nested wrapper calls pending instead of recursively immediate. Subsequent calls overwrite only the retained arguments and receiver, without resetting that timer. A trailing invocation starts the next cooldown first. cancel clears both timer and pending references. These choices specify this wrapper's behavior more precisely than the name throttle alone.
+
+### Worked example
+
+```javascript
+function throttle(fn, wait) {
+    if (typeof fn !== 'function')
+        throw new TypeError('Expected a function');
+    if (!Number.isFinite(wait) || wait < 0 || wait > 2147483647)
+        throw new RangeError('wait must fit the timer range');
+    let timer = null;
+    let latestArgs = null;
+    let latestReceiver;
+    function invoke() {
+        const args = latestArgs;
+        const receiver = latestReceiver;
+        latestArgs = null;
+        latestReceiver = undefined;
+        if (args !== null)
+            fn.apply(receiver, args);
+    }
+    function tick() {
+        timer = null;
+        if (latestArgs !== null) {
+            timer = setTimeout(tick, wait);
+            invoke();
+        }
+    }
+    function throttled(...args) {
+        latestArgs = args;
+        latestReceiver = this;
+        if (timer === null) {
+            timer = setTimeout(tick, wait);
+            invoke();
+        }
+    }
+    throttled.cancel = function () {
+        if (timer !== null)
+            clearTimeout(timer);
+        timer = null;
+        latestArgs = null;
+        latestReceiver = undefined;
+    };
+    return throttled;
+}
+```
+
+## Continue in JavaScript
+
+[Open Throttle](/course/throttle) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

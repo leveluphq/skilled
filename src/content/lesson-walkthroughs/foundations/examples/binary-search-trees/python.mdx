@@ -1,0 +1,12 @@
+```python
+from typing import Optional
+
+def contains_bst(values: list[Optional[int]], target: int) -> bool:
+    index = 0
+    while index < len(values) and values[index] is not None:
+        value = values[index]
+        if value == target:
+            return True
+        index = 2 * index + 1 if target < value else 2 * index + 2
+    return False
+```

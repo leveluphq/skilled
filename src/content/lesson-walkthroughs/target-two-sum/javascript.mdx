@@ -1,0 +1,82 @@
+The course's Two Sum exercise asks for **every matching pair of indexes** in an array of unique integers. For `[4, 1, 5, 2, 3]` and target `6`, both `[1, 2]` and `[0, 3]` belong in the result. Returning as soon as you find one pair would leave the answer incomplete.
+
+We will keep the input unchanged and return an array of two-element arrays. The order of the pairs is unimportant. An index cannot pair with itself, and a pair should appear only once. The function name below matches the JavaScript starter in the exercise.
+
+## Use a Map to remember earlier indexes
+
+At position `j`, let the current number be `value`. Its partner must be `target - value`. A `Map` can remember which numbers appeared earlier and the index of each one. A successful lookup gives us a pair immediately, without searching the prefix again.
+
+The order of operations gives us the invariant: **before processing index `j`, the map contains exactly the numbers before `j`**. Look for the complement first, then add the current value. Every recorded pair consequently has an earlier index and a later index. That rules out self-matches and reversed duplicates without a separate set of pairs.
+
+```javascript
+const getTargetIndexes = (array, target) => {
+  const seen = new Map();
+  const pairs = [];
+
+  for (let j = 0; j < array.length; j += 1) {
+    const value = array[j];
+    const complement = target - value;
+
+    if (seen.has(complement)) {
+      pairs.push([seen.get(complement), j]);
+    }
+
+    seen.set(value, j);
+  }
+
+  return pairs;
+};
+```
+
+There is deliberately no `return` inside the loop. Finding a match finishes the work for the current value, but there may be more matches later in the array. After the scan, `pairs` contains all of them.
+
+## Trace a case with more than one answer
+
+Take `[4, 1, 5, 2, 3]` with target `6`. Index `0` contributes `4 → 0` to `seen`. Index `1` looks for `5`, finds nothing, and adds `1 → 1`. At index `2`, the value is `5`, so the complement is `1`. The map returns index `1`, and we append `[1, 2]`.
+
+At index `3`, the value `2` finds the earlier `4`, so we append `[0, 3]`. Finally, `3` looks for another `3`. The current value has not been inserted yet, and unique inputs contain no earlier copy, so no pair is added. The result is `[[1, 2], [0, 3]]`.
+
+That last step also explains why `[3]` with target `6` returns `[]`. Inserting the current value before looking up its complement would produce the invalid pair `[0, 0]`.
+
+## Check membership rather than truthiness
+
+An index of zero is a valid lookup result. Code such as `if (seen.get(complement))` drops every pair whose earlier member sits at index zero, because JavaScript treats `0` as false. `Map.has` asks the question we need: does this key exist?
+
+Using a plain object can work if you handle property membership carefully, but `Map` keeps numeric keys as numeric keys and provides explicit lookup methods. The [Map reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) explains the distinction between `has`, which checks membership, and `get`, which retrieves a value. Here the extra membership check makes the intent clear and avoids confusing absence with a stored index.
+
+The numbers themselves are not returned. Sorting the array and returning sorted positions would violate the index contract. A sorting approach needs to carry each original index with its value, and it also pays for the sort. The map approach leaves the input and its positions intact.
+
+## Test the contract at its boundaries
+
+These checks compare normalized pairs because their order is unspecified. Keep the small assertions when you try a different implementation; they catch mistakes that the familiar two-number example misses.
+
+```javascript
+const normalizedPairs = (pairs) => JSON.stringify(
+  pairs.map(([i, j]) => [Math.min(i, j), Math.max(i, j)])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+);
+
+const twoSumCases = [
+  [[], 6, []],
+  [[3], 6, []],
+  [[0, 6], 6, [[0, 1]]],
+  [[4, 1, 5, 2, 3], 6, [[0, 3], [1, 2]]],
+  [[-3, 7, 2, -2], 4, [[0, 1]]],
+  [[1, 2, 4], 10, []],
+];
+for (const [input, target, expected] of twoSumCases) {
+  if (normalizedPairs(getTargetIndexes(input, target)) !== normalizedPairs(expected)) {
+    throw new Error('Unexpected Two Sum result');
+  }
+}
+```
+
+The unique-integer condition matters. If the question changes to permit repeated values and requires every index pair, one stored index per value is insufficient. For `[3, 3, 3]`, there are three valid index pairs for target `6`; a map from a value to a list of earlier indexes would be needed. Do not add that machinery to this exercise without first changing its contract.
+
+## State the numeric and complexity assumptions
+
+For typical hash-map implementations, the scan takes expected `O(n + k)` time, where `k` is the number of returned pairs. With unique integers, each position has at most one matching complement, so `k` is `O(n)`. Auxiliary map storage is `O(n)`, plus the returned pairs. JavaScript specifies average sublinear access for `Map`; it does not promise a universal worst-case constant-time lookup.
+
+This implementation uses JavaScript `Number`. Assume the inputs, target, and complement calculations stay within the safe integer range. For arbitrary large integer inputs, choose a consistent `BigInt` representation and adapt the function's contract and tests; mixing `Number` and `BigInt` arithmetic throws. Floating-point approximate matching would be a different problem entirely.
+
+Before opening the exercise, try explaining why lookup must happen before insertion, and why finding one pair does not finish this version of Two Sum. Then implement it from an empty editor and check the case whose answer includes index zero.

@@ -1,0 +1,45 @@
+```rust
+use std::collections::HashMap;
+
+struct Graph {
+    adjacency_list: HashMap<char, Vec<char>>,
+    undirected: bool,
+}
+
+impl Graph {
+    // Rust has no default arguments, so pass `true` for the usual undirected graph
+    fn new(undirected: bool) -> Self {
+        Graph {
+            adjacency_list: HashMap::new(),
+            undirected,
+        }
+    }
+
+    fn add_vertex(&mut self, vertex: char) {
+        self.adjacency_list.insert(vertex, Vec::new());
+    }
+
+    fn add_edge(&mut self, source: char, destination: char) {
+        self.adjacency_list
+            .entry(source)
+            .or_default()
+            .push(destination);
+
+        if self.undirected {
+            self.adjacency_list
+                .entry(destination)
+                .or_default()
+                .push(source);
+        }
+    }
+
+    fn remove_vertex(&mut self, vertex: char) {
+        self.adjacency_list.remove(&vertex);
+
+        // Keep only the edges that don't point to the removed vertex
+        for edges in self.adjacency_list.values_mut() {
+            edges.retain(|&v| v != vertex);
+        }
+    }
+}
+```

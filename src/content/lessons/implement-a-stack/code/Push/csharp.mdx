@@ -1,0 +1,10 @@
+```csharp
+public Node Push(int item) {
+    Node previousLastItem = this.last;
+
+    this.last = new Node(item);
+    this.last.prev = previousLastItem;
+
+    return this.last;
+}
+```

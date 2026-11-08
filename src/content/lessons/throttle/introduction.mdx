@@ -1,0 +1,36 @@
+import Link from 'next/link';
+import Image from 'content/blocks/Image';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import { Section } from 'style/elements/lesson';
+import { PageRoot } from 'utils/constants/routes';
+import InputOutput from './code/InputOutput';
+
+<Section>
+
+A throttle is a common technique used in the browser to improve an application's performance by limiting the number of events your code needs to handle.
+You should use a throttle when you want to execute a callback at a controlled rate, allowing you to handle intermediate states repeatedly at each fixed interval of time.
+
+<Image src="/images/throttle-scrolling.gif" alt="Continuous scrolling generates many events while a throttled handler runs at spaced intervals." width={800} height={473} />
+
+On the left, side we have normal events that aren't throttled and the event handler is executed each moment the page is scrolled.
+On the right, we have a throttled event handler and will only execute the function once every 1 second.
+
+Implementing a throttle from scratch is a common interview question.
+It tests your understanding of intermediate and advanced JavaScript concepts such as async programming, callbacks, scope, and closures.
+It is also a practical solution used in real-world applications to improve performance and demonstrates that you understand the tools to write good code for real users.
+
+A throttle is a cousin of the <Link href={`/${PageRoot.Course}/debounce`} passHref><a>debounce</a></Link>, and they both improve the performance of web applications.
+However, they are used in different cases.
+A debounce is utilized when you only care about the final state.
+For example, waiting until a user stops typing to fetch typeahead search results.
+A throttle is best used when you want to handle all intermediate states but at a controlled rate.
+For example, track the screen width as a user resizes the window and rearrange page content while it changes instead of waiting until the user has finished.
+
+**Write a function `throttle` that takes a callback function and a `delay` time and limits the callback from executing to once for each window of `delay` milliseconds.**
+
+If the function is executed multiple times, `throttle` should handle it every `delay` milliseconds in evenly spaced increments.
+You only care about the most recent event and should ignore any previous ones if a new value comes in.
+
+<InputOutput />
+
+</Section>

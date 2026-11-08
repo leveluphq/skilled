@@ -1,0 +1,19 @@
+```java
+import java.util.*;
+
+class InOrderExample {
+static List<Integer> inOrder(List<Integer> values) {
+    List<Integer> output = new ArrayList<>();
+    class Walker {
+        void walk(int index) {
+            if (index >= values.size() || values.get(index) == null) return;
+            walk(2 * index + 1);
+            output.add(values.get(index));
+            walk(2 * index + 2);
+        }
+    }
+    new Walker().walk(0);
+    return output;
+}
+}
+```

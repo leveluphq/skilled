@@ -1,0 +1,57 @@
+# build output
+dist
+.next
+.now
+.vercel
+
+# Secrets
+.env
+.env.build
+.env*.local
+.env.local
+.env.build.local
+.env.dev
+secrets
+
+# dependencies
+node_modules
+test/node_modules
+.spec-workflow
+.claude/settings.local.json
+review.md
+tsconfig.tsbuildinfo
+
+# logs & pids
+*.log
+pids
+yarn-error.log
+
+# coverage
+.nyc_output
+coverage
+
+# test output
+test/**/out
+.DS_Store
+
+# Editors
+**/.idea
+# Node.js crash reports (contain environment variables)
+report.*.json
+
+# Security scan reports
+gitleaks-report.json
+trufflehog-results.json
+
+# Deprecated scripts
+web/scripts/deprecated/
+internal-docs/security/
+.now
+.next
+report.*.json
+# jest incremental build info
+tsconfig.jest.tsbuildinfo
+coverage
+
+# Private planning docs (kept in the private repo only)
+internal-docs/

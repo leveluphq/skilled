@@ -1,0 +1,48 @@
+```kotlin
+class Node(var data: Int) {
+    var prev: Node? = null
+}
+
+class Queue {
+    var first: Node? = null
+    var last: Node? = null
+
+    // Get the first item
+    fun peek(): Node? {
+        return first
+    }
+
+    // Add a new last item
+    fun enqueue(item: Int): Node {
+        val newLastNode = Node(item)
+        val isEmptyList = first == null && last == null
+
+        if (isEmptyList) {
+            first = newLastNode
+            last = newLastNode
+        } else {
+            last?.prev = newLastNode
+            last = newLastNode
+        }
+
+        return newLastNode
+    }
+
+    // Remove the first item
+    fun dequeue(): Node? {
+        val removedItem = first
+
+        if (removedItem == null) {
+            return null
+        }
+
+        if (first === last) {
+            last = null
+        }
+
+        first = removedItem.prev
+
+        return removedItem
+    }
+}
+```

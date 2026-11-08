@@ -1,0 +1,85 @@
+Binary search finds a boundary in an ordered decision space. A sorted array is one example: values smaller than a target come before values at least as large. A sequence of passing and failing versions is another, provided failure never reverses. The useful question is which half can be discarded after one predicate evaluation.
+
+A boundary formulation handles duplicate values and missing answers without a special equality return. Use one interval convention throughout the code, explain what is already ruled out, and make every branch shrink the unresolved interval.
+
+## Find the first true position
+
+Assume a predicate over indexes 0 through n - 1 is false for a prefix and true thereafter. Either part may be empty. Return the first true index, or n when every position is false. The sentinel n is a valid answer, but it is never passed to the predicate.
+
+Maintain a half-open unresolved interval `[lo, hi)`. Every real index before lo is known false. Every real index at or after hi is known true. Initially neither assertion needs an observed element: lo is zero and hi is n.
+
+```javascript
+function firstTrue(length, predicate) {
+  if (!Number.isSafeInteger(length) || length < 0) {
+    throw new RangeError('Length must be a nonnegative safe integer');
+  }
+  let lo = 0;
+  let hi = length;
+  while (lo < hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    if (predicate(mid)) hi = mid;
+    else lo = mid + 1;
+  }
+  return lo;
+}
+```
+
+A true midpoint may itself be the first true position, so keep it as the candidate upper boundary. A false midpoint rules out the midpoint and everything before it, so move lo to mid + 1. When lo equals hi, no unresolved indexes remain and the two known regions meet at the answer.
+
+The predicate must stay consistent during the search. If values change between calls, or if true and false alternate, the elimination argument no longer holds. Testing the predicate at two endpoints does not prove monotonicity across the entire domain; that property must come from the problem contract.
+
+## Trace a boundary and the sentinel
+
+For `[false, false, false, true, true, true]`, the initial interval is `[0, 6)`. The first midpoint is 3 and returns true, making hi = 3. Midpoint 1 is false, making lo = 2. Midpoint 2 is false, making lo = 3. The search returns 3.
+
+An all-false sequence moves lo right until it reaches n. An all-true sequence moves hi left until it reaches zero. Length zero returns zero without calling the predicate. These cases use the same loop; no separate first-element or last-element probe is necessary.
+
+The midpoint expression avoids JavaScript bitwise coercion. Operators such as `>>` and `|` work on 32-bit integers and can corrupt large indexes. A valid safe-integer domain also prevents a nominal midpoint from becoming imprecise at numbers beyond exact integer representation.
+
+## Lower and upper bounds in sorted arrays
+
+A lower bound is the first position whose value is at least the target. An upper bound is the first position whose value is greater than the target. For a sorted array of finite numbers, both are monotone predicates.
+
+```javascript
+function lowerBound(values, target) {
+  return firstTrue(values.length, (index) => values[index] >= target);
+}
+
+function upperBound(values, target) {
+  return firstTrue(values.length, (index) => values[index] > target);
+}
+
+function equalRange(values, target) {
+  return [lowerBound(values, target), upperBound(values, target)];
+}
+```
+
+For `[2, 2, 2, 5]`, target 2 has equal range `[0, 3)`. Target 3 has `[3, 3)`, an empty range at its insertion point. Target 8 has `[4, 4)`. The number of occurrences is upper bound minus lower bound.
+
+To answer exact membership, compute a lower bound and then check that the index is below the length and its value equals the target. Returning on any equal midpoint is enough for finding an arbitrary occurrence, but it does not identify the first occurrence. [Python's bisect documentation](https://docs.python.org/3/library/bisect.html) specifies the same left and right insertion partitions for its library functions.
+
+The code assumes sorted input and a total numeric comparison. NaN violates that assumption because comparisons with it do not partition the array as expected. Custom records need a consistent comparator or projected key; preserve the ordering used to sort them.
+
+## Search an answer only when feasibility is monotone
+
+Some tasks search capacities, rates, or distances rather than array positions. Suppose work must fit into a fixed number of days and increasing a capacity can never make a feasible schedule infeasible. After defining a correct feasibility check and a finite candidate range, binary search can find the smallest feasible capacity.
+
+Before coding, prove the implication: if candidate x is feasible, every larger candidate in the search domain is feasible. Then establish bounds containing an answer, or define a no-answer sentinel explicitly. An intuitive statement that a problem involves minimizing something does not establish monotonicity.
+
+The [First Bad Version lesson](/course/first-bad-version) is a direct boundary exercise. [Shifted Search](/course/shifted-search) needs additional reasoning because the complete array is not in ordinary sorted order. A branch must identify an ordered region or otherwise justify discarding a half; pasting a lower-bound template into a rotated array does not supply that proof.
+
+## Count predicate work as well as loop iterations
+
+With O(1) predicate evaluations, a search takes O(log n) time for n at least two and O(1) auxiliary space. More generally, state O(log(n + 1)) evaluations plus constant overhead, which also describes empty and one-position domains without treating log zero as a cost.
+
+If each feasibility evaluation scans m items, the overall work is O(m log n), not merely O(log n). Sorting an unsorted array first adds its own cost and may change what indexes mean. For a single membership query, a linear scan can be cheaper than sorting solely to use binary search. Repeated queries can justify preprocessing when the original-order contract permits it.
+
+An insertion-point query also differs from physically inserting a value. Finding a position is logarithmic; shifting array or list elements to create a slot can still take linear time. The library search bound does not make all subsequent operations logarithmic.
+
+## Test the boundary invariant
+
+Enumerate every possible boundary for small lengths, including zero and n. For each boundary b, define the predicate as `index >= b` and check that the search returns b. Also verify it never calls the predicate outside the real domain. This directly tests the contract instead of relying on a few lucky sorted arrays.
+
+For lower and upper bounds, compare with a linear scan on duplicate-heavy arrays, a missing middle target, targets outside both ends, and an empty input. Check that the original array is unchanged. Trace a one-position interval by hand to catch a branch that leaves lo or hi unchanged.
+
+After implementing the search, explain each assignment in terms of what was eliminated. Use the [pattern quiz](/tools/pattern-quiz) to contrast any-equal search with first-valid search, then add boundary practice to a [study plan](/tools/study-plan-builder).

@@ -1,0 +1,15 @@
+```go
+func FibMemoStats(n int) []int {
+    memo := make(map[int]int)
+    var fib func(int) int
+    fib = func(value int) int {
+        if answer, found := memo[value]; found { return answer }
+        answer := value
+        if value >= 2 { answer = fib(value-1)+fib(value-2) }
+        memo[value] = answer
+        return answer
+    }
+    answer := fib(n)
+    return []int{answer, len(memo)}
+}
+```

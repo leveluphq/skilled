@@ -1,0 +1,79 @@
+The same algorithm can need different collection and text choices in different programming languages. A map lookup may return an optional value, insert a default, throw for a missing key, or require a separate presence flag. A queue can be a standard deque or a small wrapper that avoids repeated array shifts.
+
+Use this reference when moving an interview solution between languages. The tables identify operation families and their caveats; the linked preparation guides contain complete examples and language-specific details. These are programming-language comparisons, while the explanations remain in English.
+
+## Distinguish an absent key from a stored value
+
+<table>
+<thead><tr><th scope="col">Language</th><th scope="col">Presence-aware lookup</th><th scope="col">A mistake to check</th></tr></thead>
+<tbody>
+<tr><td>JavaScript</td><td><code>Map.has(key)</code> and <code>Map.get(key)</code></td><td>A stored zero index is falsy; undefined can also be a stored payload.</td></tr>
+<tr><td>TypeScript</td><td>The same Map operations, with an explicit result model when needed</td><td>A type assertion does not establish runtime presence.</td></tr>
+<tr><td>Python</td><td><code>key in mapping</code> or a unique sentinel for <code>get</code></td><td>None can be valid data; <code>defaultdict</code> access can create an entry.</td></tr>
+<tr><td>Java</td><td><code>containsKey</code> and <code>get</code>, or a nonnull-value contract</td><td>Null can mean absence or a mapped null when the implementation allows it.</td></tr>
+<tr><td>C++</td><td><code>find</code> compared with <code>end</code></td><td><code>operator[]</code> inserts a default value when the key is absent.</td></tr>
+<tr><td>C#</td><td><code>TryGetValue</code> with its boolean result</td><td>The out value alone cannot distinguish absence from a stored default.</td></tr>
+<tr><td>Go</td><td>The value and <code>ok</code> results of map lookup</td><td>The zero value alone does not establish membership.</td></tr>
+<tr><td>Kotlin</td><td><code>containsKey</code> when nullable values are allowed</td><td>A null lookup can mean absent or a stored null.</td></tr>
+<tr><td>Swift</td><td>Dictionary lookup returns an optional</td><td>Optional payloads require care when absence and stored nil-like data differ.</td></tr>
+<tr><td>Rust</td><td><code>HashMap::get</code> returns an Option of a borrowed value</td><td>Borrowed access and later mutation need compatible lifetimes.</td></tr>
+</tbody>
+</table>
+
+Begin with the value domain. A nonnullable map can use a simpler absence convention than a map intentionally storing null or undefined. Do not add sentinel objects, boxed entries, or extra membership lookups without explaining which ambiguity they resolve.
+
+For [Two Sum](/course/target-two-sum), index zero is an ordinary valid result. A truthiness test silently drops it in some languages. The public walkthroughs show presence-aware lookup and numeric-boundary handling in all ten implementations.
+
+## Choose FIFO operations that preserve the traversal bound
+
+<table>
+<thead><tr><th scope="col">Language</th><th scope="col">A suitable queue approach</th><th scope="col">What to verify</th></tr></thead>
+<tbody>
+<tr><td>JavaScript</td><td>A head-index queue with deliberate compaction</td><td>Repeated front removal can move remaining entries; consumed storage needs a policy.</td></tr>
+<tr><td>TypeScript</td><td>A typed head-index queue or suitable deque</td><td>Distinguish an empty result from a stored undefined value when supported.</td></tr>
+<tr><td>Python</td><td><code>collections.deque</code> with <code>append</code> and <code>popleft</code></td><td>A bounded deque can discard entries, so do not impose a capacity accidentally.</td></tr>
+<tr><td>Java</td><td><code>ArrayDeque</code> with tail insertion and head removal</td><td>Null elements are not supported by ArrayDeque.</td></tr>
+<tr><td>C++</td><td><code>std::queue</code> or appropriate deque operations</td><td>Check emptiness before accessing or removing the front.</td></tr>
+<tr><td>C#</td><td><code>Queue&lt;T&gt;</code> with enqueue and dequeue operations</td><td>An empty dequeue needs the chosen guard or try-style API.</td></tr>
+<tr><td>Go</td><td>A slice plus head index and retained-storage policy</td><td>A short view can retain a backing array; references may need clearing.</td></tr>
+<tr><td>Kotlin</td><td>A deque appropriate to the selected target and version</td><td>Distinguish Kotlin collection APIs from JVM-specific Java APIs.</td></tr>
+<tr><td>Swift</td><td>An array with a head index for a focused traversal</td><td>Repeated removal at the front can move elements; retained entries still occupy storage.</td></tr>
+<tr><td>Rust</td><td><code>VecDeque</code> with <code>push_back</code> and <code>pop_front</code></td><td>Removal returns an Option; borrowing rules still apply to stored labels.</td></tr>
+</tbody>
+</table>
+
+The queue's order is part of BFS correctness. Its operation cost is part of the O(V + E) argument. A container with the right order but a linear front-removal implementation can add repeated movement on a wide frontier. Conversely, a fast stack changes the exploration order and does not supply the same shortest-path guarantee.
+
+Use the [graph visualizer](/tools/graph-traversal) to inspect FIFO discovery and parents, then read the relevant language's guide before translating its storage representation.
+
+## Decide whether a copy owns independent storage
+
+JavaScript and TypeScript array spreads copy the outer array while retaining references to nested objects. Python list copies have the same shallow-copy concern. Java and C# collection copies retain references to reference-type elements unless the code copies those elements too.
+
+A Go slice assignment shares its backing array. A fresh allocation and copy can separate the outer element storage, but nested slices or pointers still need their own ownership decision. C++ value copies and Rust clones follow the copied types' semantics rather than one universal deep-copy rule.
+
+Swift collection value semantics preserve logical value independence, with implementation details such as copy-on-write affecting when storage is physically duplicated. Kotlin read-only collection interfaces limit the operations exposed through that reference; they do not prove that no other alias can mutate the underlying collection.
+
+Test the actual promise. If a grid algorithm preserves input, mutate or traverse a nested row and compare the caller's grid afterward. A copied-looking expression is not evidence of deep independence. If mutation is intentional, state that boundary in the function contract and avoid presenting the routine as a preserving alternative.
+
+## Treat numeric representation as an algorithm assumption
+
+JavaScript and TypeScript commonly use Number, whose exact integer range is bounded. Python integers grow as needed, but arithmetic cost grows with operand size. Java, C#, Kotlin, Go, C++, Swift, and Rust commonly use fixed-width integer types with language- and mode-specific overflow behavior.
+
+A complement can be outside the supported integer range even when both operands are individually valid. A comparator that subtracts priorities can overflow. A product can exceed a narrow type after only a few multiplications. Choose widened arithmetic, checked operations, a restricted domain, or a different representation deliberately.
+
+Do not translate an overflow-dependent trick between languages by matching type names. State the mathematical operation and the supported domain first. The [complexity reference](/reference/data-structure-time-complexity) and language guides qualify fixed-cost assumptions where they affect an implementation.
+
+## Name the text unit before indexing
+
+JavaScript, TypeScript, Java, C#, and Kotlin/JVM commonly expose UTF-16 code units through basic string indexing or length operations. Go strings hold bytes and range iteration decodes runes. Rust strings are UTF-8 and do not provide arbitrary integer character indexing. C++ string bytes do not automatically decode Unicode.
+
+Python string iteration works with Unicode code points. Swift's Character iteration groups extended grapheme clusters. None of these units can be substituted blindly for every problem's meaning of character. A supplementary emoji and a combining sequence expose different boundaries.
+
+A bracket matcher with a fixed ASCII alphabet can recognize those delimiters through an appropriate byte, code-unit, or scalar view while ignoring ordinary text. A user-visible cursor position or displayed-character count needs a different contract. Include the unit in the output definition before selecting an API.
+
+## Follow a complete language path
+
+Start with the preparation guide for [JavaScript](/interview-prep/javascript), [TypeScript](/interview-prep/typescript), [Python](/interview-prep/python), [Java](/interview-prep/java), [C++](/interview-prep/cpp), [C#](/interview-prep/csharp), [Go](/interview-prep/go), [Kotlin](/interview-prep/kotlin), [Swift](/interview-prep/swift), or [Rust](/interview-prep/rust). Each connects these API choices to worked code and practice.
+
+Then translate one solution by writing its invariant, presence rule, ownership policy, numeric domain, and text unit before changing syntax. Use the [edge-case practice](/tools/edge-case-practice) to choose a test that challenges each relevant assumption. The editor's available execution languages depend on the deployment; the reference material remains public independently of that configuration.

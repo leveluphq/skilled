@@ -1,0 +1,65 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import BonusCode from './code/Bonus';
+
+_Target Two Sum, or often just called Two Sum, is a classic algorithmic interview question._
+_This question or its variants are still asked frequently in interviews (I've received it multiple times)._
+_The concepts and optimizations learned here are transferable to many other problems as well,_
+_so be sure you feel comfortable because we will build up from it for the rest of the course._
+
+To solve this most efficiently, we will use a hash table to store each value from the array as the key and its index as the value.
+
+Our solution will consist of two steps, one loop to create our hash table and a second loop to check if a value exists in this hash table.
+
+**Note that two sequential loops are linear <BigO.n /> time, but two nested loops are <BigO.n2 />.**
+
+After we create our hash table, we then iterate through each value in `array` and subtract the item from the `target`.
+We will then check if this difference is in our hash table.
+If it does exist, we know that the two values sum to `target`, and we can insert their index pair in the `results` array.
+
+We also want to make sure we don't count the same numbers twice, so we set their hash table values to `-1`.
+
+<SolutionCode />
+
+It's worth mentioning that both loops aren't actually required.
+We could do all these steps in one loop and add the items to the hash table as we encounter them.
+
+My solution uses the two sequential loops because I think it's more readable code, so I would argue it's better.
+However, the single loop solution could be a slight optimization which means that there is an argument for that as well.
+In either case, the answer is still <BigO.n /> time, and both would be acceptable in an interview.
+For completeness, I'll add the single loop answer as a bonus below and you can decide which you are more comfortable with.
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space.
+</p>
+
+We loop through the array twice sequentially at <BigO.n /> time and create the additional hash table for lookups at <BigO.n /> space.
+
+<VariationsSubtitle />
+
+There are different ways to ask this problem, but the approach to them is almost identical.
+You could be asked to return the values that sum to the target, count the total matching pairs, or simply `true`/`false` if there are a pair of values that sum to the target.
+
+1. What if we are told there was only one matching pair? We could return early once we found that first match.
+2. What if the numbers in the array aren't unique?
+   Think how you would handle tracking the indexes per number.
+   You would instead need to store an array of indexes in the lookup hash table to get all the pairs.
+3. Three+ Sum - Find 3 (or more) numbers in a list that add up to a target value.
+   The strategy is similar to Two Sum. You extract values to a hash table and then compare against them.
+   However, the way you compare values becomes more complex.
+
+### Bonus
+
+Let's quickly see how our solution would look with 1 loop instead of 2.
+The solution is very similar and the time/space complexity is the same.
+
+<BonusCode />
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

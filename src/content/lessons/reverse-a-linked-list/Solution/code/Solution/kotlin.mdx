@@ -1,0 +1,27 @@
+```kotlin
+class Solution {
+    fun reverseLinkedList(head: ListNode?): ListNode? {
+        var previousNode: ListNode? = null
+        var currentNode = head
+
+        while (currentNode != null) {
+            // Store the actual next node in the linked list
+            val nextNode = currentNode.next
+
+            // This reverses the current node to point to the previous node
+            currentNode.next = previousNode
+
+            // We now step our previous node forward
+            previousNode = currentNode
+
+            // We step our current node forward
+            currentNode = nextNode
+        }
+
+        // Since currentNode becomes null at the tail,
+        // we return the previousNode which is the new head
+        // and the front of our linked list
+        return previousNode
+    }
+}
+```

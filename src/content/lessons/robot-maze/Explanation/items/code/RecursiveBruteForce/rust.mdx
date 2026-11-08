@@ -1,0 +1,48 @@
+```rust
+// Open cells are 0
+const BLOCKED: i32 = 1;
+const EXIT: i32 = 2;
+
+impl Solution {
+    // Main function
+    pub fn has_exit_path(room_matrix: Vec<Vec<i32>>) -> bool {
+        // Return false if the matrix is invalid
+        if room_matrix.is_empty() || room_matrix[0].is_empty() {
+            return false;
+        }
+
+        // Recursively walk through the room to check if there is a valid path
+        let is_valid_path = walk_through_room(&room_matrix, 0, 0);
+
+        is_valid_path
+    }
+}
+
+// Recursive helper function
+fn walk_through_room(room_matrix: &[Vec<i32>], row: usize, col: usize) -> bool {
+    // Base case 1: Outside of room, so there can't be a path through this
+    let is_outside_room = row >= room_matrix.len() || col >= room_matrix[0].len();
+    if is_outside_room {
+        return false;
+    }
+
+    // Base case 2: A path successfully reached the end, so propagate this upward
+    let is_exit_node = room_matrix[row][col] == EXIT;
+    if is_exit_node {
+        return true;
+    }
+
+    // Base case 3: We reached a blocking node
+    let is_blocking_node = room_matrix[row][col] == BLOCKED;
+    if is_blocking_node {
+        return false;
+    }
+
+    // Recursive case: move down and right
+    let down_result = walk_through_room(room_matrix, row + 1, col);
+    let right_result = walk_through_room(room_matrix, row, col + 1);
+
+    // Returns true if either is successful
+    down_result || right_result
+}
+```

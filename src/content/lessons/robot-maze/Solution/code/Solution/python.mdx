@@ -1,0 +1,55 @@
+```python
+OPEN = 0
+BLOCKED = 1
+EXIT = 2
+
+def has_exit_path(room_matrix):
+    # Return false if the matrix is invalid
+    if not room_matrix or len(room_matrix) == 0 or len(room_matrix[0]) == 0:
+        return False
+
+    # Init our memoize matrix
+    memoized_path_validity = [[None for _ in range(len(room_matrix[0]))] for _ in range(len(room_matrix))]
+
+    # Recursively walk through the room to check if there is a valid path
+    is_valid_path = walk_through_room(room_matrix, 0, 0, memoized_path_validity)
+
+    return is_valid_path
+
+
+# Recursive helper function
+def walk_through_room(room_matrix, row, col, memo):
+    # Base case 1: Outside of room, so there can't be a path through this
+    is_outside_room = (row > len(room_matrix) - 1) or (col > len(room_matrix[0]) - 1)
+    if is_outside_room:
+        return False
+
+    # Base case 2: A path successfully reached the end, so propagate this upward
+    is_on_valid_path = memo[row][col] == True
+    is_exit_node = room_matrix[row][col] == EXIT
+    if is_on_valid_path or is_exit_node:
+        # Set the current node as true as well
+        memo[row][col] = True
+        return True
+
+    # Base case 3: We reached a blocking node
+    is_on_invalid_path = memo[row][col] == False
+    is_blocking_node = room_matrix[row][col] == BLOCKED
+    if is_on_invalid_path or is_blocking_node:
+        memo[row][col] = False
+        return False
+
+    # Recursive case: move down and right
+    down_result = walk_through_room(room_matrix, row + 1, col, memo)
+    right_result = walk_through_room(room_matrix, row, col + 1, memo)
+
+    if down_result == False and right_result == False:
+        # If both this node's right and down are false, we memoize this to false
+        memo[row][col] = False
+    else:
+        # If either of the paths are true, we set this node as true since at least one can reach the exit
+        memo[row][col] = True
+
+    # Returns true if either is successful
+    return down_result or right_result
+```

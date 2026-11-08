@@ -1,0 +1,71 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Sort a list of whole-number ages from 0 through 100, preserving every occurrence. For `[42, 0, 18, 42, 100]`, the result is `[0, 18, 42, 42, 100]`. The small, fixed age range lets us count values directly. We never need to compare one input age with another.
+
+## Count occurrences before writing the result
+
+A comparison sort is a reasonable first answer: sort the values numerically and return them. Its usual O(n log n) bound solves a more general problem, where values can come from an arbitrary ordered domain. Here there are only 101 possible keys. Allocate one counter for each age, initialize every counter to zero, and scan the input once.
+
+After processing any prefix, counter `a` equals the number of occurrences of age `a` in that prefix. Incrementing exactly one counter for the next item preserves that statement. At the end, the counters describe the entire input, including duplicates. An empty input leaves all counters at zero and produces an empty result.
+
+## Expand the counts in increasing order
+
+Walk the counter indexes from 0 through 100. For each age, append that age exactly as many times as its counter says. All output values for a smaller age are written before any value for a larger age. The result is therefore sorted. Because each counter equals the original frequency, expansion also preserves the input's multiplicities.
+
+For the example, only counters 0, 18, 42, and 100 are nonzero. Their counts are 1, 1, 2, and 1. Expansion writes one zero, one eighteen, two forty-twos, and one hundred. The second forty-two is required. Replacing the counter array with a set would lose it and answer a different question.
+
+## Account for the inner loop accurately
+
+The nested expansion loops do O(101 + n) work. Although one loop sits inside another, the inner loop runs a total of n times across all ages. A list containing a million copies of age 42 makes one counter large; it does not make every counter large. Counting the total number of emitted items gives the useful bound.
+
+For a generalized range of k possible values, time is O(n + k) and auxiliary counter storage is O(k). Here k is fixed at 101, so those become O(n) time and O(1) auxiliary space. The returned list still occupies O(n) space. Say whether the output is included before claiming constant total space.
+
+## Respect the bounded-domain contract
+
+The direct index is valid because every age is an integer in the allowed range. Negative ages, fractions, and values above 100 need validation or a different representation. A sparse map can count an unbounded domain, but its distinct keys then need ordering before expansion. That changes both the implementation and its cost.
+
+This version sorts ages alone. If each age belongs to a person record, rebuilding records from age counts would discard names and other fields. A stable counting sort can place entire records using cumulative counts and a separate output array. Discuss that extension only after the simple frequency-based solution is correct.
+
+## Test frequency preservation
+
+Use the empty list, one item, both domain endpoints, an already sorted list, and a reverse-sorted list. Include many identical ages and repeated endpoints. Check two properties separately: adjacent output values never decrease, and the frequency of each age matches the input. A result can satisfy the first property while silently dropping duplicates.
+
+As a follow-up, change the age range to a billion possible values with only ten input items. Explain why initializing a billion counters is a poor trade. Compare sorting ten values with counting ten distinct keys and then sorting those keys. The range size belongs in the complexity argument whenever it can grow.
+
+## C# implementation
+
+The result list reserves input-length capacity, then `ToArray` creates the required array return value. Include that final allocation in storage accounting.
+
+The runner constructs the solution class and supplies standard collection namespaces and any declared node types. Arrays, lists, and class instances share references when assigned. Follow the method's exact capitalization and return type from the starter. The integer operations in this implementation are bounded; wider inputs may require `long` intermediates and a corresponding change to the return contract.
+
+```csharp
+public class Solution {
+    private const int MinAge = 0;
+    private const int MaxAge = 100;
+
+    public int[] SortByAge(int[] ageList) {
+        var sortedAgeList = new List<int>(ageList.Length);
+        var ageCount = new int[MaxAge + 1];
+
+        foreach (int age in ageList) {
+            ageCount[age]++;
+        }
+
+        for (int age = MinAge; age <= MaxAge; age++) {
+            int count = ageCount[age];
+
+            for (int i = 0; i < count; i++) {
+                sortedAgeList.Add(age);
+            }
+        }
+
+        return sortedAgeList.ToArray();
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Age Sort](/course/age-sort) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more C# conventions and practice problems, use the [C# interview guide](/interview-prep/csharp).

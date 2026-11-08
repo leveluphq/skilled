@@ -1,0 +1,22 @@
+```java
+// isBadVersion(version) is provided by VersionControl
+class Solution extends VersionControl {
+    public int firstBadVersion(int n) {
+        int lowerBound = 1; // Starts at v1
+        int upperBound = n;
+
+        while (lowerBound < upperBound) {
+            // (lowerBound + upperBound) / 2 could overflow an int, but this can't
+            int midpoint = lowerBound + (upperBound - lowerBound) / 2;
+
+            if (isBadVersion(midpoint)) {
+                upperBound = midpoint;
+            } else {
+                lowerBound = midpoint + 1;
+            }
+        }
+
+        return lowerBound;
+    }
+}
+```

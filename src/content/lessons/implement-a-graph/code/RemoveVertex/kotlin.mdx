@@ -1,0 +1,9 @@
+```kotlin
+fun removeVertex(vertex: String) {
+    adjacencyList.remove(vertex)
+
+    for (edges in adjacencyList.values) {
+        edges.removeAll { v -> v == vertex }
+    }
+}
+```

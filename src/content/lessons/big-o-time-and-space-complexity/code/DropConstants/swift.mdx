@@ -1,0 +1,29 @@
+```swift
+func case1(_ input: [Int]) {
+    for i in 0..<input.count {
+        print(i * 2) // O(n)
+    }
+    for i in 0..<input.count {
+        print(i * 10) // O(n)
+    }
+    for i in 0..<input.count {
+        print(i * 42) // O(n)
+    }
+}
+
+func case2(_ input: [Int]) {
+    for i in 0..<input.count {
+        print(i * 2) // O(n)
+        print(i * 10) // O(n)
+        print(i * 42) // O(n)
+    }
+}
+
+func case3(_ input: [Int]) {
+    for i in 0..<input.count {
+        for j in 0..<input.count {
+            print(i, j)
+        }
+    }
+}
+```

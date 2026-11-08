@@ -1,0 +1,22 @@
+import Image from 'content/blocks/Image';
+import MaxProfitEquation from './code/MaxProfitEquation';
+import MaxProfitAtHouse from './inlineCode/MaxProfitAtHouse';
+import PackageValues from './inlineCode/PackageValues';
+
+We don't need to consider our entire input array to calculate the max profit.
+We just solve every house as its own subproblem.
+
+So we can find the profit at each house by using the following formula:
+
+<MaxProfitEquation />
+
+The max profit at any house is either stealing the current item and adding it to the max profit from two houses back (since stolen items can't be from adjacent houses),
+or just using the max profit from one house back.
+
+I think it's important here to distinguish between the value of the item at houses and the max profit.
+The max profit is something we're building up the entire time we iterate, so it is a value that is growing.
+At each house, we're deciding if we add the current house's value to a max profit calculated at a previous house.
+This finds the max profit for the current house to solve its subproblem.
+
+- <PackageValues /> is the value of the item at a single house
+- <MaxProfitAtHouse /> is the max profit we're building up by solving the subproblem at each house

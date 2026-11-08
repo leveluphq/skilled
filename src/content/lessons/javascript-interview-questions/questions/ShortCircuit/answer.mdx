@@ -1,0 +1,30 @@
+import Expressions from './code/Expressions';
+import Or from './code/Or';
+import And from './code/And';
+import Nullish from './code/Nullish';
+
+Short circuit evaluation is a technique where you use binary logical operators to avoid unnecessary work.
+It can also be used to assign variables based on the <a href="https://developer.mozilla.org/en-US/docs/Glossary/Truthy" target="_blank">truthy</a> or <a href="https://developer.mozilla.org/en-US/docs/Glossary/Falsy" target="_blank">falsy</a> values used.
+
+A truthy value means that the value is coerced to `true`,
+and a value is falsy if its value is coerced to `false` (for example, an empty string `''`).
+
+Binary logical operators will look something like the following:
+
+<Expressions />
+
+The OR `||` operator will return `item1` if it is truthy, otherwise it will return `item2`.
+We use the `||` to short circuit by being able to skip the second item if the first is truthy.
+
+<Or />
+
+The AND `&&` operator will return `item1` if it is falsy, otherwise it will return `item2`.
+We use the `&&` to short circuit by being able to skip the second item if the first is falsy.
+This is also a common pattern for conditional rendering in web applications.
+
+<And />
+
+The nullish coalescing operator `??` was released in ES2020.
+It is similar to `||` but instead of considering all falsy values, it only yields to `item2` if `item1` is either `null` or `undefined`.
+
+<Nullish />

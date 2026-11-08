@@ -1,0 +1,107 @@
+```javascript
+const tests = [
+  {
+    input: null,
+    expected: false,
+    description: 'no board',
+  },
+  {
+    input: [],
+    expected: false,
+    description: 'invalid board',
+  },
+  {
+    input: [[]],
+    expected: false,
+    description: 'no items',
+  },
+  {
+    input: [
+      [0, 0, 0],
+      [0, 0, 1],
+      [0, 0, 1],
+      [1, 0, 2],
+    ],
+    expected: true,
+    description: 'small board',
+  },
+  {
+    input: [
+      [0, 1, 1, 0, 0],
+      [0, 1, 1, 1, 0],
+      [0, 0, 0, 0, 0],
+      [1, 1, 0, 1, 0],
+      [0, 0, 2, 1, 0],
+      [0, 0, 0, 1, 0],
+    ],
+    expected: true,
+    description: 'random exit location',
+  },
+  {
+    input: [
+      [0, 0, 1, 1],
+      [0, 0, 0, 1],
+      [0, 0, 0, 1],
+      [0, 0, 0, 2],
+    ],
+    expected: true,
+    description: 'many paths',
+  },
+  {
+    input: [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 2],
+    ],
+    expected: true,
+    description: 'open board',
+  },
+  {
+    input: [
+      [0, 0, 0, 2],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    expected: true,
+    description: 'all right',
+  },
+  {
+    input: [
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [2, 0, 0, 0],
+    ],
+    expected: true,
+    description: 'all down',
+  },
+  {
+    input: [
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1],
+      [0, 0, 0, 1, 2],
+    ],
+    expected: false,
+    description: 'open board, blocked exit',
+  },
+  {
+    input: [
+      [0, 0, 0, 0],
+      [1, 0, 0, 1],
+      [2, 1, 0, 0],
+    ],
+    expected: false,
+    description: 'blocked path',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = hasExitPath(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

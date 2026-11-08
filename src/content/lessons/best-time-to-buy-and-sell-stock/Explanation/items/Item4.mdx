@@ -1,0 +1,39 @@
+import Image from 'content/blocks/Image';
+
+To make sure we fully understand this, let's visualize 3 examples.
+
+For each one, we move from left to right.
+Each time we reach a new low point, this is the new minimum price that we track.
+Then we check for the highest price at each point to determine if we can create a new max profit by selling the stored minimum price.
+
+In each case, we initialize the max profit to 0 and the minimum price to the first price.
+
+<Image src="/images/stock-example-1.png" alt="Stock prices identify an earlier low purchase price and a later higher selling price." width={2354} height={1216} />
+
+For the above image:
+- Day 0 - Set the minimum price to $9.
+- Day 1 - $2 is smaller than the currently stored minimum price of $9, so we update it to $2.
+- Day 2 - $4 is larger than the minimum price of $2, and we see that it can yield a higher max profit than the initial amount of $0, so we store a max profit of `4 - 2 = $2`.
+- Day 3 - $3 is larger than the minimum of $2, but when we check for its profit `3 - 2 = $1`, it's less than our previously calculated max profit of $2 from day two.
+- Day 4 - $8 is larger than the minimum we stored, so we check if it yields a new max profit. `8 - 2 = $6` is larger than our previous max of $2, so we store it as our max profit.
+- Day 5 - $5 is larger than the minimum we stored, but `5 - 2 = $3` does not yield a new max profit.
+
+So by tracking the smallest value and subtracting it from any larger value afterward, we're able to determine the max profit from above is $6 when we buy on day one and sell at day four.
+
+As we scan from left to right going through the days, if we reach a new low point which indicates a new minimum price, we check that value against all future values to determine if it can create a new max profit.
+
+Now let's add another day where we have a stock price of $9 as we see below.
+
+<Image src="/images/stock-example-2.png" alt="A new high selling price increases the best profit while retaining the earlier minimum purchase price." width={2374} height={1216} />
+
+Again we scan from left to right and have a minimum price of $2.
+However, this time we see the price of $9 at day five which can create a new max profit, so we sell there to find the best max profit to be $7.
+
+Finally below, we'll add one additional price. At day two, we'll introduce a stock price of $1.
+
+<Image src="/images/stock-example-3.png" alt="A new lower price becomes the candidate purchase for later sales; the best earlier profit stays available." width={2374} height={1216} />
+
+When we're scanning left to right, at day one we set the minimum stock price to $2.
+Then at day two, since the price is lower, we set the minimum stock price to $1.
+Then we continue to scan and see the highest price is again $9,
+so we sell there for a max profit of `9 - 1 = $8`.

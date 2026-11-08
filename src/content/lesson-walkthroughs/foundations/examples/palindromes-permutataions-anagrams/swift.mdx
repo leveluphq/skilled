@@ -1,0 +1,17 @@
+```swift
+func asciiPalindrome(_ text: String) -> Bool {
+    var clean: [UInt8] = []
+    for original in text.utf8 {
+        let value = (65...90).contains(original) ? original + 32 : original
+        if (97...122).contains(value) || (48...57).contains(value) { clean.append(value) }
+    }
+    var left = 0
+    var right = clean.count - 1
+    while left < right {
+        if clean[left] != clean[right] { return false }
+        left += 1
+        right -= 1
+    }
+    return true
+}
+```

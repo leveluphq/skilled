@@ -1,0 +1,36 @@
+import BigO from 'content/blocks/BigO';
+import Null from 'content/blocks/Null';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+In this question, we are doing a recursive post-order traversal.
+We traverse the `left` and `right` paths before we handle the result at any given node, so we know that we will have accounted for all the nodes below the current one.
+
+When we reach one of the target input values, we return this node.
+Once all the recursive calls return to any given node,
+if both the return values are not <Null /> (they contain a node), we know that we have reached the common ancestor and return this node.
+This node will propagate up until all the recursive calls unwind.
+
+In this problem, we have two base cases:
+
+1. Reaching a <Null /> value (target not found on this path)
+2. We reach one of the input targets (return this node)
+
+Since we return values that are not <Null />, this will send valid values up and eventually produce the solution.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space.
+</p>
+
+In the worst case, we visit all `n` nodes which requires <BigO.n /> time and have all `n` items in the call stack.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

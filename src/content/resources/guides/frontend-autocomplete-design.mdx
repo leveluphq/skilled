@@ -1,0 +1,59 @@
+An autocomplete combines text editing, asynchronous search, selection, focus, and accessible feedback. Debouncing the request is one part of that design. A usable implementation must also prevent stale responses from replacing newer results and let a keyboard user choose or dismiss suggestions without losing control of the text field.
+
+This walkthrough is a design exercise rather than a complete widget pasted into the function runner. Work through the state transitions, request ownership, and tests, then build the interface in a browser environment. The existing [Debounce](/course/debounce) and [Promise](/course/build-a-javascript-promise) lessons cover useful underlying mechanisms.
+
+## Separate typed text from committed selection
+
+Keep the query string distinct from the selected item's identifier. A user can edit the text after choosing an item; retaining the old selected identifier silently can submit the wrong object. Decide whether editing clears selection immediately and whether free-form text is a valid final value.
+
+Retain the result collection, loading or error state, popup visibility, and active option separately. An active option is the current keyboard navigation target inside the popup. It is not necessarily the committed selection. Pressing Escape may dismiss the popup while preserving typed text, depending on the chosen interaction contract.
+
+Model these relationships before choosing a rendering framework. A state table can list events such as input changed, request started, response received, ArrowDown pressed, option chosen, and focus left the widget. For each event, identify which state changes and which state remains valid.
+
+## Give each request an owner
+
+Suppose a user types ca and then cat. The ca request may finish after the cat request. Arrival order does not establish which response belongs to the current query. Assign a monotonically increasing request generation and apply a response only if its generation still owns the current search.
+
+Cancel the previous request when a new query makes it obsolete. Cancellation avoids some wasted work, but it does not replace the ownership check. A response may already have resolved, an adapter may not support cancellation, or later asynchronous processing may outlive the canceled fetch.
+
+Use the platform's [AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) for supported request cancellation, while keeping the independent generation check in the application state model. Treat an intentional abort differently from a network failure so changing the query does not flash an irrelevant error.
+
+## Debounce initiation while updating text immediately
+
+The text field should reflect the user's edits without waiting for a debounce interval. Delay only the expensive search initiation under the chosen contract. Clear an obsolete scheduled search when a newer edit arrives.
+
+Choose a minimum query length if it suits the data source. An empty query may close suggestions and clear results rather than issue a broad request. State what happens when a selected item's display label differs from the query or when a user clears the field.
+
+Use the [debounce/throttle visualizer](/tools/debounce-throttle) to reason about event bursts and trailing work. A leading call can show results sooner but also changes request frequency. A max-wait policy can serve continuously typed input, while its extra state and cancellation rules need explicit tests. Avoid choosing options only because a utility library exposes them.
+
+## Keep focus and active-option state coherent
+
+Choose an established accessible interaction pattern and implement it consistently. An editable combobox with a listbox popup commonly retains DOM focus in the text field while describing the active option through the appropriate relationship. The active option must have a stable ID that points to an element actually present in the document.
+
+The [WAI-ARIA combobox pattern](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/) documents the semantics and keyboard behavior for several variants. Select the variant that matches whether arbitrary text is allowed and how suggestions are accepted. Adding a combobox role without its state, relationships, and keyboard behavior does not complete the widget.
+
+Arrow keys navigate suggestions according to that contract. Enter can commit an active suggestion. Escape dismisses the popup. Ordinary text-editing shortcuts should continue to work. When results change, clear or update an active option that no longer exists. Pointer selection must not be lost merely because a blur handler closes the popup before the activation is processed.
+
+## Make loading, no-results, and failure states distinguishable
+
+A blank popup can mean no matching items, a request still running, or a failed request. Provide text that identifies the actual state. Avoid announcing every keystroke through an aggressive live region; summarize meaningful changes such as the availability of results under a deliberate announcement policy.
+
+Keep result labels understandable without relying only on visual position or an icon. If several records share a name, include another useful distinguishing field. Validate the selected identifier on the server when submitting; a client-side suggestion list does not establish authorization or record validity.
+
+For errors, decide whether the previous valid results remain visible and how their query context is communicated. Do not present old results as if they matched the newest text. A retry should belong to the current query generation and follow the same stale-response rules as an initial request.
+
+## Bound caching and response processing
+
+A small cache can avoid repeated requests for the same normalized query, but normalization must match the search service's semantics. Lowercasing or trimming may change meaning for some domains. Cache keys may also need language, filters, or account scope; query text alone can be insufficient.
+
+Set a size or expiration policy rather than retaining every query forever. Do not share results between users when the underlying records are permission-dependent. Treat response shape validation as a boundary before rendering, and render labels as text rather than injecting untrusted markup.
+
+Large result collections should be bounded by the service contract. Rendering hundreds of hidden options complicates navigation and increases work. If using virtualization, ensure the active-option relationship remains valid when options mount and unmount. Measure a real browser interaction before claiming that a rendering strategy improves performance.
+
+## Test races and interaction sequences
+
+Resolve two mocked requests in reverse order and assert that only the current query's results appear. Clear the query while a request is pending. Change the query after the request resolves but before later processing finishes. Unmount the widget while work is outstanding and ensure it does not update abandoned state.
+
+Test keyboard navigation, Escape, Enter, focus departure, pointer selection, a removed active item, empty results, network failure, and duplicate labels. Use real browser checks for focus and activation ordering in addition to state-level tests. A passing debounce test alone cannot establish that this interaction works.
+
+For a follow-up, write the state table and implement a small local-data version first. Then introduce delayed responses and cancellation. Use the [event-delegation guide](/guides/frontend-event-delegation) to reason about event ownership, and the [practice worksheet](/reference/interview-practice-worksheet) to record the invariant that ties each visible result list to its owning query.

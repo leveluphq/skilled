@@ -1,0 +1,28 @@
+```rust
+// We use the modulo operator to determine if a number is odd
+fn is_odd(num: i32) -> bool {
+    num % 2 != 0
+}
+
+// All O(c) operations
+fn is_permutation_of_palindrome(string: &str) -> bool {
+    // Use a hash table to count the occurrence of each character in a string
+    // These are sequential O(c) operations
+    let mut character_count_table: HashMap<char, i32> = HashMap::new();
+
+    for character in string.chars() {
+        *character_count_table.entry(character).or_insert(0) += 1;
+    }
+
+    // Sum the number of characters that contain an odd count
+    let mut odd_character_count = 0;
+    for &character_count in character_count_table.values() {
+        if is_odd(character_count) {
+            odd_character_count += 1;
+        }
+    }
+
+    // If only one character has an odd count, this function returns true
+    odd_character_count <= 1
+}
+```

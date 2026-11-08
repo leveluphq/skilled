@@ -1,0 +1,23 @@
+```go
+func (a *DynamicArray) Insert(index, item int) map[int]int {
+	// Ensure we're inserting inside a valid array length
+	if index > a.length-1 || index < 0 {
+		return nil
+	}
+
+	// Create our new length
+	a.length++
+
+	// Shift items up one spot from the insertion index to the new final spot in the array.
+	// We iterate from the back since this is our new empty item
+	for i := a.length - 1; i > index; i-- {
+		a.data[i] = a.data[i-1]
+	}
+
+	// Add the new item
+	a.data[index] = item
+
+	// Return the array
+	return a.data
+}
+```

@@ -1,0 +1,12 @@
+```rust
+fn fibonacci(n: u64) -> u64 {
+    let mut memo = HashMap::from([(0, 0), (1, 1)]);
+
+    for i in 2..=n {
+        let current_fib = memo[&(i - 1)] + memo[&(i - 2)];
+        memo.insert(i, current_fib);
+    }
+
+    memo[&n]
+}
+```

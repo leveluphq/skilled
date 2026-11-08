@@ -1,0 +1,14 @@
+```kotlin
+fun middleValue(values: List<Int>): Int? {
+    class ListNode(val value: Int, val next: ListNode?)
+    var head: ListNode? = null
+    for (index in values.indices.reversed()) head = ListNode(values[index], head)
+    var slow = head
+    var fast = head
+    while (fast != null && fast.next != null) {
+        slow = slow?.next
+        fast = fast.next.next
+    }
+    return slow?.value
+}
+```

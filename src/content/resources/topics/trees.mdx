@@ -1,0 +1,41 @@
+Tree problems often become manageable when one recursive call has a precise responsibility. A traversal decides when to process a node. A depth calculation combines child results. A binary-search-tree check passes constraints from ancestors into each subtree.
+
+Start with [Trees](/course/trees), then compare [traversal orders](/course/tree-traversal-in-order-pre-order-post-order). Use the [tree playground](/tools/tree-traversal) to predict the output on a tree with missing children before following the actual visits.
+
+## Separate shape from ordering
+
+An ordinary binary tree limits each node to at most two children. A binary search tree adds an ordering relationship between a node and the values in its subtrees. A balanced tree adds a shape or height guarantee that an arbitrary BST does not have.
+
+Those properties support different algorithms. Inorder traversal visits any binary tree, but produces sorted values only when the relevant BST ordering contract holds. BST search can still take linear time on a chain-shaped tree.
+
+Clarify duplicate-value handling and whether comparisons use values or node identity. A common-ancestor problem can ask about specific nodes even when several nodes contain equal values.
+
+## Define the recursive return value
+
+For [Maximum Depth](/course/binary-tree-max-depth), decide what an empty subtree returns and whether depth counts nodes or edges. Then combine the child results consistently. A one-node example should agree with that definition.
+
+For a traversal, the return may be a collected sequence or the function may invoke an operation at each visit. Preorder, inorder, and postorder differ in whether the node is processed before, between, or after its child traversals.
+
+Writing the same shared output array through recursive calls can be valid, but include that output storage in the appropriate accounting. Recursion also retains active frames proportional to tree height.
+
+## Pass ancestor bounds through BST validation
+
+A parent-only check can miss an invalid node deeper in a subtree. A value in the left subtree must satisfy the relevant ancestor constraints as well as its immediate parent's local comparison.
+
+[BST Validate](/course/binary-search-tree-validate) develops that problem. Track lower and upper bounds or use another complete ordering argument. Decide how equality is treated before selecting strict or inclusive comparisons.
+
+Build a test where a node fits its immediate parent but violates the root's bound. It should fail even though every local-looking branch appears plausible. That test distinguishes the full tree rule from an incomplete approximation.
+
+## Combine subtree evidence for ancestors
+
+[Closest Common Ancestor](/course/closest-common-ancestor-in-binary-tree) asks how two target nodes relate through the tree. Define what a recursive call returns when it finds a target, finds both targets below, or finds neither.
+
+Also clarify whether both targets are guaranteed to exist. A method that returns one found target may need additional presence information when one target can be absent. A node can be its own ancestor under common conventions, but use the exercise's definition.
+
+Draw cases with targets on opposite sides, one target above the other, equal payload values on different nodes, and a deep skewed shape. The recursive return contract should cover all of them.
+
+## Review height and output costs
+
+A full traversal takes O(n) visits when each node's local work is constant. Active recursive stack space is O(h), with h determined by the shape. A balanced example alone does not justify an O(log n) stack bound for every allowed input.
+
+An explicit stack can avoid dependence on a runtime's recursive call limit while retaining similar algorithmic state. A level-order traversal uses a queue and may hold a broad frontier. The [graph guide](/guides/bfs-vs-dfs) compares those structures and explains the extra visited state a general graph requires.

@@ -1,0 +1,23 @@
+```go
+// Possibly unintuitive
+// slices.Sort sorts the slice in place and doesn't return anything
+nums := []int{1, 50, 10000, 510, 5050, 60}
+slices.Sort(nums) // nums is now []int{1, 50, 60, 510, 5050, 10000}
+
+// For a custom order, use slices.SortFunc with a function that returns a negative number, zero, or a positive number
+// cmp.Compare(b, a) flips the comparison to sort in descending order
+slices.SortFunc(nums, func(a, b int) int { return cmp.Compare(b, a) }) // []int{10000, 5050, 510, 60, 50, 1}
+
+// Strings sort as expected
+months := []string{"March", "Jan", "Feb", "Dec"}
+slices.Sort(months) // []string{"Dec", "Feb", "Jan", "March"}
+
+// Use the comparison function to handle structs
+type Player struct{ score int }
+players := []Player{{score: 20}, {score: 100}, {score: 5}}
+slices.SortFunc(players, func(a, b Player) int { return cmp.Compare(a.score, b.score) })
+// => []Player{{score: 5}, {score: 20}, {score: 100}}
+
+// sort.Slice also works, but it takes a "less" function that returns a bool
+sort.Slice(players, func(i, j int) bool { return players[i].score < players[j].score })
+```

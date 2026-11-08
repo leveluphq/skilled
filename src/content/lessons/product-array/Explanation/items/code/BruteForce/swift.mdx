@@ -1,0 +1,19 @@
+```swift
+func bruteForceAnswer(_ input: [Int]) -> [Int] {
+    var results = [Int](repeating: 0, count: input.count)
+
+    for i in 0..<input.count {
+        var product = 1
+
+        for j in 0..<input.count {
+            if i != j {
+                product = product * input[j]
+            }
+        }
+
+        results[i] = product
+    }
+
+    return results
+}
+```

@@ -1,0 +1,18 @@
+```python
+class ListNode:
+    def __init__(self, data):
+        self.data = data # the unix timestamp of when the block was added
+        self.next = None
+
+# Input
+skilled_chain_head = ListNode(42)
+skilled_chain_head.next = ListNode(159)
+# many more additions to each...
+
+dev_coin_head = ListNode(123)
+dev_coin_head.next = ListNode(482)
+# many more additions to each...
+
+# Output: combine_blockchains(skilled_chain_head, dev_coin_head)
+42 -> 123 -> 159 -> 482 # ... and so on
+```

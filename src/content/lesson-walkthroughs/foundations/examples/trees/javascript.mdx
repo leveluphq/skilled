@@ -1,0 +1,10 @@
+```javascript
+function maxDepth(values) {
+    function height(index) {
+        if (index >= values.length || values[index] === null)
+            return -1;
+        return 1 + Math.max(height(2 * index + 1), height(2 * index + 2));
+    }
+    return height(0);
+}
+```

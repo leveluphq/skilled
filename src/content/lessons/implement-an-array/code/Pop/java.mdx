@@ -1,0 +1,13 @@
+```java
+public T pop() {
+    if (length == 0) {
+        return null;
+    }
+
+    T poppedItem = data.get(length - 1);
+    data.remove(length - 1);
+    length--;
+
+    return poppedItem;
+}
+```

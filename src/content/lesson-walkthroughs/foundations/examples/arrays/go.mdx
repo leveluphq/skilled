@@ -1,0 +1,9 @@
+```go
+func ArraysInsert(values []int, index int, item int) []int {
+    result := make([]int, len(values)+1)
+    copy(result, values[:index])
+    result[index] = item
+    copy(result[index+1:], values[index:])
+    return result
+}
+```

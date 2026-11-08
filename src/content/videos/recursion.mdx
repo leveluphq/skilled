@@ -1,0 +1,19 @@
+A recursive function solves a problem through smaller calls to the same function. Each call needs enough local state to finish after its child returns. The recording uses examples to connect that control flow with the call stack. Understanding the saved work makes it easier to choose a base case and to translate a recursive solution into an iterative one.
+
+## State what one call promises
+
+For factorial on nonnegative integers, one call returns the product from 1 through its argument, with factorial of zero equal to 1. A recursive step reduces the argument by one and multiplies by the returned smaller answer. That argument reaches the base case, so the chain terminates. A function that calls itself without making progress can exhaust its stack even if its syntax looks plausible.
+
+Trace a small call with separate lines for entering and returning. Factorial of 3 first waits for factorial of 2; the multiplication by 3 happens after the smaller call finishes. That pending multiplication explains why this form needs stack frames and why its recursive call is not in tail position.
+
+## Preserve order when replacing the stack
+
+Flattening nested arrays is another useful trace. For `[1, [2, 3], 4]`, depth-first expansion should produce `[1, 2, 3, 4]`. An iterative replacement must put pending nested work in the right place. Appending every discovered child to a FIFO queue can process 4 before 2 and 3. Compare the order of unfinished work with the recursive version before claiming equivalence.
+
+The [flattening guide](/guides/javascript-flatten-arrays) uses an explicit stack and discusses holes, shared branches, and cycles. Those extra contracts matter for general input. A finite nested-array example does not establish that a traversal can handle a self-referential structure.
+
+## Count depth as well as calls
+
+Time depends on how many calls execute and what each call does. Peak stack space depends on the longest active chain. A branching recursion may execute exponentially many calls while having only linear depth. Repeated subproblems may benefit from memoization, but recursion alone does not imply dynamic programming.
+
+Use the [recursion tool](/tools/recursion-call-stack) to follow pending frames. Then try [Sum Digits](/watch/sum-digits) and explain both its reduction step and the storage used for an input with many digits.

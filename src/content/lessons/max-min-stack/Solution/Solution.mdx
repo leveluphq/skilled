@@ -1,0 +1,34 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import MaxMethod from '../QuestionStatement/inlineCode/MaxMethod';
+import MinMethod from '../QuestionStatement/inlineCode/MinMethod';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+Our <SolutionSignature /> builds up from a normal stack implementation.
+We introduce two additional stack data structures to store the current maximum and minimum values at any point.
+
+- If we `push` new values that replace the current max or min, we just add that as the top of its corresponding stack.
+- If we `push` a value that is equal to the current max or min, we add it to the corresponding stack to account for it occurring more than once.
+- If we `pop` a value that is equal to the current max or min, we also remove it from its corresponding stack.
+- Calling <MaxMethod />, we just return the top item of the max tracking stack (equivalent to a `peek`)
+- Calling <MinMethod />, we just return the top item of the min tracking stack (equivalent to a `peek`)
+
+Because all of our operations happen at the end of a stack, we know they are all <BigO.constant /> time.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.constant /> time and <BigO.n /> space where <code>n</code> is the number of items pushed to the stack.
+</p>
+
+We create two additional stacks that require `n` space in the worst case.
+However, we get constant time <BigO.constant /> operations for all methods because stacks are fast at the end.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

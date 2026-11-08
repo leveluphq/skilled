@@ -1,0 +1,25 @@
+```go
+func breadthFirstSearch(startingNode *GraphNode) {
+	bfsQueue := []*GraphNode{startingNode}
+	visitedNodes := map[*GraphNode]bool{}
+
+	visitedNodes[startingNode] = true
+
+	for len(bfsQueue) > 0 {
+		// Dequeue from the front of the queue
+		node := bfsQueue[0]
+		bfsQueue = bfsQueue[1:]
+
+		// Use node value for the question
+		visit(node)
+
+		for _, childNode := range node.Edges {
+			if !visitedNodes[childNode] {
+				// Enqueue at the back of the queue
+				bfsQueue = append(bfsQueue, childNode)
+				visitedNodes[childNode] = true
+			}
+		}
+	}
+}
+```

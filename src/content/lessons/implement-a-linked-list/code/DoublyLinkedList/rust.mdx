@@ -1,0 +1,71 @@
+```rust
+use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+struct DoublyNode {
+    data: i32,
+    next: Option<Rc<RefCell<DoublyNode>>>,
+    // Weak, so that a node and the one before it don't keep each other alive
+    prev: Option<Weak<RefCell<DoublyNode>>>,
+}
+
+impl DoublyNode {
+    fn new(data: i32) -> Self {
+        DoublyNode {
+            data,
+            next: None,
+            prev: None,
+        }
+    }
+}
+
+// The head and tail (and each node's neighbors) point to the same nodes,
+// so the nodes are shared with Rc<RefCell<...>>
+struct DoublyLinkedList {
+    length: usize,
+    head: Rc<RefCell<DoublyNode>>,
+    tail: Rc<RefCell<DoublyNode>>,
+}
+
+impl DoublyLinkedList {
+    fn new(data: i32) -> Self {
+        let initial_node = Rc::new(RefCell::new(DoublyNode::new(data)));
+
+        DoublyLinkedList {
+            length: 1,
+            head: Rc::clone(&initial_node),
+            tail: initial_node,
+        }
+    }
+
+    // O(1)
+    fn prepend(&mut self, data: i32) -> Rc<RefCell<DoublyNode>> {
+        let prepended_node = Rc::new(RefCell::new(DoublyNode::new(data)));
+        let previous_head = Rc::clone(&self.head);
+
+        self.head = prepended_node;
+        self.head.borrow_mut().next = Some(Rc::clone(&previous_head));
+
+        previous_head.borrow_mut().prev = Some(Rc::downgrade(&self.head));
+
+        self.length += 1;
+
+        Rc::clone(&self.head)
+    }
+
+    // O(1)
+    fn append(&mut self, data: i32) -> Rc<RefCell<DoublyNode>> {
+        let appended_node = Rc::new(RefCell::new(DoublyNode::new(data)));
+        let previous_tail = Rc::clone(&self.tail);
+
+        self.tail = Rc::clone(&appended_node);
+        self.tail.borrow_mut().prev = Some(Rc::downgrade(&previous_tail));
+
+        previous_tail.borrow_mut().next = Some(Rc::clone(&self.tail));
+
+        self.length += 1;
+
+        appended_node
+    }
+}
+```

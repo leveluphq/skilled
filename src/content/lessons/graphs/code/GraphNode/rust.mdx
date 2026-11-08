@@ -1,0 +1,20 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+struct GraphNode {
+    data: i32,
+    // The nodes this one shares an edge with. They can point back to it,
+    // so the nodes are shared with Rc<RefCell<...>>
+    edges: Vec<Rc<RefCell<GraphNode>>>,
+}
+
+impl GraphNode {
+    fn new(data: i32) -> Self {
+        GraphNode {
+            data,
+            edges: Vec::new(),
+        }
+    }
+}
+```

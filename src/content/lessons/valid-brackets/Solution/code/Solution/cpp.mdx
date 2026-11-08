@@ -1,0 +1,43 @@
+```cpp
+class Solution {
+public:
+    bool hasValidBrackets(string s) {
+        unordered_map<char, char> matchingBrackets = {
+            {'(', ')'},
+            {'[', ']'},
+            {'{', '}'},
+        };
+        // Collect the keys as the opening brackets
+        // and the values as the closing brackets
+        vector<char> openingBrackets;
+        vector<char> closingBrackets;
+        for (const auto& [opening, closing] : matchingBrackets) {
+            openingBrackets.push_back(opening);
+            closingBrackets.push_back(closing);
+        }
+        stack<char> bracketStack;
+
+        for (char character : s) {
+            if (ranges::contains(openingBrackets, character)) {
+                bracketStack.push(character);
+            } else if (ranges::contains(closingBrackets, character)) {
+                // A closing bracket with nothing left to close
+                if (bracketStack.empty()) {
+                    return false;
+                }
+
+                char latestBracket = bracketStack.top();
+                bracketStack.pop();
+                char matchingBracket = matchingBrackets[latestBracket];
+
+                if (character != matchingBracket) {
+                    return false;
+                }
+            }
+        }
+
+        // check if we opened/closed all brackets which creates an empty stack.
+        return bracketStack.empty();
+    }
+};
+```

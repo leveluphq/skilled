@@ -1,0 +1,108 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty input"
+        input = ""
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "simple brackets"
+        input = "()"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "close before open"
+        input = "}{"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "sequence of brackets"
+        input = "{}[]()"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "complex valid series"
+        input = "{[{[([])]}][{}]()}"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "overlapping brackets"
+        input = "([)]"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "missing closing bracket"
+        input = "([]"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "no closing brackets"
+        input = "([{"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+
+    def test_9(self):
+        self.description = "ignore non-bracket characters"
+        input = "(abc123[321]{1}42)"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_10(self):
+        self.description = "only a closing bracket"
+        input = ")"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_11(self):
+        self.description = "extra closing bracket"
+        input = "())"
+        self.actual_result = has_valid_brackets(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

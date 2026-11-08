@@ -1,0 +1,14 @@
+```python
+def insert(self, key, value):
+    index = self.hash(key)
+    bucket = self.table[index]
+
+    # If the key already exists in the bucket, replace its value
+    for i in range(len(bucket)):
+        if bucket[i]["key"] == key:
+            bucket[i]["value"] = value
+            return
+
+    # If the item didn't exist, we add to the bucket
+    bucket.append({ "key": key, "value": value })
+```

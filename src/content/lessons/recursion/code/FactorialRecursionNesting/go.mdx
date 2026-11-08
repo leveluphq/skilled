@@ -1,0 +1,17 @@
+```go
+recursiveFactorial(4) = 4 * recursiveFactorial(3)
+  recursiveFactorial(3) = 3 * recursiveFactorial(2)
+    recursiveFactorial(2) = 2 * recursiveFactorial(1)
+      recursiveFactorial(1) = 1 // base case
+
+// or
+
+recursiveFactorial(4)
+  recursiveFactorial(3)
+    recursiveFactorial(2)
+      recursiveFactorial(1)
+      return 1 // base case
+    return 2 * 1 // -> 2 * 1
+  return 3 * 2 // -> 3 * 2 * 1
+return 4 * 6 // 4 * 3 * 2 * 1
+```

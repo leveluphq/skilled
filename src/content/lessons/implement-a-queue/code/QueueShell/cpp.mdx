@@ -1,0 +1,29 @@
+```cpp
+struct Node {
+    int data;
+    Node* prev;
+
+    Node(int data) : data(data), prev(nullptr) {}
+};
+
+class Queue {
+public:
+    Node* first;
+    Node* last;
+
+    Queue() {
+        first = nullptr;
+        last = nullptr;
+    }
+
+    Node* peek() {
+        // get the first item of the list
+    }
+    Node* enqueue(int item) {
+        // add an item to the end of the list
+    }
+    Node* dequeue() {
+        // remove the first item from the list
+    }
+};
+```

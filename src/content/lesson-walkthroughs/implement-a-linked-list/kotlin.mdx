@@ -1,0 +1,96 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+This lesson implements linked-list operations from a head node, then compares them with a doubly linked wrapper that retains a tail and length. Those interfaces expose different information. An operation that is direct with a saved tail may require traversal when the function receives only a head.
+
+## Make head replacement part of the contract
+
+Prepending creates a node whose next reference points to the old head, then returns the new node. The caller must retain that returned head. Appending from a head-only interface follows successors until it reaches the final node, then attaches the new node. Empty input needs a separate path because there is no final node to update.
+
+For an insertion into the middle, first locate the predecessor. Set the new node's next reference to the predecessor's old successor before connecting the predecessor to the new node. This order preserves the remaining chain. Removing a node similarly reconnects its predecessor to its successor. Removing the head changes the returned head instead.
+
+## Maintain both directions in a doubly linked wrapper
+
+A wrapper with head, tail, and length must keep them consistent after every mutation. In a nonempty doubly linked list, a next link and the corresponding previous link should agree. Prepending changes the old head's previous reference; appending changes the old tail's next reference. An empty-to-nonempty transition must establish both endpoints.
+
+The constructor in the current example creates a first node, so its initial length is one. A zero initial count would make later increments disagree with the chain. Test the constructor state before testing any method. A correct append cannot repair a count that was already wrong.
+
+## Charge for the traversal you perform
+
+Given the needed predecessor, changing a fixed number of links uses constant work. Finding a position from the head takes linear time. Retaining a tail makes append direct, but removing a singly linked tail still requires finding its predecessor. A recursive traversal also adds stack depth that a loop avoids.
+
+Check an empty chain, one node, insertion at the head, and insertion at the end. Walk forward after every mutation and backward for the doubly linked version. Use the [current implementation lesson](/course/implement-a-linked-list) for its exact index contracts, then apply the same reference discipline to [Reverse a Linked List](/watch/reverse-a-linked-list).
+
+## Verify links in both directions
+
+The complete example here is a doubly linked list with a nonempty constructor, prepend, and append. Starting at 5, prepend 2 and append 9. Forward traversal should read `[2, 5, 9]`; backward traversal should read `[9, 5, 2]`. Length should be three, the head's previous link absent, and the tail's next link absent.
+
+On prepend, retain the old head before replacing it. Connect the new head forward to the old head, then connect the old head backward to the new one. Append performs the corresponding endpoint updates. Checking only forward traversal can miss a broken previous link.
+
+## Describe the API that is actually provided
+
+The constructor creates one node. This excerpt does not implement an empty-list constructor, removal, or indexed insertion. The main lesson develops additional operations separately. Calling this a complete general-purpose list library would overstate what the shown class supports.
+
+Each prepend and append changes a fixed number of links, for O(1) structural work and one new allocation. Traversal takes O(n), and nodes occupy O(n) storage. Shared forward and backward ownership can form a retention cycle; Swift uses weak previous links and Rust uses Weak for that reason. Check several alternating prepends/appends, repeated payloads, both traversal directions, and the length. Compare node identity when verifying reciprocal links, because equal values can hide references to the wrong node.
+
+## Kotlin example and implementation choices
+
+DoublyNode is a mutable reference object with nullable neighbors. The list constructor initializes nonnull head and tail, supporting the endpoint updates in prepend and append. Int payloads do not identify nodes uniquely, so use referential identity for structural checks. JVM garbage collection handles cycles; that does not make retaining a returned node free of the rest of its reachable chain.
+
+### Complete implementation
+
+```kotlin
+class DoublyNode(var data: Int) {
+    var next: DoublyNode? = null
+    var prev: DoublyNode? = null
+}
+
+class DoublyLinkedList(data: Int) {
+    var length: Int
+    var head: DoublyNode
+    var tail: DoublyNode
+
+    init {
+        val initialNode = DoublyNode(data)
+
+        length = 1
+        head = initialNode
+        tail = initialNode
+    }
+
+    // O(1)
+    fun prepend(data: Int): DoublyNode {
+        val prependedNode = DoublyNode(data)
+        val previousHead = head
+
+        head = prependedNode
+        head.next = previousHead
+
+        previousHead.prev = head
+
+        length++
+
+        return head
+    }
+
+    // O(1)
+    fun append(data: Int): DoublyNode {
+        val appendedNode = DoublyNode(data)
+        val previousTail = tail
+
+        tail = appendedNode
+        tail.prev = previousTail
+
+        previousTail.next = tail
+
+        length++
+
+        return appendedNode
+    }
+}
+```
+
+## Continue in Kotlin
+
+[Open Implement a Linked List](/course/implement-a-linked-list) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Kotlin example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Kotlin interview preparation guide](/interview-prep/kotlin) connects these language choices with further practice and the cross-language operation reference.

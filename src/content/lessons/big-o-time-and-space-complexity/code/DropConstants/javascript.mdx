@@ -1,0 +1,29 @@
+```javascript
+function case1(input) {
+  for (let i = 0; i < input.length; i++) {
+    console.log(i * 2); // O(n)
+  }
+  for (let i = 0; i < input.length; i++) {
+    console.log(i * 10); // O(n)
+  }
+  for (let i = 0; i < input.length; i++) {
+    console.log(i * 42); // O(n)
+  }
+}
+
+function case2(input) {
+  for (let i = 0; i < input.length; i++) {
+    console.log(i * 2); // O(n)
+    console.log(i * 10); // O(n)
+    console.log(i * 42); // O(n)
+  }
+}
+
+function case3(input) {
+  for (let i = 0; i < input.length; i++) {
+    for (let j = 0; j < input.length; j++) {
+      console.log(i, j);
+    }
+  }
+}
+```

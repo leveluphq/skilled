@@ -1,0 +1,23 @@
+```csharp
+public void Insert(string key, TValue value) {
+    int index = Hash(key);
+
+    // Initialize our bucket if it doesn't exist yet
+    if (table[index] == null) {
+        table[index] = new List<Entry>();
+    }
+
+    List<Entry> bucket = table[index];
+
+    // If the key already exists in the bucket, replace its value
+    for (int i = 0; i < bucket.Count; i++) {
+        if (bucket[i].key == key) {
+            bucket[i].value = value;
+            return;
+        }
+    }
+
+    // Otherwise, add the new key-value pair
+    bucket.Add(new Entry { key = key, value = value });
+}
+```

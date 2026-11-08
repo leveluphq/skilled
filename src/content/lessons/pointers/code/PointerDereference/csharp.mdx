@@ -1,0 +1,13 @@
+```csharp
+parent.c1 = null;
+Console.WriteLine($"{parent.c1 == null}, {child1.mood}"); // True, stoked
+
+parent.c1 = child1;
+
+child1 = new Child { age = 8, mood = "a different object" };
+Console.WriteLine($"{parent.c1.mood}, {child1.mood}"); // stoked, a different object
+
+parent.c1 = null;
+child1 = null;
+Console.WriteLine($"{parent.c1 == null}, {child1 == null}"); // True, True
+```

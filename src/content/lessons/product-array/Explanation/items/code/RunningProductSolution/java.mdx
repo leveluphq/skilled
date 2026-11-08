@@ -1,0 +1,33 @@
+```java
+public long[] runningProductSolution(long[] nums) {
+    int len = nums.length;
+    long[] results = new long[len];
+    // Initialize our lookup arrays and fill them with 1's
+    long[] leftRunningProduct = new long[len];
+    Arrays.fill(leftRunningProduct, 1);
+    long[] rightRunningProduct = new long[len];
+    Arrays.fill(rightRunningProduct, 1);
+
+    // Begin creating the product arrays 1 element inward at i = 1
+    // since the first product in each array is supposed to be 1.
+    for (int i = 1; i < len; i++) {
+        leftRunningProduct[i] = leftRunningProduct[i - 1] * nums[i - 1];
+
+        // We will fill our right product array from the end
+        int endIdx = len - 1 - i;
+        rightRunningProduct[endIdx] = rightRunningProduct[endIdx + 1] * nums[endIdx + 1];
+    }
+
+    // We can now find the product of all the items other than the current index
+    // by multiplying the product of the elements to its left and right together.
+    for (int i = 0; i < len; i++) {
+        long leftProduct = leftRunningProduct[i];
+        long rightProduct = rightRunningProduct[i];
+        long productExceptSelf = leftProduct * rightProduct;
+
+        results[i] = productExceptSelf;
+    }
+
+    return results;
+}
+```

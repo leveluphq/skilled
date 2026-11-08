@@ -1,0 +1,17 @@
+table:
+  name: affiliate_sales
+  schema: public
+select_permissions:
+- permission:
+    columns:
+    - affiliateAmountEarned
+    - affiliateUserId
+    - amountPaid
+    - createdAt
+    - id
+    - type
+    - updatedAt
+    filter:
+      affiliateUserId:
+        _eq: X-Hasura-User-Id
+  role: user

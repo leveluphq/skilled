@@ -1,0 +1,31 @@
+```swift
+func runningProductSolution(_ input: [Int]) -> [Int] {
+    var results: [Int] = []
+    let len = input.count
+    // Initialize our lookup arrays and fill them with 1's
+    var leftRunningProduct = [Int](repeating: 1, count: len)
+    var rightRunningProduct = [Int](repeating: 1, count: len)
+
+    // Begin creating the product arrays 1 element inward at i = 1
+    // since the first product in each array is supposed to be 1.
+    for i in stride(from: 1, to: len, by: 1) {
+        leftRunningProduct[i] = leftRunningProduct[i - 1] * input[i - 1]
+
+        // We will fill our right product array from the end
+        let endIdx = len - 1 - i
+        rightRunningProduct[endIdx] = rightRunningProduct[endIdx + 1] * input[endIdx + 1]
+    }
+
+    // We can now find the product of all the items other than the current index
+    // by multiplying the product of the elements to its left and right together.
+    for i in 0..<len {
+        let leftProduct = leftRunningProduct[i]
+        let rightProduct = rightRunningProduct[i]
+        let productExceptSelf = leftProduct * rightProduct
+
+        results.append(productExceptSelf)
+    }
+
+    return results
+}
+```

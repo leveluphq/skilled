@@ -1,0 +1,21 @@
+```csharp
+// Create a helper function to add visitedNodes to the signature
+void Dfs(GraphNode currentNode, HashSet<GraphNode> visitedNodes) {
+    // Use node value for the question
+    Visit(currentNode);
+
+    visitedNodes.Add(currentNode);
+
+    foreach (GraphNode childNode in currentNode.edges) {
+        if (!visitedNodes.Contains(childNode)) {
+            Dfs(childNode, visitedNodes);
+        }
+    }
+}
+
+void RecursiveDepthFirstSearch(GraphNode startingNode) {
+    // Init our set of visited nodes (the call stack is our stack)
+    var visitedNodes = new HashSet<GraphNode>();
+    Dfs(startingNode, visitedNodes);
+}
+```

@@ -1,0 +1,31 @@
+Find a target in an ascending array of distinct values that has been rotated at an unknown position. Return its current index, or -1 if it is absent. For `[6, 8, 10, 1, 3, 4]`, target 3 is at index 4. The rotation preserves order within two runs, allowing a modified binary search without first locating the rotation point.
+
+## Identify a sorted half
+
+Maintain inclusive start and end indexes. Check the midpoint for equality before deciding which half to search. At least one half from start to midpoint or midpoint to end is ordinarily sorted. Compare the midpoint value with the start value: if it is at least as large, the left half is sorted. Otherwise the rotation lies in that half and the right half is sorted.
+
+Once a sorted half is known, its endpoint values tell us whether it can contain the target. If the left half is sorted and the target is at least the start value but smaller than the midpoint value, keep that half. Otherwise keep the right half. Apply the symmetric bounds when the right half is sorted.
+
+## Trace a target across the rotation
+
+For `[6, 8, 10, 1, 3, 4]`, the first midpoint is index 2, value 10. The left half `[6, 8, 10]` is sorted, but target 3 lies outside its value range. Move start to index 3. The next midpoint is index 4, value 3, so the search returns 4.
+
+For missing target 7, the first step keeps the sorted left half because 7 lies between 6 and 10. Later comparisons eliminate both remaining candidates and let start pass end. Returning -1 then reflects an empty candidate interval. The target's numeric size alone does not determine a direction until a sorted half has been identified.
+
+## Keep the candidate interval correct
+
+Before each iteration, any occurrence of the target must lie between the two bounds. Equality checks return immediately. Otherwise, the ordered half's range either includes the target or excludes it. Distinct values and the single rotation guarantee that discarding the other half cannot discard a valid match.
+
+The next interval excludes the already tested midpoint, using midpoint minus one or midpoint plus one. Its length therefore strictly decreases. Keeping the midpoint after proving it unequal risks an infinite loop on a two-element interval. Use one inclusive-bound convention consistently; mixing it with a half-open stopping condition can skip an endpoint.
+
+## State the distinct-values requirement
+
+Duplicates can make the sorted-half test ambiguous. In `[1, 0, 1, 1, 1]`, matching endpoint and midpoint values do not reveal which side contains the rotation. A duplicate-aware search may shrink equal endpoints one at a time and degrade to O(n). The O(log n) guarantee here depends on the distinct-value contract.
+
+No rotation is also a valid case. The same logic works on an ordinary sorted array. An empty array begins with end before start and returns -1 without reading a value. Compute the midpoint from the difference between indexes to avoid adding two potentially large bounds in a narrow integer type.
+
+## Complexity and exhaustive checks
+
+Each unsuccessful step removes about half the remaining candidates, giving O(log n) time and O(1) auxiliary storage. The algorithm does not sort, copy, or mutate the input. Sorting would lose the original rotated indexes that the answer must report.
+
+Test one item, two items in both rotations, target at either endpoint, and targets below, between, and above the stored values. Generate every rotation of short distinct sorted arrays and search for every present and absent test value. Compare with a plain linear index lookup. As a follow-up, locate the minimum value's index, then explain how two ordinary binary searches compare with this single modified search.

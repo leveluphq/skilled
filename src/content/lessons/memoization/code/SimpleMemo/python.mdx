@@ -1,0 +1,20 @@
+```python
+memo = {}
+
+def count_by_two(n):
+    # Check if we previously memoized the result and return early in O(1) time
+    if n in memo:
+        return memo[n]
+
+    count = 0
+
+    for i in range(n+1):
+        count += 2
+
+        # Store the result for this value
+        # It will return instantly if countByTwo is later called with one of these values
+        memo[i] = count
+
+    # We calculated and stored this value (and all previous values) in the for loop
+    return memo[n]
+```

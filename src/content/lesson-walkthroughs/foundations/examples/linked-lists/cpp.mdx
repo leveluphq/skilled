@@ -1,0 +1,23 @@
+```cpp
+#include <vector>
+#include <optional>
+#include <memory>
+#include <utility>
+
+std::optional<int> middleValue(const std::vector<int>& values) {
+    struct ListNode {
+        int value;
+        std::unique_ptr<ListNode> next;
+        ListNode(int value, std::unique_ptr<ListNode> next)
+            : value(value), next(std::move(next)) {}
+    };
+    std::unique_ptr<ListNode> head;
+    for (auto it = values.rbegin(); it != values.rend(); ++it) {
+        head = std::make_unique<ListNode>(*it, std::move(head));
+    }
+    auto slow = head.get();
+    auto fast = head.get();
+    while (fast && fast->next) { slow = slow->next.get(); fast = fast->next->next.get(); }
+    return slow ? std::optional<int>(slow->value) : std::nullopt;
+}
+```

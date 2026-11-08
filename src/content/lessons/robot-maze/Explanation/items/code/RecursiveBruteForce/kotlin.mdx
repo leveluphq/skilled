@@ -1,0 +1,49 @@
+```kotlin
+const val OPEN = 0
+const val BLOCKED = 1
+const val EXIT = 2
+
+class Solution {
+    // Main function
+    fun hasExitPath(roomMatrix: Array<IntArray>): Boolean {
+        // Return false if the matrix is invalid
+        if (roomMatrix.isEmpty() || roomMatrix[0].isEmpty()) {
+            return false
+        }
+
+        // Recursively walk through the room to check if there is a valid path
+        val isValidPath = walkThroughRoom(roomMatrix, 0, 0)
+
+        return isValidPath
+    }
+
+    // Recursive helper function
+    private fun walkThroughRoom(roomMatrix: Array<IntArray>, row: Int, col: Int): Boolean {
+        // Base case 1: Outside of room, so there can't be a path through this
+        val isOutsideRoom = row > roomMatrix.size - 1 || col > roomMatrix[0].size - 1
+        if (isOutsideRoom) {
+            return false
+        }
+
+        // Base case 2: A path successfully reached the end, so propagate this upward
+        val isExitNode = roomMatrix[row][col] == EXIT
+        if (isExitNode) {
+            // Set the current node as true as well
+            return true
+        }
+
+        // Base case 3: We reached a blocking node
+        val isBlockingNode = roomMatrix[row][col] == BLOCKED
+        if (isBlockingNode) {
+            return false
+        }
+
+        // Recursive case: move down and right
+        val downResult = walkThroughRoom(roomMatrix, row + 1, col)
+        val rightResult = walkThroughRoom(roomMatrix, row, col + 1)
+
+        // Returns true if either is successful
+        return downResult || rightResult
+    }
+}
+```

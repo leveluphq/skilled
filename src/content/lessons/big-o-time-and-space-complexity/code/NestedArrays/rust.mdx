@@ -1,0 +1,37 @@
+```rust
+let n = 1_000_000_000; // or some large number
+let array_of_n = vec![0; n];
+
+// O(n^3)
+for i in 0..n {
+    for j in 0..n {
+        for k in 0..n {
+            // ...
+        }
+    }
+}
+
+// O(n^3)
+for i in &array_of_n {
+    for j in &array_of_n {
+        for k in &array_of_n {
+            // ...
+        }
+    }
+}
+
+// O(n)
+for i in 0..n {
+    // ...
+}
+for j in 0..n {
+    // ...
+}
+for k in 0..n {
+    // ...
+}
+
+// Nested is 1000000000 ^ 3 = 1000000000000000000000000000
+// Sequential is 3000000000
+// Sequential is MUCH MUCH smaller
+```

@@ -1,0 +1,54 @@
+```java
+class MaxMinStack {
+    private Deque<Integer> stack;
+
+    // Stacks for internal tracking of the max/min
+    private Deque<Integer> maxValueStack;
+    private Deque<Integer> minValueStack;
+
+    public MaxMinStack() {
+        stack = new ArrayDeque<>();
+        maxValueStack = new ArrayDeque<>();
+        minValueStack = new ArrayDeque<>();
+    }
+
+    public int push(int item) {
+        stack.push(item);
+
+        if (maxValueStack.isEmpty() || item >= getStackMax()) {
+            maxValueStack.push(item);
+        }
+        if (minValueStack.isEmpty() || item <= getStackMin()) {
+            minValueStack.push(item);
+        }
+
+        return item;
+    }
+
+    public int pop() {
+        int item = stack.pop();
+
+        if (item == getStackMax()) {
+            maxValueStack.pop();
+        }
+        if (item == getStackMin()) {
+            minValueStack.pop();
+        }
+
+        return item;
+    }
+
+    public int peek() {
+        return stack.peek();
+    }
+
+    // Effectively a "peek()" for the max/min values of the stack
+    public int getStackMax() {
+        return maxValueStack.peek();
+    }
+
+    public int getStackMin() {
+        return minValueStack.peek();
+    }
+}
+```

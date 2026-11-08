@@ -1,0 +1,16 @@
+```rust
+parent.c1 = None;
+println!("{:?}, {}", parent.c1, child1.borrow().mood); // None, stoked
+
+parent.c1 = Some(Rc::clone(&child1));
+
+// Give up the child1 pointer, and reuse the name for a string
+drop(child1);
+let child1 = "no longer an object pointer";
+println!("{}, {}", parent.c1.as_ref().unwrap().borrow().mood, child1);
+// stoked, no longer an object pointer
+
+// parent.c1 was the last pointer to the child, so Rust frees the child here
+parent.c1 = None;
+println!("{:?}, {}", parent.c1, child1); // None, no longer an object pointer
+```

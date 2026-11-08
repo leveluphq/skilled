@@ -1,0 +1,10 @@
+```go
+func SuffixCopies(values []int) [][]int {
+    suffixes := make([][]int, 0, len(values))
+    for index := range values {
+        suffix := append([]int{}, values[index:]...)
+        suffixes = append(suffixes, suffix)
+    }
+    return suffixes
+}
+```

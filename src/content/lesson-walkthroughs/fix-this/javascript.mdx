@@ -1,0 +1,62 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The meeting example contains two separate bugs. `getPresenterName` should read the first user's name, and each user's `printSeatNumber` callback should print that user's index. The exercise limits changes to the Meeting class and asks for minimal refactoring. Those constraints let you fix the causes without redesigning the entire example.
+
+## Preserve the method's intended receiver
+
+Assigning a user's `getName` method to a property on the meeting copies a function reference. It does not automatically retain the original user as the function's receiver. Calling that function as a meeting method supplies the meeting as `this`, so a lookup intended for the user's name reads the wrong object.
+
+Binding the function to the presenter creates a callable that retains that intended receiver. A wrapper that explicitly calls the user's method can also preserve it, but the lesson uses a small targeted fix. Trace the actual call expression before applying bind everywhere: arrow functions have lexical `this`, and different call forms follow different receiver rules.
+
+## Give each callback its own loop binding
+
+The seat callbacks are created in a loop using `var`. They close over the same function-scoped index binding. By the time they execute, the loop has advanced that binding to its terminating value, so every callback prints the same out-of-range index.
+
+Using `let` in the loop declaration gives the callbacks per-iteration bindings. An immediately invoked function with an index argument can create a separate binding too, but requires more code. The fix concerns which binding each callback reads later; it is not a general rule that closures copy every value at creation time.
+
+## Test the failures independently
+
+First test the presenter result while leaving the seat callbacks alone. Then invoke every seat callback after the loop has finished and expect the sequence of original indexes. Calling callbacks immediately inside the loop would hide the lifetime issue and would not reproduce the reported failure.
+
+Open the [current lesson](/course/fix-this) for the original input and complete changes. The [JavaScript preparation guide](/interview-prep/javascript) connects receiver and closure behavior with further practice. When explaining your fix, name the object used as `this` and the exact variable binding retained by each callback; those two facts account for the observed output.
+
+## Repair two independent callback failures
+
+The example binds a presenter's regular method before returning it as a callback. Calling that saved function later still reads the intended presenter. Because the bound function retains the object rather than copying its name, changing the presenter's name before invocation changes the result it reads.
+
+The seating callbacks use a let binding for each loop iteration. With names Lin and Grace, invoking them later gives `Seat 1: Lin` and `Seat 2: Grace`. A single function-scoped var index would instead be read after the loop has advanced beyond the final valid position.
+
+## Check lifetime as well as the first result
+
+Binding creates a new function identity and retains its receiver. If a subscription API requires that exact function for removal, save the bound function instead of binding again during cleanup. The second bind call would create another function object.
+
+Creating n seating callbacks takes O(n) time and O(n) returned function storage. The callbacks retain access to the names array and their position bindings; they do not clone every name. Treat the input as unchanged while these callbacks are in use, or explicitly copy it if snapshot behavior is needed. Check no names, two names, a changed presenter name, and invocation after the construction function has returned. These cases verify both binding decisions without relying on arbitrary timer delays.
+
+## JavaScript example and implementation choices
+
+bind creates one saved function with the presenter fixed as its receiver. It still reads the object's current name on invocation, giving live-object behavior rather than a name snapshot. The let loop creates a separate index binding per seat callback. Names remain captured through the original array reference, so consumers should keep that input stable if they expect the displayed seating text to stay fixed.
+
+### Worked example
+
+```javascript
+class Presenter {
+    constructor(name) {
+        this.name = name;
+    }
+    getName() { return this.name; }
+}
+function meetingCallbacks(presenter, names) {
+    const readPresenter = presenter.getName.bind(presenter);
+    const seats = [];
+    for (let index = 0; index < names.length; index++) {
+        seats.push(() => 'Seat ' + (index + 1) + ': ' + names[index]);
+    }
+    return { readPresenter, seats };
+}
+```
+
+## Continue in JavaScript
+
+[Open Fix 'this'](/course/fix-this) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

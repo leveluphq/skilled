@@ -1,0 +1,56 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import SplitString from './inlineCode/SplitString.tsx';
+import JoinString from './inlineCode/JoinString.tsx';
+
+This question really tests your ability to work with strings and your understanding of permutations and palindromes.
+
+We iterate through each string in the array and determine if it is a permutation of a palindrome.
+If it is a palindrome, we group it with the other strings that are permutations of each other.
+
+To check if a string is a permutation of palindrome, we count all of its characters to determine if only 0 or 1 characters occur an odd number of times.
+
+If this string passes that test, then we add it to our results.
+We sort the string's characters and store our results in a hash table of arrays with strings that sort to the same key.
+
+Notice that we <SplitString /> and <JoinString /> strings in this question.
+Essentially, this allows us to treat the string like an array so that we can more easily sort and iterate it.
+
+Finally, we return the values of the hash table inside an array to yield our result.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="n x clogc" /> time and <BigO.n letter="n x c" /> space.
+</p>
+
+`n` is the number of words in our input array, and `c` is the worst case length of characters for a string.
+
+Since we don't know the size of `n` or `c`, we must include both in our complexity analysis.
+
+The Big O complexity analysis of this solution requires some thought.
+For the time complexity, we iterate all `n` items of our array.
+Then for each item in the array, we perform <BigO.n letter="c" /> operations to determine if it is a palindrome.
+We also sort the string which is <BigO.nlogn letter="c" /> which is more significant than <BigO.n letter="c" />, so we drop the smaller term.
+
+For the space complexity, we create a hash map of strings for all the words.
+The amount of memory required in our hash table is the number of strings times the number of characters.
+
+<VariationsSubtitle />
+
+This question is actually on the more difficult end of permutation/palindrome problems.
+Pieces of this problem could be asked in a simpler manner:
+
+- Group permutations
+- Determine if a string can form a palindrome
+- Determine if 2 strings are permutations of each other
+- Determine if a string is a permutation of a palindrome
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

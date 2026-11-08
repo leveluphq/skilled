@@ -1,0 +1,36 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import RecursiveSolutionCode from './code/RecursiveSolution';
+
+This question can be solved using a bottom-up dynamic programming solution.
+To calculate the solution, we start at `0` and find the minimum number of coins to make change for all the amounts up to our `target`.
+
+We can solve this by using a combination of subproblem solutions.
+At each step, we find the minimum number of coins to make change for every `amount` from `0` to the `target` by trying each denomination at each value.
+We subtract a coin's value to "look back" to check if there was a previously calculated minimum that we can add this coin's value to which would reach the current `amount`.
+We use an array to store the results to subproblems and track the minimum coins required for all change values up to the `target`.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="d x target" /> time and <BigO.n letter="target" /> space.
+</p>
+
+Here `d` is the number of denominations of coins to choose from and `target` is the actual value of the target.
+We try all the denominations at all the targets in nested loops, so it's `d x target`.
+For the space complexity, we create a new array of length equal to the `target` value.
+
+### Bonus
+**Top-Down Recursive Dynamic Programming Solution**
+
+<RecursiveSolutionCode />
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

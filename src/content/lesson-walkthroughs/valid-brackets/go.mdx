@@ -1,0 +1,78 @@
+Valid Brackets checks nesting of `()`, `[]`, and `{}` while ignoring ordinary text. Empty input is valid. `([)]` is invalid because its pairs cross even though all bracket counts balance.
+
+In Go, range over a string decodes UTF-8 into runes. We can use a rune slice as the stack of unfinished openers. The function returns only a Boolean, so it does not need to expose either byte offsets or character positions to its caller.
+
+## Push and remove from the end of a rune slice
+
+A closing bracket must match the most recent unfinished opener. Appending to the slice and removing its last entry provides that last-in, first-out behavior. Other characters do not alter the slice.
+
+```go
+func hasValidBrackets(s string) bool {
+    stack := make([]rune, 0)
+    for _, c := range s {
+        switch c {
+        case '(', '[', '{':
+            stack = append(stack, c)
+        case ')', ']', '}':
+            if len(stack) == 0 { return false }
+            expected := rune('(')
+            if c == ']' { expected = '[' }
+            if c == '}' { expected = '{' }
+            last := len(stack) - 1
+            if stack[last] != expected { return false }
+            stack = stack[:last]
+        }
+    }
+    return len(stack) == 0
+}
+```
+
+The first branch recognizes openers. The second branch handles only supported closers, so the initial expected opener can safely be `(` and be changed for the other two cases. The absent default branch means ordinary text is ignored.
+
+## Understand length when using a slice as a stack
+
+`append` can grow the slice, possibly allocating a larger backing array. Its returned slice must be assigned back to stack because length and backing storage may change. Calling append and discarding the result would not maintain the stack correctly.
+
+The empty check occurs before computing and reading the last index. Indexing a slice outside its length panics, even when the backing array has more capacity. Capacity describes potential growth, not entries currently available to read.
+
+Popping by reslicing does not shrink the backing allocation. For rune values there are no object references to clear, and the stack's length still accurately represents unfinished nesting. Its peak allocation depends on maximum depth rather than the total number of completed pairs.
+
+## Trace the order that counters lose
+
+For `a[({b})]c`, range yields letters and delimiters. The letters do nothing. The stack receives `[`, `(`, and `{`, then the matching closers remove them in reverse order. No unfinished opener remains.
+
+For `([)]`, the stack's final entry is `[` when `)` arrives. The required opener is `(`, so the function returns false immediately. Searching earlier entries for `(` would skip the inner bracket and accept a crossing sequence.
+
+For `(()`, the closer encountered during the scan is legal, but one `(` remains at the end. The final length check catches that unfinished prefix. This distinction is why both crossing input and leftover-openers input belong in the examples.
+
+## Keep UTF-8 iteration and offsets separate
+
+The index supplied by range over a string is a byte offset, while its value is a decoded rune. This implementation ignores the index because it reports no position. If you later add an error position, decide whether callers want a byte offset, code-point index, or displayed-character index before returning that range index.
+
+All supported delimiters are ASCII. Emoji and other non-bracket runes are ignored. Invalid UTF-8 is represented through RuneError during range iteration, which is also outside this bracket alphabet. The [Go range specification](https://go.dev/ref/spec#For_range) defines the string-iteration behavior.
+
+Quotes and comments do not create parser states here. A bracket inside quote marks still counts under the exercise contract. Validating Go source code while skipping literals requires lexical analysis beyond this Boolean delimiter check.
+
+## Check text and deep nesting without recursion
+
+```go
+func checkExamples() {
+    cases := []struct { text string; expected bool }{
+        {"", true}, {"ordinary text", true}, {"a + (b * [c])", true},
+        {"([]{})", true}, {"([)]", false}, {"]", false}, {"(()", false},
+        {"🙂{x[y](z)}", true},
+    }
+    for _, item := range cases {
+        if hasValidBrackets(item.text) != item.expected { panic("invalid bracket result") }
+    }
+    if hasValidBrackets("(") || !hasValidBrackets("[]") { panic("state leaked between calls") }
+}
+```
+
+Put the function and helper in a local main package and call checkExamples from main. A large sequence of openers followed by matching closers should also pass without recursive calls. The working slice is local, so an early return cannot retain partial state for a later call.
+
+## Explain the time and memory model
+
+String decoding visits the input in linear time, and slice appends have amortized constant cost. The method therefore takes `O(n)` time for input length in bytes. Stack storage is `O(d)` runes for maximum unfinished nesting depth, and worst-case linear space.
+
+The invariant is the exact ordered sequence of openers still waiting for a match. Rebuild the method from that invariant, then test `([)]`, `(()`, and a string containing Unicode text before trying the editor exercise.

@@ -1,0 +1,12 @@
+```csharp
+long Fibonacci(int n) {
+    var memo = new Dictionary<int, long> { [0] = 0, [1] = 1 };
+
+    for (int i = 2; i <= n; i++) {
+        long currentFib = memo[i - 1] + memo[i - 2];
+        memo[i] = currentFib;
+    }
+
+    return memo[n];
+}
+```

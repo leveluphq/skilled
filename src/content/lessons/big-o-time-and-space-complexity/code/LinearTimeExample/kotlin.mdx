@@ -1,0 +1,16 @@
+```kotlin
+fun myAlgorithm(inputArray: IntArray) {
+    val n = inputArray.size
+
+    // We touch all n items, requiring O(n) operations
+    for (i in 0 until n) {
+        // We don't care what happens in here as long as it's not another loop
+    }
+}
+
+// myAlgorithm(intArrayOf(1))  -->  input size = n = 1  -->  O(1) operations
+// myAlgorithm(intArrayOf(1, 2))  -->  input size = n = 2  -->  O(2) operations
+// myAlgorithm(intArrayOf(1, 2, 3))  -->  input size = n = 3  -->  O(3) operations
+// ...
+// myAlgorithm(intArrayOf(1, 2, 3, ..., n))  -->  input size = n  -->  O(n) operations
+```

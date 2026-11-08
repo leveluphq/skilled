@@ -1,0 +1,31 @@
+```python
+# We will using -1 to indicate unfilled spot
+UNCOUNTED_SPOT = -1
+
+def count_total_moves(board_length):
+    if board_length < 0:
+        return 0
+
+    # Initialize our memoize array
+    memo = [UNCOUNTED_SPOT for _ in range(board_length + 1)]
+    total_moves = count_total_moves_memoized(board_length, memo)
+    return total_moves
+
+# Recursive helper function that also tracks memoized values
+def count_total_moves_memoized(board_length, memo):
+    # Base case 1: Invalid board length
+    if board_length < 0:
+        return 0
+    # Base case 2: Prompt says length 0 is still 1 step
+    elif board_length == 0:
+        return 1
+    elif memo[board_length] != UNCOUNTED_SPOT:
+        return memo[board_length]
+    else:
+        # Recursive case (and memoize its result)
+        memo[board_length] = (count_total_moves_memoized(board_length - 1, memo) +
+                                count_total_moves_memoized(board_length - 2, memo) +
+                                count_total_moves_memoized(board_length - 3, memo))
+
+        return  memo[board_length]
+```

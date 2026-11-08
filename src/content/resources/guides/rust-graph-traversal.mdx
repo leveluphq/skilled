@@ -1,0 +1,91 @@
+A Rust graph traversal can borrow labels from a stable adjacency map instead of cloning a String for every queue entry and parent link. The ownership choice belongs in the API: a returned route containing borrowed labels cannot outlive the data that supplies those labels.
+
+This guide implements a fewest-hop path in a directed, unweighted graph. The graph owns String keys and neighbor labels. The search borrows that graph and the start label, records discovery through a parent map, and returns an optional vector of borrowed string slices.
+
+## Define graph identity and missing vertices
+
+Vertex identity is string content. Two separately allocated Strings with the same text name one vertex, rather than two objects distinguished by allocation address. Neighbor-list order determines which route is returned when several shortest routes exist.
+
+A label missing from the adjacency map has no outgoing edges. It can still be reached as a neighbor, and a start label with no key is still a valid one-vertex starting point. If start equals target, return that one-label path even when the map is empty. An unreachable target produces None.
+
+```rust
+use std::collections::{HashMap, VecDeque};
+
+fn shortest_path<'g>(
+    graph: &'g HashMap<String, Vec<String>>,
+    start: &'g str,
+    target: &str,
+) -> Option<Vec<&'g str>> {
+    let mut queue: VecDeque<&'g str> = VecDeque::new();
+    let mut parent: HashMap<&'g str, Option<&'g str>> = HashMap::new();
+    parent.insert(start, None);
+    queue.push_back(start);
+
+    while let Some(node) = queue.pop_front() {
+        if node == target {
+            let mut route = Vec::new();
+            let mut cursor = Some(node);
+            while let Some(label) = cursor {
+                route.push(label);
+                cursor = parent[label];
+            }
+            route.reverse();
+            return Some(route);
+        }
+        if let Some(neighbors) = graph.get(node) {
+            for neighbor in neighbors {
+                let label = neighbor.as_str();
+                if !parent.contains_key(label) {
+                    parent.insert(label, Some(node));
+                    queue.push_back(label);
+                }
+            }
+        }
+    }
+    None
+}
+```
+
+The lifetime parameter ties the graph and start borrow to the returned slices. The target is only compared and is not stored in the route, so it does not need the same returned lifetime. The caller can supply a start slice from its own stable String while other route labels come from the graph's neighbor values.
+
+The function owns the queue, parent mapping, and result vector. Those containers allocate their own storage, but their string-slice entries borrow existing text. Avoid calling the whole algorithm allocation-free merely because it does not clone labels.
+
+## Let the parent map also record discovery
+
+A parent entry means a vertex has already been discovered. The start has an entry whose parent is None; this is a discovered root, not an absent vertex. A cycle leading back to start therefore cannot add it to the queue again.
+
+Mark a neighbor by inserting its parent before enqueueing it. If another vertex later reaches the same label, the entry already exists and its original shortest-discovery parent remains unchanged. An extra visited set would duplicate this particular discovery information, though it can be useful in a traversal that stores no parents.
+
+The reconstruction indexes the parent map only for labels known to have entries. Every enqueued vertex was inserted first, and each saved parent was itself a discovered vertex. The chain ends at the start's explicit None. That invariant supports the indexing operation and prevents an unexplained unwrap from standing in for a correctness argument.
+
+## Prove the hop count before returning a route
+
+The FIFO frontier processes vertices in increasing number of edges from the start. When a vertex is first discovered from a processed parent, that parent's route plus one edge is a shortest-hop route to the vertex. Any shorter route would have reached it from an earlier layer.
+
+The function checks for the target when removing a vertex. Its discovery parent was already established, so reconstructing at that point preserves the shortest-hop guarantee. Stopping after an arbitrary DFS discovery would not provide the same guarantee.
+
+For a graph with A pointing to B and C, B pointing to D, and C pointing directly to target, BFS can return the shorter route through C even when B appears first in the neighbor list. The [graph visualizer](/tools/graph-traversal) lets you inspect this layer schedule separately from Rust's ownership details.
+
+## Keep the borrowed data stable
+
+Holding the returned slices can keep the graph and start borrowed while those slices are still used. A caller cannot safely mutate or drop their owning storage in a way that invalidates an active returned reference. That restriction communicates a real relationship between the result and its source.
+
+If the caller needs an independent route that survives graph replacement, convert the selected labels into owned Strings at the result boundary. That copies the route's text rather than cloning labels throughout the search. Include the total bytes copied in the output analysis.
+
+Using Rc, RefCell, or shared mutable node objects would describe a different graph representation. They are not required for this stable adjacency-map search. Start with the simplest ownership model that supports the input and output lifetimes the task actually needs.
+
+## Account for string work and the frontier
+
+Under a bounded-label hash model, the search performs expected O(V + E) work over the reachable part examined before termination. The queue and parent map contain O(V) entries, and a returned route contains at most V labels.
+
+String hashing and equality can inspect label bytes, so arbitrary long names add work beyond treating every key comparison as a unit operation. Borrowing avoids copying those bytes into each state entry; it does not make hashing free. The [HashMap reference](https://doc.rust-lang.org/std/collections/struct.HashMap.html) describes borrowed-key lookup, and [VecDeque](https://doc.rust-lang.org/std/collections/struct.VecDeque.html) supplies the FIFO end operations used here.
+
+The memory bound counts references and collection entries. The graph already owns its text and adjacency lists. If you instead build that graph inside the function, graph construction and its owned text storage also belong in the function's cost discussion.
+
+## Separate route validity from one expected tie choice
+
+A route must start at the requested start, end at target, and use a real directed edge at every step. It must also have the minimum hop count under this contract. If several shortest routes exist, a test should not reject a valid alternative unless neighbor-order tie behavior is itself specified.
+
+For small graphs, compute all-pairs hop distances independently and compare the returned route length with the distance. Also inspect every returned edge. This catches a reversed parent chain, a DFS path accidentally used as a shortest route, and discovery state that is overwritten after a later visit.
+
+Test cycles, self-loops, duplicate neighbor labels, disconnected components, a target-only vertex, and an empty graph with equal or different start and target. Verify the returned slices borrow the supplied labels rather than assuming borrowed text means the entire result has no storage cost. Then connect the traversal to [BFS versus DFS](/guides/bfs-vs-dfs), [Rust preparation](/interview-prep/rust), and the course's [BFS exercise](/course/breadth-first-search).

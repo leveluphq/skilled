@@ -1,0 +1,12 @@
+```javascript
+function fibonacci(n) {
+  const memo = { 0: 0, 1: 1 };
+
+  for (let i = 2; i <= n; i++) {
+    const currentFib = memo[i - 1] + memo[i - 2];
+    memo[i] = currentFib;
+  }
+
+  return memo[n];
+}
+```

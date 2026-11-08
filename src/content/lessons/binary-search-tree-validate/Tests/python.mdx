@@ -1,0 +1,116 @@
+```python
+import unittest
+test_results = []
+
+class BinaryNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+class TestSum(unittest.TestCase):
+
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False
+
+    def test_1(self):
+        self.description = "handles only a root"
+        self.actual_result = is_bst(BinaryNode(42))
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_2(self):
+        self.description = "false case with duplicate node"
+        root = BinaryNode(42)
+        root.left = BinaryNode(20)
+        root.left.left = BinaryNode(20)
+        root.left.left.right = BinaryNode(17)
+        root.right = BinaryNode(50)
+        root.right.left = BinaryNode(70)
+        self.actual_result = is_bst(root)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_3(self):
+        self.description = "unbalanced true case"
+        root = BinaryNode(42)
+        root.right = BinaryNode(50)
+        root.right.right = BinaryNode(55)
+        root.right.right.right = BinaryNode(65)
+        root.right.right.right.right = BinaryNode(75)
+        root.right.right.right.right.right = BinaryNode(85)
+        self.actual_result = is_bst(root)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "unbalanced false case"
+        root = BinaryNode(42)
+        root.right = BinaryNode(50)
+        root.right.right = BinaryNode(55)
+        root.right.right.right = BinaryNode(65)
+        root.right.right.right.right = BinaryNode(95)
+        root.right.right.right.right.right = BinaryNode(85)
+        self.actual_result = is_bst(root)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_5(self):
+        self.description = "multiple nodes at the same level true case"
+        root = BinaryNode(42)
+        root.left = BinaryNode(20)
+        root.left.left = BinaryNode(17)
+        root.left.left.left = BinaryNode(12)
+        root.left.left.right = BinaryNode(18)
+        root.left.right = BinaryNode(25)
+        root.left.right.left = BinaryNode(24)
+        root.left.right.right = BinaryNode(27)
+        root.right = BinaryNode(50)
+        root.right.right = BinaryNode(70)
+        root.right.right.right = BinaryNode(80)
+        self.actual_result = is_bst(root)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "false case where a left descendant is larger than an ancestor"
+        root = BinaryNode(9)
+        root.left = BinaryNode(5)
+        root.left.left = BinaryNode(1)
+        root.left.right = BinaryNode(10)
+        root.right = BinaryNode(22)
+        root.right.right = BinaryNode(30)
+        self.actual_result = is_bst(root)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "false case where a right descendant is smaller than an ancestor"
+        root = BinaryNode(9)
+        root.left = BinaryNode(5)
+        root.left.left = BinaryNode(1)
+        root.left.right = BinaryNode(7)
+        root.right = BinaryNode(22)
+        root.right.left = BinaryNode(8)
+        root.right.right = BinaryNode(30)
+        self.actual_result = is_bst(root)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

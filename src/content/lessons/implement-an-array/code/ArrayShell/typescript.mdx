@@ -1,0 +1,32 @@
+```javascript
+interface HashTable {
+  [key: number]: any;
+}
+
+class DynamicArray {
+  length: number;
+  data: HashTable;
+
+
+  constructor() {
+    this.length = 0;
+    this.data = {};
+  }
+
+  get(index: number): any {
+    // get an item at an index
+  }
+  push(item: any) {
+    // add an item to the end of the array
+  }
+  pop(): any {
+    // remove the last item in the array
+  }
+  insert(index: number, item: any): HashTable {
+    // add an item at any index
+  }
+  remove(index: number): any {
+    // remove an item at any index
+  }
+}
+```

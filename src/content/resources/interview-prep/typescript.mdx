@@ -1,0 +1,107 @@
+TypeScript interview preparation combines algorithm practice with a clear model of the values your code accepts and returns. Useful types make missing cases visible and explain a function's contract. They should leave enough time to solve, test, and discuss the problem itself.
+
+Prepare using the TypeScript version and compiler settings available in the interview environment. A browser editor may differ from your usual project. The examples here use ordinary interfaces, generics, maps, and discriminated unions; they do not depend on a framework or a recent experimental language feature.
+
+## Begin with the runtime algorithm
+
+TypeScript runs with JavaScript's runtime data structures and numeric behavior after type checking and compilation. A `Map<number, number>` is still a map. An array sort still needs an appropriate numeric comparator. A recursive function still consumes runtime stack space.
+
+Use the [JavaScript preparation guide](/interview-prep/javascript) for those implementation details. Then add types that make your assumptions inspectable: whether a result may be absent, whether an input can be mutated, and whether a tree child can be missing.
+
+Avoid using `any` to silence a type error before understanding it. The error may expose a real missing branch, such as an unsuccessful lookup or an empty tree. A local explicit annotation is often enough; elaborate generic abstractions are rarely the first step in a short interview function.
+
+## Write an honest return type
+
+Two Sum can return a tuple of indices or null when no solution exists. That shape communicates that a successful result always contains exactly two indices.
+
+```typescript
+function twoSum(values: readonly number[], target: number): [number, number] | null {
+  const previous = new Map<number, number>();
+  for (let index = 0; index < values.length; index += 1) {
+    const earlier = previous.get(target - values[index]);
+    if (earlier !== undefined) return [earlier, index];
+    previous.set(values[index], index);
+  }
+  return null;
+}
+```
+
+The map stores numbers, so undefined is available as the missing-result marker in this contract. Comparing `earlier !== undefined` preserves index zero. If undefined were a valid stored value, a separate `has` check would be needed to distinguish presence.
+
+The readonly array annotation prevents this function from mutating the input through that parameter in checked code. It does not freeze the actual array at runtime, and it does not make other references to the same object immutable. State what the type expresses instead of promising stronger runtime guarantees.
+
+## Model recursive structures with nullable children
+
+A binary-tree node can describe its empty-child case directly. Use a domain-specific name such as `BinaryNode` to avoid confusion with browser DOM types.
+
+```typescript
+interface BinaryNode<T> {
+  value: T;
+  left: BinaryNode<T> | null;
+  right: BinaryNode<T> | null;
+}
+
+function maxDepth<T>(root: BinaryNode<T> | null): number {
+  if (root === null) return 0;
+  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+```
+
+The early return handles the empty tree. After that branch, the checker can treat root as a node. The recursive calls still receive nullable children, which matches the base case.
+
+A generic value type is useful because depth does not depend on the payload. Requiring a number there would add an unrelated constraint. By contrast, a binary search tree needs an ordering operation or a comparable value model. A generic parameter alone does not supply a valid comparison between arbitrary values.
+
+The course's exercise harness uses its own published node fields and signatures. Adapt to those contracts when solving its lessons instead of assuming every problem uses this illustrative interface.
+
+## Use unions for outcomes with different data
+
+A discriminated union makes the successful and unsuccessful cases explicit. Each variant carries only the fields valid for that outcome.
+
+```typescript
+type SearchResult<T> =
+  | { found: true; value: T; index: number }
+  | { found: false };
+
+function describeResult(result: SearchResult<string>): string {
+  if (!result.found) return 'No match';
+  return `${result.value} at index ${result.index}`;
+}
+```
+
+Inside the successful branch, the value and index are available together. An object with optional value and optional index would admit incomplete combinations unless another rule excluded them.
+
+This is useful when the interview problem involves state transitions or API results. It can be unnecessary for a small numeric helper where a tuple-or-null return is already clear. Match the model to the actual output rather than introducing a union into every function.
+
+The [TypeScript narrowing handbook](https://www.typescriptlang.org/docs/handbook/2/narrowing.html) documents how checks refine union types. The important habit in an exercise is making a real control-flow check that corresponds to the runtime case.
+
+## Validate unknown data at a boundary
+
+A type assertion such as `JSON.parse(text) as Graph` does not inspect the parsed values. If an exercise accepts arbitrary JSON, check the structure before treating it as an adjacency list. That might mean verifying an object, neighbor arrays, and the allowed node-name type.
+
+Inside a pure algorithm exercise, the interviewer may guarantee valid input. You can accept that contract and avoid writing an entire parser. State the assumption explicitly. Boundary validation and algorithm logic deserve separate treatment when they have different responsibilities.
+
+For a union of input shapes, check the discriminant or a supported structural property before accessing variant-specific fields. For optional values, define whether absence, null, an empty string, and zero have different meanings. Truthiness is a runtime rule, not a universal missing-value test.
+
+## Keep mutation contracts explicit
+
+If an algorithm sorts, partitions, or writes a result prefix into an input array, its signature and explanation should permit that mutation. If you copy first, include the allocation in the complexity analysis.
+
+A shallow copy of an array preserves references to the same element objects. Sorting the copied array reorders that copy, but editing an object through it can still affect an object visible through the original array. Readonly annotations also do not imply recursively readonly object graphs unless the nested types express that restriction.
+
+For backtracking, distinguish the mutable working path from the saved output. The types of both can be arrays while their lifetimes differ. Copying at a result boundary is a correctness decision that a broad array type cannot enforce by itself.
+
+## Practice asynchronous signatures without hiding behavior
+
+An async function returns a promise of its result type. That annotation says what a fulfillment value looks like; it does not eliminate rejection. A caller still needs an error-handling policy when failures are possible.
+
+When implementing a promise aggregator, preserve tuple positions only if that is part of the requested type-level exercise. A simpler homogeneous `Promise<T[]>` contract can be sufficient for an algorithm interview. Highly precise inference can become a separate problem from correct runtime aggregation.
+
+Read [Promise.all implementation](/guides/implement-promise-all) for ordering, empty input, and rejection behavior. Implement and test the runtime contract before making the signature more sophisticated.
+
+## A useful practice sequence
+
+Solve map-based Two Sum, bracket validation, linked-list reversal, and maximum tree depth. Type their inputs and absent-result cases before running them. Then implement graph traversal with an explicit adjacency-list type and a visited set.
+
+Add one asynchronous utility such as debounce or promise aggregation. Practice explaining the relationship between a callback's type and when it executes. Finish a timed rehearsal by removing unnecessary assertions and checking whether each remaining assertion is justified by a real invariant.
+
+Use the [30-day plan](/study-plans/30-day-coding-interview-plan) for a broader sequence. When reviewing a failure, record whether it came from an incomplete algorithm, a mistaken runtime assumption, or a type that described more than the implementation guaranteed.

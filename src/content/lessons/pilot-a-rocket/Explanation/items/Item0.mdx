@@ -1,0 +1,21 @@
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import ConceptModal from 'content/blocks/ConceptModal';
+import AdjacencyList from 'content/lessons/graphs/AdjacencyList.mdx';
+import WeightedVsUnweighted from 'content/lessons/graphs/WeightedVsUnweighted.mdx';
+import DirectedVsUndirected from 'content/lessons/graphs/DirectedVsUndirected.mdx';
+import ExampleGraph from 'svg/ExampleGraph';
+
+The first question you may be asking is, "how is this a graph problem since the input is a hash table?"
+This is a representation of a graph using an <ConceptModal content={<AdjacencyList />}>adjacency list</ConceptModal>.
+A given satellite ID is a key in the hash table, and the satellites it is connected to are given in the array of IDs for the key's value.
+
+Visualizing the graph from the prompt, we get:
+
+<SvgWrapper fill="none" stroke="hackyfix">
+  <ExampleGraph />
+</SvgWrapper>
+
+Are there any other assumptions we can make about our graph?
+Although it doesn't state it, we can likely assume that since edges represent a channel of communication, that it will work in both directions.
+This would mean our graph is <ConceptModal content={<DirectedVsUndirected />}>undirected</ConceptModal>.
+There isn't a reference to paths taking any more or less effort to communicate, so we can also assume our graph is <ConceptModal content={<WeightedVsUnweighted />}>unweighted</ConceptModal>.

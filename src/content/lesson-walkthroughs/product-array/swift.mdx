@@ -1,0 +1,83 @@
+Product Array returns a new array where each position contains the product of every other input number. Division is forbidden. For `[2, 3, 4]`, the answer is `[12, 8, 6]`, with the first entry excluding the input's `2`.
+
+The Swift starter uses Int values. The solution below stores prefix products in the output, then multiplies in a running suffix. It assumes every intermediate and final product fits in Int; ordinary Swift arithmetic reports overflow by trapping rather than quietly yielding an arbitrary-size integer.
+
+## Use one output array and two scalar products
+
+At each forward index, prefix contains only values strictly before that index. The reverse pass carries the analogous product strictly after it. Both begin at one, the product of an empty segment.
+
+```swift
+class Solution {
+    func buildProductArray(_ nums: [Int]) -> [Int] {
+        var results = Array(repeating: 1, count: nums.count)
+        var prefix = 1
+        for i in nums.indices {
+            results[i] = prefix
+            prefix *= nums[i]
+        }
+
+        var suffix = 1
+        for i in nums.indices.reversed() {
+            results[i] *= suffix
+            suffix *= nums[i]
+        }
+        return results
+    }
+}
+```
+
+The array's entries are scalar Int values, so repeating the identity value does not introduce shared mutable objects between positions. Each first-pass assignment replaces an individual output entry, and the reverse pass reads only positions already initialized.
+
+## Reverse valid indices instead of inventing a closed range
+
+`nums.indices` gives the input's valid positions. Reversing it visits those positions from right to left and naturally stays empty for empty input. The output has the same count, so each index is also valid for its corresponding result entry.
+
+A hand-built closed range such as `0...count-1` needs special care when count is zero. The valid-index collection avoids that boundary case instead of adding another branch. It also states the relationship between array positions directly.
+
+For a singleton, the left and right portions are both empty, so the output is `[1]`. That is the conventional empty product. If a different problem imposes a minimum length or different singleton policy, establish that contract before changing this behavior.
+
+## Trace the output's changing role
+
+For `[2, 3, 4]`, the first pass writes `[1, 2, 6]`. At this stage, each entry contains only its left-side contribution. The prefix is advanced after the write so the current value is not included in its own result.
+
+During the backward pass, suffix begins at one. The last output remains `6`; after incorporating `4`, the middle output becomes `8`. After incorporating `3`, the first becomes `12`.
+
+Moving a scalar multiplication before its output operation would include the excluded value. Keeping separate prefix and suffix arrays would make the same segment boundaries explicit, but would spend extra linear memory that the result already provides.
+
+## Use value semantics without assuming copies are free
+
+Swift Array has value semantics with copy-on-write behavior. A variable assigned from another array has independent value behavior when mutated, but storage sharing and later copies still have performance implications. The explicit new result allocation makes this algorithm's intended working storage easy to account for.
+
+The input parameter is read-only inside the function. The second pass can therefore rely on the original values. An in-place design that overwrote them during the first pass would need additional logic or storage to preserve the suffix calculation.
+
+Repeating an Int is safe because it is a value. Repeating a class instance would place references to the same object into every slot. That difference matters if adapting the array initialization to mutable per-position records rather than numeric products.
+
+## Test zeros, signs, and the caller's array
+
+```swift
+func checkExamples() {
+    let solution = Solution()
+    let cases: [([Int], [Int])] = [
+        ([], []), ([7], [1]), ([2, 3, 4], [12, 8, 6]),
+        ([2, 0, 4], [0, 8, 0]), ([0, 3, 0], [0, 0, 0]),
+        ([-2, 3, -4], [-12, 8, -6])
+    ]
+    for (input, expected) in cases {
+        let before = input
+        precondition(solution.buildProductArray(input) == expected)
+        precondition(input == before)
+    }
+}
+```
+
+Run the helper from a standalone Swift program. With one zero, only that zero's own output can be nonzero; with two zeros, every output includes at least one zero. Those outcomes follow from the two excluded segments without division or a special zero-count branch.
+
+Negative inputs follow ordinary multiplication signs. The helper compares array contents directly, which Swift supports for equatable element types. Add small exhaustive inputs checked by a slower direct-product reference when experimenting with a refactor.
+
+## State the overflow contract and actual cost
+
+Int is platform-width and fixed-size. All prefixes, suffixes, and output products must fit, including the final full running products that this implementation computes but does not return. On the supported 64-bit target, larger examples may fit than a 32-bit implementation, but the range is still bounded.
+
+Do not replace multiplication with wrapping operators merely to avoid a trap; that changes the mathematical answer. Swift's [advanced-operators guide](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/advancedoperators/) explains the distinct overflow behavior. Arbitrary exact products need a different numeric contract.
+
+Within the fixed-width contract, the function performs `O(n)` arithmetic operations and uses constant scalar state beyond the `O(n)` output. Before practicing, explain the empty-index behavior and the timing of both scalar updates, then check an input containing one zero.

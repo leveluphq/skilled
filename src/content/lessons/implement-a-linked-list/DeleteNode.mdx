@@ -1,0 +1,19 @@
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import CodeBlock from 'content/blocks/CodeBlock';
+import Image from 'content/blocks/Image';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import DeleteNodeCode from './code/DeleteNode';
+
+<SubsectionHeader>Delete a Node</SubsectionHeader>
+
+To delete a node, first we find the node that precedes it in the linked list.
+Then we change this preceding node's `next` <ConceptModal content={<PointersConcept />}>pointer</ConceptModal>
+to reference the node after the one we want to delete (`precedingNode.next = precedingNode.next.next`).
+Since none of the items in the linked list reference the node we wanted to delete anymore, it is effectively removed from our linked list.
+In languages with a garbage collector (JavaScript, Python, Java, C#, Go, Kotlin), the collector notices that nothing references the node and frees its memory.
+Swift frees it as soon as its last reference goes, Rust frees it when its owner goes out of scope, and in C++ we `delete` it ourselves.
+
+<Image src="/images/delete-singly-linked-list.gif" isVisuAlgo alt="Deleting a linked-list node reconnects its predecessor directly to the following node." width={776} height={225} />
+
+<DeleteNodeCode />

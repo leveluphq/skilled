@@ -1,0 +1,21 @@
+```kotlin
+// Create a helper function to add visitedNodes to the signature
+fun dfs(currentNode: GraphNode, visitedNodes: MutableSet<GraphNode>) {
+    // Use node value for the question
+    visit(currentNode)
+
+    visitedNodes.add(currentNode)
+
+    for (childNode in currentNode.edges) {
+        if (childNode !in visitedNodes) {
+            dfs(childNode, visitedNodes)
+        }
+    }
+}
+
+fun recursiveDepthFirstSearch(startingNode: GraphNode) {
+    // Init our stack and set of visited nodes
+    val visitedNodes = mutableSetOf<GraphNode>()
+    dfs(startingNode, visitedNodes)
+}
+```

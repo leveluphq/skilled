@@ -1,0 +1,9 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+
+When the data take a fixed range of values, it can be divided into pre-defined buckets, and in this case you can actually sort in <BigO.n letter="n" /> time.
+You perform one pass over the data to fill your buckets, and then one additional pass over the buckets to form your output.
+
+> This is similar to radix sort, but bucket sort is a little more simple to conceptualize and implement. Creating simple buckets is likely all you will need in an interview.
+
+<Image src="/images/bucket-sort.gif" maxWidth="500px" alt="Counting values into buckets allows the sorted output to be reconstructed from bucket frequencies." width={800} height={649} />

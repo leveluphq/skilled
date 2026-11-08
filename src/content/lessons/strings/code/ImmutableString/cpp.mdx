@@ -1,0 +1,13 @@
+```cpp
+string str = "hello, world";
+
+// C++ strings are mutable, so str += '!' would append in place in O(1) (amortized)
+// But str + '!' is O(n): it copies every character into a new string
+string newStr = str + '!'; // hello, world!
+
+// Old
+| h | e | l | l | o | , | w | o | r | l | d |
+
+// Creates new items in memory
+| h | e | l | l | o | , | w | o | r | l | d | ! |
+```

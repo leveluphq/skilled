@@ -1,0 +1,11 @@
+```kotlin
+fun containsBST(values: List<Int?>, target: Int): Boolean {
+    var index = 0
+    while (index < values.size) {
+        val value = values[index] ?: break
+        if (value == target) return true
+        index = if (target < value) 2 * index + 1 else 2 * index + 2
+    }
+    return false
+}
+```

@@ -1,0 +1,21 @@
+```java
+static Map<Integer, Long> memo = new HashMap<>();
+
+static long fib(int n) {
+    if (n < 2) {
+        return n;
+    }
+
+    // If we have the value in our hash table,
+    // return it instead of continuing with the recursive case
+    if (memo.containsKey(n)) {
+        return memo.get(n);
+    }
+
+    long nthFib = fib(n - 1) + fib(n - 2);
+
+    memo.put(n, nthFib);
+
+    return nthFib;
+}
+```

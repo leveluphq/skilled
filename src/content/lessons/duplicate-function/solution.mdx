@@ -1,0 +1,53 @@
+import { Section } from 'style/elements/lesson';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import CurryShell from './code/CurryShell';
+import SingleDuplicate from './code/SingleDuplicate';
+import CurrySolution from './code/CurrySolution';
+import CurrySolutionArrow from './code/CurrySolutionArrow';
+import DuplicateGenerator from './code/DuplicateGenerator';
+
+<Section>
+
+If you have seen syntax like this, it may be confusing at first.
+We have a function that looks like it is executing twice `duplicate()()`.
+
+This is something known as function currying.
+It's not actually executing `duplicate` twice, but it means that `duplicate` must return another function.
+Then the section execution is actually executing this returned function.
+This is in contrast to using a single function that takes two parameters `duplicate(numDuplicates, array)`.
+
+With this, we know our function needs to look something like the following:
+
+<CurryShell />
+
+Now we need the logic to duplicate an array.
+If we knew before hand the number of times it would duplicate (say two), we could simply do something like:
+
+<SingleDuplicate />
+
+Instead, we need to handle a general case where we duplicate the array an arbitrary number of times.
+
+The first step we need to perform is create a `new Array(numDuplicates)`.
+Then there are possible paths: 1. We can use a `reduce` to spread the array in for each spot, or 2. Create nested arrays and flatten the solution afterward.
+
+<CurrySolution />
+
+Now that we have our logic and understand the higher-order function, we can rewrite this very succinctly using arrow functions.
+Since arrow functions implicitely return, the outer function is return the inner automatically.
+
+<CurrySolutionArrow />
+
+Currying is a functional programming technique where instead of taking multiple arguments, you take a succession of single arguments.
+It is a higher order function because it returns a function.
+In more complex cases, it allows to create different versions of a function that share core functionality without duplication but can then be applied in different instances.
+Using the function we created, we could generate functions that duplicate a a specified number of times.
+
+<DuplicateGenerator />
+
+How is `numDuplicates` remembered after the first invocation?
+Our function has formed a closure over it, so it is persisted in the function that is returned.
+This was actually happening previously, but it likely wasn't apparent since we were executing the returned function immediately
+
+TLDR learning outcomes: closure, higher order functions, currying, spread syntax, array methods
+
+</Section>

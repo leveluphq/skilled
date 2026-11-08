@@ -1,0 +1,57 @@
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn group_permutations_of_palindromes(strings: Vec<String>) -> Vec<Vec<String>> {
+        let mut permutations_of_palindromes: HashMap<String, Vec<String>> = HashMap::new();
+
+        // Iterate through all O(n) strings in our list
+        for string in strings {
+            // Check if each string is a palindrome O(c)
+            if is_permutation_of_palindrome(&string) {
+                // Sort our string's order O(c log c)
+                // Permutations will sort to the same string
+                let mut characters: Vec<char> = string.chars().collect();
+                characters.sort_unstable();
+                let sorted_string: String = characters.into_iter().collect();
+
+                // Initialize the key to an empty list if we
+                // haven't seen any of the string's permutations yet
+                permutations_of_palindromes
+                    .entry(sorted_string)
+                    .or_default()
+                    .push(string);
+            }
+        }
+
+        // This will return all the values of the hash table as a list
+        // Since the values are also lists, this is the form of the result we want
+        permutations_of_palindromes.into_values().collect()
+    }
+}
+
+// We use the modulo operator to determine if a number is odd
+fn is_odd(num: i32) -> bool {
+    num % 2 != 0
+}
+
+// All O(c) operations
+fn is_permutation_of_palindrome(string: &str) -> bool {
+    // Use a hash table to count the occurrence of each character in a string
+    // These are sequential O(c) operations
+    let mut character_count_table: HashMap<char, i32> = HashMap::new();
+
+    for character in string.chars() {
+        *character_count_table.entry(character).or_insert(0) += 1;
+    }
+
+    // Sum the number of characters that contain an odd count
+    let odd_character_count = character_count_table
+        .values()
+        .filter(|&&num_characters| is_odd(num_characters))
+        .count();
+
+    // If only one character has an odd count, this function returns true
+    odd_character_count <= 1
+}
+```

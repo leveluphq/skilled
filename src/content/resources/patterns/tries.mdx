@@ -1,0 +1,113 @@
+A trie stores strings along shared paths. If a dictionary contains `car`, `cart`, and `cat`, those words share the nodes for `c` and `a`; `cart` continues beyond the terminal node for `car`. This structure helps when the query concerns a prefix rather than just equality with a complete key. A hash set is usually a simpler starting point when the only operation is exact membership.
+
+## Choose a string and duplicate contract
+
+This implementation stores a set of JavaScript strings. Inserting the same string twice changes nothing, deleting a missing string returns false, and the empty string is a valid word. `has` checks whole-word membership. `countPrefix` reports the number of stored words beginning with the supplied prefix, including an exact word equal to that prefix. Consequently, the empty prefix counts the entire set.
+
+Traversal uses JavaScript's string iterator, so a supplementary character such as an emoji occupies one edge instead of two UTF-16 code-unit edges. This does not combine a base letter with its combining marks into one grapheme cluster. It also does not normalize text, fold case, or interpret accents. Decide those rules before inserting or searching. Normalizing only the queries leaves the stored dictionary inconsistent.
+
+Prefixes follow those iterator-symbol boundaries. A lone high-surrogate query does not match the first half of an emoji edge, even though a code-unit-based string prefix check can match that half. Use the same text model in an independent test oracle.
+
+## Store terminal flags and subtree counts
+
+Every node contains a map of outgoing characters, a terminal flag, and a count of words below it. The count includes the node's own word when terminal is true. A path can exist without representing a complete word: inserting `cart` makes the path for `car` available, but `has('car')` remains false until that shorter word is inserted.
+
+Sparse maps avoid allocating a full alphabet-sized child array for every node. That matters when the alphabet is large or most nodes have few children. A fixed small alphabet can justify an indexed array instead. Princeton's [trie implementation](https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/TrieST.java) illustrates that alternative with an explicitly bounded character domain; its storage assumptions differ from this map-based version.
+
+```javascript
+function trieNode() {
+  return { children: new Map(), terminal: false, words: 0 };
+}
+
+class Trie {
+  constructor() {
+    this.root = trieNode();
+  }
+
+  nodeFor(text) {
+    if (typeof text !== 'string') throw new TypeError('Expected a string.');
+    let node = this.root;
+    for (const character of text) {
+      node = node.children.get(character);
+      if (!node) return null;
+    }
+    return node;
+  }
+
+  has(word) {
+    return this.nodeFor(word)?.terminal ?? false;
+  }
+
+  countPrefix(prefix) {
+    return this.nodeFor(prefix)?.words ?? 0;
+  }
+
+  insert(word) {
+    if (typeof word !== 'string') throw new TypeError('Expected a string.');
+    let node = this.root;
+    const path = [node];
+    for (const character of word) {
+      if (!node.children.has(character)) node.children.set(character, trieNode());
+      node = node.children.get(character);
+      path.push(node);
+    }
+    if (node.terminal) return false;
+    node.terminal = true;
+    for (const ancestor of path) ancestor.words += 1;
+    return true;
+  }
+
+  delete(word) {
+    if (typeof word !== 'string') throw new TypeError('Expected a string.');
+    let node = this.root;
+    const path = [node];
+    const edges = [];
+    for (const character of word) {
+      const child = node.children.get(character);
+      if (!child) return false;
+      edges.push([node, character, child]);
+      node = child;
+      path.push(node);
+    }
+    if (!node.terminal) return false;
+    node.terminal = false;
+    for (const ancestor of path) ancestor.words -= 1;
+    for (let i = edges.length - 1; i >= 0; i -= 1) {
+      const [parent, character, child] = edges[i];
+      if (child.words !== 0) break;
+      parent.children.delete(character);
+    }
+    return true;
+  }
+}
+```
+
+The arrays in insertion and deletion record ancestors temporarily. They keep traversal iterative, including for a very long word. Node fields are shown openly for teaching; callers must treat them as implementation state. Exposing arbitrary writes to counts or child maps would invalidate the operations' guarantees.
+
+## Trace a shared prefix through deletion
+
+Insert `car`, `cart`, and `cat`. The root count becomes three, the `ca` node count becomes three, and the `car` node count becomes two. Its terminal flag records `car`; its child `t` records the longer word. Querying prefix `car` returns two, while querying exact word `ca` returns false.
+
+Delete `car`. Its terminal flag becomes false, but its count stays one after the decrement. The `t` child still leads to `cart`, so pruning must stop before removing that path. Deleting `cart` afterward removes the unused `r` branch. The `ca` path survives because it still reaches `cat`. Clearing an entire prefix branch when deleting a shorter word would lose valid longer words.
+
+The empty word uses the root's terminal flag. Inserting it increases only the root count. Deleting it must leave all child paths intact. Duplicate insertion returns before incrementing any count, and a missing deletion returns before decrementing any count. Those two early exits keep the metadata consistent with set semantics.
+
+## State costs using the actual representation
+
+Let L be the number of iterator symbols in the supplied string. Lookup follows at most L edges. Insertion and deletion also visit the ancestor path. Under the usual expected constant-time map-operation model, each operation takes expected O(L) time. The temporary ancestor and edge arrays use O(L) auxiliary space; a lookup uses constant extra state beyond its input and iterator.
+
+If S is the sum of lengths of distinct stored words, there are at most S plus one live nodes. Shared prefixes can reduce that number substantially. Each map entry corresponds to an edge, but object and map overhead can make a trie larger in practice than a set of complete strings. Asymptotic node counts do not predict an engine's allocation sizes.
+
+Counts answer a prefix query without enumerating descendants. Returning matching words is a separate operation with output costs. A completion limit bounds the number of returned strings; it does not automatically bound traversal work, sorting, or the length of copied output. Ranked autocomplete also needs a ranking policy and additional maintained data.
+
+## Match the structure to the query
+
+A trie is useful for dictionary prefixes, incremental text entry, and some multiword searches through a grid. For a grid search, the current trie node can reject a partial path early, while a visited-cell rule separately prevents reuse of a board position. Those are different constraints. The trie does not replace the backtracking state described in the [backtracking guide](/patterns/backtracking).
+
+Prefix storage also differs from a substring index. Finding `art` anywhere inside `cart` does not follow from a root lookup for `art`. Suffix structures, rolling hashes, or direct scans serve different contracts. For a small static dictionary, sorting words and locating a prefix range may be easier to maintain than a mutable node structure.
+
+## Test the public behavior and the counts
+
+Use a plain Set as a reference during mixed insert/delete histories. After each operation, compare exact membership and count the reference words with the requested prefix. Include an empty dictionary, the empty word, one word that prefixes another, repeated insertions, missing deletions, and deleting a branch that still has siblings.
+
+Add emoji and combining-character cases under the declared text contract. The strings `é` and `e` followed by a combining accent remain different here. Then insert a long narrow word and delete it to check that traversal does not consume recursive call-stack depth. Practice the underlying text and tree ideas through the [strings path](/topics/strings) and [tree material](/topics/trees), then explain which parts of the implementation would change for a fixed lowercase alphabet.

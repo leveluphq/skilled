@@ -1,0 +1,30 @@
+```javascript
+const hasValidBrackets = (string: string): boolean => {
+  const matchingBrackets = {
+    '(': ')',
+    '[': ']',
+    '{': '}',
+  };
+  // Convert the keys to an array of opening bracking strings
+  const openingBrackets = Object.keys(matchingBrackets);
+  // Convert the values to an array of closing bracket strings
+  const closingBrackets = Object.values(matchingBrackets);
+  const bracketStack = [];
+
+  for (const character of string) {
+    if (openingBrackets.includes(character)) {
+      bracketStack.push(character);
+    } else if (closingBrackets.includes(character)) {
+      const latestBracket = bracketStack.pop();
+      const matchingBracket = matchingBrackets[latestBracket];
+
+      if (!latestBracket || character !== matchingBracket) {
+        return false;
+      }
+    }
+  }
+
+  // check if we opened/closed all brackets which creates an empty stack.
+  return bracketStack.length === 0;
+};
+```

@@ -1,0 +1,38 @@
+```swift
+func insertNode(_ head: Node?, _ index: Int, _ value: Int) -> Node? {
+    // First check if we want to add a node at the head
+    if index == 0 {
+        // Inserting at 0 is equivalent to prepending
+        return prepend(head, value)
+    }
+
+    // Create the node we want to insert
+    let insertedNode = Node(value)
+    var precedingNode = head
+
+    // Find the node that precedes the index of the node that we want to insert
+    for _ in 0..<(index - 1) {
+        precedingNode = precedingNode?.next
+    }
+
+    // Store the node that should come after the one we insert
+    let nodeAfterInserted = precedingNode?.next
+
+    // Insert our new node at the desired index
+    precedingNode?.next = insertedNode
+
+    // Set the inserted node's `next` pointer
+    insertedNode.next = nodeAfterInserted
+
+    return head
+}
+
+var head: Node? = Node(42)
+head?.next = Node(9000)
+head?.next?.next = Node(10)
+head?.next?.next?.next = Node(20)
+// 42 -> 9000 -> 10 -> 20
+
+head = insertNode(head, 2, 777)
+// 42 -> 9000 -> 777 -> 10 -> 20
+```

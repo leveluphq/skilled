@@ -1,0 +1,29 @@
+```cpp
+class Solution {
+public:
+    string findHackerEmail(vector<string>& emails) {
+        unordered_map<string, int> emailCountTable;
+        int maxCount = 0;
+        string hackerEmail = "";
+
+        // Create a hash table that tracks the count of each email
+        // This is an O(n) operation
+        for (const string& email : emails) {
+            // [] adds an email we haven't seen yet with a count of 0,
+            // then we increment the count for the email
+            emailCountTable[email]++;
+        }
+
+        // Iterate the table to find the email that appears the most
+        // This is an O(n) operation
+        for (const auto& [email, count] : emailCountTable) {
+            if (count > maxCount) {
+                maxCount = count;
+                hackerEmail = email;
+            }
+        }
+
+        return hackerEmail;
+    }
+};
+```

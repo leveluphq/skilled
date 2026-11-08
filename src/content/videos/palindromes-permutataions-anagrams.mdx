@@ -1,0 +1,19 @@
+Palindromes, permutations, and anagrams describe different properties of text. A palindrome reads symmetrically, a permutation rearranges positions, and anagrams have equal character counts. The recording introduces these terms so a problem statement can become a precise test rather than a collection of similar-sounding words.
+
+## Compare mirrored positions for a palindrome
+
+Under an exact character comparison, `level` is a palindrome and `lever` is not. Compare the outer positions, then move inward. The first mismatch proves failure; passing every mirrored comparison proves symmetry. This approach uses constant extra storage when the representation permits efficient indexed access to the chosen text unit.
+
+Some exercises first ignore case, spaces, or punctuation. Those rules change the predicate and should be named. The current Python normalization also removes underscores to match the corresponding JavaScript lesson example. Avoid transferring that cleanup to a different exercise that requires exact identifiers.
+
+## Count arrangements and repeated values carefully
+
+A positional permutation assigns an original position to each output position. For distinct items, n positions have n factorial arrangements. Repeated characters can produce equal-looking strings through different positional choices. Decide whether the output must retain those duplicates or contain only distinct results before choosing a generation method.
+
+Anagrams use a simpler summary. Two strings are anagrams when they have the same multiplicity for every relevant character. Sorting can reveal the same signature, while a frequency table counts directly. Merely checking that both strings use the same set of letters loses repeated-character information: `aab` and `abb` use the same set but are not anagrams.
+
+## Combine the conditions without generating every arrangement
+
+A character multiset can form a palindrome exactly when at most one character has an odd count. Every mirrored pair consumes two equal characters; an odd-length result can leave one character at the center. This gives a counting test without constructing every permutation.
+
+Practice that distinction in [Group Permutations of Palindromes](/watch/group-permutations-of-palindromes). That exercise filters for palindrome-permutable strings and then groups anagrams; it is not ordinary anagram grouping. Use [Generate All Permutations](/watch/generate-all-permutations) when you want to study enumeration itself, including how output size limits the best possible running time.

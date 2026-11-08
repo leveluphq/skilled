@@ -1,0 +1,24 @@
+```python
+def find_max_depth(root):
+    stack = []
+    max_depth = -1 # Value to return if no node is given
+
+    if root != None:
+        # Updates to the correct root depth of 0
+        max_depth += 1
+        # Add the root to the stack
+        stack.append({ "node": root, "depth": max_depth  })
+
+    while len(stack) != 0:
+        # Remove top item on the stack and extract the node and its depth
+        item = stack.pop()
+        node, depth  = item["node"], item["depth"]
+
+        # If the node exists, compare it to the current max and add its children to the stack
+        if node != None:
+            max_depth = max(max_depth, depth)
+            stack.append({ "node": node.right, "depth": depth + 1  })
+            stack.append({ "node": node.left, "depth": depth + 1 })
+
+    return max_depth
+```

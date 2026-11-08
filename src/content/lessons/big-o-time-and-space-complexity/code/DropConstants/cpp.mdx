@@ -1,0 +1,29 @@
+```cpp
+void case1(const vector<int>& input) {
+    for (int i = 0; i < (int) input.size(); i++) {
+        cout << i * 2 << endl; // O(n)
+    }
+    for (int i = 0; i < (int) input.size(); i++) {
+        cout << i * 10 << endl; // O(n)
+    }
+    for (int i = 0; i < (int) input.size(); i++) {
+        cout << i * 42 << endl; // O(n)
+    }
+}
+
+void case2(const vector<int>& input) {
+    for (int i = 0; i < (int) input.size(); i++) {
+        cout << i * 2 << endl; // O(n)
+        cout << i * 10 << endl; // O(n)
+        cout << i * 42 << endl; // O(n)
+    }
+}
+
+void case3(const vector<int>& input) {
+    for (int i = 0; i < (int) input.size(); i++) {
+        for (int j = 0; j < (int) input.size(); j++) {
+            cout << i << " " << j << endl;
+        }
+    }
+}
+```

@@ -1,0 +1,71 @@
+```cpp
+#include <vector>
+#include <string>
+#include <utility>
+#include <optional>
+
+using namespace std;
+
+class HashTable {
+public:
+    int size;
+    // Each bucket holds the key-value pairs whose keys hash to its index
+    vector<vector<pair<string, int>>> table;
+
+    // Create size empty buckets up front
+    HashTable(int size) : size(size), table(size) {}
+
+    optional<int> get(const string& key) {
+        int index = hash(key);
+        auto& bucket = table[index];
+
+        for (size_t i = 0; i < bucket.size(); i++) {
+            if (bucket[i].first == key) {
+                return bucket[i].second;
+            }
+        }
+
+        return nullopt;
+    }
+
+    void insert(const string& key, int value) {
+        int index = hash(key);
+        auto& bucket = table[index];
+
+        for (size_t i = 0; i < bucket.size(); i++) {
+            if (bucket[i].first == key) {
+                bucket[i].second = value;
+                return;
+            }
+        }
+
+        bucket.push_back({key, value});
+    }
+
+    optional<int> remove(const string& key) {
+        int index = hash(key);
+        auto& bucket = table[index];
+
+        for (size_t i = 0; i < bucket.size(); i++) {
+            if (bucket[i].first == key) {
+                int value = bucket[i].second;
+                bucket.erase(bucket.begin() + i);
+
+                return value;
+            }
+        }
+
+        return nullopt;
+    }
+
+    int hash(const string& key) {
+        int hash = 0;
+
+        for (unsigned char c : key) {
+            hash = (hash + c) % size;
+        }
+
+        return hash;
+    }
+};
+```

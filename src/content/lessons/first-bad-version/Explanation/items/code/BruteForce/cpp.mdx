@@ -1,0 +1,12 @@
+```cpp
+int firstBadVersionBruteForce(int n) {
+    for (int currentVersion = 1; currentVersion <= n; currentVersion++) {
+        if (isBadVersion(currentVersion)) {
+            return currentVersion;
+        }
+    }
+
+    // Not reached, since one of the versions is always bad
+    return -1;
+}
+```

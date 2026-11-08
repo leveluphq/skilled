@@ -1,0 +1,8 @@
+```java
+static void hiddenQuadratic(int[] input) {
+    for (int i = 0; i < input.length; i++) {
+        int[] slice = Arrays.copyOfRange(input, i, input.length);
+        System.out.println(Arrays.toString(slice));
+    }
+}
+```

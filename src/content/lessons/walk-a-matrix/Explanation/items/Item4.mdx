@@ -1,0 +1,26 @@
+import * as React from 'react';
+import { Container } from 'style/elements';
+import WhileLoop from './inlineCode/WhileLoop';
+import StartRowInc from './inlineCode/StartRowInc';
+
+We continue to walk the matrix inwards until we visit all the nodes.
+Intuitively we know that we have finished the problem when the start and end indexes collapse in on themselves, which means
+the start row moves past the end row, or the start column moves past the end column.
+If the bounds are equal, there is still one row or column left to visit, so we only stop once the bounds move past each other.
+We will iterate through the matrix `while` the end row/column is greater than or equal to the start row/column.
+Translated to code: <WhileLoop />
+
+Now let's consider an edge case. What if there is only 1 row or column remaining?
+If we have a final row with the numbers `[100, 200, 300]`, we want to make sure we iterate across correctly on the first pass `start -> end`,
+but we want to make sure that we don't iterate back across the values when we go `end -> start` since they have already been accounted for.
+So before we begin our last two `for` loops, we need to ensure our start/end indexes are still within the bounds since we updated the bounds after the first two loops for the rows and columns.
+
+<React.Fragment>
+{/* TODO: Add this back when you can think of something that makes sense */}
+{/* You may also be wondering why we don't check this condition with the first 2 `for` loops.
+When we increment <StartRowInc />, our start row will already be larger than our end row,
+so the second `for` loop won't execute (or to be specific, execute 0 times based on the condition). */}
+</React.Fragment>
+
+Alright, we're tracking visited nodes, walking the array inwards, and stopping when our indexes pass the upper and lower bounds.
+Let's put this all together in a working solution.

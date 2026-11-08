@@ -1,0 +1,57 @@
+Prepare a technical project discussion around one decision you can explain and defend. Interviewers need enough context to understand the problem, your contribution, the constraints, and the result. A long list of frameworks can leave all four unclear. Choose a project whose details you remember well enough to answer follow-up questions without inventing missing evidence.
+
+Use the same preparation for a resume bullet, recruiter screen, behavioral question, and deeper engineering interview, but change the amount of detail. A short summary establishes the problem and your role. A longer conversation can examine tradeoffs, implementation, failure, and what you would change next.
+
+## Separate the team outcome from your contribution
+
+Write the project goal in one sentence, then list the pieces you personally designed, implemented, tested, reviewed, or operated. If the team delivered a feature together, say so. You can describe a strong contribution without claiming that you built the entire system alone.
+
+For example, a hypothetical autocomplete project might involve a designer, API owner, and frontend engineer. The frontend contribution could include keyboard navigation, request cancellation, and tests for out-of-order responses. Those are concrete responsibilities. Saying that you owned every aspect of search would invite follow-ups that the actual work may not support.
+
+Keep the example explicitly hypothetical when practicing with material you did not build. In the real interview, replace it with your actual work. Do not borrow the example's result numbers, team size, or production claims as if they were your experience.
+
+## Build a short opening with room for questions
+
+An opening can explain who needed the feature, what was failing, what you owned, and what changed. Leave enough room for the interviewer to choose a direction. A memorized ten-minute monologue can prevent the interviewer from assessing the part of the work relevant to the role.
+
+For the autocomplete example, the opening might describe users selecting the wrong stale suggestion after a slow request. The owned change could be request-version handling and keyboard behavior. The observed result should be a real test or measurement from that project. If only tests are available, report that evidence rather than inventing a conversion increase.
+
+Prepare a two-minute and a five-minute version aloud. Record where you introduce an unexplained term or skip a causal step. The goal is to make the next question easy to ask, not to compress every implementation detail into the opening.
+
+## Explain a decision through alternatives
+
+Choose one design decision with a real alternative. State the constraint, describe the options you considered, and explain the consequence of the chosen option. A decision is easier to assess when the tradeoff is visible. A bare claim that one approach is faster or cleaner needs a workload and a definition.
+
+For autocomplete, debounce can reduce request starts, but it does not prevent an older response from arriving last. An abort signal can cooperate with active work, while a request-version check can prevent stale results from updating the UI. Explain which guarantees the project needed and which mechanism provided each one.
+
+The [autocomplete guide](/guides/frontend-autocomplete-design) and [retry guide](/guides/javascript-retry-backoff) can help you practice the reasoning, but describe your actual project's implementation in the interview. A familiar pattern is useful only when you can connect it to the requirements and behavior that were present.
+
+## Prepare a failure and a recovery
+
+Choose an incident or mistake you can discuss without exposing confidential data. Explain the observable failure, how you narrowed the cause, what you changed, and how you checked the fix. Name your own mistaken assumption when one existed. A story with no uncertainty or correction can hide the engineering work the question is trying to explore.
+
+For an async interface, a recovery might add a controlled test that resolves requests in reverse order. For a backend change, it might involve a rollback, a corrected invariant, or a safer rollout. State what you know from logs, tests, or measurements and what remained an inference.
+
+Avoid turning the story into a complaint about another person. You can explain a disagreement by naming the competing constraints and the process used to resolve them. The interviewer can then assess collaboration and judgment instead of having to choose a side in a story they cannot verify.
+
+## Make evidence fit the claim
+
+If you report a latency improvement, know which operation was measured, the environment, the sample, and whether the comparison used the same workload. If you report fewer errors, know the denominator and time window. A percent without that context can overstate what the evidence supports.
+
+When no reliable production measurement exists, use narrower evidence: a formerly failing regression test now passes, a keyboard path is complete, or a manual operation has a documented automated replacement. These can still describe useful engineering work. Distinguish implementation from adoption; shipping a feature does not prove that every intended user used it.
+
+Bring a simplified architecture sketch if the format permits it. Remove secrets, personal data, and internal names that are not appropriate to share. You can describe a dependency generically while still explaining request flow, state ownership, and failure handling precisely.
+
+## Turn the project into a resume bullet and screen answer
+
+A resume bullet can connect an action, the affected system, and an evidenced result. Start with the work you did. Keep technologies that help a reader understand its scope, and remove a stack inventory that could describe almost any project. Every number in the bullet should have a source you can explain.
+
+For a recruiter screen, establish role, scope, and fit before deep implementation details. Ask which interview formats are planned, which language or environment is expected, and whether a project discussion or portfolio review is included. That information can guide preparation without relying on rumors about a company's question bank.
+
+Before accepting a role, clarify the written responsibilities, team, location expectations, interview or start timeline, and any remaining questions with the recruiting contact. Compensation, benefits, and contractual terms require their own careful review; a project story is evidence of your work, not a substitute for understanding the offer.
+
+## Rehearse follow-ups instead of memorizing a script
+
+Ask a practice partner to interrupt with why, what failed, what you measured, and what you would change. Use the [explanation guide](/guides/explain-your-interview-solution) to check whether your reasoning follows a clear sequence. The [interview rehearsal tool](/tools/interview-rehearsal) can provide a timed structure, and the [rubric](/reference/mock-interview-rubric) can record concrete feedback.
+
+End preparation with one note for each claim you could not yet support. Find the missing measurement, narrow the claim, or remove it. The resulting discussion should remain accurate when the interviewer asks for the detail behind any sentence.

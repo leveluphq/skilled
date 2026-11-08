@@ -1,0 +1,16 @@
+```rust
+Solution::generate_permutations(String::from("")); // vec![""]
+Solution::generate_permutations(String::from("e")); // vec!["e"]
+
+impl Solution {
+    pub fn generate_permutations(s: String) -> Vec<String> {
+        // No operations needed to generate permutations, just return the input
+        if s.chars().count() < 2 {
+            return vec![s];
+        }
+
+        // Logic we will add later...
+        todo!()
+    }
+}
+```

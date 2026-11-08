@@ -1,0 +1,19 @@
+A subproblem asks the same kind of question about a smaller or more specific state. Overlap occurs when several paths in the calculation ask for the same state. The recording separates those ideas with factorial and Fibonacci examples. Recognizing repeated calls is useful only after you know exactly which inputs identify the same question.
+
+## Define what one answer represents
+
+For factorial, the answer for n uses the answer for n minus one. A single evaluation follows one decreasing chain to a base case. Those calls solve subproblems, but they do not repeatedly request the same smaller factorial within that chain. Adding a cache may be useful across separate requests, but it does not remove repeated branches from this particular recurrence.
+
+Naive Fibonacci recursion behaves differently. Computing Fibonacci of 5 requests Fibonacci of 4 and 3. Computing Fibonacci of 4 requests Fibonacci of 3 again. The same state appears in more than one branch. Draw the call tree and label equal arguments to see which work repeats.
+
+## Include every input that changes the answer
+
+For a grid route problem, the state may be a row and column together with a fixed grid and movement rule. For coin change, it may be a remaining amount under a fixed set of coin values. If the allowed coins or grid change, a cache retained from the old problem can produce an incorrect answer even when the numeric key matches.
+
+State compression is a claim of equivalence: two histories mapped to the same state must have the same remaining possibilities and result. If a rule depends on the path already taken, an index alone may not identify the subproblem. Add the relevant information or prove it does not affect the future.
+
+## Use repetition to justify storage
+
+Memoization stores a completed state's result so later requests reuse it. It does not choose the recurrence, prove the base case, or fix a state that omits necessary information. Estimate complexity from the number of distinct states and the transitions examined per state, then include stack depth and stored results separately.
+
+Continue with [Memoization](/watch/memoization) for cache behavior and [Dynamic Programming](/watch/dynamic-programming) for complete recurrences. Try [Robot Maze](/watch/robot-maze) and explain why remembering an unreachable cell is as useful as remembering a reachable one when several paths can arrive there.

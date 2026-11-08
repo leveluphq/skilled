@@ -1,0 +1,45 @@
+```cpp
+class Solution {
+public:
+    ListNode* combineBlockchains(ListNode* chainHead1, ListNode* chainHead2) {
+        // Store the head of the first item in the combined chain
+        ListNode* resultHead = chainHead1->data < chainHead2->data ? chainHead1 : chainHead2;
+        // Init the combined list with the first item
+        ListNode* combinedTail = resultHead;
+        ListNode* currentNode1 = chainHead1;
+        ListNode* currentNode2 = chainHead2;
+
+        // Move the node forward that was already added to our resultHead
+        if (chainHead1->data < chainHead2->data) {
+            currentNode1 = currentNode1->next;
+        } else {
+            currentNode2 = currentNode2->next;
+        }
+
+        // We iterate through until one of the linked lists has been depleted
+        while (currentNode1 != nullptr && currentNode2 != nullptr) {
+            // In either case, we do the same thing.
+            // We attach the node to our combined list,
+            // and then we move forward in the contributed chain's list
+            if (currentNode1->data < currentNode2->data) {
+                combinedTail->next = currentNode1;
+                currentNode1 = currentNode1->next;
+            } else {
+                combinedTail->next = currentNode2;
+                currentNode2 = currentNode2->next;
+            }
+
+            // Move to the new tail in the combined chain
+            combinedTail = combinedTail->next;
+        }
+
+        // One of the chains has been depleted (reached nullptr)
+        // The other has its remaining items in sorted order,
+        // so we can just set the next value of our
+        // combined list to the non-null node
+        combinedTail->next = currentNode1 != nullptr ? currentNode1 : currentNode2;
+
+        return resultHead;
+    }
+};
+```

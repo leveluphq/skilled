@@ -1,0 +1,9 @@
+```swift
+func lifoOrder(_ values: [Int]) -> [Int] {
+    var stack: [Int] = []
+    var output: [Int] = []
+    for value in values { stack.append(value) }
+    while let value = stack.popLast() { output.append(value) }
+    return output
+}
+```

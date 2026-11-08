@@ -1,0 +1,48 @@
+```kotlin
+class Solution {
+    fun findTargetIndex(items: IntArray, target: Int): Int {
+        // Initialize the upper and lower bound to the binary search
+        var startIndex = 0
+        var endIndex = items.size - 1
+
+        // Loop until our bounds converge
+        while (startIndex <= endIndex) {
+            // Number of items between the lower and upper bound
+            val itemsBetweenStartEnd = (endIndex - startIndex) / 2
+            val midIndex = startIndex + itemsBetweenStartEnd
+
+            // Item found, return mid index as solution
+            if (items[midIndex] == target) {
+                return midIndex
+            }
+
+            val isLeftCorrectlyOrdered = items[midIndex] >= items[startIndex]
+
+            if (isLeftCorrectlyOrdered) {
+                // The left half, start to midpoint, is sorted normally
+                // (rotation in right half or has been eliminated)
+                val targetInLeftHalf = target >= items[startIndex] && target < items[midIndex]
+
+                if (targetInLeftHalf) {
+                    endIndex = midIndex - 1
+                } else {
+                    startIndex = midIndex + 1
+                }
+            } else {
+                // The right half, midpoint to the end, is sorted normally
+                // (rotation in left half)
+                val targetInRightHalf = target <= items[endIndex] && target > items[midIndex]
+
+                if (targetInRightHalf) {
+                    startIndex = midIndex + 1
+                } else {
+                    endIndex = midIndex - 1
+                }
+            }
+        }
+
+        // Target not found in the input
+        return -1
+    }
+}
+```

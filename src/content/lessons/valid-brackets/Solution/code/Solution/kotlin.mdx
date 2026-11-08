@@ -1,0 +1,32 @@
+```kotlin
+class Solution {
+    fun hasValidBrackets(s: String): Boolean {
+        val matchingBrackets = mapOf(
+            '(' to ')',
+            '[' to ']',
+            '{' to '}',
+        )
+        // The keys are the opening brackets
+        val openingBrackets = matchingBrackets.keys
+        // The values are the closing brackets
+        val closingBrackets = matchingBrackets.values
+        val bracketStack = ArrayDeque<Char>()
+
+        for (character in s) {
+            if (character in openingBrackets) {
+                bracketStack.addLast(character)
+            } else if (character in closingBrackets) {
+                // null if there's no opening bracket left to close
+                val latestBracket = bracketStack.removeLastOrNull()
+
+                if (latestBracket == null || character != matchingBrackets[latestBracket]) {
+                    return false
+                }
+            }
+        }
+
+        // check if we opened/closed all brackets which creates an empty stack.
+        return bracketStack.isEmpty()
+    }
+}
+```

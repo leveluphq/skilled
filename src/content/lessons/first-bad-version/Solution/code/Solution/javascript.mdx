@@ -1,0 +1,23 @@
+```javascript
+/**
+ * NOTE: function isBadVersion is defined in the test scope
+ * and will be called correctly when used in this solution function.
+ */
+
+const firstBadVersion = (totalVersions) => {
+  let lowerBound = 1; // Starts at v1
+  let upperBound = totalVersions;
+
+  while (lowerBound < upperBound) {
+    const midpoint = lowerBound + Math.floor((upperBound - lowerBound) / 2);
+
+    if (isBadVersion(midpoint)) {
+      upperBound = midpoint;
+    } else {
+      lowerBound = midpoint + 1;
+    }
+  }
+
+  return lowerBound;
+}
+```

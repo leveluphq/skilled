@@ -1,0 +1,20 @@
+```javascript
+// Regex to remove non-alphanumeric
+const removeNonAlphanumeric = (string) => string.replace(/[^0-9a-z]/gi, '');
+
+const isPalindrome = (string) => {
+  // For simplicity, I'm doing the transforming here at an assumed O(n) cost
+  // You could also not transform it and consider this when you compare characters
+  const formattedString = removeNonAlphanumeric(string).toLowerCase();
+
+  // Walk from the beginning and end to the middle and compare each character
+  for (let i = 0; i < formattedString.length / 2; i++) {
+    // If the characters are ever not equal, it's not a palindrome
+    if (formattedString[i] !== formattedString[formattedString.length - 1 - i]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+```

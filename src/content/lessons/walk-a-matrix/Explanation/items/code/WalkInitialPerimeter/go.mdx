@@ -1,0 +1,27 @@
+```go
+// All rows in the matrix
+rowCount := len(matrix)
+// All columns in the 0th row
+columnCount := len(matrix[0])
+
+// Walk right (top row)
+for column := 0; column < columnCount-1; column++ {
+	nodeInFirstRow := matrix[0][column]
+}
+
+// Walk down (right column)
+for row := 0; row < rowCount-1; row++ {
+	nodeInLastColumn := matrix[row][columnCount-1]
+}
+
+// Walk left (bottom row)
+for column := columnCount - 1; column >= 0; column-- {
+	nodeInLastRow := matrix[rowCount-1][column]
+}
+
+// Walk up (left column)
+// NOTE: notice stop before the 0th node at (1,0)
+for row := rowCount - 2; row >= 1; row-- {
+	nodeInFirstColumn := matrix[row][0]
+}
+```

@@ -1,0 +1,27 @@
+```csharp
+public class Solution {
+    public bool HasLoop(ListNode head) {
+        // Both runners start at the first node
+        ListNode fast = head;
+        ListNode slow = head;
+
+        // Walk through the nodes and only break if the fast runner reaches the tail,
+        // whose next pointer is null
+        while (fast != null && fast.next != null) {
+            // Move our slow pointer 1 node and fast pointer 2 nodes
+            slow = slow.next;
+            fast = fast.next.next;
+
+            // If the fast meets the slow pointer at the same node, we know we have a cycle.
+            // We compare the nodes themselves and not their data, since different nodes can hold the same data.
+            if (slow == fast) {
+                return true;
+            }
+        }
+
+        // If our fast pointer above hits a null node,
+        // we break the `while` loop and know we have reached the tail
+        return false;
+    }
+}
+```

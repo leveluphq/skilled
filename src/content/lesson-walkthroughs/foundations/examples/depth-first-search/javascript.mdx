@@ -1,0 +1,22 @@
+```javascript
+function dfsOrder(graph, start) {
+    if (start < 0 || start >= graph.length)
+        return [];
+    const stack = [start];
+    const visited = new Set();
+    const output = [];
+    while (stack.length > 0) {
+        const node = stack.pop();
+        if (visited.has(node))
+            continue;
+        visited.add(node);
+        output.push(node);
+        for (let index = graph[node].length - 1; index >= 0; index--) {
+            const neighbor = graph[node][index];
+            if (!visited.has(neighbor))
+                stack.push(neighbor);
+        }
+    }
+    return output;
+}
+```

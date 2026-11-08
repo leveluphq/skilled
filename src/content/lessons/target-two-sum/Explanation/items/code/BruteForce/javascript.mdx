@@ -1,0 +1,18 @@
+```javascript
+const bruteForceGetTargetIndexes = (array, target) => {
+  const results = [];
+
+  // Iterate through array to check each value against every other value
+  for (let i = 0; i < array.length; i++) {
+    // We start j at i + 1 to make sure we don't compare the same index pairs more than once
+    for (let j = i + 1; j < array.length; j++) {
+      // If the sum of the values equals the target, we return the pair in an array
+      if (array[i] + array[j] === target) {
+        results.push([i, j]);
+      }
+    }
+  }
+
+  return results;
+};
+```

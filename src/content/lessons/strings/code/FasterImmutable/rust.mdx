@@ -1,0 +1,14 @@
+```rust
+// Rust's String is mutable, so we can append to it directly
+// instead of collecting the pieces in a Vec and joining them
+fn duplicate_string(s: &str, num_duplicates: usize) -> String {
+    let mut solution = String::new();
+
+    for _ in 0..num_duplicates {
+        // push_str only copies the characters we add (amortized), like pushing to a Vec
+        solution.push_str(s);
+    }
+
+    solution
+}
+```

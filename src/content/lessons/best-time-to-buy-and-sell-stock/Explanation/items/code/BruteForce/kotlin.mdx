@@ -1,0 +1,17 @@
+```kotlin
+fun bruteForceGetMaxProfit(prices: IntArray): Int {
+    var maxProfit = 0
+
+    for (buyDay in 0 until prices.size) {
+        val buyPrice = prices[buyDay]
+
+        for (sellDay in buyDay + 1 until prices.size) {
+            val sellPrice = prices[sellDay]
+            val profit = sellPrice - buyPrice
+            maxProfit = maxOf(profit, maxProfit)
+        }
+    }
+
+    return maxProfit
+}
+```

@@ -1,0 +1,16 @@
+```rust
+fn minimum_coins(coins: &[i32], amount: i32) -> i32 {
+    let impossible = amount + 1;
+    let mut best = vec![impossible; amount as usize + 1];
+    best[0] = 0;
+    for value in 1..=amount as usize {
+        for &coin in coins {
+            let coin = coin as usize;
+            if coin <= value && best[value - coin] != impossible {
+                best[value] = best[value].min(1 + best[value - coin]);
+            }
+        }
+    }
+    if best[amount as usize] == impossible { -1 } else { best[amount as usize] }
+}
+```

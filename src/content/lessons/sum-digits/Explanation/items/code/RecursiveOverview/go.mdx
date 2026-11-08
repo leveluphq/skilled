@@ -1,0 +1,8 @@
+```go
+sumDigits(n) = n%10 + sumDigits(n/10) // recurse while n > 0
+
+// recursive order (divide integer by 10 each step)
+sumDigits(6321) + sumDigits(632) + sumDigits(63) + sumDigits(6) + sumDigits(0)
+// 6321 % 10    +    632 % 10    +    63 % 10    +     6 % 10   + (base case)
+//     1        +       2        +       3       +       6      +      0
+```

@@ -1,0 +1,11 @@
+```rust
+fn pop(&mut self) -> Option<i32> {
+    // Return None if the stack is empty
+    let removed_item = self.last.take()?;
+
+    // The item behind it becomes `last` (None if no items are left)
+    self.last = removed_item.prev;
+
+    Some(removed_item.data)
+}
+```

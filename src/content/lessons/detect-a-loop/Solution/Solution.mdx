@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+We use the runner technique with two pointers that both start at the `head`: `slow` moves one node at a time, and `fast` moves two.
+If there is no loop, `fast` reaches the end of the linked list.
+If there is a loop, `fast` can never reach the end, so it keeps going around the loop until it lands on the same node as `slow`.
+We check that the two pointers are the same node instead of comparing their `data`, because different nodes can have the same `data`.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.constant /> space.
+</p>
+
+(this is actually tricky because we go slightly past. discuss somewhere why this happens and where they meet.)
+
+- Time: We iterate through the linked list
+- Space: We only create 2 pointers regardless of the number of nodes
+
+<VariationsSubtitle />
+
+Another common way to ask this problem is to determine the node that begins the loop.
+This solution requires some additional algebra to track how the slow and fast pointer meet.
+See this <a href="https://leetcode.com/problems/linked-list-cycle-ii/" target="_blank" rel="noreferrer noopener">Leet Code question</a> for the variation.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

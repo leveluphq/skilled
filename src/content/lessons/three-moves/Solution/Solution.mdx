@@ -1,0 +1,41 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import IterativeSolutionCode from './code/IterativeSolution';
+
+We calculate the result by recursively finding the number of ways to reach the three spots before any board location and sum them together.
+This introduces overlapping subproblems, so we memoize the values once we calculate the paths required to reach any location.
+
+We initialize our `memo` array to `-1` which indicates we haven't calculated that location's number of paths.
+
+As with any recursive solution, we must have base cases.
+Our stopping conditions here are when the board length is less than 0 or exactly 0.
+Based on the problem statement, we know we can view a length of 0 to require 1 move.
+A negative number is an invalid board length, so we return 0 moves.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space where <code>n</code> is the total length of the board
+</p>
+
+The brute force recursive solution has a very bad time complexity of <BigO.bin base={3} />.
+However, we removed the repeated work by memoizing values which improved the time to <BigO.n /> by adding <BigO.n /> space.
+We calculate the total number of ways to reach any board location once.
+
+### Bonus
+
+This question actually turns into an easy iterative solution that is similar to how we calculate a Fibonacci number, but we have three values.
+At any point, we solve its subproblem by summing the total number of ways to reach the prior 3 spots.
+By using the bottom-up approach, you can remove the <BigO.n /> space cost.
+
+<IterativeSolutionCode />
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

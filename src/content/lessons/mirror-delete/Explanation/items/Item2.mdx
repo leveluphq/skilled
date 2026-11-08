@@ -1,0 +1,25 @@
+import ConceptModal from 'content/blocks/ConceptModal';
+import RunnerTechnique from 'content/lessons/linked-lists/RunnerTechnique.mdx';
+import Null from 'content/blocks/Null';
+import Image from 'content/blocks/Image';
+
+By using the <ConceptModal content={<RunnerTechnique />}>runner technique</ConceptModal>, we can introduce a pointer that iterates ahead.
+We create a `lead` pointer that we want to reach the tail first, and a `follow` pointer to track the `k` position.
+
+How far ahead should the `lead` pointer be?
+To delete a node, we want to be at one spot before it in the linked list.
+This means that the `follow` pointer should be 1 node behind the `k` node at `k + 1` when the `lead` pointer reaches the tail.
+At this location, `follow` can delete the `k` item.
+
+Our solution algorithm will start with the `lead` pointer at the head node.
+We then iterate `lead` forward an additional `k + 1` items (`0 to k` times for zero-based indexing).
+
+Once in position, we start the `follow` pointer at the head.
+`lead` will be `k + 1` nodes ahead of our `follow`.
+
+Then iterate the `lead` and `follow` forward one spot until the value of `lead.next` is <Null />.
+`lead` will be at the tail which is `k = 0` and `follow` will be at `k + 1`.
+Now you can delete the `k` node which comes directly after `follow`.
+Finally, return the head.
+
+<Image src="/images/mirror-delete-runner.gif" alt="Two linked-list pointers maintain a gap so the leading pointer&#x27;s arrival at the tail identifies the deletion position." width={600} height={338} />

@@ -1,0 +1,9 @@
+```javascript
+function preOrderTraversal(node) {
+  if (node !== null) {
+    visitNode(node);
+    preOrderTraversal(node.left);
+    preOrderTraversal(node.right);
+  }
+}
+```

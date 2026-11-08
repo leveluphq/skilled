@@ -1,0 +1,23 @@
+```java
+static Map<Integer, Integer> memo = new HashMap<>();
+
+static int countByTwo(int n) {
+    // Check if we previously memoized the result and return early in O(1) time
+    if (memo.containsKey(n)) {
+        return memo.get(n);
+    }
+
+    int count = 0;
+
+    for (int i = 0; i <= n; i++) {
+        count = count + 2;
+
+        // Store the result for this value
+        // It will return instantly if countByTwo is later called with one of these values
+        memo.put(i, count);
+    }
+
+    // We calculated and stored this value (and all previous values) in the for loop
+    return memo.get(n);
+}
+```

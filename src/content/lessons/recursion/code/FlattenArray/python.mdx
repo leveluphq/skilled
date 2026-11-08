@@ -1,0 +1,27 @@
+```python
+def recursive_flatten(array):
+    flattened_array = []
+
+    for item in array:
+        # if the item is a list, flatten it with a recursive call
+        if isinstance(item, list):
+            flattened_array += recursive_flatten(item)
+        else:
+            flattened_array.append(item)
+
+    return flattened_array
+
+def iterative_flatten(array):
+    output = []
+    to_be_flattened = [array]
+
+    while len(to_be_flattened):
+        current = to_be_flattened.pop(0)
+
+        if type(current) is list:
+            to_be_flattened = current + to_be_flattened
+        else:
+            output.append(current)
+
+    return output
+```

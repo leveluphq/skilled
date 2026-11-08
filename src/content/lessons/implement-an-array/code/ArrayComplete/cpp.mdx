@@ -1,0 +1,77 @@
+```cpp
+#include <unordered_map>
+#include <optional>
+
+using namespace std;
+
+class DynamicArray {
+public:
+    int length;
+    unordered_map<int, int> data;
+
+    DynamicArray() {
+        length = 0;
+        data = {};
+    }
+
+    int get(int index) {
+        return data.at(index);
+    }
+
+    int push(int item) {
+        data[length] = item;
+        length++;
+
+        return length;
+    }
+
+    optional<int> pop() {
+        if (length == 0) {
+            return nullopt;
+        }
+
+        int poppedItem = data[length - 1];
+        data.erase(length - 1);
+        length--;
+
+        return poppedItem;
+    }
+
+    bool insert(int index, int item) {
+        if (index > length - 1 || index < 0) {
+            return false;
+        }
+
+        length++;
+
+        for (int i = length - 1; i > index; i--) {
+            data[i] = data[i - 1];
+        }
+
+        data[index] = item;
+
+        return true;
+    }
+
+    optional<int> remove(int index) {
+        if (length == 0) {
+            return nullopt;
+        }
+
+        if (index > length - 1 || index < 0) {
+            return nullopt;
+        }
+
+        int itemToBeRemoved = data[index];
+
+        for (int i = index; i < length - 1; i++) {
+            data[i] = data[i + 1];
+        }
+
+        data.erase(length - 1);
+        length--;
+
+        return itemToBeRemoved;
+    }
+};
+```

@@ -1,0 +1,9 @@
+```cpp
+#include <vector>
+
+std::vector<int> arraysInsert(const std::vector<int>& values, int index, int item) {
+    auto copy = values;
+    copy.insert(copy.begin() + index, item);
+    return copy;
+}
+```

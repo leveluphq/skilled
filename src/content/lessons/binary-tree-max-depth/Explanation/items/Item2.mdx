@@ -1,0 +1,8 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+
+To know the maximum depth, all we need to do is track the current maximum in a variable and compare it to each node's depth.
+If we encounter a node that has a larger depth, we replace the current maximum.
+Since we are traversing through all `n` nodes, once we finish iterating, the value stored in the current maximum will correspond to the tree's overall maximum depth.
+
+<Image src="/images/max-node-depth.gif" alt="A recursive tree traversal tracks call-stack depth while exploring branches of different lengths." width={600} height={347} />

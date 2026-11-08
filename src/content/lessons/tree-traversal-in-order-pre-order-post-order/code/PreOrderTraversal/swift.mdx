@@ -1,0 +1,9 @@
+```swift
+func preOrderTraversal(_ node: BinaryTreeNode?) {
+    if let node {
+        visitNode(node)
+        preOrderTraversal(node.left)
+        preOrderTraversal(node.right)
+    }
+}
+```

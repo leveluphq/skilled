@@ -1,0 +1,16 @@
+```python
+from collections import deque
+
+def bfs_order(graph: list[list[int]], start: int) -> list[int]:
+    if start < 0 or start >= len(graph):
+        return []
+    queue, visited, output = deque([start]), {start}, []
+    while queue:
+        node = queue.popleft()
+        output.append(node)
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+    return output
+```

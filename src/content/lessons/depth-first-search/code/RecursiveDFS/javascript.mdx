@@ -1,0 +1,21 @@
+```javascript
+// Create a helper function to add visitedNodes to the signature
+const dfs = (currentNode, visitedNodes) => {
+  // Use node value for the question
+  visit(currentNode);
+
+  visitedNodes.add(currentNode);
+
+  currentNode.edges.forEach(childNode => {
+    if (!visitedNodes.has(childNode)) {
+      dfs(childNode, visitedNodes);
+    }
+  });
+}
+
+const recursiveDepthFirstSearch = (startingNode) => {
+  // Init our stack and set of visited nodes
+  const visitedNodes = new Set();
+  dfs(startingNode, visitedNodes);
+};
+```

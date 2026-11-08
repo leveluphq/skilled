@@ -1,0 +1,91 @@
+C# interview code benefits from explicit collection and result contracts. A dictionary lookup can miss even though its out parameter has a perfectly valid zero value. A nullable result can represent no answer without inventing an impossible index. A priority queue has different ordering from an ordinary FIFO queue.
+
+The examples use standard .NET collections and nullable value tuples. They are checked on .NET 10, while the collection operations shown have been available in earlier supported runtimes. Match the lesson's starter signature and available runtime before selecting a newer API or package.
+
+## Match the collection to the repeated operation
+
+Use an array for fixed-size indexed data, a List for a resizable sequence, a Dictionary for key-to-value state, and a HashSet for membership. Queue and Stack expose FIFO and LIFO schedules directly. Removing the first element of a List repeatedly does not provide the same operation model as dequeuing from a queue.
+
+Generic collections preserve their element types. `List<int>` stores integer values without requiring a boxed object for each element, unlike a collection whose element type is object. A list of reference-type nodes still contains references, so copying that list does not clone the nodes.
+
+Choose the map entry's meaning before coding. It may hold a frequency, a previous index, a distance, or a cached answer. Default zero has a different interpretation in each case, and a successful lookup should not be inferred from the value alone.
+
+## Preserve absence and widen before subtraction
+
+Two Sum returns a nullable pair of indexes. A successful pair can begin at zero, while null means no matching distinct positions. `TryGetValue` supplies the presence bit separately from the stored integer index.
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+static class CSharpInterview
+{
+    public static (int First, int Second)? TwoSum(int[] values, int target)
+    {
+        var previous = new Dictionary<long, int>();
+        for (int index = 0; index < values.Length; index++)
+        {
+            long complement = (long)target - values[index];
+            if (previous.TryGetValue(complement, out int earlier))
+                return (earlier, index);
+            previous[(long)values[index]] = index;
+        }
+        return null;
+    }
+
+    public static List<int> BfsOrder(Dictionary<int, List<int>> graph, int start)
+    {
+        var queue = new Queue<int>();
+        var seen = new HashSet<int> { start };
+        var order = new List<int>();
+        queue.Enqueue(start);
+        while (queue.Count > 0)
+        {
+            int node = queue.Dequeue();
+            order.Add(node);
+            if (!graph.TryGetValue(node, out var neighbors)) continue;
+            foreach (int neighbor in neighbors)
+                if (seen.Add(neighbor)) queue.Enqueue(neighbor);
+        }
+        return order;
+    }
+}
+```
+
+The inputs are non-null, and graph neighbor lists contain integer labels. A missing adjacency key means no outgoing edges. Two Sum checks the complement before storing the current index, so an element cannot match itself. Duplicate values at different positions remain usable.
+
+Casting target to long before subtracting makes every difference of two int values fit in the chosen arithmetic type. Assigning an already-overflowed int expression to long would be too late. This argument depends on the bounded int inputs; changing the function to arbitrary long inputs requires another overflow policy.
+
+The [TryGetValue documentation](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2.trygetvalue?view=net-10.0) describes its success flag and absent-value behavior. If a dictionary stores nullable reference values, presence and a non-null payload can be separate questions. The domain in the example stores only integer indexes, so the bool is sufficient.
+
+## Separate a nullable result from an exception
+
+The pair result describes an ordinary unsuccessful search. Exceptions are more appropriate when an input violates a stated precondition or an operation cannot fulfill its contract. Decide whether no match is routine before making callers catch an exception for it.
+
+Pattern matching can inspect a nullable tuple's successful case, or a caller can check HasValue before reading Value. A forced read of Value on an absent result throws. The types make the branch visible, but the caller still has to take it.
+
+For a function returning several possible outcomes, a dedicated result type may express the cases more clearly than sentinel numbers. Keep the representation proportional to the exercise. A short pair search rarely needs a broad error framework before the underlying invariant is correct.
+
+Checked arithmetic settings can also change how an overflowing operation fails. Give the algorithm an explicit range argument or use a checked operation where failure belongs to its contract. BigInteger can represent larger exact values, but its arithmetic cost grows with the represented magnitude; replacing int with it does not preserve a constant-work numeric model automatically.
+
+## Distinguish queue order from priority order
+
+The BFS marks a neighbor when enqueuing it. A second parent or a cycle therefore cannot add it again. It visits reachable vertices in hop layers under equal edge costs, with expected O(V + E) work under the usual bounded-key hash model and O(V) retained collection state.
+
+A `PriorityQueue<TElement, TPriority>` instead removes the lowest priority first. Equal priorities do not guarantee arrival order. If deterministic ties are required, include a sequence number in the priority, such as a `(priority, sequence)` tuple, or supply a comparison with the required tie rule. The [priority queue reference](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.priorityqueue-2?view=net-10.0) documents this ordering.
+
+Use CompareTo or a suitable comparer for numeric order. A comparator implemented as subtraction can overflow. Reversing the subtraction to obtain descending order retains that risk. Test minimum and maximum values alongside duplicate priorities.
+
+## Make equality and text units deliberate
+
+Dictionary keys need an equality and hashing policy consistent with the problem. String keys can use an explicit StringComparer when case sensitivity or ordinal comparison is part of the contract. A mutable key whose hash-relevant state changes after insertion can make lookup behavior unsuitable for the algorithm.
+
+A C# string uses UTF-16 code units for Length and indexing. A supplementary Unicode scalar can occupy two char values. For code-point processing, Rune-based traversal provides a different unit; user-perceived grapheme clusters require another segmentation decision. A lowercase-English constraint can justify a small frequency array, while arbitrary text cannot silently inherit that alphabet assumption.
+
+For mutable collections, remember which layer was copied. An array or list copy preserves element values, including object references. A two-dimensional jagged array should create independent inner rows when later cell mutation is supposed to affect only one row.
+
+## Practice with contracts that expose mistakes
+
+Test Two Sum with index zero, repeated values, empty input, no match, negative values, and extreme int values. Compare with an exhaustive pair reference using widened addition so the test itself does not overflow. Validate the returned pair rather than requiring one particular answer when several pairs are valid.
+
+For BFS, test a cycle, shared neighbors, an isolated start, and a vertex that occurs only as a neighbor. Verify each reachable label appears once. Then solve [bracket matching](/course/valid-brackets), [Two Sum](/course/target-two-sum), and [BFS](/course/breadth-first-search) with the editor's provided C# signature when that language is available. Explain the collection state, absent case, arithmetic range, and total retained memory before moving to a harder problem.

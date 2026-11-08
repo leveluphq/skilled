@@ -1,0 +1,66 @@
+import { Container } from 'style/elements';
+
+Thinking through edge cases is essential in any interview question, but especially in greedy algorithms to prove that our approach handles all possible inputs and always yields the optimal solution.
+
+As we think through the possible edge cases, we'll see that by taking our greedy approach and then initializing the max profit to 0 and the minimum price to the first item in the input, we'll solve all the cases.
+
+**Always Decreasing**
+
+If the values are always decreasing, we'll never be able to make a profit because we can never sell for higher than we paid.
+This means the max profit should be 0.
+We will initialize the max profit to 0, and then when we find the maximum between the current max profit and the new max profit if we sell, it will always remain 0 because the potential new max profit will be negative when decreasing.
+
+<Container>
+
+```javascript
+day:     1  2  3  4  5
+price:   9  8  7  6  5
+```
+
+</Container>
+
+**Always Increasing**
+
+With our greedy approach, we are always storing the lowest price.
+If it's always increasing, we'll use the first item as the minimum price and then create a new max profit at each day as the sell price gets larger.
+
+<Container>
+
+```javascript
+day:     1  2  3  4  5
+price:   2  4  6  8  10
+```
+
+</Container>
+
+
+**Constant Price**
+
+If the price is constant and never changes, we can only sell for the exact price we paid.
+Since we initialize the max profit to 0, and all the potential profits will be 0, finding the maximum at any point will simply yield 0.
+
+<Container>
+
+```javascript
+day:     1  2  3  4  5
+price:   4  4  4  4  4
+```
+
+</Container>
+
+**Empty Input**
+
+Since we initialize max profit to 0, if the input is an empty array, we won't have any items to iterate through, and we'll simply return 0.
+
+**One Item Input**
+
+Since we initialize the minimum price to the price of the first item, when we iterate through our single item array, the potential profit will be 0 which means the max profit will remain 0.
+
+<Container>
+
+```javascript
+day:     1
+price:   4
+```
+
+</Container>

@@ -1,0 +1,16 @@
+```swift
+func dfsOrder(_ graph: [[Int]], _ start: Int) -> [Int] {
+    if !graph.indices.contains(start) { return [] }
+    var stack = [start]
+    var visited = Set<Int>()
+    var output: [Int] = []
+    while let node = stack.popLast() {
+        if !visited.insert(node).inserted { continue }
+        output.append(node)
+        for neighbor in graph[node].reversed() {
+            if !visited.contains(neighbor) { stack.append(neighbor) }
+        }
+    }
+    return output
+}
+```

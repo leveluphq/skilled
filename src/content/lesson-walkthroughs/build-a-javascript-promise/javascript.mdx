@@ -1,0 +1,86 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A teaching promise implementation exposes the state that native promises normally hide: pending, fulfilled, or rejected, along with the settled value and waiting callbacks. The executor receives resolve and reject functions, and settlement determines which registered handlers should eventually run.
+
+## Separate settlement from callback execution
+
+Settlement is a state transition. Once a promise has settled, a later attempt to resolve or reject it should not replace its result. Callback scheduling is a different concern. A handler registered before settlement must run afterward, and a handler registered after settlement must still observe the stored result.
+
+The current lesson fixes an earlier scheduling issue by dispatching handlers with `setTimeout`. This permits handlers to run when the executor resolves or rejects immediately. It is a teaching simplification: native promise reactions use microtasks, while a timeout schedules a timer task. Those mechanisms can produce different ordering relative to other promises and timers.
+
+For an ordering exercise, register a handler, log a synchronous message, and then observe when the handler logs. Repeat with settlement inside a timer. State both the settlement time and the callback execution time; treating them as the same event hides the behavior being tested.
+
+## Know the boundary of the exercise
+
+A small promise class is not a complete replacement for the ECMAScript Promise implementation. Full promise resolution includes thenable adoption, chaining, exception propagation, and rules that prevent a promise from resolving to itself. Adding a `.then` method alone does not establish compliance with those semantics.
+
+Use native promises in application code. The exercise is useful for explaining state, retained callbacks, and asynchronous observation. If extending it, write a behavior table first: immediate fulfillment, delayed fulfillment, rejection, handlers added after settlement, repeated settlement attempts, and a handler that throws.
+
+## Practice adjacent promise behavior
+
+The [Promise.all guide](/guides/implement-promise-all) works with native promises and explains input order, empty iterables, synchronous iteration errors, and rejection. The [event-loop guide](/guides/javascript-event-loop) distinguishes synchronous execution, microtasks, and timers with execution traces.
+
+Open the current lesson to compare its updated code with the recording. When a test appears to disagree with a familiar promise example, check which scheduling mechanism and promise contract each example is using before changing the expected output.
+
+## Read the standalone example's settlement contract
+
+The TeachingPromise below stores one pending, fulfilled, or rejected state. The executor runs immediately. Its first resolve or reject call wins, and an exception thrown before settlement becomes a rejection. Observers registered before or after settlement are delivered asynchronously using timer tasks.
+
+The observer API is named observe deliberately. It returns no new promise, does not adopt thenables, and does not implement native then chaining. An observer's returned value is ignored. An exception thrown by an observer escapes its timer callback instead of rejecting a newly created chain. Use this class to inspect settlement and observation, not as an application promise replacement.
+
+## Trace settlement and delivery separately
+
+Resolve with zero, attempt to reject afterward, and register two observers. Neither observer should run on the current synchronous stack. When their scheduled tasks run, both receive zero. A third observer registered later still receives that stored fulfillment in another task. Checking the settled state rather than the truthiness of its value preserves false, zero, and undefined payloads.
+
+Retaining k observers before settlement uses O(k) space and settlement schedules O(k) deliveries. Stored callbacks are released from the waiting list once scheduled, though timer tasks retain them until execution. The native Promise resolution procedure and microtask queue have additional rules. Compare this example with the [Promise.all guide](/guides/implement-promise-all), which uses native promises and therefore has the native scheduling and adoption behavior.
+
+## JavaScript example and implementation choices
+
+The class stores a tagged result object, keeping pending state separate from fulfilled values such as zero or undefined. Its observe method requires both callbacks and returns nothing. setTimeout schedules each observation, including handlers registered after settlement. Callback return values are ignored, and callback exceptions escape their task. These deliberate limits distinguish the exercise from native then chaining and thenable adoption.
+
+### Worked example
+
+```javascript
+class TeachingPromise {
+    constructor(executor) {
+        this.result = { state: 'pending' };
+        this.observers = [];
+        const settle = (result) => {
+            if (this.result.state !== 'pending')
+                return;
+            this.result = result;
+            const waiting = this.observers;
+            this.observers = [];
+            for (const observer of waiting)
+                this.schedule(observer, result);
+        };
+        try {
+            executor(value => settle({ state: 'fulfilled', value }), reason => settle({ state: 'rejected', reason }));
+        }
+        catch (reason) {
+            settle({ state: 'rejected', reason });
+        }
+    }
+    observe(fulfilled, rejected) {
+        const observer = { fulfilled, rejected };
+        if (this.result.state === 'pending')
+            this.observers.push(observer);
+        else
+            this.schedule(observer, this.result);
+    }
+    schedule(observer, result) {
+        setTimeout(() => {
+            if (result.state === 'fulfilled')
+                observer.fulfilled(result.value);
+            else if (result.state === 'rejected')
+                observer.rejected(result.reason);
+        }, 0);
+    }
+}
+```
+
+## Continue in JavaScript
+
+[Open Build a JavaScript Promise](/course/build-a-javascript-promise) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

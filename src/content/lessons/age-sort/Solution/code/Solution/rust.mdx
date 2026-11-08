@@ -1,0 +1,23 @@
+```rust
+// Ages run from 0 to MAX_AGE
+const MAX_AGE: usize = 100;
+
+impl Solution {
+    pub fn sort_by_age(age_list: Vec<i32>) -> Vec<i32> {
+        let mut sorted_age_list = Vec::with_capacity(age_list.len());
+        let mut age_count = [0; MAX_AGE + 1];
+
+        for age in age_list {
+            age_count[age as usize] += 1;
+        }
+
+        for (age, &count) in age_count.iter().enumerate() {
+            for _ in 0..count {
+                sorted_age_list.push(age as i32);
+            }
+        }
+
+        sorted_age_list
+    }
+}
+```

@@ -1,0 +1,26 @@
+import ReactPlayer from 'react-player';
+import { videoProps } from 'utils/constants/lesson';
+import Image from 'content/blocks/Image';
+import { Container } from 'style/elements';
+
+Now let's walk through one more example and add one additional denomination so we can really understand how we combine coins to yield the minimum change.
+We'll use `denominations = [2, 3, 5]` and `target = 8`.
+
+The process is the exact same.
+We start at `0` and iterate to the `target`.
+At each `amount` we try all three `denominations` 2, 3, and 5 to see if using each coin at each spot can be added to a prior coin combination from a smaller `amount` to reach this step.
+We subtract the denomination value from the current `amount` and determine if we can create a new minimum combination of coins to reach the current value by adding a coin to a previous subproblem solution.
+
+<Container style={{marginTop: '16px'}}>
+  <ReactPlayer {...videoProps} width="100%" url="https://vimeo.com/468324961" />
+</Container>
+
+Or the final screen with all the decisions:
+
+<Image src="/images/vending-machine-2-3-5-solution.png" alt="A coin-change table tests denominations 2, 3, and 5 for each amount and chooses the smallest reachable coin count." width={2594} height={1288} />
+
+At each `amount` we find the minimum between the current smallest change combination or adding a new denomination to a prior minimum.
+Each time we are only trying to add one additional coin to a prior minimum coin combination, so you should notice that we always increment `+1` to account for this new coin.
+
+No matter how many denominations we use, the logic is always the same.
+We continue to solve the same subproblems, and once we consider the minimum coins required for every `amount` with all the `denominations`, we will build up and eventually reach `target` which is also the solution.

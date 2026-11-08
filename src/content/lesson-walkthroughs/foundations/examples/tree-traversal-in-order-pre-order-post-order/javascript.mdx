@@ -1,0 +1,14 @@
+```javascript
+function inOrder(values) {
+    const output = [];
+    function walk(index) {
+        if (index >= values.length || values[index] === null)
+            return;
+        walk(2 * index + 1);
+        output.push(values[index]);
+        walk(2 * index + 2);
+    }
+    walk(0);
+    return output;
+}
+```

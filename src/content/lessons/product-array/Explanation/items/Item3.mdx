@@ -1,0 +1,29 @@
+import RunningProductSolution from './code/RunningProductSolution';
+import RunningProductExample from './code/RunningProductExample';
+import BigO from 'content/blocks/BigO';
+
+To construct our array for the product of the left elements, we start at index zero and get the running left product by taking the current integer and multiplying it by the running product calculated at the previous index.
+
+For the running product of the elements to the right, we actually want to start at the end of the array at `length - 1` and work backward to the beginning.
+
+For the starting points in each array, we don't have a running product to begin with, so instead we initialize it to 1 because `any_number x 1 = any_number`.
+So with `results[0]`, this means we would multiply 1 with the running product of all the items to the right.
+The same goes for our last element. It would be 1 times the running product of all the items to the left.
+
+<RunningProductExample />
+
+Let's translate this to code:
+
+<RunningProductSolution />
+
+Track these indexes carefully.
+Make sure you understand why we're starting at `i = 1` when we create our running product
+and why we're doing either -1 or +1 when we calculate the current value for each side.
+If needed, take a simple example and write it out by hand.
+
+This is already a much better solution.
+At this point you could even discuss its merit as the final answer with your interviewer
+because it solves the question in linear <BigO.n /> time and space.
+
+However, the constraints say memory is an issue and that we don't have to count the `results` array against it.
+Let's see if we can build on the intuition we've established to come up with an even better solution.

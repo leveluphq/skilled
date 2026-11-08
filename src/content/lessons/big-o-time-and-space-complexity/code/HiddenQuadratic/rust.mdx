@@ -1,0 +1,9 @@
+```rust
+fn hidden_quadratic(input: &[i32]) {
+    for i in 0..input.len() {
+        // Borrowing the rest of the slice (&input[i..]) is O(1) in Rust,
+        // but to_vec() copies it into a new Vec, which is O(n)
+        println!("{:?}", input[i..].to_vec());
+    }
+}
+```

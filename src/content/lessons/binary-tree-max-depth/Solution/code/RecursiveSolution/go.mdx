@@ -1,0 +1,12 @@
+```go
+func findMaxDepth(root *BinaryNode) int {
+	if root == nil {
+		return -1
+	}
+
+	leftDepth := findMaxDepth(root.Left)
+	rightDepth := findMaxDepth(root.Right)
+
+	return max(leftDepth, rightDepth) + 1
+}
+```

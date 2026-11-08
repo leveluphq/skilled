@@ -1,0 +1,14 @@
+```rust
+fn fib_calls(n: i32) -> Vec<i32> {
+    fn fib(value: i32, calls: &mut i32) -> i32 {
+        *calls += 1;
+        if value < 2 { return value; }
+        let left = fib(value - 1, calls);
+        let right = fib(value - 2, calls);
+        left + right
+    }
+    let mut calls = 0;
+    let answer = fib(n, &mut calls);
+    vec![answer, calls]
+}
+```

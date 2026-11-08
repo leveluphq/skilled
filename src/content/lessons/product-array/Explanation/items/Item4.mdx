@@ -1,0 +1,14 @@
+import BigO from 'content/blocks/BigO';
+
+We only used our `results` array to store the answer when in fact we could use it as one of the arrays to track the running product for lookups.
+This reduces our additional arrays from two to one immediately.
+It just requires being more thoughtful when we iterate to calculate the product for each index because we don't want to overwrite any spots we still need to use.
+
+In fact a second lookup array is not required at all.
+Think about it.
+Let's say we use the `results` array to store the running product of the right side.
+Then we could fill in values starting with the left side and simply maintain its running product in a variable while we iterate.
+
+This would allow us to solve the problem in linear <BigO.n /> time and constant <BigO.constant /> space (ignoring the space required for the `results` array).
+
+See if you can implement this now and check the solution when you're ready.

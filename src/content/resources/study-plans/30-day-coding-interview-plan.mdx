@@ -1,0 +1,71 @@
+This plan organizes the existing course into a month of practice with review built into the schedule. Budget roughly 60 to 90 minutes per study day. If you are learning a topic for the first time, spread a day across several sessions. Thirty calendar days does not guarantee an interview outcome; the useful result is a set of methods you can implement and explain independently.
+
+The sequence starts with collections and traversal, then adds recursive structures, graphs, and dynamic programming. JavaScript utility practice is included near the end. Developers preparing for a different language can use those days to deepen algorithm or language-specific work instead.
+
+## Choose a pace and a language
+
+Before Day 1, confirm that you can open a lesson and run an exercise in your chosen language. Check the input/output conventions and the provided function or class signature. The [language preparation pages](/interview-prep) explain collections, numeric and text behavior, and common implementation choices in JavaScript, TypeScript, Python, Java, C++, Go, and Rust.
+
+Keep a review log with the problem, your approach, the first failing test, the correction, and a retry date. Distinguish an independent attempt from an attempt completed with a hint or solution. Both are useful, but they provide different evidence of readiness.
+
+A normal session has three parts: a short concept review, a problem attempt, and a written or spoken explanation with tests. If the attempt consumes the whole session, move its review to the next session before adding another problem. That review is part of the work.
+
+## Week 1: arrays, maps, and the cost model
+
+1. **Day 1:** Read [arrays](/course/arrays) and inspect array indexing, traversal, and insertion. Implement a small traversal and explain which operations may move existing elements.
+2. **Day 2:** Study [Big O](/course/big-o-time-and-space-complexity). Compare one loop, consecutive loops, and nested pair enumeration in the [growth explorer](/tools/big-o).
+3. **Day 3:** Attempt [Walk a Matrix](/course/walk-a-matrix). Test rectangular data and boundary positions under the lesson's contract. Draw the row/column state before changing it.
+4. **Day 4:** Read [hash tables](/course/hash-tables), then attempt [Catch the Hacker](/course/catch-the-hacker). Explain what the frequency map stores after each prefix.
+5. **Day 5:** Attempt [Target Two Sum](/course/target-two-sum). Test duplicate values and index zero. Read the [worked explanation](/guides/explain-your-interview-solution) after your attempt.
+6. **Day 6:** Attempt [Product Array](/course/product-array). Compare a direct solution with reusable prefix/suffix work, and account for allocated arrays.
+7. **Day 7:** Retry one earlier problem from an empty editor. Use the review log to choose it. Explain its invariant and complexity without reading the previous solution.
+
+By the end of this week, inspect whether you can distinguish a map of counts from a map of earlier indices, and whether you can justify the memory your implementation retains. If those are still unclear, repeat a smaller example before moving into recursion.
+
+## Week 2: strings, search, and recursive reasoning
+
+8. **Day 8:** Study [strings](/course/strings) and [palindromes, permutations, and anagrams](/course/palindromes-permutataions-anagrams). State the alphabet and character model for each exercise.
+9. **Day 9:** Work through [two pointers](/patterns/two-pointers). Implement the sorted pair search and palindrome check, then test an absent answer and one-character inputs.
+10. **Day 10:** Study [sliding windows](/patterns/sliding-window). Implement a fixed-size sum before attempting a variable window. Explain why the negative-value counterexample breaks a sum-based shrinking rule.
+11. **Day 11:** Read [recursion](/course/recursion) and attempt [Sum Digits](/course/sum-digits). State the base case and what gets smaller on each call.
+12. **Day 12:** Attempt [Generate All Permutations](/course/generate-all-permutations). Trace the working path and verify that saved outputs do not all reference the same mutable array.
+13. **Day 13:** Read [binary search](/course/searching-and-binary-search) and attempt [First Bad Version](/course/first-bad-version). Define interval boundaries before writing updates.
+14. **Day 14:** Review search and recursion. Retry the first case where a boundary or state-restoration error occurred. Add a small regression test for that failure.
+
+Use the review day to compare two algorithms that both look efficient but have different preconditions. Sorted pair search depends on ordering. A variable window depends on how its condition changes with boundary movement. The distinction should appear in your explanation.
+
+## Week 3: linked structures, trees, and graphs
+
+15. **Day 15:** Read [linked lists](/course/linked-lists) and [pointers](/course/pointers), then attempt [Reverse a Linked List](/course/reverse-a-linked-list). Preserve the next reference before redirecting a link.
+16. **Day 16:** Study [stacks](/course/stacks) and [queues](/course/queues), then attempt [Valid Brackets](/course/valid-brackets). Explain the unmatched-opening stack after each prefix.
+17. **Day 17:** Read [trees](/course/trees). Use the [tree traversal tool](/tools/tree-traversal) to predict three depth-first orders on a tree with missing children.
+18. **Day 18:** Attempt [Binary Tree Max Depth](/course/binary-tree-max-depth). Compare a balanced tree and a chain when analyzing active recursion frames.
+19. **Day 19:** Study [binary search trees](/course/binary-search-trees), then attempt [BST Validate](/course/binary-search-tree-validate). Include a violation caused by a distant ancestor bound.
+20. **Day 20:** Read [graphs](/course/graphs) and [BFS versus DFS](/guides/bfs-vs-dfs). Trace both algorithms with a cycle and a disconnected node in the [graph tool](/tools/graph-traversal).
+21. **Day 21:** Attempt [Count Islands](/course/count-islands). Mark visited land and explain why each new traversal corresponds to one region. Review one tree problem afterward.
+
+This week introduces several distinct uses of state: a list's reachable suffix, a stack of unmatched items, a recursive return value, and a graph's discovered nodes. Give each collection a concrete meaning instead of describing every one as “tracking things.”
+
+## Week 4: dynamic programming and interview rehearsal
+
+22. **Day 22:** Study [overlapping subproblems](/course/subproblems-and-overlapping-subproblems) and [memoization](/course/memoization). Identify the complete state before choosing a cache key.
+23. **Day 23:** Read [top-down versus bottom-up](/course/bottom-up-vs-top-down), then implement the worked recurrence in the [DP guide](/patterns/dynamic-programming) in both forms.
+24. **Day 24:** Attempt [Steal Packages](/course/steal-packages). Test the greedy counterexample `[4, 5, 4]` and state the empty-selection convention.
+25. **Day 25:** Attempt [Pilot a Rocket](/course/pilot-a-rocket). Reconstruct a path from parents and explain why equal-cost edges make BFS suitable.
+26. **Day 26:** For JavaScript, implement [debounce](/course/debounce) and compare a timing trace in the [visualizer](/tools/debounce-throttle). In another language, review its queue, heap, or map behavior with a small exercise.
+27. **Day 27:** For JavaScript/TypeScript, study [promise aggregation](/guides/implement-promise-all) and trace [event-loop examples](/guides/javascript-event-loop). Otherwise, retry a weak algorithm in your chosen language.
+28. **Day 28:** Run a timed mock on a problem from an earlier week, without opening the answer. Reserve time for testing and a complexity explanation.
+29. **Day 29:** Review the mock, repair the first failing case, and retry the affected part. Choose one additional problem that tests the same idea with a different input shape.
+30. **Day 30:** Run a second rehearsal and make a continuation plan from the evidence. List which topics you can reproduce independently and which still require guided attempts.
+
+## Adjust without losing the review work
+
+If you have 30 minutes a day, keep the sequence but split concept reading, problem attempts, and review across separate days. If you already know a topic, verify that with an independent attempt before skipping it. Familiarity with a solution's appearance is not the same as producing it.
+
+If the interview is frontend-focused, allocate more time to JavaScript behavior, async utilities, and the specific browser/UI skills the role requests. The general algorithm course does not automatically cover every UI-building or system-design round. Use the actual interview format to choose additions.
+
+## Evaluate the month with concrete evidence
+
+Look at code that runs, tests that cover meaningful boundaries, and explanations that identify maintained state. Count retries completed independently, not only lessons opened. Use the [complexity reference](/reference/data-structure-time-complexity) to check qualifications such as expected, amortized, and worst-case costs.
+
+Continue by selecting a small number of weak areas from the review log. Schedule another attempt after a gap, and add new problems that exercise the same reasoning. Keep the first failing case from each attempt so the next session has a specific question to resolve.

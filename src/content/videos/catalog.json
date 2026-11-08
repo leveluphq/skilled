@@ -1,0 +1,2901 @@
+[
+  {
+    "slug": "arrays",
+    "videoId": "xUpDFl3yf_4",
+    "title": "Arrays | Coding Interview Data Structure",
+    "description": "Understand array indexing, insertion, iteration, and resizing, then practice the invariants used in array and matrix interview problems.",
+    "durationSeconds": 671,
+    "uploadDate": "2025-10-15T15:09:05-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 25
+      },
+      {
+        "name": "Arrays Overview",
+        "start": 25,
+        "end": 111
+      },
+      {
+        "name": "Fast Operations (push, pop, index access)",
+        "start": 111,
+        "end": 203
+      },
+      {
+        "name": "Operations That Move or Search Elements",
+        "start": 203,
+        "end": 293
+      },
+      {
+        "name": "Big O",
+        "start": 293,
+        "end": 355
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 355,
+        "end": 443
+      },
+      {
+        "name": "Static vs. Dynamic Arrays",
+        "start": 443,
+        "end": 589
+      },
+      {
+        "name": "Amortized Time (advanced)",
+        "start": 589,
+        "end": 671
+      }
+    ],
+    "corrections": [
+      "A Java `int` takes 4 bytes on any operating system, so `new int[20]` needs 80 bytes."
+    ]
+  },
+  {
+    "slug": "implement-an-array",
+    "videoId": "iDoi0GsMo_k",
+    "title": "Implement an Array | Coding Interviews and Computer Science",
+    "description": "Build an array abstraction and reason about indexed access, insertion, removal, capacity, and the costs of moving existing elements.",
+    "durationSeconds": 596,
+    "uploadDate": "2025-10-15T15:59:43-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Constraints",
+        "start": 9,
+        "end": 55
+      },
+      {
+        "name": "Explanation",
+        "start": 55,
+        "end": 266
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 266,
+        "end": 596
+      }
+    ],
+    "corrections": [
+      "The Python `insert` now stops shifting at the insertion index, so inserting at index 0 works."
+    ]
+  },
+  {
+    "slug": "walk-a-matrix",
+    "videoId": "4Z1ZuW2UN-c",
+    "title": "Walk a Matrix | Coding Interview Question",
+    "description": "Watch a clockwise spiral traversal, trace shrinking boundaries, and review the corrected final-edge behavior in the current lesson.",
+    "durationSeconds": 1007,
+    "uploadDate": "2025-10-15T15:19:45-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 30
+      },
+      {
+        "name": "Example",
+        "start": 30,
+        "end": 147
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 147,
+        "end": 678
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 678,
+        "end": 723
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 723,
+        "end": 1007
+      }
+    ],
+    "corrections": [
+      "The perimeter walk now goes back up starting one row higher, so the bottom-left corner is not visited twice."
+    ]
+  },
+  {
+    "slug": "product-array",
+    "videoId": "NwR6AbE_N4M",
+    "title": "Product Array | Coding Interview Question",
+    "description": "Compute each array position from the product of the other values without division. Work through prefix/suffix state and zero-value cases.",
+    "durationSeconds": 838,
+    "uploadDate": "2025-10-16T11:15:32-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 7
+      },
+      {
+        "name": "Question Prompt",
+        "start": 7,
+        "end": 45
+      },
+      {
+        "name": "Constraints",
+        "start": 45,
+        "end": 84
+      },
+      {
+        "name": "Brute Force Solution Overview",
+        "start": 84,
+        "end": 114
+      },
+      {
+        "name": "Visualizing the Problem",
+        "start": 114,
+        "end": 328
+      },
+      {
+        "name": "Optimizing the Solution",
+        "start": 328,
+        "end": 618
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 618,
+        "end": 666
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 666,
+        "end": 837
+      }
+    ],
+    "corrections": [
+      "The Python bonus solution now uses integer division (`//`), so it returns integers."
+    ]
+  },
+  {
+    "slug": "valid-sudoku-board",
+    "videoId": "WuKuz2yjaRI",
+    "title": "Valid Sudoku Board | Coding Interview Question",
+    "description": "Check Sudoku rows, columns, and subgrids for duplicate values. Practice mapping board positions to the constraints they must satisfy.",
+    "durationSeconds": 1608,
+    "uploadDate": "2025-10-15T15:21:11-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 50
+      },
+      {
+        "name": "Constraints",
+        "start": 50,
+        "end": 249
+      },
+      {
+        "name": "Examples",
+        "start": 249,
+        "end": 310
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 310,
+        "end": 780
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 780,
+        "end": 932
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 932,
+        "end": 1608
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "best-time-to-buy-and-sell-stock",
+    "videoId": "cuZwUOrceZE",
+    "title": "Best Time to Buy and Sell Stock | Coding Interview Question",
+    "description": "Find the best single buy-and-sell opportunity by tracking an earlier minimum. Practice ordering constraints and decreasing-price inputs.",
+    "durationSeconds": 575,
+    "uploadDate": "2020-06-29T17:54:40-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 28
+      },
+      {
+        "name": "Question Prompt",
+        "start": 28,
+        "end": 92
+      },
+      {
+        "name": "Brute Force Solution Overview",
+        "start": 92,
+        "end": 282
+      },
+      {
+        "name": "Optimizing the Solution",
+        "start": 282,
+        "end": 451
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 451,
+        "end": 574
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "big-o-time-and-space-complexity",
+    "videoId": "i8ddXRQh2_k",
+    "title": "Big O Notation",
+    "description": "Analyze how interview solutions grow with input size. Compare loops, recursion, auxiliary memory, and common complexity classes.",
+    "durationSeconds": 2303,
+    "uploadDate": "2020-07-13T19:00:09-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction (long but it includes memes)",
+        "start": 0,
+        "end": 137
+      },
+      {
+        "name": "How Interview Candidates are Graded (Why Big O)",
+        "start": 137,
+        "end": 346
+      },
+      {
+        "name": "Intuition for How and Why Big O Best Measures Algorithms",
+        "start": 346,
+        "end": 862
+      },
+      {
+        "name": "Big O Terms Defined",
+        "start": 862,
+        "end": 944
+      },
+      {
+        "name": "Why We Care About Large Input",
+        "start": 944,
+        "end": 1080
+      },
+      {
+        "name": "Data Structures, Algorithms, and Big O",
+        "start": 1080,
+        "end": 1205
+      },
+      {
+        "name": "Real-World Big O Example",
+        "start": 1205,
+        "end": 1275
+      },
+      {
+        "name": "4 Steps for Calculating Big O",
+        "start": 1275,
+        "end": 1404
+      },
+      {
+        "name": "Step 1: Worst Case",
+        "start": 1404,
+        "end": 1555
+      },
+      {
+        "name": "Step 2: Drop Constants",
+        "start": 1555,
+        "end": 1686
+      },
+      {
+        "name": "Step 3: Drop Less Significant Terms",
+        "start": 1686,
+        "end": 1797
+      },
+      {
+        "name": "Step 4: Account for All Input",
+        "start": 1797,
+        "end": 1878
+      },
+      {
+        "name": "O(n)",
+        "start": 1878,
+        "end": 1942
+      },
+      {
+        "name": "O(n^2)",
+        "start": 1942,
+        "end": 2012
+      },
+      {
+        "name": "O(1)",
+        "start": 2012,
+        "end": 2084
+      },
+      {
+        "name": "O(log n)",
+        "start": 2084,
+        "end": 2174
+      },
+      {
+        "name": "O(n log n)",
+        "start": 2174,
+        "end": 2213
+      },
+      {
+        "name": "O(2^n) and O(n!)",
+        "start": 2213,
+        "end": 2246
+      },
+      {
+        "name": "Space Complexity",
+        "start": 2246,
+        "end": 2303
+      }
+    ],
+    "corrections": [
+      "The small values in the time comparison table are microseconds (they were labeled ns), and a few miscalculated cells were corrected.",
+      "The hidden quadratic example now slices the input array, which is what makes it O(n²)."
+    ]
+  },
+  {
+    "slug": "hash-tables",
+    "videoId": "GFarqMYWiL0",
+    "title": "Hash Tables | Coding Interview Data Structure",
+    "description": "Learn how hashing maps keys to storage, why collisions matter, and how maps and sets support common interview optimizations.",
+    "durationSeconds": 1404,
+    "uploadDate": "2025-10-15T15:43:15-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Hash Tables Overview",
+        "start": 10,
+        "end": 122
+      },
+      {
+        "name": "How Key-Value Pairs Work",
+        "start": 122,
+        "end": 247
+      },
+      {
+        "name": "Hash Tables Underneath the Hood",
+        "start": 247,
+        "end": 409
+      },
+      {
+        "name": "Big O",
+        "start": 409,
+        "end": 452
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 452,
+        "end": 564
+      },
+      {
+        "name": "Hash Functions Overview",
+        "start": 564,
+        "end": 665
+      },
+      {
+        "name": "What Makes a \"Good\" Hash Function",
+        "start": 665,
+        "end": 877
+      },
+      {
+        "name": "Hash Function Implementations",
+        "start": 877,
+        "end": 1028
+      },
+      {
+        "name": "Hash Collisions",
+        "start": 1028,
+        "end": 1353
+      },
+      {
+        "name": "Hash Tables in Interviews",
+        "start": 1353,
+        "end": 1403
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "implement-a-hash-table",
+    "videoId": "fYcUZ7pRapw",
+    "title": "Implement a Hash Table | Coding Interviews and Computer Science",
+    "description": "Build a hash-table implementation, store and retrieve key/value pairs, and examine how collisions affect correctness and performance.",
+    "durationSeconds": 620,
+    "uploadDate": "2025-10-16T11:12:43-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Hash Table Constraints",
+        "start": 10,
+        "end": 91
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 91,
+        "end": 620
+      }
+    ],
+    "corrections": [
+      "`remove()` now deletes the key-value pair from its bucket instead of setting the value to `undefined`, and `insert()` looks for an existing key by scanning the bucket, so a removed key can be added and read again."
+    ]
+  },
+  {
+    "slug": "catch-the-hacker",
+    "videoId": "Ib4yX_G3YSE",
+    "title": "Catch the Hacker | Coding Interview Question",
+    "description": "Identify a repeatedly duplicated email by counting frequencies. Compare repeated scans with a map-based pass through the input.",
+    "durationSeconds": 472,
+    "uploadDate": "2025-10-15T15:33:39-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 75
+      },
+      {
+        "name": "Constraints",
+        "start": 75,
+        "end": 107
+      },
+      {
+        "name": "Brute Force O(n^2) Solution Breakdown",
+        "start": 107,
+        "end": 199
+      },
+      {
+        "name": "Optimizing Brute Force",
+        "start": 199,
+        "end": 240
+      },
+      {
+        "name": "Optimized O(n) Solution Breakdown",
+        "start": 240,
+        "end": 316
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 316,
+        "end": 471
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "target-two-sum",
+    "videoId": "uolxt-FUwqQ",
+    "title": "Two Sum | Coding Interview Question",
+    "description": "Find two distinct indices whose values reach a target. Compare pair enumeration with a hash-map solution and test duplicate values.",
+    "durationSeconds": 782,
+    "uploadDate": "2020-07-06T04:52:00-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 38
+      },
+      {
+        "name": "Question Prompt",
+        "start": 38,
+        "end": 70
+      },
+      {
+        "name": "Constraints",
+        "start": 70,
+        "end": 103
+      },
+      {
+        "name": "Brute Force O(n^2) Solution Breakdown",
+        "start": 103,
+        "end": 225
+      },
+      {
+        "name": "Optimizing Brute Force",
+        "start": 225,
+        "end": 307
+      },
+      {
+        "name": "Optimized O(n) Solution Breakdown",
+        "start": 307,
+        "end": 384
+      },
+      {
+        "name": "Brute Force Code Walkthrough",
+        "start": 384,
+        "end": 495
+      },
+      {
+        "name": "Optimized Code Walkthrough",
+        "start": 495,
+        "end": 778
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "strings",
+    "videoId": "YpRF6E7yRUo",
+    "title": "Strings | Coding Interview Data Structure",
+    "description": "Study string traversal, character representation, immutability, and construction costs before practicing text interview problems.",
+    "durationSeconds": 491,
+    "uploadDate": "2025-10-15T15:25:07-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Strings: Primitive vs. Data Structure",
+        "start": 9,
+        "end": 240
+      },
+      {
+        "name": "Immutable vs. Mutable Strings",
+        "start": 240,
+        "end": 403
+      },
+      {
+        "name": "Big O",
+        "start": 403,
+        "end": 460
+      },
+      {
+        "name": "Strings in Interviews",
+        "start": 460,
+        "end": 491
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "palindromes-permutataions-anagrams",
+    "videoId": "jQW7a5Aopw4",
+    "title": "Palindromes Permutations Anagrams | Coding Interview and Computer Science",
+    "description": "Distinguish palindrome order, permutation arrangements, and anagram frequency counts, then choose the state each text problem needs.",
+    "durationSeconds": 231,
+    "uploadDate": "2025-10-15T15:49:29-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 43
+      },
+      {
+        "name": "Palindromes",
+        "start": 43,
+        "end": 113
+      },
+      {
+        "name": "Permutations",
+        "start": 113,
+        "end": 139
+      },
+      {
+        "name": "Anagrams",
+        "start": 139,
+        "end": 188
+      },
+      {
+        "name": "Recap",
+        "start": 188,
+        "end": 230
+      }
+    ],
+    "corrections": [
+      "The Python `is_palindrome` now removes underscores too, matching the JavaScript version."
+    ]
+  },
+  {
+    "slug": "group-permutations-of-palindromes",
+    "videoId": "aIrdB6o91ic",
+    "title": "Group Permutations of Palindromes | Coding Interview Question",
+    "description": "Practice grouping strings by character relationships and reasoning about which arrangements can form a palindrome.",
+    "durationSeconds": 1210,
+    "uploadDate": "2025-10-15T15:31:41-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 11
+      },
+      {
+        "name": "Question Prompt",
+        "start": 11,
+        "end": 58
+      },
+      {
+        "name": "Term Definitions",
+        "start": 58,
+        "end": 102
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 102,
+        "end": 744
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 744,
+        "end": 853
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 853,
+        "end": 1209
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "recursion",
+    "videoId": "GiOnuhnzcus",
+    "title": "Recursion | Coding Interview and Computer Science",
+    "description": "Trace recursive execution, define a smaller subproblem, and connect base cases and return values to a clear correctness argument.",
+    "durationSeconds": 871,
+    "uploadDate": "2025-10-15T15:57:04-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 15
+      },
+      {
+        "name": "Definition",
+        "start": 15,
+        "end": 67
+      },
+      {
+        "name": "Comparing Iterative and Recursive Algorithms",
+        "start": 67,
+        "end": 466
+      },
+      {
+        "name": "Stack Overflows",
+        "start": 466,
+        "end": 533
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 533,
+        "end": 870
+      }
+    ],
+    "corrections": [
+      "The iterative flatten now puts nested items at the front of its queue, so it keeps the original order: [1, [2, 3], 4] becomes [1, 2, 3, 4].",
+      "Tail-call optimization only applies to a call in tail position. Python doesn't implement it, and among JavaScript engines only Safari's does."
+    ]
+  },
+  {
+    "slug": "sum-digits",
+    "videoId": "BN68KrD2fCE",
+    "title": "Find Sum of Digits of a Number | Coding Interview Question",
+    "description": "Compute a number’s digit sum using arithmetic. Practice recursive decomposition, termination, and tests for single-digit inputs.",
+    "durationSeconds": 671,
+    "uploadDate": "2020-07-27T06:00:44-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 7
+      },
+      {
+        "name": "Question Prompt",
+        "start": 7,
+        "end": 28
+      },
+      {
+        "name": "Constraints",
+        "start": 28,
+        "end": 57
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 57,
+        "end": 440
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 440,
+        "end": 513
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 513,
+        "end": 671
+      }
+    ],
+    "corrections": [
+      "The time and space complexity is O(d), where d is the number of digits, not O(1): Python integers have no maximum size.",
+      "The Python solution now uses `number // 10`, so it stays exact for very large numbers."
+    ]
+  },
+  {
+    "slug": "generate-all-permutations",
+    "videoId": "ccr7iFyZ7Hw",
+    "title": "Generate All Permutations | Coding Interview Question",
+    "description": "Enumerate input arrangements while managing choices and restoring state. Analyze the output size and test small permutation examples.",
+    "durationSeconds": 1182,
+    "uploadDate": "2025-10-15T15:34:54-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 22
+      },
+      {
+        "name": "Question Prompt",
+        "start": 22,
+        "end": 46
+      },
+      {
+        "name": "Constraints",
+        "start": 46,
+        "end": 90
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 90,
+        "end": 797
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 797,
+        "end": 882
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 882,
+        "end": 1181
+      }
+    ],
+    "corrections": [
+      "The time complexity is about O(n² · n!), not O(n · n!), because strings of up to n characters are rebuilt at each of the n levels of recursion."
+    ]
+  },
+  {
+    "slug": "logarithms-and-time-complexity",
+    "videoId": "g90J77q39Lg",
+    "title": "Logarithms and Time Complexity | Coding Interview and Computer Science",
+    "description": "Understand why repeated halving produces logarithmic work and apply that reasoning to search intervals and recursive algorithms.",
+    "durationSeconds": 412,
+    "uploadDate": "2025-10-15T15:40:57-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 21
+      },
+      {
+        "name": "Understanding Logarithms",
+        "start": 21,
+        "end": 194
+      },
+      {
+        "name": "How Logarithmic Time Works",
+        "start": 194,
+        "end": 284
+      },
+      {
+        "name": "Comparing O(log n) to O(n)",
+        "start": 284,
+        "end": 362
+      },
+      {
+        "name": "Logarithms in Interviews",
+        "start": 362,
+        "end": 411
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "searching-and-binary-search",
+    "videoId": "JmddS11ct-U",
+    "title": "Search and Binary Search | Coding Interview Algorithm",
+    "description": "Search sorted data by narrowing a candidate interval. Practice boundaries, midpoint updates, and the conditions that guarantee progress.",
+    "durationSeconds": 782,
+    "uploadDate": "2025-10-15T15:59:03-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 26
+      },
+      {
+        "name": "Term Definitions",
+        "start": 26,
+        "end": 55
+      },
+      {
+        "name": "Linear Search",
+        "start": 55,
+        "end": 112
+      },
+      {
+        "name": "Binary Search",
+        "start": 112,
+        "end": 358
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 358,
+        "end": 686
+      },
+      {
+        "name": "Additional Resources",
+        "start": 686,
+        "end": 781
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "sorting",
+    "videoId": "-xrv_TNg3jE",
+    "title": "Sorting | Coding Interview Algorithm",
+    "description": "Compare sorting approaches, runtime assumptions, and the ways sorted order changes an interview problem’s available solutions.",
+    "durationSeconds": 560,
+    "uploadDate": "2025-10-15T15:38:17-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 21
+      },
+      {
+        "name": "List of Topics for Interviews",
+        "start": 21,
+        "end": 65
+      },
+      {
+        "name": "1. Sorting is O(n log n)",
+        "start": 65,
+        "end": 113
+      },
+      {
+        "name": "2. Know your native sort",
+        "start": 113,
+        "end": 191
+      },
+      {
+        "name": "3. Implications of sorted vs. unsorted",
+        "start": 191,
+        "end": 258
+      },
+      {
+        "name": "4. Bucket sort special case O(n)",
+        "start": 258,
+        "end": 318
+      },
+      {
+        "name": "Overview of Popular Sorting Algorithms",
+        "start": 318,
+        "end": 360
+      },
+      {
+        "name": "Selection Sort",
+        "start": 360,
+        "end": 406
+      },
+      {
+        "name": "Bubble Sort",
+        "start": 406,
+        "end": 445
+      },
+      {
+        "name": "Quick Sort",
+        "start": 445,
+        "end": 483
+      },
+      {
+        "name": "Merge Sort",
+        "start": 483,
+        "end": 518
+      },
+      {
+        "name": "Additional Resources",
+        "start": 518,
+        "end": 559
+      }
+    ],
+    "corrections": [
+      "Merge sort uses O(n) extra space and quick sort O(log n) on average, not O(n log n).",
+      "A JavaScript sort comparator must return a number (like `a - b`), not a boolean."
+    ]
+  },
+  {
+    "slug": "interview-scheduler",
+    "videoId": "USGYW8WE3eY",
+    "title": "Interview Scheduler | Coding Interview Question",
+    "description": "Work through an interview scheduling problem and practice using ordered information to reduce the search for a valid answer.",
+    "durationSeconds": 1353,
+    "uploadDate": "2025-10-15T15:30:18-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 12
+      },
+      {
+        "name": "Question Prompt",
+        "start": 12,
+        "end": 190
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 190,
+        "end": 924
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 924,
+        "end": 1011
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 1011,
+        "end": 1352
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "shifted-search",
+    "videoId": "OELhdpx9krU",
+    "title": "Shifted Search | Coding Interview Question",
+    "description": "Find a target in a shifted sorted array by reasoning about ordered intervals and choosing which half can still contain the answer.",
+    "durationSeconds": 948,
+    "uploadDate": "2025-10-15T15:27:14-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 17
+      },
+      {
+        "name": "Question Prompt",
+        "start": 17,
+        "end": 88
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 88,
+        "end": 535
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 535,
+        "end": 587
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 587,
+        "end": 947
+      }
+    ],
+    "corrections": [
+      "To pick a half, we check whether the target (not the midpoint) falls within the sorted half's range."
+    ]
+  },
+  {
+    "slug": "sorted-matrix-search",
+    "videoId": "uToKCbqknAs",
+    "title": "Sorted Matrix Search | Coding Interview Question",
+    "description": "Use a matrix’s ordering constraints to reduce the search space. Track boundaries and test targets at edges or outside the data.",
+    "durationSeconds": 685,
+    "uploadDate": "2025-10-15T15:28:29-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 55
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 55,
+        "end": 480
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 480,
+        "end": 541
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 541,
+        "end": 685
+      }
+    ],
+    "corrections": [
+      "We can eliminate a column because the target is larger than every item above it in that column."
+    ]
+  },
+  {
+    "slug": "age-sort",
+    "videoId": "A0sxVSeGkBI",
+    "title": "Age Sort | Coding Interview Question",
+    "description": "Explore how a restricted value range can change a sorting problem. Compare counting-based work with general comparison sorting.",
+    "durationSeconds": 502,
+    "uploadDate": "2025-10-15T14:15:26-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 49
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 49,
+        "end": 269
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 269,
+        "end": 333
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 333,
+        "end": 502
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "first-bad-version",
+    "videoId": "5v-B5dRexQI",
+    "title": "First Bad Version | Coding Interview Question",
+    "description": "Find a transition in an ordered sequence using a predicate. Practice binary-search interval definitions and edge-boundary cases.",
+    "durationSeconds": 724,
+    "uploadDate": "2020-07-08T10:53:03-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 26
+      },
+      {
+        "name": "Question Prompt",
+        "start": 26,
+        "end": 78
+      },
+      {
+        "name": "Example",
+        "start": 78,
+        "end": 129
+      },
+      {
+        "name": "Brute Force Solution",
+        "start": 129,
+        "end": 223
+      },
+      {
+        "name": "Optimal Solution",
+        "start": 223,
+        "end": 572
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 572,
+        "end": 724
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "linked-lists",
+    "videoId": "SqAOcT8Mqq4",
+    "title": "Linked Lists | Coding Interview Data Structure",
+    "description": "Understand linked-list structure, traversal costs, and the pointer relationships behind insertion, deletion, and reversal.",
+    "durationSeconds": 799,
+    "uploadDate": "2025-10-15T15:40:00-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 12
+      },
+      {
+        "name": "Linked Lists Explained",
+        "start": 12,
+        "end": 173
+      },
+      {
+        "name": "Real-World Analogy (Trains)",
+        "start": 173,
+        "end": 204
+      },
+      {
+        "name": "Singly vs. Doubly Linked Lists",
+        "start": 204,
+        "end": 324
+      },
+      {
+        "name": "Code Example of a Linked List",
+        "start": 324,
+        "end": 373
+      },
+      {
+        "name": "Linked Lists vs. Arrays",
+        "start": 373,
+        "end": 425
+      },
+      {
+        "name": "Big O",
+        "start": 425,
+        "end": 532
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 532,
+        "end": 612
+      },
+      {
+        "name": "Linked Lists in Real Life",
+        "start": 612,
+        "end": 705
+      },
+      {
+        "name": "Linked Lists in Interviews",
+        "start": 705,
+        "end": 799
+      }
+    ],
+    "corrections": [
+      "A blockchain links each block only to the block before it, not in both directions."
+    ]
+  },
+  {
+    "slug": "pointers",
+    "videoId": "Rj1xrmqU8MU",
+    "title": "Pointers | Coding Interviews and Computer Science",
+    "description": "Reason about references, node identity, and reachability so pointer updates do not lose the remainder of a list or tree.",
+    "durationSeconds": 554,
+    "uploadDate": "2025-10-16T11:14:52-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Pointers Explained",
+        "start": 9,
+        "end": 369
+      },
+      {
+        "name": "Pass By Value vs. Reference",
+        "start": 369,
+        "end": 480
+      },
+      {
+        "name": "Pointers in Interviews",
+        "start": 480,
+        "end": 553
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "implement-a-linked-list",
+    "videoId": "RA1MKZktbdk",
+    "title": "Implement a Linked List | Coding Interviews and Computer Science",
+    "description": "Build linked nodes and list operations, maintain head and tail relationships, and test empty and single-node structures.",
+    "durationSeconds": 723,
+    "uploadDate": "2025-10-15T16:00:55-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 55
+      },
+      {
+        "name": "Example",
+        "start": 55,
+        "end": 267
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 267,
+        "end": 722
+      }
+    ],
+    "corrections": [
+      "The doubly linked list now starts `length` at 1, since the constructor already creates the first node."
+    ]
+  },
+  {
+    "slug": "combine-blockchains",
+    "videoId": "S8PEPxglKpg",
+    "title": "Combine Linked Lists | Coding Interview Question",
+    "description": "Practice combining linked chains while preserving their nodes and maintaining the relationships needed to traverse the result.",
+    "durationSeconds": 722,
+    "uploadDate": "2025-10-15T15:36:11-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 40
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 40,
+        "end": 331
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 331,
+        "end": 389
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 389,
+        "end": 722
+      }
+    ],
+    "corrections": [
+      "A blockchain is a singly linked list where each block points back to the block before it, not a doubly linked list.",
+      "The node class is now `ListNode`, and each block's timestamp is in its `data` field (the video uses `Node` and `timestamp`)."
+    ]
+  },
+  {
+    "slug": "reverse-a-linked-list",
+    "videoId": "KDXRc-0lGLs",
+    "title": "Reverse a Linked List | Coding Interview Question",
+    "description": "Reverse a list by tracking the previous, current, and next nodes. Explain the invariant and handle empty and single-node inputs.",
+    "durationSeconds": 396,
+    "uploadDate": "2020-06-30T13:26:06-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 63
+      },
+      {
+        "name": "Linked List Review",
+        "start": 63,
+        "end": 124
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 124,
+        "end": 244
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 244,
+        "end": 396
+      }
+    ],
+    "corrections": [
+      "The node class is now called `ListNode` (the video calls it `Node`)."
+    ]
+  },
+  {
+    "slug": "mirror-delete",
+    "videoId": "jlIA270no2E",
+    "title": "Mirror Delete | Coding Interview Question",
+    "description": "Work through a linked-list deletion exercise with careful reference updates, boundary checks, and tests that preserve reachable nodes.",
+    "durationSeconds": 761,
+    "uploadDate": "2025-10-15T15:29:48-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 63
+      },
+      {
+        "name": "Constraints",
+        "start": 63,
+        "end": 105
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 105,
+        "end": 497
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 497,
+        "end": 557
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 557,
+        "end": 761
+      }
+    ],
+    "corrections": [
+      "The node class is now called `ListNode` (the video calls it `Node`)."
+    ]
+  },
+  {
+    "slug": "queues",
+    "videoId": "ZtqJS086k8s",
+    "title": "Queues | Coding Interview Data Structure",
+    "description": "Learn queue operations, implementation choices, and the role of first-in-first-out order in breadth-first traversal and scheduling.",
+    "durationSeconds": 353,
+    "uploadDate": "2025-10-15T15:13:38-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Queues Explained",
+        "start": 8,
+        "end": 137
+      },
+      {
+        "name": "Big O",
+        "start": 137,
+        "end": 180
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 180,
+        "end": 225
+      },
+      {
+        "name": "Queues in the Real World",
+        "start": 225,
+        "end": 298
+      },
+      {
+        "name": "Queues in Interviews",
+        "start": 298,
+        "end": 353
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "stacks",
+    "videoId": "_2_Oq6ImKjc",
+    "title": "Stack | Coding Interview Data Structure",
+    "description": "Learn stack operations and use last-in-first-out state for nested structures, traversal, and interview problem solving.",
+    "durationSeconds": 520,
+    "uploadDate": "2025-10-15T15:14:29-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Stacks Explained",
+        "start": 8,
+        "end": 181
+      },
+      {
+        "name": "Big O",
+        "start": 181,
+        "end": 222
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 222,
+        "end": 288
+      },
+      {
+        "name": "The Call Stack and Stack Overflows",
+        "start": 288,
+        "end": 412
+      },
+      {
+        "name": "Stacks in the Real World",
+        "start": 412,
+        "end": 477
+      },
+      {
+        "name": "Stack in Interviews",
+        "start": 477,
+        "end": 519
+      }
+    ],
+    "corrections": [
+      "`calculateTax` now returns only the tax (`price * 0.1`), so the total is 1.1 times the price.",
+      "A stack overflow means the call stack has outgrown the memory set aside for it, not that the computer is out of memory."
+    ]
+  },
+  {
+    "slug": "implement-a-queue",
+    "videoId": "QjdLVXwil5Y",
+    "title": "Implement a Queue | Coding Interviews and Computer Science",
+    "description": "Implement enqueue and dequeue behavior while maintaining first-in-first-out order and handling empty-queue transitions.",
+    "durationSeconds": 587,
+    "uploadDate": "2025-10-15T16:01:22-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Queue Constraints",
+        "start": 8,
+        "end": 51
+      },
+      {
+        "name": "Example",
+        "start": 51,
+        "end": 176
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 176,
+        "end": 587
+      }
+    ],
+    "corrections": [
+      "A queue can be built on an array (for example a circular buffer). A plain dynamic array is just O(n) at the front, which is why we use a linked list."
+    ]
+  },
+  {
+    "slug": "implement-a-stack",
+    "videoId": "EgQrR3JDSR8",
+    "title": "Implement a Stack | Coding Interviews and Computer Science",
+    "description": "Implement push, pop, and peek, maintain the top of the stack, and reason about operation costs and empty-state behavior.",
+    "durationSeconds": 376,
+    "uploadDate": "2025-10-15T16:01:49-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Stack Constraints",
+        "start": 8,
+        "end": 53
+      },
+      {
+        "name": "Example",
+        "start": 53,
+        "end": 161
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 161,
+        "end": 375
+      }
+    ],
+    "corrections": [
+      "`pop()` returns null only when the stack is empty. Popping the last item returns that item."
+    ]
+  },
+  {
+    "slug": "max-min-stack",
+    "videoId": "Bl8hCi66CGA",
+    "title": "Max Min Stack | Coding Interview Question",
+    "description": "Support stack operations while tracking minimum and maximum values. Practice duplicate values and restoring earlier aggregate state.",
+    "durationSeconds": 835,
+    "uploadDate": "2025-10-15T15:55:25-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 86
+      },
+      {
+        "name": "Brute Force Solution Breakdown",
+        "start": 86,
+        "end": 121
+      },
+      {
+        "name": "Optimized Solution Breakdown",
+        "start": 121,
+        "end": 443
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 443,
+        "end": 513
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 513,
+        "end": 835
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "valid-brackets",
+    "videoId": "6MLASrPe42E",
+    "title": "Valid Brackets | Coding Interview Question",
+    "description": "Validate bracket ordering with a stack of unmatched openings. Test mismatched types, unfinished openings, and closing-first inputs.",
+    "durationSeconds": 757,
+    "uploadDate": "2025-10-15T15:21:48-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 33
+      },
+      {
+        "name": "Constraints",
+        "start": 33,
+        "end": 73
+      },
+      {
+        "name": "Example",
+        "start": 73,
+        "end": 133
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 133,
+        "end": 419
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 419,
+        "end": 470
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 470,
+        "end": 756
+      }
+    ],
+    "corrections": [
+      "The Python solution now returns False for a closing bracket with nothing to match, like \")\" or \"())\"."
+    ]
+  },
+  {
+    "slug": "trees",
+    "videoId": "B8UFytYHmfE",
+    "title": "Trees | Coding Interview Data Structure",
+    "description": "Learn tree terminology and recursive structure, then prepare for traversal, depth, ancestor, and binary-search-tree exercises.",
+    "durationSeconds": 1002,
+    "uploadDate": "2025-10-15T15:15:35-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Trees Explained",
+        "start": 9,
+        "end": 159
+      },
+      {
+        "name": "Trees in the Real World",
+        "start": 159,
+        "end": 288
+      },
+      {
+        "name": "Tree Nodes",
+        "start": 288,
+        "end": 400
+      },
+      {
+        "name": "Tree Terms Defined",
+        "start": 400,
+        "end": 520
+      },
+      {
+        "name": "What Makes a Valid Tree",
+        "start": 520,
+        "end": 729
+      },
+      {
+        "name": "Types of Trees",
+        "start": 729,
+        "end": 857
+      },
+      {
+        "name": "Big O and Pros/Cons",
+        "start": 857,
+        "end": 1001
+      }
+    ],
+    "corrections": [
+      "Binary search tree lookups, inserts and deletes are O(log n) only when the tree is balanced. An unbalanced one can degrade to O(n)."
+    ]
+  },
+  {
+    "slug": "tree-traversal-in-order-pre-order-post-order",
+    "videoId": "Mv6yUsfxC0Y",
+    "title": "Tree Traversal | Coding Interview Algorithm",
+    "description": "Compare traversal orders by changing when each node is processed. Trace recursive calls and distinguish traversal from search-tree ordering.",
+    "durationSeconds": 572,
+    "uploadDate": "2025-10-15T15:37:55-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "DFS vs. BFS in Trees",
+        "start": 8,
+        "end": 96
+      },
+      {
+        "name": "Overview of Traversing Trees",
+        "start": 96,
+        "end": 238
+      },
+      {
+        "name": "In-Order Traversal",
+        "start": 238,
+        "end": 371
+      },
+      {
+        "name": "Pre-Order Traversal",
+        "start": 371,
+        "end": 412
+      },
+      {
+        "name": "Post-Order Traversal",
+        "start": 412,
+        "end": 463
+      },
+      {
+        "name": "BFS",
+        "start": 463,
+        "end": 571
+      }
+    ],
+    "corrections": [
+      "In-order traversal visits nodes in ascending order only for a binary search tree.",
+      "The BFS code now returns right away for an empty tree."
+    ]
+  },
+  {
+    "slug": "binary-search-trees",
+    "videoId": "9AaRyMxR7ts",
+    "title": "Binary Search Trees | Coding Interview Data Structure",
+    "description": "Understand the ordering rules that guide binary-search-tree operations and how tree height affects search performance.",
+    "durationSeconds": 815,
+    "uploadDate": "2025-10-15T15:09:47-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Binary Search Trees Explained",
+        "start": 12,
+        "end": 140
+      },
+      {
+        "name": "BST Example",
+        "start": 140,
+        "end": 229
+      },
+      {
+        "name": "BST Benefits (O(log n) Time)",
+        "start": 229,
+        "end": 300
+      },
+      {
+        "name": "Unbalanced vs. Balanced Trees",
+        "start": 300,
+        "end": 463
+      },
+      {
+        "name": "Big O + Pros and Cons",
+        "start": 463,
+        "end": 589
+      },
+      {
+        "name": "Enforcing Balanced Trees",
+        "start": 589,
+        "end": 693
+      },
+      {
+        "name": "Bonus: AVL Trees",
+        "start": 693,
+        "end": 765
+      },
+      {
+        "name": "Bonus: Red-Black Trees",
+        "start": 765,
+        "end": 815
+      }
+    ],
+    "corrections": [
+      "The smallest and largest values are at the left-most and right-most nodes, which are not necessarily leaves."
+    ]
+  },
+  {
+    "slug": "implement-a-binary-search-tree",
+    "videoId": "8pqbtjSDbPs",
+    "title": "Implement a Binary Search Tree | Coding Interviews and Computer Science",
+    "description": "Build a binary search tree, preserve its ordering contract during updates, and test search paths and empty-tree behavior.",
+    "durationSeconds": 502,
+    "uploadDate": "2025-10-15T16:00:04-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 39
+      },
+      {
+        "name": "Example",
+        "start": 39,
+        "end": 82
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 82,
+        "end": 143
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 143,
+        "end": 501
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "binary-tree-max-depth",
+    "videoId": "F4S_6wLjHzw",
+    "title": "Binary Tree Max Depth | Coding Interview Question",
+    "description": "Compute a tree’s depth from its subtrees. State the empty-tree convention and compare balanced and chain-shaped inputs.",
+    "durationSeconds": 631,
+    "uploadDate": "2025-10-15T15:54:55-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Question Prompt",
+        "start": 10,
+        "end": 35
+      },
+      {
+        "name": "Constraints",
+        "start": 35,
+        "end": 68
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 68,
+        "end": 304
+      },
+      {
+        "name": "Solution Summary",
+        "start": 304,
+        "end": 347
+      },
+      {
+        "name": "Big O",
+        "start": 347,
+        "end": 420
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 420,
+        "end": 630
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "binary-search-tree-validate",
+    "videoId": "sAoEA9yScmM",
+    "title": "BST Validate | Coding Interview Question",
+    "description": "Check the complete binary-search-tree ordering rule, including ancestor constraints that a parent-only comparison can miss.",
+    "durationSeconds": 919,
+    "uploadDate": "2025-10-15T15:34:05-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 40
+      },
+      {
+        "name": "Constraints",
+        "start": 40,
+        "end": 72
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 72,
+        "end": 459
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 459,
+        "end": 524
+      },
+      {
+        "name": "Alternate Solution (In-Order Traversal)",
+        "start": 524,
+        "end": 632
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 632,
+        "end": 919
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "closest-common-ancestor-in-binary-tree",
+    "videoId": "LM058U8HjGQ",
+    "title": "Closest Common Ancestor | Coding Interview Question",
+    "description": "Find the shared ancestor of two nodes by reasoning about subtree results and the relationship between node identity and ancestry.",
+    "durationSeconds": 898,
+    "uploadDate": "2025-10-15T15:35:30-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 11
+      },
+      {
+        "name": "Question Prompt",
+        "start": 11,
+        "end": 43
+      },
+      {
+        "name": "Constraints",
+        "start": 43,
+        "end": 92
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 92,
+        "end": 618
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 618,
+        "end": 669
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 669,
+        "end": 897
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "graphs",
+    "videoId": "GlIGLOs98KE",
+    "title": "Graphs | Coding Interview Data Structure",
+    "description": "Model relationships with graph nodes and edges, compare representations, and prepare for reachability and traversal exercises.",
+    "durationSeconds": 1217,
+    "uploadDate": "2025-10-15T15:46:49-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Graphs Explained",
+        "start": 10,
+        "end": 182
+      },
+      {
+        "name": "Example 1: Social Networks",
+        "start": 182,
+        "end": 280
+      },
+      {
+        "name": "Example 2: The Internet",
+        "start": 280,
+        "end": 322
+      },
+      {
+        "name": "Example 3: Flights and GPS",
+        "start": 322,
+        "end": 384
+      },
+      {
+        "name": "Example 4: Product Recommendations",
+        "start": 384,
+        "end": 423
+      },
+      {
+        "name": "Directed vs. Undirected Graphs",
+        "start": 423,
+        "end": 498
+      },
+      {
+        "name": "Cyclic vs. Acyclic",
+        "start": 498,
+        "end": 621
+      },
+      {
+        "name": "Disconnected vs. Connected",
+        "start": 621,
+        "end": 674
+      },
+      {
+        "name": "Weighted Graphs",
+        "start": 674,
+        "end": 754
+      },
+      {
+        "name": "Graphs as Code",
+        "start": 754,
+        "end": 794
+      },
+      {
+        "name": "Representing Graphs: Adjacency Matrix, Adjacency List, and Edge List",
+        "start": 794,
+        "end": 1076
+      },
+      {
+        "name": "Graphs Hidden in Other Data Structures",
+        "start": 1076,
+        "end": 1113
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 1113,
+        "end": 1154
+      },
+      {
+        "name": "Graphs in Interviews",
+        "start": 1154,
+        "end": 1216
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "depth-first-search",
+    "videoId": "qBpl_YD25OM",
+    "title": "Depth First Search | Coding Interview Algorithm",
+    "description": "Traverse a graph by following branches, track visited nodes to handle cycles, and reason about recursive or explicit stack state.",
+    "durationSeconds": 873,
+    "uploadDate": "2025-10-15T15:48:11-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "DFS Explained",
+        "start": 9,
+        "end": 62
+      },
+      {
+        "name": "DFS in Trees",
+        "start": 62,
+        "end": 75
+      },
+      {
+        "name": "DFS Analogy",
+        "start": 75,
+        "end": 96
+      },
+      {
+        "name": "DFS Walkthrough",
+        "start": 96,
+        "end": 432
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 432,
+        "end": 478
+      },
+      {
+        "name": "Summary of DFS Logic",
+        "start": 478,
+        "end": 548
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 548,
+        "end": 873
+      }
+    ],
+    "corrections": [
+      "The iterative DFS now marks a node as visited when it is popped from the stack, not when it is pushed, so it always follows a path to its end before backtracking."
+    ]
+  },
+  {
+    "slug": "breadth-first-search",
+    "videoId": "b7NpwKZ-DWU",
+    "title": "Breadth First Search | Coding Interview Algorithm",
+    "description": "Traverse by distance with a queue, avoid duplicate discoveries, and reconstruct shortest paths when edges have equal cost.",
+    "durationSeconds": 981,
+    "uploadDate": "2025-10-15T15:48:38-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "BFS Explained",
+        "start": 10,
+        "end": 57
+      },
+      {
+        "name": "BFS in Trees",
+        "start": 57,
+        "end": 73
+      },
+      {
+        "name": "BFS Walkthrough",
+        "start": 73,
+        "end": 556
+      },
+      {
+        "name": "Pros and Cons",
+        "start": 556,
+        "end": 590
+      },
+      {
+        "name": "Summary of DFS Logic",
+        "start": 590,
+        "end": 640
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 640,
+        "end": 980
+      }
+    ],
+    "corrections": [
+      "The Python BFS now tracks visited nodes in a set, so checking whether a node was visited is O(1)."
+    ]
+  },
+  {
+    "slug": "implement-a-graph",
+    "videoId": "-y_Rcr_OH0o",
+    "title": "Implement a Graph | Coding Interviews and Computer Science",
+    "description": "Represent vertices and edges, maintain neighbor relationships, and prepare a graph structure for traversal and reachability queries.",
+    "durationSeconds": 443,
+    "uploadDate": "2025-10-15T16:00:31-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Question Prompt",
+        "start": 8,
+        "end": 70
+      },
+      {
+        "name": "Example",
+        "start": 70,
+        "end": 191
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 191,
+        "end": 443
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "pilot-a-rocket",
+    "videoId": "hWSxTi332io",
+    "title": "Pilot a Rocket | Coding Interview Question",
+    "description": "Find a route through a satellite network. Practice BFS discovery order, parent tracking, cycles, and an unreachable destination.",
+    "durationSeconds": 1153,
+    "uploadDate": "2025-10-16T11:13:31-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 47
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 47,
+        "end": 716
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 716,
+        "end": 794
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 794,
+        "end": 1152
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "count-islands",
+    "videoId": "1t17aV20J04",
+    "title": "Count Islands | Coding Interview Question",
+    "description": "Count connected land regions in a matrix. Compare DFS and BFS, mark visited cells, and test disconnected and diagonal land.",
+    "durationSeconds": 666,
+    "uploadDate": "2025-10-15T15:33:05-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 26
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 26,
+        "end": 314
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 314,
+        "end": 366
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 366,
+        "end": 666
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "robot-maze",
+    "videoId": "yg0U2e8aF1I",
+    "title": "Robot Maze | Coding Interview Question",
+    "description": "Determine whether a robot can reach an exit under the allowed movement rules. Practice grid bounds, blocked cells, and path choices.",
+    "durationSeconds": 1558,
+    "uploadDate": "2025-10-15T15:28:56-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Question Prompt",
+        "start": 10,
+        "end": 88
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 88,
+        "end": 988
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 988,
+        "end": 1079
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 1079,
+        "end": 1557
+      }
+    ],
+    "corrections": [
+      "The brute-force recursion uses O(r + c) space for its call stack, not O(2^(r + c)). The memoized solution's O(r × c) space comes from its memo."
+    ]
+  },
+  {
+    "slug": "subproblems-and-overlapping-subproblems",
+    "videoId": "riUmCX1l7hQ",
+    "title": "Subproblems and Overlapping Subproblems | Coding Interview and Computer Science",
+    "description": "Identify repeated smaller decisions and define state precisely before using caching or a dynamic-programming table.",
+    "durationSeconds": 654,
+    "uploadDate": "2025-10-15T15:52:20-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 46
+      },
+      {
+        "name": "Defining \"Subproblem\"",
+        "start": 46,
+        "end": 220
+      },
+      {
+        "name": "Subproblem Example: Factorial Function",
+        "start": 220,
+        "end": 360
+      },
+      {
+        "name": "Overlapping Subproblems Explained",
+        "start": 360,
+        "end": 456
+      },
+      {
+        "name": "Visualizing Overlapping Subproblems",
+        "start": 456,
+        "end": 533
+      },
+      {
+        "name": "Subproblems vs. Overlapping Subproblems",
+        "start": 533,
+        "end": 653
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "memoization",
+    "videoId": "ofnkyu9hp0o",
+    "title": "Memoization | Coding Interview and Computer Science",
+    "description": "Turn repeated recursive work into reusable results. Choose complete cache keys and distinguish missing results from valid zero values.",
+    "durationSeconds": 959,
+    "uploadDate": "2025-10-15T15:51:19-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 26
+      },
+      {
+        "name": "Definition and Explanation",
+        "start": 26,
+        "end": 129
+      },
+      {
+        "name": "Basic Example",
+        "start": 129,
+        "end": 311
+      },
+      {
+        "name": "How Memoization Optimizes",
+        "start": 311,
+        "end": 611
+      },
+      {
+        "name": "Memoization Code Walkthrough",
+        "start": 611,
+        "end": 851
+      },
+      {
+        "name": "Memoization with Bottom-Up",
+        "start": 851,
+        "end": 898
+      },
+      {
+        "name": "Memoization in the Real World",
+        "start": 898,
+        "end": 959
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "bottom-up-vs-top-down",
+    "videoId": "JqSy95Rua6c",
+    "title": "Bottom Up vs Top Down Algorithms | Coding Interview and Computer Science",
+    "description": "Compare memoized recursion with tabulation, choose a valid evaluation order, and reason about stack and table storage.",
+    "durationSeconds": 287,
+    "uploadDate": "2025-10-15T15:50:45-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 21
+      },
+      {
+        "name": "Bottom-Up vs. Top-Down",
+        "start": 21,
+        "end": 82
+      },
+      {
+        "name": "Bottom-Up Explanation",
+        "start": 82,
+        "end": 134
+      },
+      {
+        "name": "Top-Down Explanation",
+        "start": 134,
+        "end": 248
+      },
+      {
+        "name": "In Interviews",
+        "start": 248,
+        "end": 286
+      }
+    ],
+    "corrections": [
+      "The bottom-up `fibonacci` now returns n when n < 2, so `fibonacci(0)` is 0, the same as the top-down version.",
+      "Tail-call optimization does not make most top-down solutions constant space."
+    ]
+  },
+  {
+    "slug": "dynamic-programming",
+    "videoId": "Sy5ooYEG-_Q",
+    "title": "Dynamic Programming | Coding Interview and Computer Science",
+    "description": "Develop a recurrence, identify repeated states, and connect memoization and tabulation to interview problem-solving strategies.",
+    "durationSeconds": 1807,
+    "uploadDate": "2025-10-15T15:50:13-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 84
+      },
+      {
+        "name": "Dynamic Program Defined",
+        "start": 84,
+        "end": 214
+      },
+      {
+        "name": "Visualize Dynamic Programming",
+        "start": 214,
+        "end": 479
+      },
+      {
+        "name": "Keys to Dynamic Programming",
+        "start": 479,
+        "end": 586
+      },
+      {
+        "name": "Top-Down Dynamic Programming",
+        "start": 586,
+        "end": 901
+      },
+      {
+        "name": "Bottom-Up Dynamic Programming",
+        "start": 901,
+        "end": 1119
+      },
+      {
+        "name": "DP Example: Coin Change Problem",
+        "start": 1119,
+        "end": 1450
+      },
+      {
+        "name": "DP Example: Knapsack Problem",
+        "start": 1450,
+        "end": 1708
+      },
+      {
+        "name": "Summary",
+        "start": 1708,
+        "end": 1806
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "vending-machine",
+    "videoId": "f0jqUdKNrHI",
+    "title": "Vending Machine | Coding Interview Question",
+    "description": "Work through a vending-machine interview problem by identifying choices, smaller subproblems, and the state needed to reuse results.",
+    "durationSeconds": 2611,
+    "uploadDate": "2025-10-15T15:20:40-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 82
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 82,
+        "end": 2158
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 2158,
+        "end": 2230
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 2230,
+        "end": 2611
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "three-moves",
+    "videoId": "ep2HXdvUgCw",
+    "title": "Three Moves | Coding Interview Question",
+    "description": "Define transitions for a constrained-movement problem and practice solving repeated subproblems without recomputing each path.",
+    "durationSeconds": 1177,
+    "uploadDate": "2025-10-15T15:24:11-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Question Prompt",
+        "start": 9,
+        "end": 120
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 120,
+        "end": 827
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 827,
+        "end": 912
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 912,
+        "end": 1177
+      }
+    ],
+    "corrections": [
+      "The solution now returns 0 for any negative board length before building its memo, so lengths below -1 no longer crash."
+    ]
+  },
+  {
+    "slug": "steal-packages",
+    "videoId": "7PNkq5GRs4c",
+    "title": "Steal Packages | Coding Interview Question",
+    "description": "Maximize a total without taking adjacent entries. Derive skip/take decisions and compare recursive, memoized, and iterative approaches.",
+    "durationSeconds": 1579,
+    "uploadDate": "2025-10-15T15:27:38-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Question Prompt",
+        "start": 10,
+        "end": 19
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 19,
+        "end": 1255
+      },
+      {
+        "name": "Solution Summary and Big O",
+        "start": 1255,
+        "end": 1396
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 1396,
+        "end": 1579
+      }
+    ],
+    "corrections": [
+      "The four-house example said [5, 10, 20, 50] gives 55, but the best is 60, so the example now uses [10, 5, 20, 50]."
+    ]
+  },
+  {
+    "slug": "why-does-javascript-get-its-own-topic",
+    "videoId": "XQWW3tqdIRw",
+    "title": "Why does JavaScript Get its Own Topic",
+    "description": "Connect general algorithm skills with JavaScript-specific behavior, browser programming, and practical utility implementations.",
+    "durationSeconds": 175,
+    "uploadDate": "2025-10-15T14:37:50-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 6
+      },
+      {
+        "name": "Most Used Programming Languages",
+        "start": 6,
+        "end": 32
+      },
+      {
+        "name": "JavaScript in Interviews",
+        "start": 32,
+        "end": 174
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "fix-this",
+    "videoId": "npP9VGKT4og",
+    "title": "JavaScript Interview Question: Fix 'this'",
+    "description": "Trace JavaScript receivers and callback invocation so you can explain and repair unexpected this values in interview code.",
+    "durationSeconds": 702,
+    "uploadDate": "2025-10-15T15:11:51-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 10
+      },
+      {
+        "name": "Question Prompt",
+        "start": 10,
+        "end": 157
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 157,
+        "end": 701
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "array-methods",
+    "videoId": "dSUwqXYjur8",
+    "title": "JavaScript Array Methods | Coding Interview Question",
+    "description": "Practice array-method behavior, callback arguments, iteration, and edge cases by implementing familiar JavaScript operations.",
+    "durationSeconds": 494,
+    "uploadDate": "2025-10-15T15:06:08-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 32
+      },
+      {
+        "name": "Question Prompt",
+        "start": 32,
+        "end": 58
+      },
+      {
+        "name": "Why Array Methods?",
+        "start": 58,
+        "end": 174
+      },
+      {
+        "name": "Question 1",
+        "start": 174,
+        "end": 233
+      },
+      {
+        "name": "Question 2",
+        "start": 233,
+        "end": 293
+      },
+      {
+        "name": "Question 3",
+        "start": 293,
+        "end": 343
+      },
+      {
+        "name": "Question 4",
+        "start": 343,
+        "end": 393
+      },
+      {
+        "name": "Question 5",
+        "start": 393,
+        "end": 438
+      },
+      {
+        "name": "Question 6",
+        "start": 438,
+        "end": 494
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "build-a-javascript-promise",
+    "videoId": "K0C2yHIZi4g",
+    "title": "Build a JavaScript Promise",
+    "description": "Watch a teaching implementation of a JavaScript promise, then compare settlement and callback scheduling with the current lesson.",
+    "durationSeconds": 1452,
+    "uploadDate": "2025-10-15T15:36:42-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 79
+      },
+      {
+        "name": "Question Prompt",
+        "start": 79,
+        "end": 117
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 117,
+        "end": 928
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 928,
+        "end": 1451
+      }
+    ],
+    "corrections": [
+      "`PromiseSimple` now runs its `.then()` and `.catch()` handlers in a `setTimeout`, so they also run when the promise resolves or rejects right away."
+    ]
+  },
+  {
+    "slug": "pub-sub-and-event-driven-programming",
+    "videoId": "RvSUx98ciQU",
+    "title": "Pub Sub and Event Drive Programming | Coding Interviews and Computer Science",
+    "description": "Implement event subscription and publication, track listeners, and connect the pattern to event-driven JavaScript applications.",
+    "durationSeconds": 728,
+    "uploadDate": "2025-10-16T11:14:24-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 11
+      },
+      {
+        "name": "Overview of Event-Driven Programming",
+        "start": 11,
+        "end": 240
+      },
+      {
+        "name": "Question Prompt",
+        "start": 240,
+        "end": 317
+      },
+      {
+        "name": "Pub-Sub Example",
+        "start": 317,
+        "end": 374
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 374,
+        "end": 728
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "debounce",
+    "videoId": "Lfdqz7FSS_g",
+    "title": "Debounce | JavaScript Interview Question",
+    "description": "Watch how a trailing debounce resets its timer, retains the latest call, and waits until an event burst stops.",
+    "durationSeconds": 831,
+    "uploadDate": "2025-10-15T15:32:27-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 8
+      },
+      {
+        "name": "Overview of a Debounce",
+        "start": 8,
+        "end": 77
+      },
+      {
+        "name": "Question Prompt",
+        "start": 77,
+        "end": 176
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 176,
+        "end": 484
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 484,
+        "end": 830
+      }
+    ],
+    "corrections": []
+  },
+  {
+    "slug": "throttle",
+    "videoId": "TNULAvIXh5M",
+    "title": "Implement Throttle | Coding Interview Question",
+    "description": "Watch leading and trailing throttle behavior, track pending calls, and review the fix for absent or falsy arguments.",
+    "durationSeconds": 756,
+    "uploadDate": "2025-10-15T15:23:10-07:00",
+    "verified": "2026-10-23",
+    "chapters": [
+      {
+        "name": "Introduction",
+        "start": 0,
+        "end": 9
+      },
+      {
+        "name": "Overview of a Throttle",
+        "start": 9,
+        "end": 63
+      },
+      {
+        "name": "Question Prompt",
+        "start": 63,
+        "end": 122
+      },
+      {
+        "name": "Solution Breakdown",
+        "start": 122,
+        "end": 506
+      },
+      {
+        "name": "Code Walkthrough",
+        "start": 506,
+        "end": 755
+      }
+    ],
+    "corrections": [
+      "The solution now tracks a waiting call with a `hasStoredEvent` flag, so the trailing call still runs when the handler gets no argument or a falsy one."
+    ]
+  }
+]

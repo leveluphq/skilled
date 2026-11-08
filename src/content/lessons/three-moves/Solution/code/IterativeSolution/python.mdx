@@ -1,0 +1,20 @@
+```python
+def count_total_moves(board_length):
+    if board_length < 0:
+        return 0
+
+    three_spots_back = 0
+    two_spots_back = 0
+    one_spot_back = 1
+
+    for i in range(board_length):
+        final_spot = one_spot_back + two_spots_back + three_spots_back
+
+        three_spots_back = two_spots_back
+        two_spots_back = one_spot_back
+        one_spot_back = final_spot
+
+    # We return oneSpotBack because it was actually updated to the finalSpot
+    # during the last iteration of the loop when we moved values forward
+    return one_spot_back
+```

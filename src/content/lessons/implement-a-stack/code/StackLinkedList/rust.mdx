@@ -1,0 +1,45 @@
+```rust
+struct Node {
+    data: i32,
+    prev: Option<Box<Node>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, prev: None }
+    }
+}
+
+struct Stack {
+    last: Option<Box<Node>>,
+}
+
+impl Stack {
+    fn new() -> Self {
+        Stack { last: None }
+    }
+
+    fn peek(&self) -> Option<i32> {
+        self.last.as_ref().map(|last| last.data)
+    }
+
+    fn push(&mut self, item: i32) -> i32 {
+        let previous_last_item = self.last.take();
+
+        let last = self.last.insert(Box::new(Node::new(item)));
+        last.prev = previous_last_item;
+
+        last.data
+    }
+
+    fn pop(&mut self) -> Option<i32> {
+        // Return None if the stack is empty
+        let removed_item = self.last.take()?;
+
+        // The item behind it becomes `last` (None if no items are left)
+        self.last = removed_item.prev;
+
+        Some(removed_item.data)
+    }
+}
+```

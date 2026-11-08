@@ -1,0 +1,12 @@
+```kotlin
+fun fibonacci(n: Int): Int {
+    val memo = hashMapOf(0 to 0, 1 to 1)
+
+    for (i in 2..n) {
+        val currentFib = memo.getValue(i - 1) + memo.getValue(i - 2)
+        memo[i] = currentFib
+    }
+
+    return memo.getValue(n)
+}
+```

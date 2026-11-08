@@ -1,0 +1,36 @@
+```go
+rowCount := len(matrix)
+columnCount := len(matrix[0])
+startRow := 0
+endRow := rowCount - 1
+startColumn := 0
+endColumn := columnCount - 1
+
+// Walk right (top row)
+for column := startColumn; column <= endColumn; column++ {
+	nodeInFirstRow := matrix[startRow][column]
+}
+// We have walked across the entirety of the starting row, so increment the index.
+startRow++
+
+// Walk down (right column)
+for row := startRow; row <= endRow; row++ {
+	nodeInLastColumn := matrix[row][endColumn]
+}
+// We have walked across end column, so we decrement the index.
+endColumn--
+
+// Walk left (bottom row)
+for column := endColumn; column >= startColumn; column-- {
+	nodeInLastRow := matrix[endRow][column]
+}
+// We have walked across end row, so we decrement the index.
+endRow--
+
+// Walk up (left column)
+for row := endRow; row >= startRow; row-- {
+	nodeInFirstColumn := matrix[row][startColumn]
+}
+// We have walked across the starting column, so we increment the index
+startColumn++
+```

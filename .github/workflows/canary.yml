@@ -1,0 +1,48 @@
+name: Runner canary
+
+# Once a day, one lesson's reference solution and starter code in every
+# language through the live runner service (docs/runner-service.md), so a broken
+# deployment shows up before learners find it. GitHub emails whoever last
+# changed this schedule when a run fails. Scheduled workflows run only on the
+# default branch; run it by hand from the Actions tab.
+
+on:
+  schedule:
+    - cron: '23 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CONFORMANCE_RUNNER: service
+      RUNNER_SERVICE_URL: https://runner.skilled.dev
+      RUNNER_SERVICE_SECRET: ${{ secrets.RUNNER_SERVICE_SECRET }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # A container that's slow to start the first time is Cloudflare, not a
+      # broken deployment, so a failed check gets one more try a minute later
+      - name: count-islands in every language
+        run: |
+          check() {
+            npx jest -c jest.conformance.config.js -t count-islands \
+              test/conformance/javascript.test.ts test/conformance/typescript.test.ts \
+              test/conformance/python.test.ts test/conformance/java.test.ts \
+              test/conformance/cpp.test.ts test/conformance/csharp.test.ts \
+              test/conformance/go.test.ts test/conformance/kotlin.test.ts \
+              test/conformance/swift.test.ts test/conformance/rust.test.ts
+          }
+          check || { sleep 60; check; }

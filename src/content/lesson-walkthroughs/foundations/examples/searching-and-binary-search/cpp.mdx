@@ -1,0 +1,13 @@
+```cpp
+#include <vector>
+
+int binarySearch(const std::vector<int>& values, int target) {
+    std::size_t low = 0, high = values.size();
+    while (low < high) {
+        const auto middle = low + (high - low) / 2;
+        if (values[middle] < target) low = middle + 1;
+        else high = middle;
+    }
+    return low < values.size() && values[low] == target ? static_cast<int>(low) : -1;
+}
+```

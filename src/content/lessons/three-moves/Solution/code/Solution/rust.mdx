@@ -1,0 +1,36 @@
+```rust
+// We will use -1 to indicate an unfilled spot
+const UNCOUNTED_SPOT: i32 = -1;
+
+impl Solution {
+    pub fn count_total_moves(board_length: i32) -> i32 {
+        if board_length < 0 {
+            return 0;
+        }
+
+        // Initialize our memoize list
+        let mut memo = vec![UNCOUNTED_SPOT; board_length as usize + 1];
+        count_total_moves_memoized(board_length, &mut memo)
+    }
+}
+
+// Recursive helper function that also tracks memoized values
+fn count_total_moves_memoized(board_length: i32, memo: &mut [i32]) -> i32 {
+    if board_length < 0 {
+        // Base case 1: Invalid board length
+        0
+    } else if board_length == 0 {
+        // Base case 2: Prompt says length 0 is still 1 step
+        1
+    } else if memo[board_length as usize] != UNCOUNTED_SPOT {
+        memo[board_length as usize]
+    } else {
+        // Recursive case (and memoize its result)
+        memo[board_length as usize] = count_total_moves_memoized(board_length - 1, memo)
+            + count_total_moves_memoized(board_length - 2, memo)
+            + count_total_moves_memoized(board_length - 3, memo);
+
+        memo[board_length as usize]
+    }
+}
+```

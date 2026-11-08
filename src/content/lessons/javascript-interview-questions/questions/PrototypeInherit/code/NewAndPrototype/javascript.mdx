@@ -1,0 +1,23 @@
+```javascript
+function Person(name, age) {
+  // this is automatically return when Person is used as a constructor
+  this.name = name;
+  this.age = age;
+}
+
+// `prototype` is a property of functions
+// and will be passed to objects created using `new`
+Person.prototype.getName = function() { return this.name };
+Person.prototype.getAge = function() { return this.age };
+
+console.log(Person.prototype); // { constructor, getName, getAge }
+
+const bob = new Person('Bob', 42);
+console.log(`My name is ${bob.getName()} and I am ${bob.getAge()}`);
+
+console.log(bob.__proto__ === Person.prototype); // true
+
+Person.prototype.TEST = 123;
+
+console.log(bob.TEST); // 123
+```

@@ -1,0 +1,20 @@
+```rust
+impl Solution {
+    pub fn get_max_profit(prices: Vec<i32>) -> i32 {
+        let mut max_profit = 0;
+        // With no prices, there's no profit to make
+        let Some(&first_price) = prices.first() else {
+            return max_profit;
+        };
+        let mut min_price = first_price;
+
+        for price in prices {
+            let profit_at_current_day = price - min_price;
+            max_profit = max_profit.max(profit_at_current_day);
+            min_price = min_price.min(price);
+        }
+
+        max_profit
+    }
+}
+```

@@ -1,0 +1,43 @@
+import BigO from 'content/blocks/BigO';
+import { MarginContainer } from 'content/blocks/styles';
+import { Container } from 'style/elements';
+import Modulo from './inlineCode/Modulo'
+import SudokuBoard from '../../SudokuBoard';
+
+The prompt defined a valid sub-square as one that will be length `j` on each side where `j = sqrt(k)`.
+To be a valid side length, `j` must be a whole number.
+For a standard `9 x 9` Sudoku board, the sub-square is `sqrt(9) = 3`.
+
+If we look at an invalid `5 x 5` board, we know that we can't create a larger square composed of sub-squares
+because `sqrt(5) ~= 2.236`. Or visually:
+
+<MarginContainer>
+  <SudokuBoard board={[
+    [0,0,0,0,0],
+    [0,0,0,0,0],
+    [0,0,0,0,0],
+    [0,0,0,0,0],
+    [0,0,0,0,0],
+  ]} />
+</MarginContainer>
+
+So if we take the modulo of the square root, it should be 0.
+This means 1 will divide into the number evenly without anything being left over beyond the decimal point <Modulo />.
+
+<Container>
+
+```javascript
+sqrt(1) % 1 = 0
+sqrt(2) % 1 = .414
+sqrt(3) % 1 = .732
+sqrt(4) % 1 = 0
+// ...
+sqrt(9) % 1 = 0
+```
+
+</Container>
+
+This means the board is a square, and it can be built from sub-squares that are also square since the calculation shows the side lengths would be whole numbers.
+
+The sub-squares calculation is also simple arithmetic, so the function to check for valid shape is all <BigO.constant /> constant time and space
+since there is no input iteration or additional data structures.

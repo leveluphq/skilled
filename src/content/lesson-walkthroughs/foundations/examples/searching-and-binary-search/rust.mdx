@@ -1,0 +1,10 @@
+```rust
+fn binary_search(values: &[i32], target: i32) -> i32 {
+    let (mut low, mut high) = (0, values.len());
+    while low < high {
+        let middle = low + (high - low) / 2;
+        if values[middle] < target { low = middle + 1; } else { high = middle; }
+    }
+    if low < values.len() && values[low] == target { low as i32 } else { -1 }
+}
+```

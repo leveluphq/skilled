@@ -1,0 +1,18 @@
+```swift
+func remove(_ key: String) -> Int? {
+    let index = hash(key)
+
+    // Find the key in the bucket, delete the key-value pair, and return its value
+    for i in 0..<table[index].count {
+        if table[index][i].key == key {
+            let value = table[index][i].value
+            table[index].remove(at: i)
+
+            return value
+        }
+    }
+
+    // Return nil if the key didn't exist
+    return nil
+}
+```

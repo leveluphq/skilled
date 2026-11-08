@@ -1,0 +1,59 @@
+A coding exercise can teach the same problem in several languages without maintaining ten unrelated test suites. The shared unit is a language-neutral contract: callable name, parameter types, return type, test inputs, and comparison policy. Each language runtime turns that contract into a program it can compile or interpret.
+
+Skilled.dev uses that structure for its runnable exercises. This article follows the checked-in runner architecture from a lesson spec to a verdict and explains where language behavior still needs deliberate handling. The public [setup guide](/docs) describes running the application; repository contributors can find the detailed extension contract in `docs/adding-a-language.md`.
+
+## Put the task contract ahead of the syntax
+
+Each runnable exercise has a `runner.spec.ts` file under its lesson directory. A spec names a function or class, describes parameters and returns, and supplies tests. Shared types include primitive values and lesson structures such as list nodes, binary nodes, and intervals.
+
+The spec describes the observable task rather than JavaScript source that every language must somehow emulate. A nullable list head and an empty array used to serialize that list need a consistent boundary interpretation. A return value that identifies an original tree node needs a different comparison from a newly allocated equal-valued node.
+
+Some tests also need a provided API. First Bad Version calls a predicate whose hidden configuration belongs to the test environment. The learner implements the search, not the predicate or a reader for hidden expected answers. A runtime must expose the declared callable while preserving that separation.
+
+## Normalize and assemble one language program
+
+The program builder selects a registered runtime, normalizes learner source under that runtime's rules, and reports unsupported-language or source-shape errors before execution. A successful build contains assembled source, stdin, limits, and a per-run nonce used by the result protocol.
+
+The assembled program combines learner code, the required harness pieces, and a driver generated from the lesson spec. Type-specific prelude fragments provide only the structures the exercise needs. That prevents an unrelated lesson's helper declaration from colliding with a learner's own type unnecessarily.
+
+A language runtime maps shared types into its own declarations and serialization rules. It also defines starter generation, compilation details, diagnostics, and limits. This adapter is where a nullable return, a wide integer, or a borrowed structure must match the shared contract. Translating function names alone is insufficient.
+
+## Send inputs without sending expected answers
+
+The generated program reads the run input and invokes learner code for the declared tests. Expected answers remain in the server-side comparison path. The executed source reports actual results and events; it does not decide that its own output passed by comparing with an embedded answer list.
+
+The protocol uses per-run framing to distinguish structured events from ordinary learner logs. The parser validates that framing and event sequence before accepting the reported outcomes. This reduces confusion between result messages, incidental stdout, early exit, and incomplete execution.
+
+The nonce is a protocol delimiter within the execution model. It is not a claim that an adversarial program cannot inspect its own input or that protocol framing replaces execution isolation. Sandbox boundaries, resource enforcement, authorization, and result validation solve different problems and must be reviewed separately.
+
+## Choose execution according to the deployment
+
+Local Docker execution creates a throwaway container using the language's configured image. The checked-in backend applies network, filesystem, process, capability, and resource restrictions, while compilation and execution can have different limits. Images are prepared explicitly rather than pulled unpredictably during a run.
+
+The Docker backend is documented for a person running their own code locally. The repository directs public deployments to the runner service and its operating requirements. A local system mode also exists for a smaller language set and is a convenience for trusted local work, not a general public execution boundary.
+
+A public operator must choose the backend deliberately. A page can contain reference material for ten languages while the current deployment enables a narrower execution set. The editor displays executable choices; static language guides and walkthroughs remain readable independently. This distinction prevents a content claim from silently becoming a deployment capability claim.
+
+## Turn execution outcomes into useful feedback
+
+A compiler error, an assertion mismatch, a runtime exception, and a timeout need different explanations. The backend returns a common outcome shape so later processing can classify the result independently of whether execution used a local container or another supported backend.
+
+The verdict path compares actual values with the spec's expected values using the declared comparison policy. It also accounts for missing events, crashes before tests, excessive output, and runs that ended early. A process exiting with a superficially successful status is not enough if the required tests never produced valid results.
+
+Compiler diagnostics should point back to the learner's source where possible, rather than only to generated driver lines. Logs should remain distinguishable from the verdict. These details help the learner fix their program without needing to understand the runner's internal assembly layout.
+
+## Check equivalence with conformance controls
+
+A multilingual runner needs evidence that each adapter implements the same contract. The repository's conformance suite executes lesson references and starter programs through the real language environment. Additional controls exercise failures such as invalid source, exceptions, loops, output limits, and result-protocol problems.
+
+Starter programs are expected to compile under their declarations and fail the task tests. A starter that accidentally passes teaches nothing and can conceal a broken driver. A reference that passes only because the comparator ignores required multiplicity can create false confidence across every language.
+
+Unit checks cover assembly, type mapping, parsing, and verdict decisions without needing every compiler. Conformance checks add the actual execution boundary. Content example checks separately execute the code published in guides and walkthroughs, keeping a prose article from drifting away from its tested implementation.
+
+## Extend a contract with a small vertical slice
+
+When adding a language, begin with one simple function exercise and one structured-value exercise. Verify source normalization, parameter decoding, result encoding, diagnostics, starter behavior, and reference behavior before expanding the full lesson inventory.
+
+Keep shared changes in the spec and comparison model when they represent a genuinely shared task rule. Keep language-specific syntax and runtime behavior in the adapter. Regenerate the checked-in preludes and language inventory with the repository's runner generation command, and run the relevant unit and conformance checks.
+
+The companion [exercise-testing guide](/guides/testing-coding-exercises) explains independent references, boundary cases, and output policies. For learners, the practical result is consistent task meaning across languages, useful execution feedback, and an honest distinction between what the library teaches and what a particular deployment can run.

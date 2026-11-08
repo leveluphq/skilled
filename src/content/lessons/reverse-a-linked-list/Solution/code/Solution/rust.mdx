@@ -1,0 +1,27 @@
+```rust
+impl Solution {
+    pub fn reverse_linked_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut previous_node = None;
+        let mut current_node = head;
+
+        while let Some(mut node) = current_node {
+            // Store the actual next node in the linked list
+            let next_node = node.next.take();
+
+            // This reverses the current node to point to the previous node
+            node.next = previous_node;
+
+            // We now step our previous node forward
+            previous_node = Some(node);
+
+            // We step our current node forward
+            current_node = next_node;
+        }
+
+        // Since current_node becomes None at the tail,
+        // we return the previous_node which is the new head
+        // and the front of our linked list
+        previous_node
+    }
+}
+```

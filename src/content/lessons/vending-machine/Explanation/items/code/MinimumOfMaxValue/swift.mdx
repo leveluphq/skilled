@@ -1,0 +1,6 @@
+```swift
+// Int.max + 1 would overflow, which is a runtime error in Swift,
+// so when minCoinsForAmount[amount - coin] is Int.max we skip the coin instead.
+// The minimum stays Int.max, just as if we had compared it to Int.max + 1:
+min(Int.max, Int.max) // Int.max
+```

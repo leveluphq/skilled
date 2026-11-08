@@ -1,0 +1,13 @@
+```python
+def hanoi(disc, src, aux, dest):
+    # Base case (stop moving discs)
+    if disc == 0:
+        return
+
+    # Recursively rotate discs
+    hanoi(disc - 1, src, dest, aux)
+    print("Move disc {} from {} to {}".format(disc, src, dest))
+    hanoi(disc - 1, aux, src, dest)
+
+hanoi(4, 'left peg', 'middle peg', 'right peg')
+```

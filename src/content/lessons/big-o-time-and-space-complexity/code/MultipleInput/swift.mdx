@@ -1,0 +1,31 @@
+```swift
+// O(n + m) - we add sequential operations together
+func multipleInput(_ input1: [Int], _ input2: [Int]) {
+    let n = input1.count
+    let m = input2.count
+
+    // O(n)
+    for i in 0..<n {
+        /* do something */
+    }
+
+    // O(m)
+    for i in 0..<m {
+        /* do something */
+    }
+}
+
+// O(nm) - we multiply nested input
+func multipleInput(_ input1: [Int], _ input2: [Int]) {
+    let n = input1.count
+    let m = input2.count
+
+    // O(n)
+    for i in 0..<n {
+        // O(m)
+        for j in 0..<m {
+            /* do something */
+        }
+    }
+}
+```

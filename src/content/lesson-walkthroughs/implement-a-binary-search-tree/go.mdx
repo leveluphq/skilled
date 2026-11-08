@@ -1,0 +1,117 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The implementation lesson builds a binary search tree with an insert method, a search method, and a retained root reference. It does not rebalance the tree. Both methods follow the ordering rule until they find a matching node or an absent child, so their running time depends on the resulting tree height.
+
+## Establish the root before following branches
+
+An empty tree has no root. Its first insertion creates the root node. Later insertions compare the new value with the current node and select the appropriate child. Finding an absent child identifies the insertion position: attach the new node there and finish. Traversing both subtrees would ignore the search ordering that makes this structure useful.
+
+For inserts 8, 3, 10, and 6, the value 6 follows left from 8 and right from 3. Its position must satisfy both comparisons. That complete path explains the inherited ordering condition; comparing only with the final parent is not the whole reasoning.
+
+## Search follows the same exclusion rule
+
+Starting at the root, return the current node on a match. Otherwise select one child by comparison. If that child is absent, return the implementation's missing result. Check whether callers expect a node or its contained value; returning only data would change this lesson's API.
+
+Test a root match, a leaf match, a missing value between existing keys, and targets outside the entire range. Decide how equal inserts behave before extending the example. A duplicate policy is part of the data structure, so insertion, search, and any later validation must agree.
+
+## Measure the path you actually built
+
+Inserting sorted values into an unbalanced tree can create a chain. Each later insertion then walks farther, and a sequence of inserts can take quadratic total work. For a balanced shape, individual paths are logarithmic. The simple code does not establish that balance automatically.
+
+An iterative implementation can retain only its current reference while searching. A recursive implementation also retains a call chain whose depth follows the path. Count the allocated nodes separately from that auxiliary work.
+
+Open the [current implementation](/course/implement-a-binary-search-tree), draw its shape after each insertion, then continue with [BST Validate](/watch/binary-search-tree-validate). Include an ancestor-bound violation in your tests so a locally plausible tree cannot pass unnoticed.
+
+## Use the implementation's duplicate rule
+
+Insert 8, 3, 10, and 3. A smaller value follows the left link; every other value follows the right. The second 3 is therefore placed to the right of the first 3. In-order traversal yields `[3, 3, 8, 10]`, preserving the duplicate. Searching for 3 returns a matching node without promising which duplicate it identifies.
+
+This insertion policy differs from an exercise that requires every key to be unique and bounds both subtrees strictly. In particular, use the separate validation lesson's stated contract before applying its checks to a tree built by this class.
+
+## Relate insertion and search to shape
+
+Both operations follow one downward path, taking O(h) time for height h. The class performs no rotations or balancing. Sorted input can build a chain with O(n) height, making a sequence of insertions quadratic overall. Calling it a binary search tree does not establish logarithmic worst-case operations.
+
+The tree owns or retains O(n) nodes. Iterative search uses constant additional traversal state. Check empty search, root search, an absent value, duplicate insertion, and both increasing and decreasing insertion orders. The standalone code includes the BinaryNode definition so it can be compiled outside the course editor. Removal and balancing are outside this excerpt's API; adding either requires its own invariants and tests.
+
+## Go example and implementation choices
+
+The BinaryNode definition exposes Data, Left, and Right, while the tree's root stays package-private. Insert returns the same tree pointer and Search returns *BinaryNode or nil. Pointer links preserve node identity without copying subtrees. The implementation is iterative, but its stored shape can still be a linear chain. The shared tests include duplicates and monotone insertion orders.
+
+### Complete implementation
+
+```go
+type BinaryNode struct {
+	Data  int
+	Left  *BinaryNode
+	Right *BinaryNode
+}
+
+type BinarySearchTree struct {
+	root *BinaryNode
+}
+
+func NewBinarySearchTree() *BinarySearchTree {
+	return &BinarySearchTree{}
+}
+
+func (t *BinarySearchTree) Insert(data int) *BinarySearchTree {
+	node := &BinaryNode{Data: data}
+
+	// First insert becomes root
+	if t.root == nil {
+		t.root = node
+		return t
+	}
+
+	currentNode := t.root
+
+	for {
+		if data < currentNode.Data {
+			// Insert the node if you reach a leaf and return
+			if currentNode.Left == nil {
+				currentNode.Left = node
+				return t
+			}
+
+			// Continue by traversing left
+			currentNode = currentNode.Left
+		} else {
+			// Insert the node if you reach a leaf and return
+			if currentNode.Right == nil {
+				currentNode.Right = node
+				return t
+			}
+
+			// Continue by traversing right
+			currentNode = currentNode.Right
+		}
+	}
+}
+
+func (t *BinarySearchTree) Search(data int) *BinaryNode {
+	if t.root == nil {
+		return nil
+	}
+
+	currentNode := t.root
+
+	for currentNode != nil {
+		if data < currentNode.Data {
+			currentNode = currentNode.Left
+		} else if data > currentNode.Data {
+			currentNode = currentNode.Right
+		} else {
+			return currentNode
+		}
+	}
+
+	return nil
+}
+```
+
+## Continue in Go
+
+[Open Implement a Binary Search Tree](/course/implement-a-binary-search-tree) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Go example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Go interview preparation guide](/interview-prep/go) connects these language choices with further practice and the cross-language operation reference.

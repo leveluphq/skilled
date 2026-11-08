@@ -1,0 +1,169 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import InLanguageHeader from 'content/blocks/InstructionalArticles/InLanguageHeader';
+import HashTableSimple from 'content/blocks/DataStructures/HashTableSimple';
+import { Section } from 'style/elements/lesson';
+import HashTableWide from 'svg/HashTableWide';
+import InstantiateAHashTable from './code/InstantiateAHashTable';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+import HashFunctions from './HashFunctions.mdx';
+import { FixecColorSvgWrapper } from './styles';
+
+<Section>
+
+Hash tables are one of the most common data structures in coding interviews which makes them essential to master.
+
+The reason hash tables are so important is that they offer constant time <BigO.constant /> lookup / set / insert / delete.
+They are frequently used with other data structures to improve the performance of our solution.
+
+**In every single interview, you should consider if a hash table could be used to improve your answer.**
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+**Common names:** hash, hash table, hash map, dictionary, associative array, map
+
+<CheatSheetTables dataStructure={<HashTableSimple />} table={<BigOTable {...bigO} />} />
+
+<ProsCons pros={pros} cons={cons} />
+
+**Hash Tables in Interviews:**
+
+- Typically you are given an input data structure, and you add a hash table for fast key-value lookups.
+- Get <BigO.constant /> time by trading off to add an additional <BigO.n /> space.
+- Input data structures will often have order, and the hash table enables constant time lookups on its individual items.
+
+<InLanguageHeader dataStructure="Hash tables" />
+
+<InstantiateAHashTable />
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Hash Tables" />
+
+Hash tables are very powerful because we can lookup/insert/delete data in constant time <BigO.constant /> using key-value pairs.
+Let's take a look at the two important pieces of information from that sentence.
+
+**Constant time operations:**
+This means that no matter how much data we are given as the input, a hash table will always be fast.
+
+**Store data in key-value pairs:**
+By being able to name the string keys, we give our data meaning.
+For example, being able to access `inventory.computers` makes our code much more readable.
+
+Hash table keys are similar to array indexes in that they can get constant time operations.
+However, since arrays only use ordered integers as the indexes, our data can not map to any meaning beyond this.
+If we stored our `inventory` in an array, reading the item at `inventory[42]` tells a developer nothing, but `inventory.computers` gives direct meaning.
+String keys provide a powerful abstraction.
+
+The tradeoff for hash tables is that we lose the order of the data.
+This is why we often pair hash tables with other data structures.
+The original data structure gives us the input in the desired order,
+and then we construct the hash table as an additional data structure to be able to look an item up by a meaningful attribute in <BigO.constant /> time.
+The trade off is that we add an additional <BigO.n /> space complexity by using a hash table.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>How Hash Tables Work Underneath Hood</SubsectionHeader>
+
+> If this section is confusing, it may become more clear when we <Link href={`/${PageRoot.Course}/implement-a-hash-table`} passHref><a>implement a hash table</a></Link>.
+
+As we noted, hash tables are very similar to arrays.
+In fact, hash tables are actually implemented on top of arrays.
+
+Key names have no meaning to a computer, and there is an infinite number of string combinations we could come up with for key names.
+Computers much more easily handle arrays — their indexes map directly to sequential spots in memory.
+
+So when we initialize a hash table, the programming language actually creates an array underneath the hood.
+Then when we give the hash table a key, our programming language maps this key to an index in the array.
+
+<Image src="/images/hashtable.gif" isVisuAlgo alt="A hash function maps a key to a bucket index for storing and retrieving its value." width={400} height={300} />
+
+To map the key to an index, our hash table uses something called a hash function. The hash function converts the key input to an integer index in the array.
+The input to the hash function can be anything (and is therefore infinite), but the array that actually stores the data is a fixed size.
+This means multiple keys can map to the same index, and we call this a **hash collision**.
+
+Since multiple keys map to the same index, we have to create a bucket at this index to store the different values it can take.
+A bucket is typically implemented as a <Link href={`/${PageRoot.Course}/linked-lists`} passHref><a>linked list</a></Link>,
+and each node stores a particular key-value pair.
+So when we have a hash collision, our hash table will find the bucket, iterate through its linked list, and look for the node that contains the matching key and then return the value.
+
+<FixecColorSvgWrapper>
+
+<HashTableWide />
+
+</FixecColorSvgWrapper>
+
+In the image above, "John Smith" and "Sandra Dee" both hash to 152, so we store both in bucket 152 using a linked list.
+Notice that it stores both the key and the value.
+When we look up an item by key, it first returns the hash of the bucket that the key is contained in.
+Then it iterates through this bucket's linked list to search for the key that we want and returns the associated value.
+
+</Section>
+
+<Section>
+
+<HashFunctions />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Hash Tables O(1) vs. O(n)</SubsectionHeader>
+
+**In an interview, you can assume a hash table operates in <BigO.constant /> time.**
+However, to achieve this, our hash table implementation must satisfy some conditions.
+
+1. **A good hash function:** It assigns keys to buckets evenly (uniformly distributed) and is efficient at calculating the hash.
+2. **The size of the array is sufficiently large:** The hash table's array must be large enough to handle the number of items we store in it without making any bucket too large.
+
+These factors keep collisions low (the number of items sharing a bucket).
+If the number of collisions is high, it can result in <BigO.n /> time, but if the number of collisions is low, it will be <BigO.constant />.
+
+For example, if we had a bad hash function, it would send too many items to a single bucket instead of distributing them evenly:
+
+<Image src="/images/hashtable-bad-function.png" alt="A poorly distributed hash sends every key to one bucket, creating a long collision chain." width={2316} height={1132} />
+
+If the size of the array is too small, the linked lists will grow too large and require ~<BigO.n /> time to iterate and find an item.
+
+<Image src="/images/hashtable-small-buckets.png" alt="A table with few buckets develops long collision chains even when keys are distributed among them." width={2422} height={1142} />
+
+Imagine an extreme scenario where the hash table's array is `length == 1` which means there is one bucket.
+All `n` key-value pairs would be hashed and stored in this bucket,
+and so to find any value, we would potentially need to iterate through the entire linked list which requires <BigO.n /> time.
+
+To manage this, hash tables resize their storage array based on the number of items that have been added.
+This ensures there will always be enough buckets.
+
+The hash function also needs to distribute them evenly.
+If one bucket has a higher probability of getting items, it can grow sufficiently large such that it would effectively take <BigO.n /> time to find an item.
+
+In a good hash table implementation, we can assume each bucket has approximately the same number of items.
+We can also assume that the number of items in a bucket is much smaller than `n`.
+
+Now imagine a hash table with 1,000,000 items that stores them in an array of length 250,000.
+A good hashing function would mean we store ~4 items per bucket.
+Even with the collisions, we would only be iterating through 4 nodes to find our key-value pair.
+Since 4 is significantly lower than our `n = 1000000`, it is constant time.
+
+Collisions are unavoidable, so they just need to be managed effectively which every common programming language does.
+**You can always assume a hash table's operations are performed in <BigO.constant /> time in your interviews**.
+
+</Section>

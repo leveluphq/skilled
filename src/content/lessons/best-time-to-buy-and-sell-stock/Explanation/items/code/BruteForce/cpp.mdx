@@ -1,0 +1,17 @@
+```cpp
+int bruteForceGetMaxProfit(vector<int>& prices) {
+    int maxProfit = 0;
+
+    for (int buyDay = 0; buyDay < (int) prices.size(); buyDay++) {
+        int buyPrice = prices[buyDay];
+
+        for (int sellDay = buyDay + 1; sellDay < (int) prices.size(); sellDay++) {
+            int sellPrice = prices[sellDay];
+            int profit = sellPrice - buyPrice;
+            maxProfit = max(profit, maxProfit);
+        }
+    }
+
+    return maxProfit;
+}
+```

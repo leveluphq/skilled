@@ -1,0 +1,29 @@
+```rust
+// #1
+fn print_hello(input: &[i32]) {
+    let ten = 5 + 5;
+    let twenty = 2 * ten;
+
+    for _ in 0..twenty {
+        println!("Hello, world!");
+    }
+}
+
+// #2
+fn print_input(input: &[i32]) {
+    let n = input.len();
+    for i in 0..n {
+        println!("{i}");
+    }
+}
+
+// #3
+fn print_nested_input(input: &[i32]) {
+    let n = input.len();
+    for i in 0..n {
+        for j in 0..n {
+            println!("{}", i * j);
+        }
+    }
+}
+```

@@ -1,0 +1,13 @@
+```rust
+// Interval::new(start, end)
+let intervals = vec![
+    Interval::new(9.0, 10.5),
+    Interval::new(9.5, 10.0),
+    Interval::new(10.0, 11.0),
+    Interval::new(10.5, 11.5),
+    Interval::new(13.0, 14.0),
+    Interval::new(13.5, 15.0),
+];
+Solution::merge_overlapping_intervals(intervals);
+// vec![Interval::new(9.0, 11.5), Interval::new(13.0, 15.0)]
+```

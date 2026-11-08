@@ -1,0 +1,19 @@
+```go
+func (ht *HashTable) Remove(key string) any {
+	index := ht.Hash(key)
+	bucket := ht.table[index]
+
+	// Find the key in the bucket, delete the key-value pair, and return its value
+	for i := range bucket {
+		if bucket[i].key == key {
+			value := bucket[i].value
+			ht.table[index] = slices.Delete(bucket, i, i+1)
+
+			return value
+		}
+	}
+
+	// Return nil if the key didn't exist
+	return nil
+}
+```

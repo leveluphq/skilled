@@ -1,0 +1,41 @@
+Linked-list problems depend on reachability. A node leads to the next node through a reference, and changing that reference can disconnect the remainder of the structure. Draw the links before writing an update and preserve any reference you still need afterward.
+
+Study [Linked Lists](/course/linked-lists) and [Pointers](/course/pointers), then [Implement a Linked List](/course/implement-a-linked-list). The later exercises ask you to redirect or combine existing chains rather than treating a list as an array with slower indexing.
+
+## Distinguish a node from its value
+
+Two nodes can contain the same value and still be different nodes. A cycle exists when following links revisits a node identity, not merely when two values compare equal. An ancestor or intersection question can depend on the same distinction.
+
+A variable holding a node is a reference to that node, not an automatic copy of the entire list. Changing the variable to another node and changing a node's next link have different effects. Trace which object each reference names after the update.
+
+When an exercise supplies node classes and field names, follow that contract. Replacing the representation with arrays may solve a related problem while ignoring the required pointer operations.
+
+## Preserve the next node during reversal
+
+In [Reverse a Linked List](/course/reverse-a-linked-list), keep references to the previous node, current node, and original next node. Save the next reference before redirecting the current link toward the reversed prefix.
+
+After one iteration, the previous reference identifies the reversed prefix and current identifies the untouched suffix. That invariant gives each variable a clear meaning and explains why no node is lost.
+
+Test an empty list, a single node, two nodes, and repeated payload values. Confirm that the final head changes and that the original head becomes the tail. A returned sequence of values does not by itself prove the node links were updated correctly.
+
+## Include the search for the update location
+
+Inserting after a known node can take constant link work. Finding the node at an arbitrary index can still take linear traversal. Deleting from a singly linked list may require the predecessor, while a doubly linked list stores more relationships to update.
+
+Head and tail transitions deserve explicit tests. Removing the only node changes both. Appending to an empty list differs from appending to a nonempty one. A helper that assumes a predecessor exists can fail at the head.
+
+The [complexity reference](/reference/data-structure-time-complexity) separates location-finding from the local update. Use that distinction when explaining why a linked-list operation is or is not constant time.
+
+## Practice combining and deleting chains
+
+[Combine Blockchains](/course/combine-blockchains) provides a setting for combining linked relationships. Identify which chain owns each next reference and what shape the output must have before connecting them.
+
+[Mirror Delete](/course/mirror-delete) adds deletion decisions. State which nodes have already been examined and which references must remain valid for the next step. A diagram with three or four nodes can reveal a lost suffix more quickly than a long console dump.
+
+If you use a dummy head, explain how it makes the head-removal case uniform. Return the actual list head after the dummy node, and include any dummy-node allocation in the implementation's constant extra storage.
+
+## Check identity and structure in tests
+
+Traverse the result with a safety bound or identity set while testing, so a newly introduced cycle cannot hang the test. Inspect the expected node identities as well as values when the contract requires reusing existing nodes.
+
+For the explanation, name the reachable prefix and suffix after each iteration. If the solution uses recursion, include active call frames in space usage. Retry reversal after studying another topic and reconstruct the reference invariant without reading the previous implementation.

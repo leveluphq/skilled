@@ -1,0 +1,88 @@
+```python
+import unittest
+test_results = []
+class TestSum(unittest.TestCase):
+
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False
+
+    def test_empty(self):
+        self.description = "empty prices"
+        self.actual_result = get_max_profit([])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_one_price(self):
+        self.description = "one price"
+        self.actual_result = get_max_profit([42])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_question_prompt_example(self):
+        self.description = "question prompt example"
+        self.actual_result = get_max_profit([9, 2, 4, 3, 8, 5])
+        self.expected_result = 6
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_price_decrease_then_increase(self):
+        self.description = "price decrease then increase"
+        self.actual_result = get_max_profit([10, 7, 3, 4, 6])
+        self.expected_result = 3
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_price_increase_then_decrease(self):
+        self.description = "price increase then decrease"
+        self.actual_result = get_max_profit([3, 4, 5, 10, 7])
+        self.expected_result = 7
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_replace_previous_max(self):
+        self.description = "replace previous max"
+        self.actual_result = get_max_profit([3, 4, 5, 10, 2, 20])
+        self.expected_result = 18
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_always_increasing(self):
+        self.description = "always increasing"
+        self.actual_result = get_max_profit([1, 2, 3, 4, 5, 6])
+        self.expected_result = 5
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_always_decreasing(self):
+        self.description = "always decreasing"
+        self.actual_result = get_max_profit([6, 5, 4, 3, 2, 1])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_repeated_numbers(self):
+        self.description = "repeated numbers"
+        self.actual_result = get_max_profit([1, 5, 1, 5, 2, 5])
+        self.expected_result = 4
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_price_never_changes(self):
+        self.description = "price never changes"
+        self.actual_result = get_max_profit([42, 42, 42, 42])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

@@ -1,0 +1,41 @@
+import BigO from 'content/blocks/BigO';
+import Null from 'content/blocks/Null';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import IterativeSolution from './code/IterativeSolution';
+
+To validate our BST, we will maintain the lower and upper bounds a node must fall between.
+
+When we follow the `left` path, the current node's value becomes the upper bound to all the descendants in that subtree since all are required to be smaller in a BST.
+When we follow the `right` path, the current node's value becomes the new lower bound for  its right subtree.
+
+We perform a pre-order traversal where we check if a value is between the bounds and return false if it is not.
+Our base case is reaching a <Null /> value, and we know we can return true.
+
+If for every node / subtree / subproblem we return true, then we yield that as our solution.
+If any function returns false, this value is propagated upward and shows our binary tree is not a BST.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space.
+</p>
+
+We must traverse all `n` nodes and in the worst-case, store them all in the call stack (or an auxiliary data structure).
+
+### Bonus: Iterative In-Order Traversal
+
+An in-order traversal will visit nodes in ascending order for a BST.
+Therefore, we can check that each node in the list is larger than the previous,
+and if so, this will prove it's a BST.
+
+<IterativeSolution />
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

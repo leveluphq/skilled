@@ -1,0 +1,13 @@
+```swift
+func fibMemoStats(_ n: Int) -> [Int] {
+    var memo: [Int: Int] = [:]
+    func fib(_ value: Int) -> Int {
+        if let cached = memo[value] { return cached }
+        let answer = value < 2 ? value : fib(value - 1) + fib(value - 2)
+        memo[value] = answer
+        return answer
+    }
+    let answer = fib(n)
+    return [answer, memo.count]
+}
+```

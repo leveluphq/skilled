@@ -1,0 +1,21 @@
+```go
+// NOTE: the test runner provides func isBadVersion(version int) bool,
+// which this solution calls.
+
+func firstBadVersion(n int) int {
+	lowerBound := 1 // Starts at v1
+	upperBound := n
+
+	for lowerBound < upperBound {
+		midpoint := lowerBound + (upperBound-lowerBound)/2
+
+		if isBadVersion(midpoint) {
+			upperBound = midpoint
+		} else {
+			lowerBound = midpoint + 1
+		}
+	}
+
+	return lowerBound
+}
+```

@@ -1,0 +1,19 @@
+```javascript
+const outerFunction = () => {
+  let storedValue = 0;
+
+  // Returning a function from another function is the key to closures
+  return () => {
+    storedValue = storedValue + 1;
+    console.log('storedValue = ', storedValue);
+  }
+}
+
+// Assign the returned function to a new variable
+const newFunctionWithPermanentAccess = outerFunction();
+
+// Execute the returned funciton to change the value it has access to (via a closure)
+newFunctionWithPermanentAccess(); // storedValue = 1;
+newFunctionWithPermanentAccess(); // storedValue = 2;
+newFunctionWithPermanentAccess(); // storedValue = 3;
+```

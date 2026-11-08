@@ -1,0 +1,22 @@
+```javascript
+const breadthFirstSearch = (startingNode) => {
+  const bfsQueue = [startingNode];
+  const visitedNodes = new Set();
+
+  visitedNodes.add(startingNode);
+
+  while(bfsQueue.length > 0) {
+    const node = bfsQueue.pop();
+
+    // Use node value for the question
+    visit(node);
+
+    node.edges.forEach(childNode => {
+      if (!visitedNodes.has(childNode)) {
+        bfsQueue.unshift(childNode);
+        visitedNodes.add(childNode);
+      }
+    });
+  }
+}
+```

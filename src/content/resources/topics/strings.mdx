@@ -1,0 +1,41 @@
+String exercises combine sequence operations with a meaning assigned to characters. A palindrome cares about order, an anagram comparison cares about frequencies, and a substring problem cares about contiguity. Choose the representation from the requested relationship instead of treating every text problem as a sorting exercise.
+
+Start with [Strings](/course/strings), then compare [palindromes, permutations, and anagrams](/course/palindromes-permutataions-anagrams). The distinction between those terms determines what information a solution may discard.
+
+## Clarify what counts as a character
+
+An exercise limited to lowercase English letters permits a small fixed alphabet and simple indexing assumptions. General user text can require decisions about code units, code points, displayed character clusters, normalization, and case handling.
+
+A language's string iteration rule does not automatically match every displayed character. If the exercise uses general Unicode text, ask what comparison and segmentation behavior is intended. If the contract is ASCII, state it and keep the implementation focused.
+
+Also decide whether punctuation and whitespace matter. A phrase-palindrome task that ignores spaces is different from an exact string comparison. Normalizing input is part of the algorithm when the contract requires it.
+
+## Match the state to the question
+
+For an exact palindrome, compare corresponding positions from opposite ends. Once an outer pair matches, the remaining question concerns the interior. The [two-pointers guide](/patterns/two-pointers) includes a concrete implementation and discusses its character model.
+
+For anagrams, matching character counts can establish equivalence when order is irrelevant. A sorted representation is another possible key, with its sorting cost included. For a fixed alphabet, a count vector can avoid sorting while making its alphabet assumption explicit.
+
+For a longest substring without repeated characters, maintain a contiguous window and occurrence state. A map of all characters seen anywhere in the past does not directly describe the current window. The [sliding-window guide](/patterns/sliding-window) develops the required repair rule.
+
+## Understand permutations and output size
+
+A permutation is an arrangement of entries. Generating all arrangements can require a large output even when the input is short. Repeated characters also raise the question of whether identical-looking arrangements should be emitted more than once.
+
+The [Generate All Permutations exercise](/course/generate-all-permutations) develops the recursive choice structure. Before adapting it to text, state whether positions or distinct values define the choices and whether duplicates must be consolidated.
+
+When grouping possible palindrome relationships, reason about which counts permit a palindrome. Pairs can occupy mirrored positions, and the allowed center controls odd counts. Use [Group Permutations of Palindromes](/course/group-permutations-of-palindromes) to connect that condition to grouping state.
+
+## Include construction and key costs
+
+Repeatedly appending to an immutable string may create additional work or depend on runtime optimizations. A list or array of fragments followed by a join can make the output construction easier to analyze. Include that collection and the final result in the appropriate memory accounting.
+
+A map lookup's cost does not remove the cost of constructing its key. Sorting every word, copying a substring at each boundary, or serializing a frequency vector can become a significant part of the algorithm.
+
+Returning every matching substring also has an output-size cost. An algorithm that finds boundaries efficiently may still need substantial work to materialize all requested strings.
+
+## Test cases that distinguish the intended relationship
+
+Use empty and one-character inputs, repeated characters, different character counts, equal counts in different orders, and examples where punctuation changes the answer. For a window problem, use a duplicate that requires several removals before validity returns, such as the middle of `abba`.
+
+Write the exact contract beside the test. If a solution passes because its normalization discarded a character the problem considers significant, it has solved a different problem. Retry the exercise in your chosen language using the same contract and check the language-specific representation costs.

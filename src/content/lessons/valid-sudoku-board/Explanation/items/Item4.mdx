@@ -1,0 +1,10 @@
+Valid board content means no repeated integers in a given row, column, or sub-square.
+
+A brute force solution would be to compare each item against every other item in its row, column, and sub-square.
+This repeated work can definitely be removed.
+
+What if instead of checking a cell against all others, we used hash tables to track the numbers that we have seen.
+Then if a cell contains a number that already exists in the hash table for either its row, column, or sub-square,
+then we know the board is invalid and can return false.
+
+We'll need multiple hash tables. So how many do we actually need?

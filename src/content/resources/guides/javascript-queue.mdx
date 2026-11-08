@@ -1,0 +1,102 @@
+A BFS needs a FIFO queue: append newly discovered vertices and remove the oldest waiting vertex. In JavaScript, an array with a moving head index expresses that schedule without repeatedly removing index zero. A reusable queue also needs a plan for consumed storage and a result shape that distinguishes an empty queue from a stored undefined value.
+
+The implementation here uses ordinary arrays, a head index, and occasional compaction. It supports arbitrary JavaScript values and exposes no iterator or random-access API. The worked BFS then uses a Map for adjacency lists and a Set for discovery.
+
+## Choose a FIFO contract before an implementation
+
+Enqueue appends one value. Dequeue returns either an explicit empty result or the next stored value. Size is the number of unconsumed entries, not the backing array's length. A queue can contain zero, false, null, or undefined; none of those values should accidentally mean empty.
+
+A tagged result such as `{ found: true, value }` preserves that distinction. The empty result is `{ found: false }`. Throwing on empty dequeue is another valid contract, but it changes callers and tests. Returning undefined for both empty and a valid undefined value would discard information this queue promises to preserve.
+
+```javascript
+class Queue {
+  constructor() {
+    this.items = [];
+    this.head = 0;
+  }
+  get size() {
+    return this.items.length - this.head;
+  }
+  enqueue(value) {
+    this.items.push(value);
+  }
+  dequeue() {
+    if (this.size === 0) return { found: false };
+    const value = this.items[this.head];
+    this.items[this.head] = undefined;
+    this.head += 1;
+    if (this.head === this.items.length) {
+      this.items = [];
+      this.head = 0;
+    } else if (this.head >= 1024 && this.head * 2 >= this.items.length) {
+      this.items = this.items.slice(this.head);
+      this.head = 0;
+    }
+    return { found: true, value };
+  }
+}
+```
+
+Treat items and head as implementation state; mutating them directly violates the queue contract. The example leaves them visible to make the invariant inspectable. A production class can use private fields without changing the queue's behavior.
+
+The consumed slot is cleared before advancing the head, releasing the queue's reference to a removed object. That does not guarantee immediate garbage collection or remove other references held elsewhere. When the queue becomes empty, it discards its old backing array and resets the index.
+
+## Why repeated shift calls need a cost assumption
+
+Array shift removes the first element and adjusts the remaining indexed contents. The [MDN shift reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift) specifies its observable behavior. JavaScript engines can optimize particular array shapes, so do not claim that every engine always performs exactly the same internal steps.
+
+Under the usual contiguous-array model, moving all remaining elements for every front removal can turn a long queue drain into quadratic work. A head-index implementation makes the logical constant-size removal explicit. It still depends on ordinary array allocation and append costs, which are commonly analyzed amortized rather than as a strict constant guarantee for every individual operation.
+
+A linked queue or circular buffer can also satisfy FIFO behavior with different storage tradeoffs. A head index is a small implementation that is easy to trace during an interview; it does not require inventing node types solely for the queue.
+
+## Charge compaction to consumed entries
+
+Keeping a head index forever can retain an ever-growing logical array and old references. Clearing consumed slots handles object references; compaction handles the unused prefix. This queue compacts when at least 1,024 entries have been consumed and that prefix is at least half of the logical backing length.
+
+At compaction, the remaining entries are no more numerous than the consumed prefix. Charge their copying to those earlier removals. Across an operation sequence, this gives amortized O(1) queue overhead under the standard dynamic-array model. A single compaction can still cost O(q) for q retained entries; a strict per-operation latency requirement needs another design.
+
+Between compactions, the logical backing length is bounded by roughly twice the live count plus the fixed compaction threshold. That describes the array entries represented by the code, not an engine-specific promise about allocated bytes or when its garbage collector returns memory.
+
+## Apply the queue to graph discovery
+
+The graph below is represented by a Map from each vertex to an array of neighbors. Missing keys mean no outgoing edges. Map and Set use JavaScript key identity, so two distinct object instances are separate vertices even if their fields look equal.
+
+```javascript
+function bfsOrder(graph, start) {
+  const queue = new Queue();
+  const seen = new Set([start]);
+  const order = [];
+  queue.enqueue(start);
+  while (queue.size > 0) {
+    const next = queue.dequeue();
+    if (!next.found) throw new Error('Queue invariant failed');
+    const node = next.value;
+    order.push(node);
+    for (const neighbor of graph.get(node) || []) {
+      if (!seen.has(neighbor)) {
+        seen.add(neighbor);
+        queue.enqueue(neighbor);
+      }
+    }
+  }
+  return order;
+}
+```
+
+Mark a vertex before enqueuing it. Marking only after removal lets two parents queue the same neighbor before either copy is processed. A cycle can compound that duplicate work. The output contains each reachable vertex once and follows the supplied neighbor order.
+
+The function returns traversal order, not a shortest-path route. Add parent links when the caller needs a route, or distance labels when it needs hop counts. BFS gives fewest-hop discovery in an unweighted graph. Weighted shortest paths require another cost argument, as explained in [BFS versus DFS](/guides/bfs-vs-dfs).
+
+## Decide whether capacity and latency are part of the contract
+
+A server work queue may need a maximum capacity rather than unlimited growth. When full, it must reject a new item, wait for space, or apply a documented dropping policy. Silently dropping the oldest value would violate the lossless FIFO contract implemented here. Choosing an overflow policy is an application decision that a queue data structure cannot infer.
+
+A fixed-capacity circular buffer can reuse slots with modular indexes and avoid copying live entries during compaction. It needs a count or another rule to distinguish full from empty when indexes meet. Clear consumed object references there too. If the buffer grows automatically, resizing reintroduces occasional allocation and copying. Use that design when the capacity or per-operation latency requirement justifies the extra boundary state; the head-index queue remains a smaller choice for a bounded interview traversal.
+
+## Test long histories and falsy values
+
+Test empty dequeue, one value, repeated draining and refilling, and mixed values including undefined, false, zero, null, and an object reference. Confirm returned objects preserve the same value identity and that size counts only waiting entries.
+
+A compaction test should enqueue thousands of distinct values, remove more than half while leaving some entries queued, append more, and compare the final drain with the expected FIFO sequence. Checking only ten values never reaches the compaction branch. Also test fully emptying a large queue and using it again.
+
+For BFS, compare the result with a small direct-reference traversal on cycles, shared neighbors, disconnected components, and a missing adjacency key. An undefined vertex label is valid under this Map-based contract and exercises the queue's tagged result. Then implement [a queue](/course/implement-a-queue), inspect the [graph visualizer](/tools/graph-traversal), and practice explaining why each removal and discovery preserves the schedule.

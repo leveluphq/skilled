@@ -1,0 +1,19 @@
+A trailing debounce postpones a function until calls stop arriving for a chosen delay. Every new call clears the previous timer and starts another one. Only the latest pending invocation survives an event burst. This is useful for work such as waiting until a person pauses typing before starting a search.
+
+## Trace calls before tracing code
+
+With a delay of 100 milliseconds, calls at times 0, 40, and 90 schedule possible executions at 100, 140, and 190. Each later call cancels the preceding timer, leaving only the execution at 190. A new call at 250 begins another burst and can execute at 350 if no later call arrives.
+
+The delay is a scheduling threshold, not a promise of exact wall-clock execution. A busy event loop can run the callback later. For tests, control time with fake timers rather than relying on a machine to wake at an exact millisecond.
+
+## Retain the right invocation
+
+The wrapper needs the latest arguments and receiver. A normal function wrapper can capture its dynamic `this`, then call the original function with that receiver when the timer fires. An arrow wrapper has lexical `this`, which can change method behavior if the contract expects a call-time receiver.
+
+The timer handle belongs to one returned wrapper instance. Creating two wrappers should give them independent pending calls. Storing the handle globally would let one input cancel another unrelated input's work. The basic exercise also needs a policy for what the wrapper returns, since the delayed result is not available during the original call.
+
+## Compare the rate-control choices
+
+Debounce waits for quiet. Throttle limits how often work executes while calls continue. A trailing-only debounce can postpone indefinitely under a continuous stream. Adding a maximum wait changes that behavior and needs additional timing state; it should not be implied by the basic implementation.
+
+Use the [timing visualizer](/tools/debounce-throttle) to compare bursts and leading or trailing behavior. The [debounce and throttle guide](/guides/debounce-vs-throttle) includes code and test cases. To check understanding, predict how many calls survive before revealing the timeline, then explain which specific timer each incoming call cancels.

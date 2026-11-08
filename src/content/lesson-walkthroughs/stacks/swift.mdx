@@ -1,0 +1,55 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A stack processes values in last-in, first-out order. Pushing adds a new top, popping removes that top, and peeking reads it without removal. The recording connects this behavior to function calls and interview problems. Once you can track the top after each operation, bracket matching and explicit depth-first worklists become easier to explain.
+
+## Follow the most recent unfinished work
+
+Push A, B, then C. The next pop returns C, leaving B at the top. A later push of D makes D the next returned item. A trace should track order and size, including the transition from one item to empty. Reading an empty stack needs a defined result or error behavior.
+
+Bracket matching uses the stack to remember openings whose closings have not appeared yet. A closing bracket must match the most recent opening. Remembering only the counts of each bracket type loses nesting order: equal counts do not make `([)]` valid. That example explains why the stack stores ordered unfinished obligations.
+
+## Distinguish the data structure from the call stack
+
+Function execution also retains unfinished work. A caller may need local values and a return location after a nested call completes. Recursive algorithms build a chain of such frames. A stack overflow means that this call stack exceeds its available capacity; it does not imply that the entire computer has no memory remaining.
+
+An explicit stack can move the algorithm's worklist into ordinary program storage and make its processing order visible. That does not automatically reduce total memory. A deep traversal still needs somewhere to retain its unfinished branches, and the chosen representation determines the associated overhead.
+
+## Explain endpoint and growth costs
+
+A linked stack changes a fixed number of references per push or pop. A dynamic array is also a convenient stack representation at its end. Appending may have amortized constant cost because an occasional resize copies existing entries. Removing from the front would use the wrong endpoint for that representation.
+
+Continue with [Implement a Stack](/watch/implement-a-stack) for the link updates, [Valid Brackets](/watch/valid-brackets) for nesting, and [Max Min Stack](/watch/max-min-stack) for an augmented stack that retains extrema. For each example, state exactly what the stored entries mean after every operation rather than only naming the container.
+
+## Preserve last-in, first-out order
+
+The example pushes the input values and drains the stack. For `[6, 2, 6, 9]`, the result is `[9, 6, 2, 6]`. Equal values remain separate entries. The output is a reversed sequence because the final inserted item is always the next one removed.
+
+An array's append and end-removal operations fit this access pattern well. A linked implementation can instead replace a single top reference. Both need an explicit empty-stack policy. The example checks emptiness before removing an element, so a valid zero or negative payload never doubles as an empty marker.
+
+## Use a stack when pending work should resume in reverse order
+
+A stack also models suspended work. Depth-first traversal pushes alternatives while following one branch, and a recursive call stack retains the work that must resume after a child returns. That relationship helps explain why replacing a recursive traversal with a queue changes its order.
+
+Filling and draining n values takes O(n) time when each end operation is constant or amortized constant time. The retained entries and result use O(n) storage. Check empty, singleton, and repeated-value inputs. For an implementation with exposed nodes, also check that popping the final entry clears the top reference. A copied payload result and an exposed removed node have different ownership implications, even if both display the same value.
+
+## Swift example and implementation choices
+
+Array.append adds the next top value and popLast returns an optional result. while let consumes Some values, including zero, until nil indicates an empty stack. Swift value semantics keep the input independent, and no force unwrap is needed. The stack and output each retain up to a linear number of Int values during this fill-and-drain demonstration.
+
+### Worked example
+
+```swift
+func lifoOrder(_ values: [Int]) -> [Int] {
+    var stack: [Int] = []
+    var output: [Int] = []
+    for value in values { stack.append(value) }
+    while let value = stack.popLast() { output.append(value) }
+    return output
+}
+```
+
+## Continue in Swift
+
+[Open Stacks](/course/stacks) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Swift example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Swift interview preparation guide](/interview-prep/swift) connects these language choices with further practice and the cross-language operation reference.

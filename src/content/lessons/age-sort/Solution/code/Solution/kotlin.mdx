@@ -1,0 +1,23 @@
+```kotlin
+const val MIN_AGE = 0
+const val MAX_AGE = 100
+
+class Solution {
+    fun sortByAge(ageList: IntArray): IntArray {
+        val sortedAgeList = mutableListOf<Int>()
+        val ageCount = IntArray(MAX_AGE + 1)
+
+        ageList.forEach { age -> ageCount[age]++ }
+
+        for (age in MIN_AGE..MAX_AGE) {
+            val count = ageCount[age]
+
+            repeat(count) {
+                sortedAgeList.add(age)
+            }
+        }
+
+        return sortedAgeList.toIntArray()
+    }
+}
+```

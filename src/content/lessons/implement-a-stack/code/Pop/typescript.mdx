@@ -1,0 +1,12 @@
+```javascript
+pop(): Node | null {
+  const removedItem = this.last;
+
+  // Update `last` as long as we have items left in the stack
+  if (removedItem) {
+    this.last = removedItem.prev;
+  }
+
+  return removedItem;
+}
+```

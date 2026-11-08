@@ -1,0 +1,59 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Binary search finds a target by repeatedly discarding a portion of a sorted search space. Its central requirement is a rule that makes one portion impossible. The recording contrasts searching methods and then follows the midpoint decisions. A correct implementation needs both that exclusion argument and boundary updates that always make progress.
+
+## Choose one interval convention
+
+With an inclusive interval, low and high both identify candidates. The interval is empty when low passes high. A midpoint match can return immediately for an ordinary exact-match contract. Otherwise, move a boundary beyond the midpoint because that position has already been ruled out.
+
+For `[2, 5, 8, 11, 14]` and target 11, the first midpoint contains 8. Sorted order proves that 8 and every earlier value are too small. The remaining candidates are 11 and 14. That proof depends on ordering; applying the same updates to an unsorted array would discard possible answers.
+
+## Decide what duplicates mean
+
+Finding any matching position, the first matching position, and the insertion boundary are different tasks. Returning at the first equality does not establish that a match is the first one. Boundary-search variants often keep a match as a candidate and continue on one side. State the requested result before translating the general idea into code.
+
+Check an empty array, one item, two items, a missing target, and a target at either end. Two-item intervals are particularly useful for catching a boundary that fails to move. In a fixed-width language, calculating the midpoint from the distance between boundaries can avoid overflowing their sum.
+
+## Count comparisons and representation costs
+
+Under bounded-cost comparisons and direct indexed access, each step halves the candidate count, giving logarithmic time. The iterative version needs constant auxiliary storage. A linked list does not offer the same direct midpoint access; reaching a midpoint can require traversal, changing the cost model.
+
+Continue with [First Bad Version](/watch/first-bad-version), where the target is a true/false transition, and [Shifted Search](/watch/shifted-search), where you first determine which half is sorted. For either follow-up, explain the exact property that makes a discarded interval impossible instead of memorizing a set of boundary assignments.
+
+## Search for the first occurrence
+
+For the sorted input `[1, 3, 3, 3, 8]` and target 3, the example returns index 1. It computes a lower bound using a half-open interval `[low, high)`. Values before low are known to be too small. Values at or after high are outside the remaining candidates for the first position that could hold the target.
+
+When the middle value is smaller than the target, low becomes middle + 1. Otherwise high becomes middle, keeping a matching middle value available while looking farther left. On termination low equals high. One final equality check distinguishes an actual match from an insertion position.
+
+## Test interval edges and duplicate values
+
+An empty input begins with both bounds at zero and returns −1 after the final guard. A target above every element produces an insertion position equal to the length, so indexing before checking that bound would be an error. Targets below the first element and repeated targets exercise the opposite boundary.
+
+The function assumes the values are already sorted in ascending order. Sorting inside a wrapper changes both its cost and the meaning of the returned index. The search itself uses O(log n) comparisons and O(1) additional storage for random-access input. If you use a linked structure instead, reaching the middle is no longer a constant-time indexing operation. Keep that representation cost in the explanation.
+
+## C++ example and implementation choices
+
+The const vector reference provides random access without copying the input. Bounds use a signed index compatible with the small supported examples, and the final size guard runs before subscripting. The function assumes the vector fits that index type. For an unrestricted library range, choose iterator or size types deliberately rather than silently narrowing a potentially larger container length.
+
+### Worked example
+
+```cpp
+#include <vector>
+
+int binarySearch(const std::vector<int>& values, int target) {
+    std::size_t low = 0, high = values.size();
+    while (low < high) {
+        const auto middle = low + (high - low) / 2;
+        if (values[middle] < target) low = middle + 1;
+        else high = middle;
+    }
+    return low < values.size() && values[low] == target ? static_cast<int>(low) : -1;
+}
+```
+
+## Continue in C++
+
+[Open Searching and Binary Search](/course/searching-and-binary-search) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the C++ example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [C++ interview preparation guide](/interview-prep/cpp) connects these language choices with further practice and the cross-language operation reference.

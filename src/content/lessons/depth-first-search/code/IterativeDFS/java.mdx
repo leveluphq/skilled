@@ -1,0 +1,26 @@
+```java
+static void iterativeDepthFirstSearch(GraphNode startingNode) {
+    // Init our stack and set of visited nodes
+    Deque<GraphNode> dfsStack = new ArrayDeque<>();
+    dfsStack.push(startingNode);
+    Set<GraphNode> visitedNodes = new HashSet<>();
+
+    while (!dfsStack.isEmpty()) {
+        GraphNode node = dfsStack.pop();
+
+        // A node can be added to the stack more than once, so skip it if we already visited it
+        if (visitedNodes.contains(node)) {
+            continue;
+        }
+
+        visit(node);
+        visitedNodes.add(node);
+
+        for (GraphNode childNode : node.edges) {
+            if (!visitedNodes.contains(childNode)) {
+                dfsStack.push(childNode);
+            }
+        }
+    }
+}
+```

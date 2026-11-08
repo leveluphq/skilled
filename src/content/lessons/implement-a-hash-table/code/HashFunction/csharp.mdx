@@ -1,0 +1,11 @@
+```csharp
+private int Hash(string key) {
+    int hash = 0;
+
+    for (int i = 0; i < key.Length; i++) {
+        hash = (hash + (int)key[i]) % size;
+    }
+
+    return hash;
+}
+```

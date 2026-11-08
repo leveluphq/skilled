@@ -1,0 +1,10 @@
+Typically in binary search, we just track the start and end of the remaining items to determine where our midpoint is.
+Now with the shifted search, we also want to know the values of the start and end so we can determine which half the rotation is located in relative to the midpoint.
+
+By knowing which half the rotation is located in, we can use the other correctly ordered half to determine if the target is between the smallest and largest value of that half.
+
+- If the target _is_ between the smallest and largest values of the correctly-sorted half, we know the target must be located in this half.
+- If the target _is not_ between the smallest and largest values of the correctly-sorted half, we know it is in the half with the rotation point.
+
+It could be smaller or larger than the rotation — it doesn't matter at this point because we've just determined which half it is in.
+As long as we compare the target to the range of the correctly-ordered half, we will converge to the target value without needing to compare against the rotation.

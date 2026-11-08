@@ -1,0 +1,13 @@
+```swift
+func pop() -> Int? {
+    if length == 0 {
+        return nil
+    }
+
+    let poppedItem = data[length - 1]
+    data.removeValue(forKey: length - 1)
+    length -= 1
+
+    return poppedItem
+}
+```

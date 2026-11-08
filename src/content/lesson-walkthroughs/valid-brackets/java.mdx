@@ -1,0 +1,99 @@
+Java's `ArrayDeque` can hold the opening brackets that have not yet been closed. The valid-brackets exercise ignores ordinary text and checks only `()`, `[]`, and `{}`. An empty string is valid, and so is a string with no brackets. Crossing brackets such as `([)]` are invalid even though the counts balance.
+
+The function below matches the course starter's `hasValidBrackets(String s)` method. It treats null as outside the input contract; callers should supply a string. The result says whether all brackets match in order, rather than locating or repairing invalid input.
+
+## Use Deque as a last-in, first-out stack
+
+Declare the variable as `Deque<Character>` and instantiate `ArrayDeque<>`. Both `push` and `pop` operate at the front of this deque, so their combination gives stack behavior. A closer must match the most recently pushed opener.
+
+```java
+import java.util.ArrayDeque;
+import java.util.Deque;
+
+class Solution {
+    public boolean hasValidBrackets(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push(c);
+            } else if (c == ')' || c == ']' || c == '}') {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                char opening = stack.pop();
+                if ((c == ')' && opening != '(')
+                        || (c == ']' && opening != '[')
+                        || (c == '}' && opening != '{')) {
+                    return false;
+                }
+            }
+        }
+
+        return stack.isEmpty();
+    }
+}
+```
+
+Using `addLast` with `removeFirst` would produce queue behavior instead. A deque supports both queues and stacks; the selected methods determine which one you have. The [Deque API](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Deque.html) documents its equivalent stack operations, while the [ArrayDeque API](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ArrayDeque.html) describes its implementation and amortized operation costs.
+
+## Guard pop before unboxing a character
+
+Calling `pop` on an empty deque throws a `NoSuchElementException`. The empty check converts an unmatched closer into the required false result. Switching to `poll` would return null on an empty deque, but assigning that null to a primitive `char` would then throw during unboxing. Either API needs a deliberate absence check.
+
+The deque stores `Character` objects because Java generics do not accept primitive type parameters. `char opening = stack.pop()` unboxes a known existing entry. Comparisons then use primitive character values rather than relying on reference equality between wrapper objects.
+
+The implementation uses direct comparisons for the three matching pairs. A map could express the same relation, but this fixed alphabet is small enough for explicit conditions. A method should choose one representation and keep it readable; creating a general parser framework would add machinery without serving this input contract.
+
+## Trace the stack from the top
+
+For `a[({b})]c`, reading `[` pushes it, then `(` and `{` are pushed above it. The next bracket `}` pops `{`. The `)` pops `(`, and `]` pops `[`. Letters are ignored, and the final stack is empty.
+
+For `([)]`, after the first two characters the top is `[`. The `)` requires `(`, so the comparison fails and the method returns false. The opener needed for that closer exists deeper in the deque, but reaching past `[` would permit crossing brackets. Only the top is eligible.
+
+For `(()`, both closers encountered are handled legally, but one `(` remains at the end. The final empty check rejects it. This is why successfully processing every closer is necessary but insufficient: there must also be no unfinished opener.
+
+## Iterate UTF-16 units without turning this into a parser
+
+`String.charAt` returns a UTF-16 code unit. The bracket alphabet is ASCII, so each delimiter fits in one `char`. A supplementary character such as an emoji is visited as two code units, both of which are ignored. That is sufficient for this Boolean bracket problem; the function does not report user-visible character positions.
+
+Quoted strings and comments have no special meaning here. A bracket inside quote marks is still a bracket under the exercise contract. If the requirement changes to parsing Java source while skipping string literals, escaped quotes, and comments, use a tokenizer or add explicitly specified lexical states. Quietly skipping quoted regions would change the answer to the current question.
+
+## Test the method without runtime assertion flags
+
+```java
+class BracketExamples {
+    static void check(String input, boolean expected) {
+        if (new Solution().hasValidBrackets(input) != expected) {
+            throw new AssertionError("Unexpected bracket result: " + input);
+        }
+    }
+
+    public static void main(String[] args) {
+        check("", true);
+        check("ordinary text", true);
+        check("a + (b * [c])", true);
+        check("([]{})", true);
+        check("([)]", false);
+        check("]", false);
+        check("(()", false);
+        check("(]", false);
+        check("🙂{x[y](z)}", true);
+        check("(".repeat(20000) + ")".repeat(20000), true);
+
+        Solution reused = new Solution();
+        if (reused.hasValidBrackets("(") || !reused.hasValidBrackets("[]")) {
+            throw new AssertionError("State leaked between calls");
+        }
+    }
+}
+```
+
+The example class uses explicit exceptions because ordinary Java assertions require the `-ea` runtime option. The reused instance checks that an invalid call does not leave a stack behind for a later call. Creating the deque inside the method makes that isolation automatic.
+
+## Bound memory by the unfinished nesting
+
+Each character triggers a bounded amount of work, so the scan takes `O(n)` time with amortized deque operations. The largest stack contains the unmatched openers at the deepest point, giving `O(d)` auxiliary space for depth `d`. A string of only openers needs `O(n)` space; a long string of adjacent complete pairs can use constant stack space.
+
+The iterative method avoids consuming one Java call frame per nesting level. Before coding it in the exercise, explain why an invalid closer permits an early false return while a true result must wait until the entire input and the final stack check have been processed.

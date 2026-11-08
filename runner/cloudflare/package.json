@@ -1,0 +1,21 @@
+{
+  "name": "skilled-runner-cloudflare",
+  "private": true,
+  "description": "The runner service on Cloudflare Containers: a Worker that runs each lesson program in a fresh container of its language's image. See docs/runner-service.md.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "deploy": "node deploy.js"
+  },
+  "devDependencies": {
+    "@cloudflare/containers": "0.3.7",
+    "@cloudflare/workers-types": "5.20261015.1",
+    "typescript": "7.0.2",
+    "wrangler": "4.151.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261012.1": true
+  }
+}

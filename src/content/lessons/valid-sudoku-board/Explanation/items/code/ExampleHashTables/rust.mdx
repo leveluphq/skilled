@@ -1,0 +1,14 @@
+```rust
+// keys = number found in a cell
+// values = count for this number in a row, column, sub-square
+// { number: count }
+rows or columns = vec![
+    // ... hash tables before
+    HashMap::from([
+        (1, 1),
+        (4, 1),
+        (7, 2), // this would return false since we found a duplicate
+    ]),
+    // ... hash tables after
+]
+```

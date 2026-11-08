@@ -1,0 +1,32 @@
+```swift
+class MaxMinStack {
+    // Any of the initial methods can be updated
+    private var stack: [Int] = []
+
+    init() {}
+
+    func peek() -> Int {
+        return stack[stack.count - 1]
+    }
+
+    func push(_ item: Int) -> Int {
+        stack.append(item)
+        return item
+    }
+
+    func pop() -> Int {
+        return stack.removeLast()
+    }
+
+    // You must implement the methods below
+    func getStackMax() -> Int {
+        // Return the largest integer currently in the stack (don't remove it)
+        return 0
+    }
+
+    func getStackMin() -> Int {
+        // Return the smallest integer currently in the stack (don't remove it)
+        return 0
+    }
+}
+```

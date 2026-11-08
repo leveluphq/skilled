@@ -1,0 +1,14 @@
+```python
+def brute_force_get_max_profit(prices):
+    max_profit = 0
+
+    for buy_day in range(len(prices)):
+        buy_price = prices[buy_day]
+
+        for sell_day in range(buy_day + 1, len(prices)):
+            sell_price = prices[sell_day]
+            profit = sell_price - buy_price
+            max_profit = max(profit, max_profit)
+
+    return max_profit
+```

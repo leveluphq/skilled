@@ -1,0 +1,31 @@
+```go
+// O(n + m) - we add sequential operations together
+func multipleInput(input1, input2 []int) {
+	n := len(input1)
+	m := len(input2)
+
+	// O(n)
+	for i := 0; i < n; i++ {
+		// do something
+	}
+
+	// O(m)
+	for i := 0; i < m; i++ {
+		// do something
+	}
+}
+
+// O(nm) - we multiply nested input
+func multipleInput(input1, input2 []int) {
+	n := len(input1)
+	m := len(input2)
+
+	// O(n)
+	for i := 0; i < n; i++ {
+		// O(m)
+		for j := 0; j < m; j++ {
+			// do something
+		}
+	}
+}
+```

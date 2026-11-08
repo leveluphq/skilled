@@ -1,0 +1,12 @@
+```kotlin
+fun pop(): Node? {
+    val removedItem = last
+
+    // Update `last` as long as we have items left in the stack
+    if (removedItem != null) {
+        last = removedItem.prev
+    }
+
+    return removedItem
+}
+```

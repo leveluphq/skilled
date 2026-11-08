@@ -1,0 +1,19 @@
+```javascript
+const bruteForceAnswer = (input: number[]): number[] => {
+  const results = [];
+
+  for (let i = 0; i < input.length; i++) {
+    let product = 1;
+
+    for (let j = 0; j < input.length; j++) {
+      if (i !== j) {
+        product = product * input[j];
+      }
+    }
+
+    results[i] = product;
+  }
+
+  return results;
+};
+```

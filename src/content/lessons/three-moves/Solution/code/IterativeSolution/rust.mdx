@@ -1,0 +1,25 @@
+```rust
+impl Solution {
+    pub fn count_total_moves(board_length: i32) -> i32 {
+        if board_length < 0 {
+            return 0;
+        }
+
+        let mut three_spots_back = 0;
+        let mut two_spots_back = 0;
+        let mut one_spot_back = 1;
+
+        for _ in 0..board_length {
+            let final_spot = one_spot_back + two_spots_back + three_spots_back;
+
+            three_spots_back = two_spots_back;
+            two_spots_back = one_spot_back;
+            one_spot_back = final_spot;
+        }
+
+        // We return one_spot_back because it was actually updated to the final_spot
+        // during the last iteration of the loop when we moved values forward
+        one_spot_back
+    }
+}
+```

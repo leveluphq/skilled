@@ -1,0 +1,36 @@
+```swift
+class Solution {
+    func getTargetIndexes(_ array: [Int], _ target: Int) -> [[Int]] {
+        var results: [[Int]] = []
+        var arrayElementAtIndex: [Int: Int] = [:]
+
+        // Loop through our input array and
+        // create a hash table that stores the array value and
+        // its corresponding index.
+        for (i, element) in array.enumerated() {
+            arrayElementAtIndex[element] = i
+        }
+
+        for (i, currentValue) in array.enumerated() {
+            // We find the element that would be the match current value
+            // and check if it is our hash table.
+            let matchedValue = target - currentValue
+
+            // Check if our matched index is a valid array index
+            // ----
+            // NOTE: In Swift, the lookup gives nil
+            // if the value does not exist in the hash table,
+            // so `if let` skips values we haven't stored.
+            if let matchedIndex = arrayElementAtIndex[matchedValue], matchedIndex >= 0 && matchedIndex != i {
+                results.append([i, matchedIndex])
+
+                // Make sure we don't use these values again
+                arrayElementAtIndex[currentValue] = -1
+                arrayElementAtIndex[matchedValue] = -1
+            }
+        }
+
+        return results
+    }
+}
+```

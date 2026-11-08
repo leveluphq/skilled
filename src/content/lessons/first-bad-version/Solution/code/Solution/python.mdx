@@ -1,0 +1,20 @@
+```python
+"""
+NOTE: function is_bad_version is defined in the test scope
+and will be called correctly when used in this solution function.
+"""
+
+def first_bad_version(total_versions):
+    lower_bound = 1 # Starts at v1
+    upper_bound = total_versions
+
+    while lower_bound < upper_bound:
+        midpoint = lower_bound + int((upper_bound - lower_bound) / 2)
+
+        if is_bad_version(midpoint):
+            upper_bound = midpoint
+        else:
+            lower_bound = midpoint + 1
+
+    return lower_bound
+```

@@ -1,0 +1,74 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The lesson builds an in-memory publish-subscribe object with `subscribe`, `publish`, and `unsubscribe`. An event name selects a collection of callbacks. Publishing passes data to those callbacks, while unsubscribing removes a previously registered callback. This small implementation explains local dispatch; it does not promise durable delivery, retries, or cross-process messaging.
+
+## Store callbacks under the event they observe
+
+Subscribing creates the event's callback collection if needed, then stores the supplied function. Multiple callbacks can listen to one name, and one function may be registered for several names. Publishing an event with no subscribers can return without invoking anything. Publishing a known event calls its callbacks with the provided data.
+
+For an event called `saved`, register two functions that record the received payload. Publish once and check that both receive the same payload according to the API's dispatch order. Do not assume each callback receives a deep copy: a shared mutable payload can let one callback affect what a later callback sees.
+
+## Keep the identity needed for removal
+
+Unsubscribe needs the same function reference originally registered. Creating another arrow function with identical text creates another function object and does not identify the original subscription. Retain the reference or design subscribe to return a cleanup handle. The lesson's callback-based removal follows its own stated policy for matching registrations.
+
+Subscription lifetime matters in an application. A listener can retain the objects captured by its closure. Removing a view without removing its listeners may keep callbacks active and retained. Test that a callback stops running after cleanup and that unrelated subscribers still receive later events.
+
+## Specify dispatch edge cases before extending the design
+
+What happens if a callback subscribes or unsubscribes while publication is in progress? Does an exception stop later callbacks? Can the same callback be registered twice? Those are API decisions, and a basic array loop does not establish every possible policy. Recursive publication adds another case because it can run before the outer dispatch finishes.
+
+The [event-emitter guide](/guides/javascript-event-emitter) provides a more explicit contract for duplicate registrations, dispatch mutations, cleanup, and recursive once handlers. Use the [current Pub-Sub lesson](/course/pub-sub-and-event-driven-programming) to build the smaller version first, then add an edge case only after describing its expected sequence of calls.
+
+## Specify subscription identity and publication order
+
+The standalone Dispatcher stores a unique subscription record for each subscribe call. Subscribing the same callback twice creates two deliveries. Each returned disposer removes only its own record and is safe to call again. Event names are Map keys, so names such as `__proto__` do not access object prototype properties.
+
+Publish copies the current subscription list before invoking callbacks in registration order. Removing a subscription during publication affects later publications, while the current snapshot still delivers it. A new subscription created inside a callback likewise starts with a later publication. A synchronous listener exception stops the current loop and reaches the publisher.
+
+## Account for retained callbacks
+
+For k listeners on an event, publication takes O(k) time plus callback work and allocates an O(k) snapshot. Subscription appends are amortized constant time; disposal scans and may shift a list, giving O(k) work. The dispatcher retains callbacks and whatever those closures keep reachable until disposal or release of the dispatcher.
+
+Check missing events, duplicate callback registrations, repeated disposal, subscription changes during publication, and false or zero payloads. This is an in-process synchronous dispatcher. It provides no persistence, retries, cross-process delivery, or automatic awaiting of returned promises. A UI can use the disposer during cleanup so an old component does not continue receiving events after its useful lifetime.
+
+## JavaScript example and implementation choices
+
+Map avoids collisions between event names and object prototype properties. A unique subscription object separates duplicate registrations of the same function, allowing each disposer to remove exactly one occurrence. publish iterates a sliced snapshot, so changes to registration during a callback affect later publications. Listener exceptions are synchronous and stop delivery; returned promises are neither awaited nor automatically handled by this dispatcher.
+
+### Worked example
+
+```javascript
+class Dispatcher {
+    constructor() {
+        this.listeners = new Map();
+    }
+    subscribe(event, callback) {
+        const subscription = { callback };
+        const bucket = this.listeners.get(event) ?? [];
+        bucket.push(subscription);
+        this.listeners.set(event, bucket);
+        return () => {
+            const current = this.listeners.get(event);
+            if (!current)
+                return;
+            const index = current.indexOf(subscription);
+            if (index !== -1)
+                current.splice(index, 1);
+            if (current.length === 0)
+                this.listeners.delete(event);
+        };
+    }
+    publish(event, data) {
+        const snapshot = (this.listeners.get(event) ?? []).slice();
+        for (const subscription of snapshot)
+            subscription.callback(data);
+    }
+}
+```
+
+## Continue in JavaScript
+
+[Open Pub-Sub and Event-Driven Programming](/course/pub-sub-and-event-driven-programming) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

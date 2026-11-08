@@ -1,0 +1,13 @@
+```javascript
+pop(): any {
+  if (this.length === 0) {
+    return undefined;
+  }
+
+  const poppedItem = this.data[this.length - 1];
+  delete this.data[this.length - 1];
+  this.length--;
+
+  return poppedItem;
+}
+```

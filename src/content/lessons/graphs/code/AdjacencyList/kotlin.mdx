@@ -1,0 +1,13 @@
+```kotlin
+// val adjacencyListGraph = mapOf(
+//     currentNode to listOf(connected nodes (the edges)),
+// )
+
+val adjacencyListGraph = mapOf(
+    0 to listOf(1, 2), // node 0 has edges with 1 and 2
+    1 to listOf(0, 3), // node 1 has edges with 0 and 3
+    2 to listOf(0, 3), // node 2 has edges with 0 and 3
+    3 to listOf(1, 2, 4), // node 3 has edges with 1, 2, and 4
+    4 to listOf(3), // node 4 has an edge with 3
+)
+```

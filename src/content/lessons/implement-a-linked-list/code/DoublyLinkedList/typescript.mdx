@@ -1,0 +1,57 @@
+```typescript
+class DoublyNode {
+  data: any;
+  next: DoublyNode | null;
+  prev: DoublyNode | null;
+
+  constructor(data: any) {
+    this.data = data;
+    this.next = null;
+    this.prev = null;
+  }
+}
+
+class DoublyLinkedList {
+  length: number;
+  head: DoublyNode;
+  tail: DoublyNode;
+
+  constructor(data: any) {
+    const initialNode = new DoublyNode(data);
+
+    this.length = 1;
+    this.head = initialNode;
+    this.tail = initialNode;
+  }
+
+  // O(1)
+  prepend(data: any): DoublyNode {
+    const prependedNode = new DoublyNode(data);
+    const previousHead = this.head;
+
+    this.head = prependedNode;
+    this.head.next = previousHead;
+
+    previousHead.prev = this.head;
+
+    this.length++;
+
+    return this.head;
+  }
+
+  // O(1)
+  append(data: any): DoublyNode {
+    const appendedNode = new DoublyNode(data);
+    const previousTail = this.tail;
+
+    this.tail = appendedNode;
+    this.tail.prev = previousTail;
+
+    previousTail.next = this.tail;
+
+    this.length++;
+
+    return appendedNode;
+  }
+}
+```

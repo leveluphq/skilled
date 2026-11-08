@@ -1,0 +1,15 @@
+```typescript
+class Presenter {
+  constructor(public name: string) {}
+  getName(): string { return this.name; }
+}
+
+function meetingCallbacks(presenter: Presenter, names: readonly string[]) {
+  const readPresenter = presenter.getName.bind(presenter);
+  const seats: Array<() => string> = [];
+  for (let index = 0; index < names.length; index++) {
+    seats.push(() => 'Seat ' + (index + 1) + ': ' + names[index]);
+  }
+  return { readPresenter, seats };
+}
+```

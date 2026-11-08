@@ -1,0 +1,56 @@
+```go
+func walkMatrix(matrix [][]int) []int {
+	if len(matrix) == 0 {
+		return []int{}
+	}
+	result := []int{}
+
+	// Initialize the upper and lower bounds indexes
+	rowCount := len(matrix)
+	columnCount := len(matrix[0])
+	startRow := 0
+	endRow := rowCount - 1
+	startColumn := 0
+	endColumn := columnCount - 1
+
+	// We will keep walking as long as rows or columns remain.
+	// That happens as long as the end is greater or equal to the start.
+	for endRow >= startRow && endColumn >= startColumn {
+		// Walk across the top starting row for each column from beginning to end
+		// This is left-right across the top
+		for column := startColumn; column <= endColumn; column++ {
+			// Add the item to result in order
+			result = append(result, matrix[startRow][column])
+		}
+
+		// Increment our start row since we visited each value
+		startRow++
+
+		// Walk top-bottom for the end column
+		for row := startRow; row <= endRow; row++ {
+			result = append(result, matrix[row][endColumn])
+		}
+		endColumn--
+
+		// Since we increment startRow, we need to make sure we are still in bounds
+		if endRow >= startRow {
+			// Walk right-left on the bottom row
+			for column := endColumn; column >= startColumn; column-- {
+				result = append(result, matrix[endRow][column])
+			}
+		}
+		endRow--
+
+		// Since we decrement endColumn, we need to make sure we are still in bounds
+		if endColumn >= startColumn {
+			// Walk bottom-top for the start column
+			for row := endRow; row >= startRow; row-- {
+				result = append(result, matrix[row][startColumn])
+			}
+		}
+		startColumn++
+	}
+
+	return result
+}
+```

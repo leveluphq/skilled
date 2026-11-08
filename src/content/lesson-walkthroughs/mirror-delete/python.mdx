@@ -1,0 +1,91 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Remove the node k positions from the end of a singly linked list, counting the tail as position zero. For `10 -> 20 -> 30 -> 40`, k = 0 removes 40, k = 1 removes 30, and k = 3 removes 10. If k is at least the list length, return the original list unchanged. Inputs use nonnegative k.
+
+## Find the predecessor without knowing the length
+
+A two-pass solution first counts the nodes and then walks to the target's predecessor. That is O(n) time and constant auxiliary space, and is a useful baseline. Two pointers let us find the same predecessor during one forward traversal after an initial offset.
+
+Start lead and follow at the head. Advance lead k + 1 links, returning the original head if lead becomes null before completing those advances. The extra one positions follow at the predecessor of the node to delete once lead reaches the tail. The gap is measured in links, so draw actual nodes before deciding whether an offset of k or k + 1 matches the later stopping condition.
+
+## Distinguish head removal from an invalid offset
+
+If lead becomes null exactly after the k + 1 advances, the target is the head. Return `head.next`. For a four-node list and k = 3, those four advances end exactly at null, so removing the head is valid. For k = 4, the algorithm discovers null before completing the fifth advance, so it returns the list unchanged.
+
+For k = 1, lead first advances two links, from 10 to 30. Move both pointers until lead is the tail. They then point to 20 and 40. The target is follow's next node, 30. Assign follow's next link to the node after 30, reconnecting 20 directly to 40.
+
+## Prove that the gap identifies the target
+
+After initialization, lead is k + 1 links ahead of follow. Moving both one link preserves that distance. When lead is at the final node, there are exactly k nodes after follow's next node. Therefore follow's next node is the one whose zero-based distance from the end is k.
+
+The head-removal case needs a separate return because no ordinary predecessor exists before the head. A dummy node is an alternative design that supplies such a predecessor. Whichever form you choose, the caller must assign the returned head. Ignoring it makes a correct head deletion appear to have failed.
+
+## Mutation and ownership
+
+The reference-based versions relink the existing chain. They do not shift data values between nodes. That preserves the meaning of the remaining node identities, although an external reference to the removed node can still exist. Ownership-based implementations must detach and move the relevant links without leaving multiple mutable owners.
+
+The scan takes O(n) time. The usual pointer version uses O(1) auxiliary space. Read the language implementation's allocation choices before extending that claim: a version that materializes all values or clones a suffix has a different storage cost. The input is assumed acyclic so forward traversal eventually reaches null.
+
+## Tests and adaptations
+
+Test every valid k for a small list, k equal to its length, and a much larger k. Include an empty list, removing the only node of a singleton, removing a tail, and removing the head. Repeated values prevent a test from accidentally identifying the target by value instead of position.
+
+For an independent oracle, convert the original list to an array and remove index `length - 1 - k` only when that index is valid. Compare the resulting sequence and check that no cycle was introduced. If a caller instead numbers positions from one, translate that input once at the boundary. Mixing the two conventions inside the pointer loop usually produces an off-by-one deletion.
+
+## Python implementation
+
+Identity checks against `None` delimit the list. Removing the head returns its successor; interior deletion changes the predecessor’s next link.
+
+Python entries use the function or class API shown in the lesson starter. Lists and dictionaries are mutable, and assignment shares those objects. Integer arithmetic has arbitrary precision, although the course input and output schema still has bounded integer types. Recursive solutions use Python call frames; an iterative rewrite is appropriate when input depth can exceed the interpreter's recursion limit.
+
+```python
+def mirror_delete(head, k):
+    # Create 2 pointers (follow and lead) that start at the head
+    follow = head
+    lead = head
+
+    """
+        Since we want to delete the k node,
+        we set our follow pointer to be one spot beyond the deleted node.
+
+        So instead of iterating `0 to i < k` as with most problems,
+        we iterate `0 to i < k + 1` to account for that extra spot.
+    """
+
+    for i in range(k + 1):
+        # If we hit a None, k is larger than our linked list,
+        # so we return the head without deleting an item.
+        if lead == None:
+            return head
+
+        lead = lead.next
+
+    """
+        Our lead pointer will end exactly at the terminating None
+        when the head node should be removed (k == linkedList.length - 1).
+
+        Since we iterate to k + 1, our lead pointer is 1 item past
+        the end of the linked list, which is the terminating None value.
+    """
+
+    if lead == None:
+        return head.next
+
+    # Increment until lead reaches the tail.
+    # Once here, we know the node we want to delete is at k, and our follow is at k + 1.
+    while lead.next != None:
+        follow = follow.next
+        lead = lead.next
+
+    # Delete the kth node (skip past it in our linked list)
+    follow.next = follow.next.next
+
+    # The head will be the same, but the list will not contain the node we deleted
+    return head
+```
+
+## Practice this implementation
+
+[Open Mirror Delete](/course/mirror-delete) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Python conventions and practice problems, use the [Python interview guide](/interview-prep/python).

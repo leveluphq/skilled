@@ -1,0 +1,75 @@
+```java
+class BinaryNode {
+    int data;
+    BinaryNode left;
+    BinaryNode right;
+
+    BinaryNode(int data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    private BinaryNode root;
+
+    public BinarySearchTree() {
+        this.root = null;
+    }
+
+    public BinarySearchTree insert(int data) {
+        BinaryNode node = new BinaryNode(data);
+
+        // First insert becomes root
+        if (root == null) {
+            root = node;
+            return this;
+        }
+
+        BinaryNode currentNode = root;
+
+        while (true) {
+            if (data < currentNode.data) {
+                // Insert the node if you reach a leaf and return
+                if (currentNode.left == null) {
+                    currentNode.left = node;
+                    return this;
+                }
+
+                // Continue by traversing left
+                currentNode = currentNode.left;
+            } else {
+                // Insert the node if you reach a leaf and return
+                if (currentNode.right == null) {
+                    currentNode.right = node;
+                    return this;
+                }
+
+                // Continue by traversing right
+                currentNode = currentNode.right;
+            }
+        }
+    }
+
+    public BinaryNode search(int data) {
+        if (root == null) {
+            return null;
+        }
+
+        BinaryNode currentNode = root;
+
+        while (currentNode != null) {
+            if (data < currentNode.data) {
+                currentNode = currentNode.left;
+            } else if (data > currentNode.data) {
+                currentNode = currentNode.right;
+            } else if (currentNode.data == data) {
+                return currentNode;
+            }
+        }
+
+        return null;
+    }
+}
+```

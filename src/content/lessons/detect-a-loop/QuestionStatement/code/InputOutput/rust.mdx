@@ -1,0 +1,31 @@
+```rust
+#[derive(PartialEq, Eq, Clone)]
+pub struct ListNode {
+    pub data: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    pub fn new(data: i32) -> Self {
+        ListNode { data, next: None }
+    }
+}
+
+// Example 1
+// Input
+let head = Some(Box::new(ListNode::new(42))); // ... then add more nodes
+42 -> 100 -> 4 -> 7 -> None
+
+// Output: has_loop(&head)
+false
+
+// Example 2
+// Input
+0 -> 1 -> 2 -> 3 -> 4
+          ^         |
+          |         v
+          7 <- 6 <- 5
+
+// Output: has_loop(&head)
+true
+```

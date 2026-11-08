@@ -1,0 +1,19 @@
+```cpp
+vector<long long> bruteForceAnswer(vector<long long>& input) {
+    vector<long long> results(input.size());
+
+    for (size_t i = 0; i < input.size(); i++) {
+        long long product = 1;
+
+        for (size_t j = 0; j < input.size(); j++) {
+            if (i != j) {
+                product = product * input[j];
+            }
+        }
+
+        results[i] = product;
+    }
+
+    return results;
+}
+```

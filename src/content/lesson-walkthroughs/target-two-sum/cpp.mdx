@@ -1,0 +1,95 @@
+The course's Two Sum exercise asks for every matching pair of original indexes from unique integers. For `[4, 1, 5, 2, 3]` with target `6`, the result needs both `[1, 2]` and `[0, 3]`. Stopping after the first pair gives an incomplete answer.
+
+In C++, an `unordered_map<int, int>` records each earlier value's position. The return type is a vector of two-element index vectors, matching the exercise's shape. The code leaves the input unchanged and assumes the usual 32-bit `int` values, with a wider `long long` available for complement arithmetic.
+
+## Use find for a lookup that does not insert
+
+Before processing index `j`, the map contains only earlier positions. Search for the complement, append a pair if found, then store the current value. The sequence prevents self-pairs and reversed duplicates.
+
+```cpp
+#include <limits>
+#include <stdexcept>
+#include <unordered_map>
+#include <vector>
+
+class Solution {
+public:
+    std::vector<std::vector<int>> getTargetIndexes(std::vector<int>& array, int target) {
+        if (array.size() > static_cast<std::size_t>(std::numeric_limits<int>::max())) {
+            throw std::length_error("Indexes do not fit the result type");
+        }
+        std::unordered_map<int, int> seen;
+        std::vector<std::vector<int>> pairs;
+
+        for (std::size_t j = 0; j < array.size(); ++j) {
+            const long long complement = static_cast<long long>(target) - array[j];
+            if (complement >= std::numeric_limits<int>::min()
+                    && complement <= std::numeric_limits<int>::max()) {
+                const auto it = seen.find(static_cast<int>(complement));
+                if (it != seen.end()) {
+                    pairs.push_back({it->second, static_cast<int>(j)});
+                }
+            }
+            seen.emplace(array[j], static_cast<int>(j));
+        }
+        return pairs;
+    }
+};
+```
+
+The loop uses `size_t`, the vector's size type. The entry guard makes narrowing an index to `int` deliberate instead of silently truncating an exceptionally large position. The exercise's output type, rather than the map itself, creates that restriction.
+
+## Avoid operator[] for membership testing
+
+`seen[complement]` inserts a default value if the key is absent. A lookup written that way can change the map and manufacture an apparent index zero. It also cannot distinguish a newly inserted zero from a real earlier position zero.
+
+`find` returns an iterator or `end()`. Check that iterator before reading `second`, which contains the stored index. The [unordered_map specification](https://eel.is/c++draft/unord.map) documents the container's element access and modifiers. Here lookup and insertion are intentionally separate operations.
+
+Insertion may rehash the map and invalidate iterators. We finish using `it` before `emplace`, so no iterator is retained across that potential rehash. Reserving map capacity can reduce reallocations, but is an optimization rather than part of the correctness proof.
+
+## Widen before subtracting
+
+Two valid `int` inputs can produce a complement outside the `int` range. Cast the target before subtraction so the operation happens in the wider type. Casting the completed `target - array[j]` expression would happen after any overflowing narrow arithmetic.
+
+When the wider complement cannot fit in `int`, it cannot equal any element in this input array. Skipping that lookup is correct. For `[INT_MAX, 1]` and target `INT_MIN`, wrapped addition must not create a false mathematical match.
+
+This is different from choosing wrapping arithmetic as the problem's intended number system. The exercise asks about ordinary integer sums, so the implementation must not substitute a wrapped sum at the boundary.
+
+## Follow the prefix invariant
+
+On `[4, 1, 5, 2, 3]`, the first two insertions are `4 → 0` and `1 → 1`. The `5` finds the earlier `1`, adding `[1, 2]`. The `2` finds `4`, adding `[0, 3]`. The final `3` cannot match itself because insertion follows lookup.
+
+Every pair is discovered when its later member arrives. Earlier positions remain available after a match, but uniqueness means a number has only one complement value. We do not need a separate set of emitted pairs or a rule deleting matched entries.
+
+## Check examples without depending on pair order
+
+```cpp
+#include <algorithm>
+#include <utility>
+
+void checkExamples() {
+    Solution solution;
+    std::vector<int> input{4, 1, 5, 2, 3};
+    auto actual = solution.getTargetIndexes(input, 6);
+    for (auto& pair : actual) std::sort(pair.begin(), pair.end());
+    std::sort(actual.begin(), actual.end());
+    const std::vector<std::vector<int>> expected{{0, 3}, {1, 2}};
+    if (actual != expected || input != std::vector<int>({4, 1, 5, 2, 3})) {
+        throw std::runtime_error("Incorrect pairs or modified input");
+    }
+    std::vector<int> single{3};
+    if (!solution.getTargetIndexes(single, 6).empty()) {
+        throw std::runtime_error("Self-match accepted");
+    }
+}
+```
+
+Call `checkExamples()` from a local test program's `main`. Add empty input, no match, negative numbers, index zero, and numeric boundaries. A small nested-loop oracle with widened sums is useful for exhaustive comparisons; using overflowing arithmetic in the oracle would hide the same defect.
+
+Keep an input copy in that oracle test and compare it afterward. A sorting-based rewrite can return plausible matching values while silently changing the original index positions, so result checking alone may miss the caller-visible mutation.
+
+## Explain the expected bounds
+
+Hash-table operations give expected `O(n + k)` work under ordinary hashing assumptions, with `O(n)` map storage and `O(k)` output. Collision-heavy worst cases can be slower. With unique values, the number of pairs `k` is at most linear.
+
+If repeated values become legal and every index pair is required, the map must retain multiple earlier indexes per value. Confirm that changed contract before modifying the algorithm. For the current exercise, reconstruct the code from lookup-before-insertion and test a pair involving index zero.

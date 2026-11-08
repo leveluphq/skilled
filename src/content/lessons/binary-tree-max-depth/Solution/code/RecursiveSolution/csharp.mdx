@@ -1,0 +1,14 @@
+```csharp
+public class Solution {
+    public int FindMaxDepth(BinaryNode root) {
+        if (root == null) {
+            return -1;
+        }
+
+        int leftDepth = FindMaxDepth(root.left);
+        int rightDepth = FindMaxDepth(root.right);
+
+        return Math.Max(leftDepth, rightDepth) + 1;
+    }
+}
+```

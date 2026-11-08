@@ -1,0 +1,9 @@
+```csharp
+SumDigits(n) = n % 10 + SumDigits(n / 10) // recurse while n > 0
+// n / 10 is integer division, so it drops the remainder and rounds down
+
+// recursive order (divide integer by 10 each step)
+SumDigits(6321) + SumDigits(632) + SumDigits(63) + SumDigits(6) + SumDigits(0)
+// 6321 % 10    +    632 % 10    +    63 % 10    +     6 % 10   + (base case)
+//     1        +       2        +       3       +       6      +      0
+```

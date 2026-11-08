@@ -1,0 +1,24 @@
+```cpp
+void breadthFirstSearch(GraphNode* startingNode) {
+    queue<GraphNode*> bfsQueue;
+    unordered_set<GraphNode*> visitedNodes;
+
+    bfsQueue.push(startingNode);
+    visitedNodes.insert(startingNode);
+
+    while (!bfsQueue.empty()) {
+        GraphNode* node = bfsQueue.front();
+        bfsQueue.pop();
+
+        // Use node value for the question
+        visit(node);
+
+        for (GraphNode* childNode : node->edges) {
+            if (!visitedNodes.contains(childNode)) {
+                bfsQueue.push(childNode);
+                visitedNodes.insert(childNode);
+            }
+        }
+    }
+}
+```

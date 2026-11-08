@@ -1,0 +1,86 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A trailing debounce postpones a function until calls stop arriving for a chosen delay. Every new call clears the previous timer and starts another one. Only the latest pending invocation survives an event burst. This is useful for work such as waiting until a person pauses typing before starting a search.
+
+## Trace calls before tracing code
+
+With a delay of 100 milliseconds, calls at times 0, 40, and 90 schedule possible executions at 100, 140, and 190. Each later call cancels the preceding timer, leaving only the execution at 190. A new call at 250 begins another burst and can execute at 350 if no later call arrives.
+
+The delay is a scheduling threshold, not a promise of exact wall-clock execution. A busy event loop can run the callback later. For tests, control time with fake timers rather than relying on a machine to wake at an exact millisecond.
+
+## Retain the right invocation
+
+The wrapper needs the latest arguments and receiver. A normal function wrapper can capture its dynamic `this`, then call the original function with that receiver when the timer fires. An arrow wrapper has lexical `this`, which can change method behavior if the contract expects a call-time receiver.
+
+The timer handle belongs to one returned wrapper instance. Creating two wrappers should give them independent pending calls. Storing the handle globally would let one input cancel another unrelated input's work. The basic exercise also needs a policy for what the wrapper returns, since the delayed result is not available during the original call.
+
+## Compare the rate-control choices
+
+Debounce waits for quiet. Throttle limits how often work executes while calls continue. A trailing-only debounce can postpone indefinitely under a continuous stream. Adding a maximum wait changes that behavior and needs additional timing state; it should not be implied by the basic implementation.
+
+Use the [timing visualizer](/tools/debounce-throttle) to compare bursts and leading or trailing behavior. The [debounce and throttle guide](/guides/debounce-vs-throttle) includes code and test cases. To check understanding, predict how many calls survive before revealing the timeline, then explain which specific timer each incoming call cancels.
+
+## Trace the latest pending call
+
+With a wait of 100 ms, calls at 0 and 80 ms produce one callback at 180 ms if the event loop can run it then. The second call replaces both the deadline and the retained arguments and receiver. The ordinary wrapper call returns undefined; it cannot synchronously return work that will happen later.
+
+Cancel clears the timer and discards the pending call. Flush clears the timer and invokes that pending call immediately, returning its result. A second flush with no pending call does nothing. Releasing the pending state before invoking the callback allows a callback to schedule another debounced call without having its new state erased afterward.
+
+## Test a deadline without sleeping in real time
+
+Use a fake clock to advance to one millisecond before the deadline, then to the deadline. Check a single call, a burst, a long pause, cancellation, flushing, and a callback that calls the wrapper again. Include zero, false, and undefined arguments; pending state is tracked separately from payload truthiness.
+
+The wrapper retains one argument tuple and receiver plus a timer handle. Those references can keep a large object graph alive even though the wrapper has a fixed number of fields. Delay is validated against the supported timer range. A zero delay still schedules future timer work. Actual execution may occur later when other tasks occupy the event loop; the wrapper does not promise exact wall-clock delivery.
+
+## TypeScript example and implementation choices
+
+The generic This, Args, and Result parameters preserve receiver, argument tuple, and flush-result relationships. `ReturnType<typeof setTimeout>` accommodates the timer-handle type supplied by the current environment. The receiver assertion is justified only when a pending argument tuple exists, because both are captured together. Ordinary wrapper calls return void; flush may return the callback result or undefined when nothing was pending.
+
+### Worked example
+
+```typescript
+function debounce<This, Args extends unknown[], Result>(
+  fn: (this: This, ...args: Args) => Result, wait: number,
+) {
+  if (typeof fn !== 'function') throw new TypeError('Expected a function');
+  if (!Number.isFinite(wait) || wait < 0 || wait > 2147483647)
+    throw new RangeError('wait must fit the timer range');
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let latestArgs: Args | null = null;
+  let latestReceiver: This | undefined;
+
+  function invoke(): Result | undefined {
+    const args = latestArgs;
+    const receiver = latestReceiver;
+    latestArgs = null;
+    latestReceiver = undefined;
+    if (args !== null) return fn.apply(receiver as This, args);
+  }
+
+  function debounced(this: This, ...args: Args): void {
+    latestArgs = args;
+    latestReceiver = this;
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => { timer = null; invoke(); }, wait);
+  }
+  debounced.cancel = function (): void {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    latestArgs = null;
+    latestReceiver = undefined;
+  };
+  debounced.flush = function (): Result | undefined {
+    if (timer === null) return;
+    clearTimeout(timer);
+    timer = null;
+    return invoke();
+  };
+  return debounced;
+}
+```
+
+## Continue in TypeScript
+
+[Open Debounce](/course/debounce) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the TypeScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [TypeScript interview preparation guide](/interview-prep/typescript) connects these language choices with further practice and the cross-language operation reference.

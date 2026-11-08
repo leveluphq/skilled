@@ -1,0 +1,28 @@
+```kotlin
+fun remove(index: Int): Int? {
+    // Ensure the array has items
+    if (length == 0) {
+        return null
+    }
+
+    // Ensure we're removing an item inside the array
+    if (index > length - 1 || index < 0) {
+        return null
+    }
+
+    val itemToBeRemoved = data[index]
+
+    // Shift items inward one index towards the one we remove
+    for (i in index until length - 1) {
+        data[i] = data.getValue(i + 1)
+    }
+
+    // The item we want to delete is just overwritten to the value of the index that comes after it.
+
+    // Since all items were shifted inward one spot, we need to remove the last index/item since our array size shrinks by 1
+    data.remove(length - 1)
+    length--
+
+    return itemToBeRemoved
+}
+```

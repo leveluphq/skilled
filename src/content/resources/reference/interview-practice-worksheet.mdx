@@ -1,0 +1,101 @@
+Use this worksheet for one complete coding-problem attempt. It leaves a record of the contract you understood, the approach you chose, the tests you ran, and the next thing to practice. Print the page, copy the prompts into your notes, or use the [interview rehearsal](/tools/interview-rehearsal) to download a filled session as Markdown.
+
+Keep the problem statement nearby. The worksheet should make your reasoning inspectable rather than become another document to complete after the learning has already happened. A short answer with a concrete example is more useful than filling every space with general advice.
+
+## Write the contract in your own words
+
+Record the input representation, the required output, and the constraints that affect correctness. State whether the input can be empty, whether values can repeat, whether input mutation is permitted, and what represents a missing answer. For text, identify whether indexes and lengths refer to bytes, code units, code points, or another unit.
+
+**Problem and language:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Input and assumptions:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Required output and missing-answer behavior:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Mutation and identity rules:** <span className="worksheet-line" aria-hidden="true"></span>
+
+For [Two Sum](/course/target-two-sum), this course asks for all pairs of original indexes from unique input values. A remembered solution returning just one pair is incomplete for that contract. For [Binary Tree Maximum Depth](/course/binary-tree-max-depth), depth counts edges, so a lone root has depth zero and the empty tree has depth minus one. Write those conventions down before implementing.
+
+Choose two clarifying questions whose answers could change the algorithm. “Can I sort the input?” matters when original positions or input preservation are required. “Are edges weighted?” matters when selecting a shortest-path strategy. A question should resolve an actual uncertainty rather than imitate interview conversation.
+
+## Establish an ordinary example and a baseline
+
+Pick a small input whose answer you can compute without the implementation. Show enough intermediate work to check the interpretation of the output. Use this example throughout the attempt so changes to the approach can be compared against the same contract.
+
+**Input:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Expected result and why:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Direct correct approach:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Baseline time and auxiliary space:** <span className="worksheet-line" aria-hidden="true"></span>
+
+For a pair problem, nested loops over distinct positions are a clear baseline. For a connectivity problem, an explicit graph search may be easier to justify than immediately reaching for a specialized structure. Explain what the baseline repeats or retains. That observation supplies a reason to improve it.
+
+Do not optimize a method that has not yet been shown to solve the task. A fast answer to a different output contract is still wrong. If the baseline depends on a precondition, such as sorted input, record that assumption rather than hiding the preprocessing cost.
+
+## Choose the information that makes progress possible
+
+Name the state your improved algorithm retains. It might be a map of earlier values, a frontier and parent map, inherited BST bounds, a prefix accumulator, or an answer for each smaller DP state. Describe how the next operation uses that information.
+
+**Retained state:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Invariant before each iteration or call:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Progress measure and stopping condition:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Why no valid answer is skipped or counted twice:** <span className="worksheet-line" aria-hidden="true"></span>
+
+A useful invariant says more than “the array is processed correctly.” For a complement map, it says exactly which positions are already stored before the current lookup. For a BFS, it distinguishes discovered vertices from processed vertices and explains when a parent is assigned.
+
+Use the [data-structure selection reference](/reference/choosing-data-structures) when the state is clear but the representation is uncertain. Choose by required operations and order guarantees. A queue and a heap both retain candidates, but they remove them in different orders and support different correctness arguments.
+
+## Trace state changes on a small input
+
+Make a compact table with one row per meaningful step. Include the current position or node, the retained state before the step, the update, and any output produced. Choose a case with enough structure to cross a boundary without becoming too large to inspect.
+
+<table>
+<thead><tr><th scope="col">Step</th><th scope="col">Current item</th><th scope="col">State before</th><th scope="col">Update</th><th scope="col">Output or return</th></tr></thead>
+<tbody>
+<tr><td>1</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>2</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>3</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>4</td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+
+For pointer changes, name node identities separately from values. Save a successor before rewriting its incoming link. For recursion, record the suspended caller as well as the current call. The [pointer visualizer](/tools/linked-list-pointers) and [call-stack visualizer](/tools/recursion-call-stack) provide examples of those records.
+
+If your trace contradicts the invariant, resolve that contradiction before adding more code. A mistaken update order often becomes visible with three entries even when a longer ordinary example appears to work.
+
+## Select tests from possible failure modes
+
+Write a small set of tests, each paired with the bug it could expose. Include the relevant empty or singleton case, a boundary location, a missing answer when supported, and a representation-specific case. Not every task needs every category.
+
+<table>
+<thead><tr><th scope="col">Test input or assertion</th><th scope="col">Expected behavior</th><th scope="col">Assumption challenged</th></tr></thead>
+<tbody>
+<tr><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td></tr>
+<tr><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+
+A stored index zero challenges truthiness. A descendant crossing an ancestor's bound challenges a local-only BST check. A self-loop challenges graph discovery marking. Two zeros challenge product division. An input-copy comparison challenges accidental mutation. The [edge-case practice](/tools/edge-case-practice) explains these distinctions.
+
+When possible, compare small generated inputs with an independent brute-force reference. Check the same output contract and normalize only irrelevant ordering. Keep any discovered counterexample as a regression test. Passing a few examples is evidence, not a correctness proof by itself.
+
+## Derive costs and choose the next attempt
+
+Name the input variables and the cost model. Count passes, distinct states, transitions, collection operations, and maximum retained depth. Report output storage separately from auxiliary storage when that distinction matters. Include preprocessing such as sorting or building an index.
+
+**Time argument:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Peak auxiliary space and required output:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**One observed mistake or uncertainty:** <span className="worksheet-line" aria-hidden="true"></span>
+
+**Next task with a checkable result:** <span className="worksheet-line" aria-hidden="true"></span>
+
+A useful next task might be “rewrite lower-bound search from a blank file and test all-false, all-true, and empty predicates.” It is more actionable than “study binary search.” Review the attempt using the [mock-interview rubric](/reference/mock-interview-rubric), then schedule a later blank-editor retry. Keep the failed test and the invariant with that retry so you can tell whether the specific weakness improved.

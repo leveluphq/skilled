@@ -1,0 +1,21 @@
+The implementation lesson builds a binary search tree with an insert method, a search method, and a retained root reference. It does not rebalance the tree. Both methods follow the ordering rule until they find a matching node or an absent child, so their running time depends on the resulting tree height.
+
+## Establish the root before following branches
+
+An empty tree has no root. Its first insertion creates the root node. Later insertions compare the new value with the current node and select the appropriate child. Finding an absent child identifies the insertion position: attach the new node there and finish. Traversing both subtrees would ignore the search ordering that makes this structure useful.
+
+For inserts 8, 3, 10, and 6, the value 6 follows left from 8 and right from 3. Its position must satisfy both comparisons. That complete path explains the inherited ordering condition; comparing only with the final parent is not the whole reasoning.
+
+## Search follows the same exclusion rule
+
+Starting at the root, return the current node on a match. Otherwise select one child by comparison. If that child is absent, return the implementation's missing result. Check whether callers expect a node or its contained value; returning only data would change this lesson's API.
+
+Test a root match, a leaf match, a missing value between existing keys, and targets outside the entire range. Decide how equal inserts behave before extending the example. A duplicate policy is part of the data structure, so insertion, search, and any later validation must agree.
+
+## Measure the path you actually built
+
+Inserting sorted values into an unbalanced tree can create a chain. Each later insertion then walks farther, and a sequence of inserts can take quadratic total work. For a balanced shape, individual paths are logarithmic. The simple code does not establish that balance automatically.
+
+An iterative implementation can retain only its current reference while searching. A recursive implementation also retains a call chain whose depth follows the path. Count the allocated nodes separately from that auxiliary work.
+
+Open the [current implementation](/course/implement-a-binary-search-tree), draw its shape after each insertion, then continue with [BST Validate](/watch/binary-search-tree-validate). Include an ancestor-bound violation in your tests so a locally plausible tree cannot pass unnoticed.

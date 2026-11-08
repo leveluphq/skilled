@@ -1,0 +1,51 @@
+A traversal order specifies when a node's value is processed relative to its children. The tree remains the same while the visit sequence changes. This visualizer lets you compare preorder, inorder, postorder, and level order on a tree you can edit.
+
+Use Next node to reveal one output at a time. The current node is blue and already visited nodes are yellow. Predict the next value before advancing, then use the output sequence to inspect your prediction. Repeated values keep separate node identities, so two matching labels are not treated as one node.
+
+## Build a tree from level-order input
+
+The input is a JSON array. The first entry is the root. Each existing node takes the next two entries as its left and right children. A null entry represents a missing child and does not consume child positions of its own.
+
+For example, `[1, null, 2, 3]` creates a root 1 with right child 2, and node 2 has left child 3. This compact queue representation differs from a fully indexed heap array, where child indices are calculated directly from an array position. Do not apply one representation's indexing rules to the other.
+
+The tool accepts numbers or short string labels, up to 31 non-null nodes and 12 levels. Those limits keep the drawing and manual steps manageable. Empty input represents an empty tree. Orphan values after the last reachable parent are rejected instead of being silently ignored.
+
+## Preorder visits the parent first
+
+Preorder processes a node, then its left subtree, then its right subtree. On the balanced example `[4, 2, 6, 1, 3, 5, 7]`, the output is 4, 2, 1, 3, 6, 5, 7.
+
+The recursive rule applies at every subtree. After visiting 4, the algorithm completes the entire subtree rooted at 2 before moving to 6. “Parent first” does not mean visiting every parent across a level before visiting any children; that would describe a different schedule.
+
+Preorder can be useful when an operation must process a node before its descendants. A serialization scheme can use it with explicit structural markers. Values alone may be insufficient to reconstruct an arbitrary tree, especially when missing children or repeated labels are possible.
+
+## Inorder places the parent between subtrees
+
+Inorder processes the left subtree, then the node, then the right subtree. The balanced example produces 1, 2, 3, 4, 5, 6, 7 because that particular tree also satisfies the binary-search-tree ordering rule.
+
+An ordinary binary tree does not necessarily produce sorted inorder output. The visualizer does not rearrange your input or enforce BST constraints. Change the root to 99 while leaving its children unchanged and inspect the resulting sequence.
+
+The [BST validation lesson](/course/binary-search-tree-validate) asks a different question from traversal: whether every subtree obeys the required ordering bounds. Visiting nodes in an order and proving the tree's ordering contract are related tasks with separate assumptions.
+
+## Postorder visits descendants before the parent
+
+Postorder processes the left subtree, the right subtree, and finally the node. The balanced example gives 1, 3, 2, 5, 7, 6, 4.
+
+This order fits computations where a parent result needs child results first. A height computation, for example, must obtain both child heights before combining them. The implementation may return those results directly without storing a complete traversal array.
+
+Switch to Missing children and predict the first few visits. A missing child simply returns from the recursive call without contributing a value. The empty-child behavior should agree with the base case in a real algorithm.
+
+## Level order uses a queue
+
+Level order processes nodes by distance from the root, taking left children before right children in this implementation. The balanced example returns 4, 2, 6, 1, 3, 5, 7.
+
+A queue makes that schedule explicit. Removing the next node can append its existing children to the end. Nodes already waiting at the current level are processed before newly appended nodes at the next level.
+
+Unlike the depth-first orders, level order may hold a broad level in its frontier. Recursive depth-first traversal holds an active path whose length depends on tree height. Actual auxiliary memory also depends on whether you collect all output values. See the [complexity reference](/reference/data-structure-time-complexity) for those distinctions.
+
+## Predict, step, and explain the next visit
+
+Start with the balanced example, then use missing children and repeated values. A tree with a chain shape helps expose assumptions hidden by a symmetrical drawing. Reset the steps when switching order and explain which recursive call or queue action produces the next node.
+
+This tool displays node visits, not every call-stack entry, return, or pointer assignment. A full execution contains additional actions between output values. When implementing [tree traversal](/course/tree-traversal-in-order-pre-order-post-order) or [maximum depth](/course/binary-tree-max-depth), trace the return values as well as the visit sequence.
+
+For graphs with cycles or multiple incoming edges, use the [graph traversal tool](/tools/graph-traversal). Its visited-state requirement is essential in a general graph, while a proper tree's structure gives each non-root node one parent.

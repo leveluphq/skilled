@@ -1,0 +1,66 @@
+```kotlin
+class DynamicArray {
+    var length = 0
+    val data = HashMap<Int, Int>()
+
+    fun get(index: Int): Int? {
+        return data[index]
+    }
+
+    fun push(item: Int): Int {
+        data[length] = item
+        length++
+
+        return length
+    }
+
+    fun pop(): Int? {
+        if (length == 0) {
+            return null
+        }
+
+        val poppedItem = data[length - 1]
+        data.remove(length - 1)
+        length--
+
+        return poppedItem
+    }
+
+    fun insert(index: Int, item: Int): HashMap<Int, Int>? {
+        if (index > length - 1 || index < 0) {
+            return null
+        }
+
+        length++
+
+        for (i in length - 1 downTo index + 1) {
+            data[i] = data.getValue(i - 1)
+        }
+
+        data[index] = item
+
+        return data
+    }
+
+    fun remove(index: Int): Int? {
+        if (length == 0) {
+            return null
+        }
+
+        if (index > length - 1 || index < 0) {
+            return null
+        }
+
+        val itemToBeRemoved = data[index]
+
+        for (i in index until length - 1) {
+            data[i] = data.getValue(i + 1)
+        }
+
+        data.remove(length - 1)
+        length--
+
+        return itemToBeRemoved
+    }
+}
+```

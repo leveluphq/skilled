@@ -1,0 +1,69 @@
+```rust
+struct HashTable {
+    size: usize,
+    table: Vec<Option<Vec<(String, i32)>>>,
+}
+
+impl HashTable {
+    fn new(size: usize) -> Self {
+        HashTable {
+            size,
+            table: vec![None; size],
+        }
+    }
+
+    fn get(&self, key: &str) -> Option<i32> {
+        let index = self.hash(key);
+
+        if let Some(bucket) = &self.table[index] {
+            for (bucket_key, value) in bucket {
+                if bucket_key == key {
+                    return Some(*value);
+                }
+            }
+        }
+
+        None
+    }
+
+    fn insert(&mut self, key: &str, value: i32) {
+        let index = self.hash(key);
+        let bucket = self.table[index].get_or_insert_with(Vec::new);
+
+        for (bucket_key, bucket_value) in bucket.iter_mut() {
+            if bucket_key == key {
+                *bucket_value = value;
+                return;
+            }
+        }
+
+        bucket.push((key.to_string(), value));
+    }
+
+    fn remove(&mut self, key: &str) -> Option<i32> {
+        let index = self.hash(key);
+
+        if let Some(bucket) = &mut self.table[index] {
+            for i in 0..bucket.len() {
+                if bucket[i].0 == key {
+                    let (_, value) = bucket.remove(i);
+
+                    return Some(value);
+                }
+            }
+        }
+
+        None
+    }
+
+    fn hash(&self, key: &str) -> usize {
+        let mut hash = 0;
+
+        for character in key.chars() {
+            hash = (hash + character as usize) % self.size;
+        }
+
+        hash
+    }
+}
+```

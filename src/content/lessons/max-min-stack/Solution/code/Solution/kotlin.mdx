@@ -1,0 +1,48 @@
+```kotlin
+class MaxMinStack {
+    private val stack = ArrayDeque<Int>()
+
+    // Stacks for internal tracking of the max/min
+    private val maxValueStack = ArrayDeque<Int>()
+    private val minValueStack = ArrayDeque<Int>()
+
+    fun peek(): Int {
+        return stack.last()
+    }
+
+    fun push(item: Int): Int {
+        stack.addLast(item)
+
+        if (maxValueStack.isEmpty() || item >= getStackMax()) {
+            maxValueStack.addLast(item)
+        }
+        if (minValueStack.isEmpty() || item <= getStackMin()) {
+            minValueStack.addLast(item)
+        }
+
+        return item
+    }
+
+    fun pop(): Int {
+        val item = stack.removeLast()
+
+        if (item == getStackMax()) {
+            maxValueStack.removeLast()
+        }
+        if (item == getStackMin()) {
+            minValueStack.removeLast()
+        }
+
+        return item
+    }
+
+    // Effectively a "peek()" for the max/min values of the stack
+    fun getStackMax(): Int {
+        return maxValueStack.last()
+    }
+
+    fun getStackMin(): Int {
+        return minValueStack.last()
+    }
+}
+```

@@ -1,0 +1,17 @@
+```javascript
+type Func = (...args: any[]) => any;
+
+const debounce = (func: Func, wait: number): Func => {
+  let timeout;
+
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+```

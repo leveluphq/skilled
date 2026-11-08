@@ -1,0 +1,22 @@
+```csharp
+string ReverseString(string str) {
+    // Base case
+    if (str.Length == 0) {
+        return "";
+    }
+
+    // Recursively add the front character to end of the remaining string
+    return ReverseString(str[1..]) + str[0];
+}
+
+ReverseString("dev");
+// ReverseString("dev")
+//   ReverseString("ev")
+//     ReverseString("v")
+//       ReverseString("")
+//       return ""
+//     return "" + 'v'
+//   return "v" + 'e'
+// return "ve" + 'd'
+// -> "ved"
+```

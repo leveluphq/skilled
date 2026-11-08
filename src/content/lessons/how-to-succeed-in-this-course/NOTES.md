@@ -1,0 +1,1 @@
+I'm am constantly seeking perfection and am iterating, improving, and adding to this course. If you have any feedback at all, please share it with me. Whether it's a UI/UX improvement, a content/video change, or a lesson request, I'm open any changes that you think will help you learn better

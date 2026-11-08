@@ -1,0 +1,150 @@
+table:
+  name: users
+  schema: public
+object_relationships:
+- name: activeLesson
+  using:
+    foreign_key_constraint_on: activeLessonId
+array_relationships:
+- name: affiliateLinkClicks
+  using:
+    foreign_key_constraint_on:
+      column: affiliateUserId
+      table:
+        name: affiliate_link_clicks
+        schema: public
+- name: affiliatePayouts
+  using:
+    foreign_key_constraint_on:
+      column: affiliateUserId
+      table:
+        name: affiliate_payouts
+        schema: public
+- name: affiliateReferralClickCounts
+  using:
+    manual_configuration:
+      column_mapping:
+        id: affiliateUserId
+      insertion_order: null
+      remote_table:
+        name: affiliate_referral_click_counts
+        schema: public
+- name: affiliateSales
+  using:
+    manual_configuration:
+      column_mapping:
+        id: affiliateUserId
+      insertion_order: null
+      remote_table:
+        name: affiliate_sales
+        schema: public
+- name: alternateEmails
+  using:
+    foreign_key_constraint_on:
+      column: userId
+      table:
+        name: alternate_emails
+        schema: public
+- name: feedback
+  using:
+    foreign_key_constraint_on:
+      column: userId
+      table:
+        name: user_feedback
+        schema: public
+- name: lessonStatuses
+  using:
+    foreign_key_constraint_on:
+      column: userId
+      table:
+        name: users_lessons_status
+        schema: public
+- name: payments
+  using:
+    foreign_key_constraint_on:
+      column: payingUserId
+      table:
+        name: sales
+        schema: public
+- name: receivedGiftCards
+  using:
+    foreign_key_constraint_on:
+      column: receiverId
+      table:
+        name: gift_cards
+        schema: public
+- name: redeemedGiftCards
+  using:
+    foreign_key_constraint_on:
+      column: redeemerId
+      table:
+        name: gift_cards
+        schema: public
+- name: sentGiftCards
+  using:
+    foreign_key_constraint_on:
+      column: senderId
+      table:
+        name: gift_cards
+        schema: public
+- name: upgradeEventLogs
+  using:
+    foreign_key_constraint_on:
+      column: userId
+      table:
+        name: upgrade_event_log
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - activeLessonId
+    - affiliateId
+    - affiliateRevenueShare
+    - affiliateStatus
+    - bio
+    - company
+    - createdAt
+    - email
+    - fullCourseAccessEndsAt
+    - fullCourseAccessFirstUpgradedAt
+    - fullCourseAccessLatestUpgradedAt
+    - githubId
+    - githubNodeId
+    - githubUsername
+    - id
+    - image
+    - location
+    - name
+    - preferredCodingLanguage
+    - registrationSource
+    - role
+    - theme
+    - updatedAt
+    - website
+    filter:
+      _and:
+      - id:
+          _eq: X-Hasura-User-Id
+      - deletedAt:
+          _is_null: true
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - activeLessonId
+    - bio
+    - company
+    - deletedAt
+    - image
+    - location
+    - name
+    - preferredCodingLanguage
+    - website
+    filter:
+      _and:
+      - id:
+          _eq: X-Hasura-User-Id
+      - deletedAt:
+          _is_null: true
+  role: user

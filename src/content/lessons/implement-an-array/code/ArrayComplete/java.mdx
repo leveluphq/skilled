@@ -1,0 +1,73 @@
+```java
+import java.util.*;
+
+class DynamicArray<T> {
+    private int length;
+    private Map<Integer, T> data;
+
+    public DynamicArray() {
+        this.length = 0;
+        this.data = new HashMap<>();
+    }
+
+    public T get(int index) {
+        return data.get(index);
+    }
+
+    public int push(T item) {
+        data.put(length, item);
+        length++;
+
+        return length;
+    }
+
+    public T pop() {
+        if (length == 0) {
+            return null;
+        }
+
+        T poppedItem = data.get(length - 1);
+        data.remove(length - 1);
+        length--;
+
+        return poppedItem;
+    }
+
+    public Map<Integer, T> insert(int index, T item) {
+        if (index > length - 1 || index < 0) {
+            return null;
+        }
+
+        length++;
+
+        for (int i = length - 1; i > index; i--) {
+            data.put(i, data.get(i - 1));
+        }
+
+        data.put(index, item);
+
+        return data;
+    }
+
+    public T remove(int index) {
+        if (length == 0) {
+            return null;
+        }
+
+        if (index > length - 1 || index < 0) {
+            return null;
+        }
+
+        T itemToBeRemoved = data.get(index);
+
+        for (int i = index; i < length - 1; i++) {
+            data.put(i, data.get(i + 1));
+        }
+
+        data.remove(length - 1);
+        length--;
+
+        return itemToBeRemoved;
+    }
+}
+```

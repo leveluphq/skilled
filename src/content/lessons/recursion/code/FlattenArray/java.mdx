@@ -1,0 +1,37 @@
+```java
+static List<Integer> recursiveFlatten(List<?> array) {
+    List<Integer> flattenedArray = new ArrayList<>();
+
+    for (Object item : array) {
+        // If the item is a list, flatten it with a recursive call
+        if (item instanceof List<?> nestedArray) {
+            flattenedArray.addAll(recursiveFlatten(nestedArray));
+        } else {
+            flattenedArray.add((Integer) item);
+        }
+    }
+
+    return flattenedArray;
+}
+
+static List<Integer> iterativeFlatten(List<?> array) {
+    List<Integer> output = new ArrayList<>();
+    Deque<Object> toBeFlattened = new ArrayDeque<>();
+    toBeFlattened.add(array);
+
+    while (!toBeFlattened.isEmpty()) {
+        Object current = toBeFlattened.removeFirst();
+
+        if (current instanceof List<?> nestedArray) {
+            // Put the nested items back at the front, keeping their order
+            for (int i = nestedArray.size() - 1; i >= 0; i--) {
+                toBeFlattened.addFirst(nestedArray.get(i));
+            }
+        } else {
+            output.add((Integer) current);
+        }
+    }
+
+    return output;
+}
+```

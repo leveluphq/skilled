@@ -1,0 +1,47 @@
+```javascript
+const tests = [
+  {
+    input: 1,
+    expected: 1,
+    description: 'only one version',
+  },
+  {
+    input: 10,
+    expected: 1,
+    description: 'first item is bad',
+  },
+  {
+    input: 10,
+    expected: 10,
+    description: 'last item is bad',
+  },
+  {
+    input: 100,
+    expected: 42,
+    description: 'item between first and last',
+  },
+  {
+    input: 3,
+    expected: 2,
+    description: 'exact middle item',
+  },
+];
+
+let testIndex = 0;
+function isBadVersion(version) {
+  const test = tests[testIndex];
+  const badVersion = test.expected;
+
+  return version >= badVersion;
+}
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = firstBadVersion(input);
+  const passed = userAnswer === expected;
+
+  // Make sure isBadVersion matches the current test as they process
+  testIndex++;
+
+  return { passed, description, expected, userAnswer };
+};
+```

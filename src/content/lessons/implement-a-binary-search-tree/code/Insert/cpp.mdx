@@ -1,0 +1,35 @@
+```cpp
+BinarySearchTree& insert(int data) {
+    BinaryNode* node = new BinaryNode(data);
+
+    // First insert becomes root
+    if (root == nullptr) {
+        root = node;
+        return *this;
+    }
+
+    BinaryNode* currentNode = root;
+
+    while (true) {
+        if (data < currentNode->data) {
+            // Insert the node if you reach a leaf and return
+            if (currentNode->left == nullptr) {
+                currentNode->left = node;
+                return *this;
+            }
+
+            // Continue by traversing left
+            currentNode = currentNode->left;
+        } else {
+            // Insert the node if you reach a leaf and return
+            if (currentNode->right == nullptr) {
+                currentNode->right = node;
+                return *this;
+            }
+
+            // Continue by traversing right
+            currentNode = currentNode->right;
+        }
+    }
+}
+```

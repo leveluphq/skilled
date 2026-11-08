@@ -1,0 +1,46 @@
+```javascript
+const findTargetIndex = (items, target) => {
+  // Initialize the upper and lower bound to the binary search
+  let startIndex = 0;
+  let endIndex = items.length - 1;
+
+  // Loop until our bounds converge
+  while (startIndex <= endIndex) {
+    // Number of items between the lower and upper bound
+    const itemsBetweenStartEnd = Math.floor((endIndex - startIndex) / 2);
+    const midIndex = startIndex + itemsBetweenStartEnd;
+
+    // Item found, return mid index as solution
+    if (items[midIndex] === target) {
+      return midIndex;
+    }
+
+    const isLeftCorrectlyOrdered = items[midIndex] >= items[startIndex];
+
+    // The left half, start to midpoint, is sorted normally
+    // (rotation in right half or has been eliminated)
+    if (isLeftCorrectlyOrdered) {
+      const targetInLeftHalf = target >= items[startIndex] && target < items[midIndex];
+
+      if (targetInLeftHalf) {
+        endIndex = midIndex - 1;
+      } else {
+        startIndex = midIndex + 1;
+      }
+    // The right half, midpoint to the end, is sorted normally
+    // (rotation in left half)
+    } else {
+      const targetInRightHalf = target <= items[endIndex] && target > items[midIndex];
+
+      if (targetInRightHalf) {
+        startIndex = midIndex + 1;
+      } else {
+        endIndex = midIndex - 1;
+      }
+    }
+  }
+
+  // Target not found in the input
+  return -1;
+}
+```

@@ -1,0 +1,41 @@
+A hash table helps when an algorithm repeatedly asks whether a value has appeared, how often it appears, or which earlier position contains it. The speedup comes from replacing repeated scans with maintained lookup state. The table's meaning should be explicit before you write the loop.
+
+Read [Hash Tables](/course/hash-tables) for the representation and collision concepts, then [Implement a Hash Table](/course/implement-a-hash-table) to connect the interface to storage. The later exercises use maps as part of a larger solution.
+
+## Decide whether you need a map or a set
+
+A set records membership. A map associates a value with each key. If the question only asks whether a node has been discovered, a set can express that directly. If it asks for a count or an original index, a map retains the extra information.
+
+Be clear about key equality. Two objects with equal-looking fields may still be different keys in a language's map implementation. A grid coordinate may need a stable tuple or encoded representation. A string normalization rule can change which entries belong to the same group.
+
+Expected constant-time operations are a common model for hash tables, but collisions, resizing, and the cost of hashing a key still matter. The [complexity reference](/reference/data-structure-time-complexity) preserves those qualifications.
+
+## Build frequency state with a simple invariant
+
+In [Catch the Hacker](/course/catch-the-hacker), the map can store how often each email has appeared in the processed prefix. Each new entry increments one count. A later pass, or a maintained best-so-far value, can identify the desired frequency result under the problem's tie rule.
+
+Test one unique entry, repeated equal values, several keys with the same count, and a duplicate appearing late. Clarify how ties should be handled instead of allowing iteration order to decide silently.
+
+For grouped text, a frequency vector or another canonical key can represent a character relationship. State the alphabet and key construction cost. A key built by sorting every string adds sorting work even if the final dictionary lookup is fast.
+
+## Preserve original indices in Two Sum
+
+[Target Two Sum](/course/target-two-sum) stores earlier indices by value. At index i, calculate the complement and check whether an earlier entry supplies it. Only then insert the current value.
+
+That update order prevents reusing the same array position. It still permits equal values at different positions, as `[3, 3]` with target 6 demonstrates. Index zero must remain a valid result, so a truthiness check on the stored index is insufficient.
+
+The [worked interview explanation](/guides/explain-your-interview-solution) compares this with pair enumeration and derives the map's correctness argument. Practice explaining what the map contains before each iteration, not only that lookups are faster.
+
+## Handle collisions when implementing the structure
+
+A hash function maps many possible keys into a limited storage range, so different keys can reach the same location. A custom table needs a collision strategy and a way to compare keys after locating that storage region.
+
+Replacement, deletion, and resizing must preserve future lookups. A deletion strategy that breaks a probing chain can make a still-present entry appear absent. A resize that copies buckets without recomputing placement can leave entries in positions that the new lookup rule never checks.
+
+Use a small deliberately collision-heavy test to inspect those behaviors. Average-looking random inputs may not exercise the representation's difficult cases.
+
+## Reuse the idea in graphs and dynamic programming
+
+A graph's visited set records discoveries so cycles do not restart exploration. A memoization table records completed answers so repeated subproblems do not repeat work. Each structure uses a different definition of “seen.” In-progress recursive states may need to be distinguished from completed states when detecting cycles.
+
+When a cached answer can be zero, false, or an empty result, use a presence check that preserves it. Keep a cache's lifetime aligned with the input whose answers it stores. Then analyze both the number of distinct keys and the cost of producing each value.

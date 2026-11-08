@@ -1,0 +1,5 @@
+```rust
+fn suffix_copies(values: &[i32]) -> Vec<Vec<i32>> {
+    (0..values.len()).map(|index| values[index..].to_vec()).collect()
+}
+```

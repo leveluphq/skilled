@@ -1,0 +1,20 @@
+```javascript
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+    this.previous = null;
+  }
+}
+
+class LinkedList {
+  constructor(data) {
+    const node = new Node(data);
+    this.head = node;
+    this.tail = node;
+  }
+
+  append(data) { /* add item to back and update tail */ }
+  prepend(data) { /* add item to front and update head */ }
+}
+```

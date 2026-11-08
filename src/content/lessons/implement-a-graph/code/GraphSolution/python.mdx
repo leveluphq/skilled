@@ -1,0 +1,21 @@
+```python
+class Graph:
+    def __init__(self, undirected = True):
+        self.adjacency_list = {}
+        self.undirected = undirected
+
+    def add_vertex(self, vertex):
+        self.adjacency_list[vertex] = []
+
+    def add_edge(self, source, destination):
+        self.adjacency_list[source].append(destination)
+
+        if self.undirected:
+            self.adjacency_list[destination].append(source)
+
+    def remove_vertex(self, vertex):
+        self.adjacency_list.pop(vertex)
+
+        for node in self.adjacency_list.keys():
+            self.adjacency_list[node] = [v for v in self.adjacency_list[node] if v != vertex]
+```

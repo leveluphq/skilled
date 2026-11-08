@@ -1,0 +1,17 @@
+# The server's types, from local Hasura (docs/README.md, step 4):
+#   npm run codegen:server
+# HASURA_GRAPHQL_ENDPOINT moves it off localhost:8080.
+overwrite: true
+schema:
+  - ${HASURA_GRAPHQL_ENDPOINT:http://localhost:8080}/v1/graphql:
+      headers:
+        X-Hasura-Admin-Secret: changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme
+        Content-Type: application/json
+documents:
+  - 'src/services/server/**/*.ts'
+  - '!src/services/server/**/__tests__/**'
+generates:
+  src/types/generated/server.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'

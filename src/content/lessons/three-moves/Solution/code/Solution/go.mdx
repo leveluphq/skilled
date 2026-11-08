@@ -1,0 +1,40 @@
+```go
+// We will use -1 to indicate an unfilled spot
+const uncountedSpot = -1
+
+func countTotalMoves(boardLength int) int {
+	if boardLength < 0 {
+		return 0
+	}
+
+	// Initialize our memoize slice
+	memo := make([]int, boardLength+1)
+	for i := range memo {
+		memo[i] = uncountedSpot
+	}
+	totalMoves := countTotalMovesMemoized(boardLength, memo)
+	return totalMoves
+}
+
+// Recursive helper function that also tracks memoized values
+func countTotalMovesMemoized(boardLength int, memo []int) int {
+	// Base case 1: Invalid board length
+	if boardLength < 0 {
+		return 0
+	}
+	// Base case 2: Prompt says length 0 is still 1 step
+	if boardLength == 0 {
+		return 1
+	}
+	if memo[boardLength] != uncountedSpot {
+		return memo[boardLength]
+	}
+
+	// Recursive case (and memoize its result)
+	memo[boardLength] = countTotalMovesMemoized(boardLength-1, memo) +
+		countTotalMovesMemoized(boardLength-2, memo) +
+		countTotalMovesMemoized(boardLength-3, memo)
+
+	return memo[boardLength]
+}
+```

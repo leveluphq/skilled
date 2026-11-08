@@ -1,0 +1,66 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Count ordered sequences of moves of length 1, 2, or 3 that advance exactly n positions. For n = 3, the sequences are `[1, 1, 1]`, `[1, 2]`, `[2, 1]`, and `[3]`, giving four. Zero has one sequence, the empty sequence. A negative target has no valid sequence and returns zero.
+
+## Group sequences by their final move
+
+A sequence ending at position n must end with a move of 1, 2, or 3. Removing that final move leaves a sequence ending at n - 1, n - 2, or n - 3 respectively. Conversely, appending the corresponding final move to any sequence for one of those positions creates a valid sequence for n.
+
+The three groups are disjoint because their final moves differ. Add their counts to obtain `ways(n) = ways(n - 1) + ways(n - 2) + ways(n - 3)`. This counts order: `[1, 2]` and `[2, 1]` belong to different final-move groups. Counting unordered combinations would require a different state and iteration rule.
+
+## Initialize the empty sequence correctly
+
+Set the count for position zero to one. Without that seed, the recurrence would multiply an all-zero history into all-zero answers. Positions below zero contribute zero because a positive-length move cannot arrive there from the start. The first positive counts are one for n = 1, two for n = 2, and four for n = 3.
+
+The chosen implementation keeps only three rolling values instead of a full table. At each iteration, their sum becomes the next count. Shift the older values backward and store the new sum as the most recent value. After n iterations, the most recent value represents exactly position n.
+
+## Trace enough steps to check the shift
+
+Start with history for positions -2, -1, and 0 equal to 0, 0, and 1. The next sum is 1, leaving history 0, 1, 1. The next sum is 2, leaving 1, 1, 2. The next sum is 4, leaving 1, 2, 4. Position four then has 1 + 2 + 4 = 7 sequences.
+
+Compute the sum before overwriting any history value. Updating the most recent count too early can make later assignments reuse the new count twice. A trace that names the represented positions exposes that error more clearly than a trace of unnamed variables alone.
+
+## Explain the improvement over recursion
+
+A direct recursive function follows the recurrence literally and repeatedly recomputes the same positions. Memoization reduces that repetition to one computation per position. Bottom-up iteration also computes each position once and removes recursive frames. Since only the previous three counts are needed, rolling state reduces auxiliary storage further.
+
+The selected version takes O(n) additions and O(1) stored counts under bounded-integer arithmetic. Counts grow quickly. Once they exceed a language's integer range, overflow can corrupt the answer or trap. Arbitrary-precision integers avoid that fixed bound but make arithmetic cost and numeric storage grow with the answer's digit length.
+
+## Test ordering and boundary values
+
+Test negative targets, zero, one, two, three, and four. Values 0 and 3 reject common incorrect base cases. Compare short targets with an independent recursive enumeration that records every complete move sequence and counts it. Keep that oracle's inputs small because it intentionally generates exponentially many paths.
+
+A follow-up can permit an arbitrary set of positive move lengths. The recurrence sums counts from each allowed predecessor position, with time proportional to n times the number of allowed moves. Zero or negative move lengths need separate restrictions because they can create cycles or infinitely many sequences. If the task instead asks for a shortest sequence, replace the counting objective with a minimum-distance recurrence.
+
+## Python implementation
+
+The iterative version avoids recursive calls. Python integers grow as counts grow, so wide inputs increase arithmetic cost despite constant state count.
+
+Python entries use the function or class API shown in the lesson starter. Lists and dictionaries are mutable, and assignment shares those objects. Integer arithmetic has arbitrary precision, although the course input and output schema still has bounded integer types. Recursive solutions use Python call frames; an iterative rewrite is appropriate when input depth can exceed the interpreter's recursion limit.
+
+```python
+def count_total_moves(board_length):
+    if board_length < 0:
+        return 0
+
+    three_spots_back = 0
+    two_spots_back = 0
+    one_spot_back = 1
+
+    for i in range(board_length):
+        final_spot = one_spot_back + two_spots_back + three_spots_back
+
+        three_spots_back = two_spots_back
+        two_spots_back = one_spot_back
+        one_spot_back = final_spot
+
+    # We return oneSpotBack because it was actually updated to the finalSpot
+    # during the last iteration of the loop when we moved values forward
+    return one_spot_back
+```
+
+## Practice this implementation
+
+[Open Three Moves](/course/three-moves) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Python conventions and practice problems, use the [Python interview guide](/interview-prep/python).

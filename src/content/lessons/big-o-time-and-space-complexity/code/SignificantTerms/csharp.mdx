@@ -1,0 +1,15 @@
+```csharp
+void MultipleTimeComplexities(int[] input) {
+    // O(n)
+    foreach (int item in input) {
+        /* do something */
+    }
+
+    // O(n^2)
+    foreach (int item in input) {
+        foreach (int otherItem in input) {
+            /* do something */
+        }
+    }
+}
+```

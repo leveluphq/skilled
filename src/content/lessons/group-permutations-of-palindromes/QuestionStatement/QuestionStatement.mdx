@@ -1,0 +1,20 @@
+import { CodingLanguage } from 'utils/constants/lesson';
+import ConceptModal from 'content/blocks/ConceptModal';
+import Permutations from 'content/lessons/palindromes-permutataions-anagrams/Permutations.mdx';
+import Palindromes from 'content/lessons/palindromes-permutataions-anagrams/Palindromes.mdx';
+import SampleInputOutput from './SampleInputOutput.mdx';
+import InlineCode from './inlineCode';
+
+**Write a function <InlineCode /> that takes an array of strings as the input and returns an array of arrays where the sub-arrays in the result are all <ConceptModal content={<Permutations />}>permutations</ConceptModal> of the same <ConceptModal content={<Palindromes />}>palindrome</ConceptModal>.**
+
+For a string to be included in the output, it must be the permutation of a palindrome.
+That means if you rearranged the characters of the string, it could form a palindrome.
+
+We also want to group strings that are permutations of each other.
+That means all strings in a sub-array could be rearranged to form any other string in the group (or the same palindrome).
+
+The result array and sub-arrays can be in any order.
+
+The input strings will all be lowercase alphanumeric characters.
+
+<SampleInputOutput />

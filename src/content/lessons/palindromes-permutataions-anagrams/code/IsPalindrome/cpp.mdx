@@ -1,0 +1,25 @@
+```cpp
+// Regex to remove non-alphanumeric
+string removeNonAlphanumeric(const string& str) {
+    return regex_replace(str, regex("[^0-9a-zA-Z]"), "");
+}
+
+bool isPalindrome(const string& str) {
+    // For simplicity, I'm doing the transforming here at an assumed O(n) cost
+    // You could also not transform it and consider this when you compare characters
+    string formattedString = removeNonAlphanumeric(str);
+    for (char& c : formattedString) {
+        c = tolower(c);
+    }
+
+    // Walk from the beginning and end to the middle and compare each character
+    for (int i = 0; i < (int) formattedString.size() / 2; i++) {
+        // If the characters are ever not equal, it's not a palindrome
+        if (formattedString[i] != formattedString[formattedString.size() - 1 - i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+```

@@ -1,0 +1,29 @@
+```csharp
+// #1
+void PrintHello(int[] input) {
+    int ten = 5 + 5;
+    int twenty = 2 * ten;
+
+    for (int i = 0; i < twenty; i++) {
+        Console.WriteLine("Hello, world!");
+    }
+}
+
+// #2
+void PrintInput(int[] input) {
+    int n = input.Length;
+    for (int i = 0; i < n; i++) {
+        Console.WriteLine(i);
+    }
+}
+
+// #3
+void PrintNestedInput(int[] input) {
+    int n = input.Length;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            Console.WriteLine(i * j);
+        }
+    }
+}
+```

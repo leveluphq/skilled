@@ -1,0 +1,89 @@
+Swift interview algorithms need a clear model of value semantics, optional results, and text indexing. An Array and a String support different access patterns. A Dictionary lookup returns an optional even when a stored zero is valid. Copying a collection value preserves its independent behavior without promising that every future mutation costs constant time.
+
+The examples use the Swift standard library, with no package dependency. They are checked with Swift 6.2. Match the course exercise's provided signature and node types, and confirm which language choices the lesson's editor offers on your deployment.
+
+## Use collection value semantics accurately
+
+Arrays, dictionaries, and sets are value types. Assigning an array to another variable gives independent collection semantics: changing one array's element should not change the other array's corresponding stored value. Implementations can share backing storage until a mutation requires a copy.
+
+If an array contains class instances, those element values are references. Mutating a referenced object's property can therefore be observed through another array containing that same reference. Copying the outer collection does not clone the object graph.
+
+The [Swift collection guide](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/collectiontypes/) explains the built-in collection model. Include the possibility of copying shared storage when discussing a mutation-heavy algorithm with many saved snapshots; value semantics are a behavior contract, not a promise that every copy and write is free.
+
+## Return an optional pair and check arithmetic
+
+Two Sum can return an optional tuple of indexes. A nil result means no pair exists; a tuple whose first index is zero is an ordinary success. The dictionary here stores nonoptional indexes, so optional binding distinguishes presence directly.
+
+```swift
+func twoSum(_ values: [Int], target: Int) -> (Int, Int)? {
+    var previous: [Int: Int] = [:]
+    for (index, value) in values.enumerated() {
+        let (complement, overflow) = target.subtractingReportingOverflow(value)
+        if !overflow, let earlier = previous[complement] {
+            return (earlier, index)
+        }
+        previous[value] = index
+    }
+    return nil
+}
+
+func bfsOrder(_ graph: [Int: [Int]], start: Int) -> [Int] {
+    var queue = [start]
+    var head = 0
+    var seen: Set<Int> = [start]
+    var order: [Int] = []
+    while head < queue.count {
+        let node = queue[head]
+        head += 1
+        order.append(node)
+        for neighbor in graph[node, default: []] {
+            if seen.insert(neighbor).inserted {
+                queue.append(neighbor)
+            }
+        }
+    }
+    return order
+}
+```
+
+A mathematical complement outside Int's range cannot equal any earlier Int input, so that lookup can be skipped safely. The current value is still stored, because a later value may form a valid pair with it. Checking the complement before insertion also prevents one position from matching itself.
+
+The reporting-overflow operation avoids relying on a trapping subtraction or using wrapping arithmetic as though it preserved the mathematical target. Test a case where the first lookup overflows but a later ordinary pair succeeds. The reference test should use checked addition too, so extreme inputs cannot invalidate the test itself.
+
+## Define dictionary presence and equality
+
+A lookup in `[Key: Value]` returns an optional because a key can be missing. If Value is itself optional, the possible states are more complicated: absent key, present nil payload, and present non-nil payload. Assigning nil through ordinary dictionary subscripting can remove an entry, so choose an explicit representation when those states must remain distinct.
+
+Set membership and dictionary keys require Hashable values. Their equality should match the problem's vertex or coordinate identity. An immutable value-type coordinate can work naturally. A class used as a key needs an intentional equality and hashing policy, especially if its properties can change.
+
+For numeric counts, the default-value dictionary subscript can express a missing count as zero. For a cache or search result, default zero may conceal a meaningful absent case. State what one entry means before choosing that convenience operation.
+
+## Use a head index for a short-lived BFS queue
+
+The queue keeps a moving integer head rather than repeatedly calling removeFirst on an Array. Appending adds new work and incrementing head consumes the oldest entry. The Set insertion reports whether a neighbor was newly discovered, so cycles and shared neighbors do not enqueue duplicates.
+
+This representation retains the consumed prefix until the function returns. That is O(V) queue storage across the reachable graph. For a long-lived queue, use a compaction policy, a circular buffer, or a suitable deque implementation so old references do not remain indefinitely. A one-shot traversal does not require all of that extra state.
+
+A missing adjacency key means no outgoing edges. BFS visits reachable vertices in hop layers when edges have equal cost. With bounded integer keys and expected hash operations, traversal work is O(V + E), and visited state plus queue and output use O(V) storage. Priority-based shortest paths need a different frontier order and proof.
+
+## Choose a text unit before indexing
+
+Swift String exposes Character values based on extended grapheme clusters. A displayed character may contain several Unicode scalar values or encoded code units. Integer Array indexes therefore do not transfer directly to String, whose index type reflects its variable-length text representation.
+
+Converting a String to `[Character]` can make integer-position algorithms clearer, at the cost of allocating a collection. Repeatedly finding a String index from its start can also add traversal work inside an outer loop. Count that work rather than assuming every string offset is an O(1) array access.
+
+The [strings and characters guide](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/stringsandcharacters/) describes these text views. Unicode scalar, UTF-8 byte, and UTF-16 code-unit views support different contracts. An ASCII-only exercise can use a simpler model, while arbitrary user text needs a deliberate segmentation and equality policy.
+
+## Make mutation and recursion visible
+
+An inout parameter permits mutation of the caller's value through the function call. Use it when the exercise allows in-place changes, and document what the caller receives afterward. Copying a grid for a nonmutating solution changes the memory analysis even if copy-on-write postpones some allocation.
+
+A recursive tree function still uses call-stack space. Practice an explicit stack for deep shapes, and define how empty children are represented by the supplied optional node type. Force-unwrapping a child does not establish that it exists; handle the empty case where the recursive contract requires it.
+
+For backtracking, restore the working path after recursion and save completed collection values with the intended independence. If those values contain mutable class instances, decide whether sharing them is allowed rather than assuming the outer value copy duplicates every node.
+
+## Test value boundaries and shared elements
+
+Check Two Sum on empty input, repeated values, index zero, missing answers, negative values, and Int minimum/maximum cases. Validate distinct in-bounds indexes and a nonoverflowing target sum. For BFS, test cycles, shared neighbors, an isolated start, and a neighbor-only vertex.
+
+Copy a small array, mutate one copy, and verify the other keeps its value. Repeat with an array of class instances to observe the different shared-object behavior. Test text containing an emoji and a combining sequence before claiming what a length or index represents. Then practice [Two Sum](/course/target-two-sum), [BFS](/course/breadth-first-search), and [tree depth](/course/binary-tree-max-depth) with the editor's actual Swift interfaces.

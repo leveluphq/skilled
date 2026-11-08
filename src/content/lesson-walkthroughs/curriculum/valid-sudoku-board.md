@@ -1,0 +1,31 @@
+Check whether the filled entries of a Sudoku board violate any row, column, or subsquare rule. Zero denotes an empty cell and does not count as a placed digit. The board must be square with side length N whose square root is an integer, such as 1, 4, or 9. This validates existing entries; it does not solve the board or prove that a completion exists.
+
+## Validate the supported shape first
+
+An empty board or empty first row is invalid. The row count must equal the column count, and the square root of that size must be a whole number. For a nine-by-nine board, each subsquare is three by three. For a four-by-four board, it is two by two. A two-by-two board has no integral subsquare side under this contract.
+
+The course inputs are rectangular and use values from zero through N. A reusable validator accepting arbitrary external data should additionally check every row length and every cell's type and range. Shape shortcuts based on the first row alone are safe only under the rectangular-input promise. Keep those validation boundaries visible when adapting the implementation.
+
+## Track three kinds of membership
+
+Allocate one seen collection per row, one per column, and one per subsquare. Scan the cells. Skip zeros. For a filled value, check the collections for its row, column, and subsquare. If any already contains that value, the board is invalid. Otherwise record it in all three.
+
+For subsquare side s, cell `(r, c)` belongs to subsquare coordinates `(floor(r / s), floor(c / s))`. A one-dimensional tracker can flatten those coordinates into `floor(r / s) * s + floor(c / s)`. The division groups adjacent rows and columns into blocks; using the remainder would group positions within blocks instead.
+
+## Trace violations independently
+
+On a four-by-four board, values at `(0, 0)` and `(0, 3)` share a row but lie in different subsquares. Equal filled values there must fail the row check. Values at `(0, 0)` and `(3, 0)` instead test the column rule. Values at `(0, 0)` and `(1, 1)` share only the upper-left subsquare and test the block rule.
+
+Those three cases prevent an implementation from passing merely because its example happened to contain a duplicate that violated several rules at once. Repeated zeros should remain valid, since empty cells can occur many times in a row, column, or block.
+
+## Prove the scan's result
+
+Before visiting a cell, each tracker contains exactly the filled values already encountered in its corresponding region. A duplicate lookup therefore detects a real rule violation. Recording a previously absent value preserves that invariant. If the scan finishes without a duplicate, no region contains two equal placed values.
+
+This is a local consistency check. A board can satisfy all these constraints and still be impossible to finish because its remaining candidates conflict. Solvability requires a search or a stronger constraint solver. Returning true here promises only that the currently filled entries obey the tested rules.
+
+## Count storage and test generalized sizes
+
+The scan visits N² cells, with expected constant-time membership operations, for O(N²) time. Trackers may retain O(N²) entries in total. A fixed nine-by-nine puzzle makes the dimensions constant, but the generalized N-based bound explains the implementation's scaling. The board is read without changing its cells.
+
+Test a valid incomplete board, a filled valid board, each isolated duplicate type, all zeros, one-by-one input, valid four-by-four input, and invalid shape sizes. Compare with an independent oracle that extracts each complete row, column, and subsquare, filters zeros, and compares its length with its distinct-value count. If broader input validation is required, add ragged rows and out-of-range values with explicit expected failures.

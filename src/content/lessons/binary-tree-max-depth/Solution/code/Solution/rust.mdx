@@ -1,0 +1,31 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    pub fn find_max_depth(root: Option<Rc<RefCell<BinaryNode>>>) -> i32 {
+        let mut stack = Vec::new();
+        let mut max_depth = -1; // Value to return if no node is given
+
+        if root.is_some() {
+            // Updates to the correct root depth of 0
+            max_depth += 1;
+            // Add the root to the stack
+            stack.push((root, max_depth));
+        }
+
+        // Remove the top item on the stack and extract the node and its depth
+        while let Some((node, depth)) = stack.pop() {
+            // If the node exists, compare it to the current max and add its children to the stack
+            if let Some(node) = node {
+                let node = node.borrow();
+                max_depth = max_depth.max(depth);
+                stack.push((node.right.clone(), depth + 1));
+                stack.push((node.left.clone(), depth + 1));
+            }
+        }
+
+        max_depth
+    }
+}
+```

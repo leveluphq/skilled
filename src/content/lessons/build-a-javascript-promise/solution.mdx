@@ -1,0 +1,103 @@
+
+import { Section } from 'style/elements/lesson';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import FetchExample from './code/FetchExample';
+import TypeOfPromise from './code/TypeOfPromise';
+import FetchBehindScenes from './code/FetchBehindScenes';
+import PromiseImplementation from './code/PromiseImplementation';
+import PromiseExecution from './code/PromiseExecution';
+import AsyncAwaitExample from './code/AsyncAwaitExample';
+import AsyncAwaitWithPromise from './code/AsyncAwaitWithPromise';
+
+<Section>
+
+<SubsectionHeader>Implement a Promise</SubsectionHeader>
+
+**NOTE:** If you want to see our promise implementation working with a real API request, check out the <a href="https://repl.it/@TreyHuffine/Build-a-Promise-Video#index.js" target="_blank" rel="noopener noreferrer">REPL</a> from the solution video.
+
+The JavaScript promise example we are building is meant to help you understand the fundamentals of promises and asynchronous thinking — it is not intended to show the most optimized version of a promise.
+I will first describe promises for beginners and then dive into our own promise implementation so we can understand it from the ground up.
+
+You've probably seen something like this before:
+
+<FetchExample />
+
+The block of code in the `.then()` waits until it receives the response from the server before it executes anything.
+This is called a `Promise`.
+But don't let the fancy name or the fact that there is asynchronous code intimidate you — **a `Promise` is just a plain old JavaScript object**
+containing methods that allow you to execute code to handle the response in-order after the promise resolves.
+
+<TypeOfPromise />
+
+Let me reiterate (because this is something that was difficult for me to grasp when I first learned promises), a `Promise` is just an object.
+
+To be able to wait on the server's response and execute the code in the `.then()` chain after the response, you MUST `return` a `Promise` object.
+This is not something functions get out of the box.
+Behind the scenes, the `fetch` function is doing something like this.
+
+<FetchBehindScenes />
+
+The `fetch()` function makes an http request to the server, but the client doesn't know when the server will send back the results.
+So JavaScript begins executing other unrelated code while waiting on the server to return with the response.
+Once the client receives the response, it triggers the execution of the code in the `.then()` statements by calling `resolve(apiResponse)`.
+
+Now let's take a closer look at how the `Promise` actually allows you to do this.
+
+<PromiseImplementation />
+
+> NOTE: This version of a Promise is for educational purposes only. I've left out some of the more advanced features and distilled it to its core functionality.
+> For example, it doesn't store its result, so a `.then()` added after the promise has already resolved will not run.
+
+I've named it `PromiseSimple` so it won't clash with the native `Promise` in case you want to copy and paste it into your Chrome console.
+Our promise implementation has a `constructor`, 2 public methods that you may be familiar with `then()` and `catch()`, and 2 internal methods `onResolve()` and `onReject()`.
+
+When you create a promise, you do so like this `new Promise((resolve, reject) => {/* ... */})`.
+You pass it a callback function which I've named `executionFunction` in the `constructor`.
+The execution function takes a `resolve` and `reject` which map to the internal `onResolve()` and `onReject()` function.
+
+The constructor also creates a `promiseChain` array and `handleError` function.
+When a series of `.then(() => {})` are added by the developer, it pushes each `handleSuccess` function onto the `promiseChain`.
+
+When a developer calls `catch(() => {})`, it assigns the function to the internal `handleError`.
+
+Notice that the `then()` and `catch()` function `return this;`.
+This allows you to chain multiple `then()`'s since you are returning the object itself.
+
+> NOTE: In the native `Promise`, these `then()` and `catch()` functions actually return a `new Promise` themselves,
+> but for this simple scenario, I've only returned `this`.
+> In addition, there can be multiple `.catch()` blocks, and they can be chained as well and aren't required to come at the end of the `.then()` chain.
+
+When your asynchronous function calls `resolve(apiResponse)`, the promise object then begins executing `onResolve(apiResponse)`.
+`onResolve()` (like `onReject()`) first uses `setTimeout` to wait for the current code to finish, so every `.then()` and `.catch()` has been attached even if `resolve` or `reject` is called right away (native promises also always run their handlers asynchronously).
+Then it iterates through the entire `promiseChain` with `forEach` and executes each function with the most recent value saved in `storedValue`.
+It then updates `storedValue` to the result of the most recent execution.
+It will execute these functions in order.
+This creates the synchronous promise chain.
+
+This loop is wrapped in a `try`/`catch` block.
+This is special syntax that looks for errors.
+If your asynchronous function calls `reject(error)` or your `try`/`catch` recognizes an error, it will then be passed to the `onReject()` method which calls the function that you passed to `.catch()`.
+
+**NOTE:** If you want to see our promise implementation working with a real API request, check out the <a href="https://repl.it/@TreyHuffine/Build-a-Promise-Video#index.js" target="_blank" rel="noopener noreferrer">REPL</a> from the solution video.
+
+Putting it all together with a more practical example:
+
+<PromiseExecution />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>async/await</SubsectionHeader>
+
+The `async`/`await` syntax is just a wrapper around promises.
+If you mark a function as `async`, it just converts the return response to a promise.
+
+<AsyncAwaitExample />
+
+This is the equivalent of doing the following:
+
+<AsyncAwaitWithPromise />
+
+</Section>
+

@@ -1,0 +1,7 @@
+```typescript
+function arraysInsert(values: readonly number[], index: number, item: number): number[] {
+  const copy = [...values];
+  copy.splice(index, 0, item);
+  return copy;
+}
+```

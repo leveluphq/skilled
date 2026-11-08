@@ -1,0 +1,15 @@
+import Null from 'content/blocks/Null';
+import QuestionPrompt from 'content/blocks/QuestionPrompt';
+import { CodingLanguage } from 'utils/constants/lesson';
+import SampleInputOutput from './SampleInputOutput.mdx';
+import InlineCode from './inlineCode';
+
+You are given the `head` node of a singly linked list, and you need to determine if the linked list has a cycle in it.
+A cycle means that there is a "loop" in your linked list — the tail node's `next` points back to an earlier node in the linked list (or to itself) instead of to <Null />.
+The `data` for each node will be an integer, and different nodes can have the same `data`.
+
+**Write a function <InlineCode /> that returns a boolean indicating whether there is a loop in the linked list.**
+
+The input will be the head `ListNode`, and the `next` value for each will point to the next `ListNode` in the linked list.
+
+<SampleInputOutput />

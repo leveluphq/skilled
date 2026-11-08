@@ -1,0 +1,35 @@
+Practice three frontend behaviors that are easier to assess in a browser than in a function-only test: keyboard navigation between tabs, focus inside a modal dialog, and queued React state updates. Each example has a small visible contract. Predict what the next key or click should do, perform it, then compare the result with that prediction.
+
+The lab uses ordinary buttons and a native modal dialog. Its tabs switch between already available panels, so moving focus can activate a panel immediately. The state example updates one count in three different ways. All explanatory text remains available without running an exercise, while the controls require JavaScript.
+
+## Navigate the tab list
+
+Press Tab until the selected tab receives focus. Left and Right Arrow move between tab buttons, wrapping at the ends. Home moves to the first tab, and End moves to the last. Pressing Tab again leaves the tab list and moves into the selected panel. Inactive tabs are not extra stops in the page's ordinary Tab sequence.
+
+The buttons have tab roles, selected states, and controls relationships to their panels. Each panel names its associated tab. Selection affects both the visible panel and the button's state; moving only a colored underline would leave the semantic state behind. Hidden panels should not expose their controls as stray keyboard stops.
+
+These choices follow the [WAI tab pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/). Automatic activation works here because panel content is immediate. A tab that starts a slow network request may need manual activation so arrowing through labels does not repeatedly trigger delayed work.
+
+## Check modal entry and exit
+
+Choose Modal and open the practice dialog. Focus moves to the labeled note input. Try Tab and Shift+Tab around its controls. The background page should not receive input while the dialog is modal. Close with Escape, Confirm, or the explicit close button, then check that focus returns to the opener.
+
+The example calls the native dialog's showModal method, which differs from merely displaying a dialog-shaped element. Opening it as a modal puts it in the browser's top layer and makes background content inert. The dialog has a visible heading, a description, and an explicit close action. See the [native dialog reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog) for those browser behaviors.
+
+The note is a focus exercise and is not saved. Confirm and cancel produce different status messages. Opening the dialog again clears its previous return status before the next interaction, so pressing Escape cannot accidentally report a confirmation from an earlier visit. The input itself remains part of the mounted demo, which is another state choice an interview can ask you to change.
+
+## Compare snapshot and updater calls
+
+Choose State and reset the count. The snapshot button calls the setter three times using the same rendered count plus one. The updater button queues three functions, each adding one to the previous queued value. From zero, the first button produces one and the second produces three when tested after a reset.
+
+React's [state queue explanation](https://react.dev/learn/queueing-a-series-of-state-updates) describes the replacement and updater distinction. The lab runs the updates inside one button event handler. It does not claim that every asynchronous callback has identical batching behavior across all React versions or root configurations.
+
+Predict a mixed sequence too: snapshot from zero, updater next, then snapshot again. The counts should be one, four, and five. Switching tabs should retain the count because the state belongs to the lab component and the panels remain mounted. Hiding a panel is different from unmounting its component.
+
+## Turn interaction into an interview test
+
+Write expected behavior before editing the component. For tabs, list wraparound, Home, End, selected state, and hidden-panel navigation. For the dialog, list initial focus, keyboard containment, Escape, explicit close, and focus restoration. For state, distinguish repeated replacements from functions that consume queued results.
+
+Test with the keyboard and a narrow viewport as well as a pointer. A label that fits on a desktop can wrap on mobile, and controls still need useful target sizes. Native dialog focus behavior also needs a real browser check: a DOM-only test environment may not implement the top layer or inert background.
+
+For a follow-up, make tab activation manual, add a second independent tab group with unique IDs, or move the count into a panel that unmounts. State exactly which behavior should change. The [event delegation guide](/guides/frontend-event-delegation) and [autocomplete design guide](/guides/frontend-autocomplete-design) extend these exercises into browser interaction, async results, and focus management.

@@ -1,0 +1,29 @@
+```csharp
+void Case1(int[] input) {
+    for (int i = 0; i < input.Length; i++) {
+        Console.WriteLine(i * 2); // O(n)
+    }
+    for (int i = 0; i < input.Length; i++) {
+        Console.WriteLine(i * 10); // O(n)
+    }
+    for (int i = 0; i < input.Length; i++) {
+        Console.WriteLine(i * 42); // O(n)
+    }
+}
+
+void Case2(int[] input) {
+    for (int i = 0; i < input.Length; i++) {
+        Console.WriteLine(i * 2); // O(n)
+        Console.WriteLine(i * 10); // O(n)
+        Console.WriteLine(i * 42); // O(n)
+    }
+}
+
+void Case3(int[] input) {
+    for (int i = 0; i < input.Length; i++) {
+        for (int j = 0; j < input.Length; j++) {
+            Console.WriteLine($"{i} {j}");
+        }
+    }
+}
+```

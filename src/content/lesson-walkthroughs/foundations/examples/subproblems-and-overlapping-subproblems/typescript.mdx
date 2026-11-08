@@ -1,0 +1,12 @@
+```typescript
+function fibCalls(n: number): number[] {
+  let calls = 0;
+  function fib(value: number): number {
+    calls++;
+    if (value < 2) return value;
+    return fib(value - 1) + fib(value - 2);
+  }
+  const answer = fib(n);
+  return [answer, calls];
+}
+```

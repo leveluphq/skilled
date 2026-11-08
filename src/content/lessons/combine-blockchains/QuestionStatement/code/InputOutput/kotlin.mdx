@@ -1,0 +1,18 @@
+```kotlin
+class ListNode(
+    var data: Int = 0, // the unix timestamp of when the block was added
+    var next: ListNode? = null,
+)
+
+// Input
+val skilledChainHead = ListNode(42)
+skilledChainHead.next = ListNode(159)
+// many more additions to each...
+
+val devCoinHead = ListNode(123)
+devCoinHead.next = ListNode(482)
+// many more additions to each...
+
+// Output: combineBlockchains(skilledChainHead, devCoinHead)
+42 -> 123 -> 159 -> 482 // ... and so on
+```

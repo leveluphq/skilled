@@ -1,0 +1,29 @@
+import { Container } from 'style/elements';
+import Image from 'content/blocks/Image';
+
+The prompt tells us to return the head node of our combined blockchain, so we'll want to maintain a reference to that.
+The head node of the combined blockchain corresponds to the head of the input blockchain that has the smallest timestamp.
+
+<Image src="/images/maintain-blockchain-head.png" alt="The merged linked chain keeps a reference to its first node while its tail advances." width={1674} height={762} />
+
+As we iterate through our blockchains, we will be appending nodes to our combined list.
+To be able to append, we will need to track the tail of our combined linked list with a pointer.
+
+Since we only need to compare a single node from each of the input linked lists,
+we will have a pointer for each that tracks the node with the smallest timestamp that hasn't been added to the combined list.
+Once a node is appended, the pointer for that input list will then move to its `next` node.
+
+<Image src="/images/smallest-pointer-node.png" alt="After a node is appended to the merged chain, its input pointer advances to the next unmerged node." width={2230} height={936} />
+
+In total, this gives us 4 pointers we'll track.
+
+<Container>
+
+```javascript
+#1 (combined list head pointer) -> ...items in order... -> #2 (combined list tail pointer)
+
+#3 (current smallest timestamp node in SkilledChain) -> ... rest  of chain ... -> null
+#4 (current smallest timestamp node in DevCoin) -> ... rest  of chain ... -> null
+```
+
+</Container>

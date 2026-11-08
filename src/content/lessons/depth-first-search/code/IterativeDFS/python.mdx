@@ -1,0 +1,19 @@
+```python
+def iterative_depth_first_search(starting_node):
+    dfs_stack = [starting_node]
+    visited_nodes = set()
+
+    while len(dfs_stack) > 0:
+        node = dfs_stack.pop()
+
+        # A node can be added to the stack more than once, so skip it if we already visited it
+        if node in visited_nodes:
+            continue
+
+        visit(node)
+        visited_nodes.add(node)
+
+        for child_node in node.edges:
+            if child_node not in visited_nodes:
+                dfs_stack.append(child_node)
+```

@@ -1,0 +1,41 @@
+Predict the logged output, check the explanation, and then change one detail in the snippet. The quiz covers twelve examples involving closure bindings, loop scopes, function receivers, shallow copies, collection identity, defaulting operators, sorting, and promise execution. A correct choice is a starting point: the explanation should account for every logged value and its position.
+
+## Use a precise execution contract
+
+Each snippet runs independently inside a strict-mode function. This removes differences caused by top-level script bindings, module scope, and a host's global object. In particular, a detached ordinary function receives undefined as its receiver in the receiver question. The snippet explicitly handles that value so the answer does not depend on a host's exception wording.
+
+Wait for the snippet's promise jobs to finish before deciding its complete output. Each displayed output line represents one console.log call, and spaces separate that call's arguments. Examples log primitive values or an explicitly serialized array. A browser's expandable object inspector can show a later object state or format values differently; that presentation is outside these questions' contract.
+
+## Trace bindings before evaluating expressions
+
+For a closure, identify the binding the function reads and when it reads it. Creating an arrow that refers to count does not copy count's current value. If the same binding changes before the arrow is called, the later read sees the changed value. The [JavaScript preparation guide](/interview-prep/javascript) connects this behavior to reusable functions and interview implementation choices.
+
+The two loop questions deliberately use the same callback body with different declarations. The let loop provides separate iteration bindings, while the var loop shares one function-scoped binding. The callbacks execute after the loop in both examples. Delayed execution explains the time of the reads; the declaration explains whether they read one binding or several. Neither example requires a timer.
+
+## Separate a function from its receiver
+
+An ordinary function's receiver depends on its invocation. Saving a method into another variable preserves the function object but does not bind it to the original owner. A property call and a detached plain call can therefore run the same body with different receiver values. Binding with bind or invoking with call changes that relationship deliberately.
+
+An arrow uses the receiver from its surrounding lexical environment. Calling the arrow with call does not replace that captured receiver. For each example, name the ordinary function invocation that supplies this, then identify which functions inherit it. This is more reliable than treating every dot near a function as evidence of a permanent binding.
+
+## Inspect identity, copies, and missing values
+
+Object spread creates a new outer object but copies the nested reference in the copy question. A mutation through that shared reference reaches the same nested object. Assigning a new outer label only changes the copied object's property. Draw two outer boxes pointing to one nested box before trying the follow-up that copies another level.
+
+Map's object keys also depend on reference identity. A fresh object with matching fields is a different key. If an algorithm means to group entries by an ID, choose that primitive ID as the key explicitly. The [TypeScript collections guide](/guides/typescript-collections) discusses these runtime rules alongside missing-value and readonly contracts; its TypeScript annotations do not change object identity.
+
+Defaulting expressions require their own contract. Destructuring uses its default when a value is undefined. Logical OR selects its fallback for any falsy left operand. Nullish coalescing selects its fallback for null or undefined. A count of zero and an explicitly supplied null can therefore behave differently even when several expressions are described casually as defaults.
+
+## Write a queue trace for asynchronous examples
+
+Begin by listing the synchronous statements in order. When a fulfilled promise receives a then handler, record that reaction as queued work and continue the synchronous trace. A fulfilled state does not make the handler execute inline. For await, trace the function body until suspension, return to its caller, and then trace the continuation when its job runs.
+
+The finally question tests value propagation separately from ordering. A successful cleanup callback preserves the earlier outcome, even when its ordinary return value differs. A thrown error or rejected promise can change the outcome. These cases help when debugging promise chains; the [event-loop guide](/guides/javascript-event-loop) and [Promise.all implementation](/guides/implement-promise-all) provide longer traces and aggregation practice.
+
+## Review mistakes with a changed example
+
+After checking an answer, read why your selected alternative differs from the actual trace. Finish the round to retry only missed snippets, or open the complete reference to compare all alternatives. Scores measure these twelve prompts, and memorizing their outputs does not establish that the underlying concepts transfer to unfamiliar code.
+
+Use each follow-up to test that transfer. Replace an arrow with an ordinary function, change a missing value to zero, add a numeric sort comparator, or make cleanup reject. Predict the changed output before running it in your own environment under the stated contract. The complete reference includes links to the relevant language documentation for checking a disputed rule.
+
+The application displays these reviewed snippets as text; the quiz does not execute entered programs. Answers remain in the page and reset on reload. It needs no account, produces no public answer URLs, and can be used on a self-hosted instance. After a round, move to the [JavaScript course material](/topics/javascript) or build a short review schedule with the [study-plan builder](/tools/study-plan-builder).

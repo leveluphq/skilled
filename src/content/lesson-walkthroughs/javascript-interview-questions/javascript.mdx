@@ -1,0 +1,74 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+
+
+A useful JavaScript interview answer predicts a concrete program and explains the rule behind it. Memorizing a list of surprising outputs is fragile: changing one declaration or moving one call can change the result. This page starts with a small executable quiz, then shows how to reason through its scope and identity behavior. The [original question collection](/course/javascript-interview-questions) contains the broader set of questions.
+
+## Read closures as access to bindings
+
+The first loop creates callbacks with a function-scoped `var index`. After the loop ends, that one binding contains 3. Calling any of the saved callbacks reads it then, so the results are `[3, 3, 3]`. The functions did not each capture a frozen copy of the number that happened to be present when they were created.
+
+The second loop uses `let position` in the loop header. Each iteration has its own binding, producing `[0, 1, 2]` when the saved callbacks run. No timer is needed to demonstrate the distinction: saving callbacks and invoking them later already separates creation from observation.
+
+When a question includes asynchronous scheduling, first work out which binding is read. Then work out when it is read. Mixing those two questions makes an ordinary closure error look like a timer problem. The [Fix this lesson](/course/fix-this) combines a loop-binding issue with a separate receiver issue and asks you to repair both.
+
+## Trace shared objects and reassigned variables
+
+The quiz starts with two variables referring to one object. Mutating the object's count through the alias changes the value visible through the original reference. Reassigning the alias to a second object changes only that variable. The final counts are 2 for the original object and 9 for the new object.
+
+Draw one box and two arrows before the mutation, then add the second box when reassignment occurs. This also explains why two equal-looking object literals are not equal by reference identity. A shallow copy creates a new outer object but can still share nested objects, so a single spread operation does not establish a deep ownership boundary.
+
+## Explain equality using the operation being called
+
+The quiz constructs NaN by converting a nonnumeric string. Strict equality reports that this value is not equal to itself; Object.is reports that the two NaN values are the same value. Those results follow different comparison algorithms. Object.is also distinguishes positive and negative zero, which strict equality treats as equal.
+
+Do not generalize from one operator to every collection operation. A map lookup, an includes check, and an object reference comparison have their own specified equality behavior. If a question asks why a deletion failed, inspect the actual key or callback identity passed to that API. A newly created function with the same body is still a different function object.
+
+## Add receiver and scheduling questions separately
+
+For a method call, identify the receiver supplied by the call expression. Detaching a regular method from its object can lose that receiver. Binding the method or calling it through a closure can preserve it. An arrow uses lexical this, so replacing every function with an arrow is not a universal repair.
+
+For scheduling questions, list synchronous statements first and then identify microtasks and timer tasks. Native promise reactions use microtasks. A teaching class that schedules callbacks with setTimeout has different ordering. The [event-loop guide](/guides/javascript-event-loop) supplies a trace for comparing those queues.
+
+## Turn an answer into a checkable explanation
+
+For the published quiz, predict the full returned object before running it. Change the first loop to let and predict which fields change. Move the object mutation after rebinding the alias and repeat. These edits isolate the rules instead of adding unrelated syntax.
+
+The example does constant bounded work because its loops have three iterations. A generalized version retaining n callbacks would use O(n) memory and O(n) invocation time. TypeScript adds compile-time descriptions, but its annotations do not change any of these closure, identity, or equality results. Use the [output quiz](/tools/javascript-output-quiz) for shorter drills, then explain each answer in your own words before checking it.
+
+## JavaScript example and implementation choices
+
+The var loop intentionally keeps its shared final index so the quiz can expose the closure distinction. Object mutation and alias reassignment are separate statements, making their effects independently observable. Number constructs NaN from text, avoiding a reliance on undeclared identifiers or coercive equality. All results are ordinary returned data, so this quiz can be tested without scheduling timers or inspecting console output.
+
+### Worked example
+
+```javascript
+function scopeIdentityQuiz() {
+    const shared = { count: 1 };
+    let alias = shared;
+    alias.count = 2;
+    alias = { count: 9 };
+    const functionScoped = [];
+    const blockScoped = [];
+    for (var index = 0; index < 3; index++)
+        functionScoped.push(() => index);
+    for (let position = 0; position < 3; position++)
+        blockScoped.push(() => position);
+    const invalid = Number('not a number');
+    return {
+        originalCount: shared.count,
+        reboundCount: alias.count,
+        varResults: functionScoped.map(read => read()),
+        letResults: blockScoped.map(read => read()),
+        nanEqualsItself: invalid === invalid,
+        nanSameValue: Object.is(invalid, invalid),
+        distinctObjectsEqual: shared === alias,
+    };
+}
+```
+
+## Continue in JavaScript
+
+[Open JavaScript Interview Questions](/course/javascript-interview-questions) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

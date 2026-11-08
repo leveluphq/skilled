@@ -1,0 +1,9 @@
+```cpp
+void removeVertex(const string& vertex) {
+    adjacencyList.erase(vertex);
+
+    for (auto& [node, edges] : adjacencyList) {
+        erase(edges, vertex);
+    }
+}
+```

@@ -1,0 +1,17 @@
+import Image from 'content/blocks/Image';
+import BigO from 'content/blocks/BigO';
+
+By starting in the bottom left-corner, we gave ourself only two moves, up or right.
+By understanding where smaller and larger values must exist, we can eliminate entire rows on each move.
+Since we traversed from the bottom-left, we are able to eliminate all nodes behind it as well.
+All this knowledge combined allows us to drastically reduce the problem space quickly.
+
+By eliminating an entire row or column on each move, we are able to reduce our solution to linear time.
+It creates a path that in the worst case must go from the bottom-left to the top-right which is `r` rows and and `c` column moves
+for <BigO.n letter="r + c" /> time.
+
+The worst case below is when we have a target of 10.
+We travel through 8 total nodes which is `~ r+c` or `~ 4+5`.
+This beats a brute force of `r x c` of 20.
+
+<Image src="/images/full-path-matrix-search.png" maxWidth="400px" alt="A highlighted staircase path searches a row-and-column-sorted matrix from its lower-left corner." width={1486} height={1206} />

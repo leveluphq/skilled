@@ -1,0 +1,66 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Return the sum of the decimal digits of a nonnegative integer. For 4096, the result is 4 + 0 + 9 + 6 = 19. Zero returns zero. The solution extracts the last digit and recurses on the remaining prefix, giving a small example of how a recursive return value combines with work from the current call.
+
+## Split off one decimal digit
+
+For a nonnegative integer x, `x % 10` is its final decimal digit. Integer division by ten removes that digit. In languages where ordinary division produces a fraction, apply an explicit floor or use the integer-division operator. The quotient must be a smaller whole number for the recursion to make progress.
+
+The recurrence is `sum(x) = x % 10 + sum(floor(x / 10))`, with `sum(0) = 0`. Each call contributes one digit. Internal zero digits contribute zero, but still disappear from the quotient on the next step. They must not cause an early return for the entire number.
+
+## Trace calls and returns separately
+
+Calling the function on 4096 extracts 6 and asks for the sum of 409. That call extracts 9 and asks for 40. Next comes 0 with remainder 4, then 4 with remainder 0. The zero input returns immediately. The pending calls then return 4, 4, 13, and finally 19.
+
+The forward call sequence shows that the problem gets smaller. The return sequence shows how the complete answer is rebuilt. Returning only the recursive result would discard the current digit. Returning only the last digit would stop after the first extraction. Write both pieces of the recurrence before translating it into code.
+
+## Choose a base case that terminates
+
+The zero case has no remaining digits to process, so its contribution is zero. Every positive nonnegative integer becomes zero after finitely many integer divisions by ten. This establishes termination. The digit decomposition also establishes correctness: the recurrence adds the final digit to the correct sum of all earlier digits.
+
+Negative input is outside this lesson's contract. Remainder signs and division rounding differ across languages, so extending the same expression blindly can produce a negative result or an unexpected recursion path. A generalized function should define whether it sums the magnitude's digits, and handle the minimum signed integer without overflowing when taking its absolute value.
+
+## Count digits rather than numeric magnitude
+
+For d decimal digits, the function takes O(d) arithmetic steps and O(d) recursive frames. For positive x, d grows as O(log x), but expressing the bound in digits also handles zero cleanly. Bounded machine integers cap d at a small constant; the digit-based explanation still describes the algorithm more usefully.
+
+An iterative version keeps a running sum, repeatedly adds the remainder, and replaces the number with its quotient until it reaches zero. It uses O(1) auxiliary state. A string-based solution is another useful reference, but it allocates or traverses a decimal representation and should state that representation cost.
+
+## Test extraction and reconstruction
+
+Use 0, every single digit, a power of ten, repeated nines, and numbers with internal zeros. For 1000, the result is one, and for 9090 it is eighteen. These expose implementations that stop at the first zero digit or accidentally count the number of digits instead of their values.
+
+Compare many inputs with a string-based oracle that sums their decimal characters. As a follow-up, use an arbitrary base b: take remainder b and integer-divide by b at each step. The base must exceed one. Summing digits repeatedly until one digit remains is a different task, often called a digital root, and requires an additional rule beyond this single traversal.
+
+## JavaScript implementation
+
+`Math.floor(number / 10)` removes the final digit. Ordinary division alone would leave fractions and break the nonnegative-integer recurrence.
+
+JavaScript uses `Number` for these integer inputs. Keep intermediate arithmetic within the safe integer range when adapting the problem. Arrays and objects are mutable references: assigning another variable does not copy their contents. The course calls the exported-by-name function or class shown here, so preserve that entry name when running the code.
+
+```javascript
+const sumDigits = (number) => {
+  // ** Base case ** - we know to stop when our number no longer has digits
+  if (number === 0) {
+    return 0;
+  }
+
+  /*
+    Recursive Case:
+      1. Extract the digit in the one's place using % 10
+      2. Remove the one's place by dividing by 10 and rounding down (keeping it an int)
+      3. Sum it recursively with the rest of the digits in the integer
+  */
+  const onesPlaceValue = number % 10;
+  const trimmedItems = Math.floor(number / 10);
+  const sumOfRemainingItems = sumDigits(trimmedItems); // recursive call
+
+  return onesPlaceValue + sumOfRemainingItems;
+}
+```
+
+## Practice this implementation
+
+[Open Sum Digits](/course/sum-digits) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more JavaScript conventions and practice problems, use the [JavaScript interview guide](/interview-prep/javascript).

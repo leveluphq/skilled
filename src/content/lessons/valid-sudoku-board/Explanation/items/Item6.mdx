@@ -1,0 +1,49 @@
+import { Container } from 'style/elements';
+import Image from 'content/blocks/Image';
+
+The sub-squares don't directly map to an index.
+We will still use a hash table to track the values we have seen,
+but we will have to be more thoughtful about how we match a (row, column) coordinate to a given hash table.
+
+For the standard `9 x 9` board, there would be 9 sub-squares that roughly looks like this:
+
+<Container>
+
+```javascript
+0      1       2
+
+3      4       5
+
+6      7       8
+```
+
+</Container>
+
+- If we're at (0, 0), we would be in the 0 sub-square.
+- If we're at (1, 4), we would be in the 1 sub-square.
+- If we're at (5, 6), we would be in the 5 sub-square.
+
+<Image src="/images/sudoku-sub-squares.png" maxWidth="520px" alt="Nine Sudoku sub-squares are labeled zero through eight by their row and column groups." width={1200} height={1176} />
+
+So each sub-square corresponds to a range of (row, column) coordinates that are `j` in length.
+
+We will still need `k` hash tables to track our sub-squares, but how we track them can be done in a few ways.
+We could again use a one-dimensional hash table and mathematically determine the location of the current cell,
+but deriving this could be challenging, especially for an arbitrarily large board.
+
+Instead, let's create a two-dimensional grid to track our sub-squares that maps to our board more directly.
+
+<Container>
+
+```javascript
+subquares = [
+  [{},{},{}],
+  [{},{},{}],
+  [{},{},{}],
+]
+```
+
+</Container>
+
+This creates a `3 x 3` grid to track the values seen in each individual sub-square.
+Since our coordinates are `9 x 9`, we just divide the row and column index by 3 and round down to determine which sub-square it is contained in.

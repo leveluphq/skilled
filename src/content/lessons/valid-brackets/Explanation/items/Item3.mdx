@@ -1,0 +1,10 @@
+import Image from 'content/blocks/Image';
+
+Finally if we had a valid case `([()]{[]})`, we would encounter multiple sequences of opening and closing brackets.
+Our plan would still work.
+Anytime we see a new opening bracket, we just `push` it to the stack.
+Then if we encounter a closing bracket, we `pop` the top item to compare it to the closing bracket.
+
+<Image src="/images/brackets-open-close-sequences.png" alt="Different bracket types form nested opening and closing sequences." width={1776} height={454} />
+
+As long as we continue to `push` and `pop` items, we will always be comparing the most recent unmatched opening bracket with the closing bracket that should match it for the pair to be valid.

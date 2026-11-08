@@ -1,0 +1,22 @@
+```java
+import java.util.*;
+
+class BfsOrderExample {
+static List<Integer> bfsOrder(List<List<Integer>> graph, int start) {
+    List<Integer> output = new ArrayList<>();
+    if (start < 0 || start >= graph.size()) return output;
+    Deque<Integer> queue = new ArrayDeque<>();
+    Set<Integer> visited = new HashSet<>();
+    queue.addLast(start);
+    visited.add(start);
+    while (!queue.isEmpty()) {
+        int node = queue.removeFirst();
+        output.add(node);
+        for (int neighbor : graph.get(node)) {
+            if (visited.add(neighbor)) queue.addLast(neighbor);
+        }
+    }
+    return output;
+}
+}
+```

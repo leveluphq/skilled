@@ -1,0 +1,21 @@
+```java
+// Create a helper function to add visitedNodes to the signature
+static void dfs(GraphNode currentNode, Set<GraphNode> visitedNodes) {
+    // Use node value for the question
+    visit(currentNode);
+
+    visitedNodes.add(currentNode);
+
+    for (GraphNode childNode : currentNode.edges) {
+        if (!visitedNodes.contains(childNode)) {
+            dfs(childNode, visitedNodes);
+        }
+    }
+}
+
+static void recursiveDepthFirstSearch(GraphNode startingNode) {
+    // Init our set of visited nodes (the call stack is our stack)
+    Set<GraphNode> visitedNodes = new HashSet<>();
+    dfs(startingNode, visitedNodes);
+}
+```

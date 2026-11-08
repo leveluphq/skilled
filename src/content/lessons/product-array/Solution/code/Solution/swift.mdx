@@ -1,0 +1,28 @@
+```swift
+class Solution {
+    func buildProductArray(_ nums: [Int]) -> [Int] {
+        var results = [Int](repeating: 1, count: nums.count)
+        var leftRunningProduct = 1
+
+        // First use our results array as the running right product array.
+        // We fill from the right side, starting at the second to last item.
+        for endIdx in stride(from: nums.count - 2, through: 0, by: -1) {
+            results[endIdx] = results[endIdx + 1] * nums[endIdx + 1]
+        }
+
+        // Refill the results with the product at each point
+        for i in 0..<nums.count {
+            let productExceptSelf = leftRunningProduct * results[i]
+
+            // We use results[i] above so now it can be replaced
+            results[i] = productExceptSelf
+
+            // Now that we have used our left product,
+            // we update it to include the current element.
+            leftRunningProduct = leftRunningProduct * nums[i]
+        }
+
+        return results
+    }
+}
+```

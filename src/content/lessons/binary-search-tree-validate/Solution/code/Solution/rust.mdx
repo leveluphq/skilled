@@ -1,0 +1,40 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+// The bounds are i64, so they can sit beyond every i32 value (as -Infinity and Infinity would)
+fn recursive_validate(
+    root: &Option<Rc<RefCell<BinaryNode>>>,
+    lower_bound: i64,
+    upper_bound: i64,
+) -> bool {
+    // Base case 1 (reached leaf, valid)
+    let Some(node) = root else {
+        return true;
+    };
+    let node = node.borrow();
+    let data = i64::from(node.data);
+
+    // Base case 2 (invalid)
+    if data <= lower_bound || data >= upper_bound {
+        return false;
+    }
+
+    // When we traverse left, the current node's value must be the newest upper bound
+    // This ensures it's always strictly decreasing from the current node
+    let is_valid_left = recursive_validate(&node.left, lower_bound, data);
+
+    // When we traverse right, the current node's value must be the newest lower bound
+    // This ensures it's always strictly increasing from the current node
+    let is_valid_right = recursive_validate(&node.right, data, upper_bound);
+
+    // Both must be true for this to return true
+    is_valid_left && is_valid_right
+}
+
+impl Solution {
+    pub fn is_bst(root: Option<Rc<RefCell<BinaryNode>>>) -> bool {
+        recursive_validate(&root, i64::MIN, i64::MAX)
+    }
+}
+```

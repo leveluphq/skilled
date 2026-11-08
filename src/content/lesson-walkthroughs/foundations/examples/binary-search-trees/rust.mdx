@@ -1,0 +1,11 @@
+```rust
+fn contains_bst(values: &[Option<i32>], target: i32) -> bool {
+    let mut index = 0;
+    while index < values.len() {
+        let Some(value) = values[index] else { break; };
+        if value == target { return true; }
+        index = if target < value { 2 * index + 1 } else { 2 * index + 2 };
+    }
+    false
+}
+```

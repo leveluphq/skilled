@@ -1,0 +1,8 @@
+```rust
+fn push(&mut self, item: i32) -> usize {
+    self.data.insert(self.length, item);
+    self.length += 1;
+
+    self.length
+}
+```

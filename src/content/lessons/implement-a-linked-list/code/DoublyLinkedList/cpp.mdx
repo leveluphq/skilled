@@ -1,0 +1,60 @@
+```cpp
+struct DoublyNode {
+    int data;
+    DoublyNode* next;
+    DoublyNode* prev;
+
+    DoublyNode(int data) : data(data), next(nullptr), prev(nullptr) {}
+};
+
+class DoublyLinkedList {
+public:
+    DoublyLinkedList(const DoublyLinkedList&) = delete;
+    DoublyLinkedList& operator=(const DoublyLinkedList&) = delete;
+    ~DoublyLinkedList() {
+        while (head) { auto node = head; head = head->next; delete node; }
+    }
+
+    int length;
+    DoublyNode* head;
+    DoublyNode* tail;
+
+    DoublyLinkedList(int data) {
+        DoublyNode* initialNode = new DoublyNode(data);
+
+        length = 1;
+        head = initialNode;
+        tail = initialNode;
+    }
+
+    // O(1)
+    DoublyNode* prepend(int data) {
+        DoublyNode* prependedNode = new DoublyNode(data);
+        DoublyNode* previousHead = head;
+
+        head = prependedNode;
+        head->next = previousHead;
+
+        previousHead->prev = head;
+
+        length++;
+
+        return head;
+    }
+
+    // O(1)
+    DoublyNode* append(int data) {
+        DoublyNode* appendedNode = new DoublyNode(data);
+        DoublyNode* previousTail = tail;
+
+        tail = appendedNode;
+        tail->prev = previousTail;
+
+        previousTail->next = tail;
+
+        length++;
+
+        return appendedNode;
+    }
+};
+```

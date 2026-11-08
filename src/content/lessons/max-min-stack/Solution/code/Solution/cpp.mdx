@@ -1,0 +1,52 @@
+```cpp
+class MaxMinStack {
+    vector<int> stack;
+
+    // Stacks for internal tracking of the max/min
+    vector<int> maxValueStack;
+    vector<int> minValueStack;
+
+public:
+    MaxMinStack() {}
+
+    int peek() {
+        return stack.back();
+    }
+
+    int push(int item) {
+        stack.push_back(item);
+
+        if (maxValueStack.empty() || item >= getStackMax()) {
+            maxValueStack.push_back(item);
+        }
+        if (minValueStack.empty() || item <= getStackMin()) {
+            minValueStack.push_back(item);
+        }
+
+        return item;
+    }
+
+    int pop() {
+        int item = stack.back();
+        stack.pop_back();
+
+        if (item == getStackMax()) {
+            maxValueStack.pop_back();
+        }
+        if (item == getStackMin()) {
+            minValueStack.pop_back();
+        }
+
+        return item;
+    }
+
+    // Effectively a "peek()" for the max/min values of the stack
+    int getStackMax() {
+        return maxValueStack.back();
+    }
+
+    int getStackMin() {
+        return minValueStack.back();
+    }
+};
+```

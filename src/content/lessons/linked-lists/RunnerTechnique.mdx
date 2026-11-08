@@ -1,0 +1,25 @@
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import CodeBlock from 'content/blocks/CodeBlock';
+import Runner from './code/Runner';
+
+<SubsectionHeader>The Runner Technique</SubsectionHeader>
+
+The runner technique is very commonly used in linked list problems.
+We use 2 pointers simultaneously to iterate through the linked list instead of just 1.
+The second pointer either starts before the first pointer, or both pointer start at the same time,
+and the second pointer jumps multiple nodes instead of touching each one.
+In either case, the second pointer will reach the end of the linked list faster which provides us additional details to solve a problem.
+
+Let's look at an example of a runner that skips two nodes, which means it should reach the end twice as fast as our first pointer:
+
+<Runner />
+
+Possible use cases:
+
+- Finding the length of a linked list
+- Determining the midpoint
+- Find an intersection of linked lists
+- Find or remove the k<sup>th</sup> element from the end
+- Finding cycles in a linked list
+- Finding sub-lists
+- We don't have access to the `tail` but need the last node

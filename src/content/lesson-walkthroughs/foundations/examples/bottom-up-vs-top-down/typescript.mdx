@@ -1,0 +1,8 @@
+```typescript
+function fibTable(n: number): number[] {
+  const table = [0];
+  if (n >= 1) table.push(1);
+  for (let index = 2; index <= n; index++) table.push(table[index - 1] + table[index - 2]);
+  return table;
+}
+```

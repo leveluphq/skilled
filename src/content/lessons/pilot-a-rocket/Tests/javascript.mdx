@@ -1,0 +1,53 @@
+```javascript
+const tests = [
+  {
+    input: {
+      'base': [],
+      'ship': [],
+    },
+    expected: null,
+    description: 'empty',
+  },
+  {
+    input: {
+      'base': ['sat0'],
+      'sat0': ['ship'],
+    },
+    expected: ['base', 'sat0', 'ship'],
+    description: 'simple path',
+  },
+  {
+    input: {
+      'base': ['sat0'],
+      'sat0': ['base', 'sat1', 'sat3', 'sat4'],
+      'sat1': ['sat0', 'sat2'],
+      'sat2': ['sat1', 'sat3', 'sat4'],
+      'sat3': ['sat0', 'sat2', 'sat4'],
+      'sat4': ['sat0', 'sat2', 'sat3', 'sat5'],
+      'sat5': ['sat4', 'ship'],
+    },
+    expected: ['base', 'sat0', 'sat4', 'sat5', 'ship'],
+    description: 'path with cycle',
+  },
+  {
+    input: {
+      'base': ['sat0'],
+      'sat0': ['sat1', 'sat3', 'sat4'],
+      'sat1': ['sat2'],
+      'sat2': ['sat3', 'sat4'],
+      'sat3': ['sat4'],
+      'sat4': ['sat2'],
+      'sat5': ['ship'],
+    },
+    expected: null,
+    description: 'no valid path',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = pilotRocket(input);
+  const passed = JSON.stringify(userAnswer) === JSON.stringify(expected);
+
+  return { passed, description, expected, userAnswer };
+};
+```

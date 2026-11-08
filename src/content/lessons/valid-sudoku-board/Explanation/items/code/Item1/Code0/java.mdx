@@ -1,0 +1,20 @@
+```java
+private boolean hasValidShape(int[][] board) {
+    // If we don't have any rows or columns, it must be false
+    if (board.length == 0 || board[0].length == 0) {
+        return false;
+    }
+
+    // # of rows and columns must be equal to be a square
+    int rowCount = board.length;
+    int columnCount = board[0].length;
+    boolean isSquare = rowCount == columnCount;
+
+    if (!isSquare) {
+        return false;
+    }
+
+    // The sub-squares still need to be checked
+    return true;
+}
+```

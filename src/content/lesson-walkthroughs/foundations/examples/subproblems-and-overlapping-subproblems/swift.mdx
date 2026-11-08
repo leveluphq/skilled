@@ -1,0 +1,11 @@
+```swift
+func fibCalls(_ n: Int) -> [Int] {
+    var calls = 0
+    func fib(_ value: Int) -> Int {
+        calls += 1
+        return value < 2 ? value : fib(value - 1) + fib(value - 2)
+    }
+    let answer = fib(n)
+    return [answer, calls]
+}
+```

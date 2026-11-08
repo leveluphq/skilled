@@ -1,0 +1,89 @@
+The valid-brackets exercise accepts a string containing parentheses, square brackets, braces, and ordinary text. It returns a Boolean indicating whether the brackets match in the correct order. Non-bracket characters are ignored. That last rule means `a + (b * [c])` is valid, and a string with no brackets is valid too.
+
+Counting each kind of bracket is insufficient. `([)]` has the right counts, but its brackets cross. When a closer arrives, it must match the most recent opener that has not already been closed. A stack stores exactly that ordering.
+
+## Store unmatched openers in an array
+
+A JavaScript array provides the two operations needed here: `push` adds an opener at the end, and `pop` removes the most recent opener. A map from each closer to its required opener keeps the matching rule in one place.
+
+```javascript
+const hasValidBrackets = (string) => {
+  const stack = [];
+  const openings = new Set(['(', '[', '{']);
+  const matching = new Map([
+    [')', '('],
+    [']', '['],
+    ['}', '{'],
+  ]);
+
+  for (const char of string) {
+    if (openings.has(char)) {
+      stack.push(char);
+    } else if (matching.has(char)) {
+      if (stack.length === 0 || stack.pop() !== matching.get(char)) {
+        return false;
+      }
+    }
+  }
+
+  return stack.length === 0;
+};
+```
+
+An ordinary character matches neither branch and leaves the stack unchanged. A closing bracket is different: it must consume the matching top entry, or the function returns false immediately. At the end, any remaining opener makes the string invalid.
+
+## Trace a crossing pair of brackets
+
+For `([)]`, reading `(` makes the stack `['(']`. Reading `[` makes it `['(', '[']`. The next character is `)`, whose required opener is `(`. The top entry is `[`, so this closer cannot be matched. The function returns false at that point; finding a `]` later cannot repair the ordering.
+
+For `([])`, the first two steps are the same. The `]` consumes `[`, leaving `['(']`. Then `)` consumes `(`, leaving an empty stack. The final check returns true. For `(()`, one `(` remains after the scan, so the final check returns false even though every closer encountered so far was legal.
+
+The invariant is that the stack contains exactly the unmatched openers in their original order. The last element is the only opener the next closer may consume. This gives a short correctness explanation without enumerating every possible bracket sequence.
+
+## Use the right end of the array
+
+Using `shift` to remove the oldest opener would turn the structure into a queue. It would also make front removal expensive for a normal array representation. The bracket rule needs last-in, first-out behavior, so use `push` and `pop` at the same end.
+
+JavaScript's `pop` returns `undefined` on an empty array. The explicit `stack.length === 0` guard explains why an unmatched closer is invalid, and short-circuit evaluation avoids the pop in that case. The [Array.pop reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop) describes its return value and mutation behavior.
+
+The function declares its stack inside the call. Keeping a shared stack outside the function could make the result of one input depend on an earlier input, particularly if an invalid string caused an early return. Every call should begin with no unmatched openers.
+
+## Keep text handling consistent with the contract
+
+This is a bracket validator, not a JavaScript parser. It treats brackets inside quotes or comments as brackets too. For example, a quote character does not switch it into a special parsing mode. If the exercise changes to validating source code while excluding quoted strings, the state model must change.
+
+`for...of` iterates through JavaScript string code points. All six bracket characters in this problem are ASCII, so ordinary non-bracket Unicode text is safely ignored. A full Unicode grapheme model is unnecessary for detecting these particular delimiters. Avoid preprocessing that deletes or rewrites characters unless it has a clear purpose; the single pass already ignores everything outside the bracket set.
+
+## Test ordering, leftovers, and repeated calls
+
+These cases distinguish the common incorrect implementations: a counter accepts crossing brackets, a missing final check accepts openers left over, and a missing empty-stack check accepts an unmatched closer or throws.
+
+```javascript
+const bracketCases = [
+  ['', true],
+  ['ordinary text', true],
+  ['a + (b * [c])', true],
+  ['([]{})', true],
+  ['([)]', false],
+  [']', false],
+  ['(()', false],
+  ['(]', false],
+  ['🙂{x[y](z)}', true],
+];
+for (const [input, expected] of bracketCases) {
+  if (hasValidBrackets(input) !== expected) {
+    throw new Error('Unexpected bracket result: ' + input);
+  }
+}
+if (!hasValidBrackets('()') || hasValidBrackets('(') || !hasValidBrackets('[]')) {
+  throw new Error('State leaked between calls');
+}
+```
+
+A deep input such as many opening parentheses followed by the same number of closing parentheses tests capacity and ordering without introducing recursion. The iterative stack solution does not consume a JavaScript call frame per bracket, so its depth is limited by available heap memory rather than recursive call depth.
+
+## Give the time and space bounds precisely
+
+The function visits each character once and performs a bounded number of set, map, and stack operations for it. Under the usual array and hash-container assumptions, the time is `O(n)`. The fixed matching table has constant size. Stack space is `O(d)`, where `d` is the largest number of simultaneously unmatched openers; in the worst case, `d` is `n`.
+
+Returning false at the first invalid closer is safe because a later character cannot change the opener that should have been on top at that earlier position. Returning true early is unsafe: a later closer may be wrong, or an opener may remain at the end. Rebuild the function from those two observations, then test `([)]` before opening the course exercise.

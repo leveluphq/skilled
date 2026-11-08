@@ -1,0 +1,36 @@
+```javascript
+// type is equivalent to eventName
+// payload is the event data
+const buildAction = (type, payload) => ({ type, payload });
+
+const createStore = (reducer, initialState) => {
+  // Track state of app inside an object
+  const store = {};
+  store.state = initialState;
+  // Same as subscriptions
+  store.listeners = [];
+
+  // Return the app's state
+  store.getState = () => store.state;
+
+  // Add a callback subscription
+  store.subscribe = (listener) => {
+    store.listeners.push(listener);
+  };
+
+  // Publish an action (same as an event)
+  store.dispatch = (action) => {
+    console.log('> Action', action);
+    // Pass the action to the reducer where it determines
+    // how to handle the event based on the action.type
+    store.state = reducer(store.state, action);
+
+    // Execute all the subscriptions which will
+    // update the UI based on the new state
+    store.listeners.forEach(listener => listener());
+  };
+
+  // Returns a store object which holds state, publish, and subscribe functionality
+  return store;
+};
+```

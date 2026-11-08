@@ -1,0 +1,53 @@
+import Image from 'content/blocks/Image';
+import SimpleSum from './code/SimpleSum';
+import RecursiveSolution from './code/RecursiveSolution';
+
+We can only reach spot 100 from spot 99, 98, and 97.
+If we can figure out the number of ways to reach (end - 1 jump), (end - 2 jumps), and (end - 3 jumps),
+we will automatically know the total ways to reach the destination.
+
+But then for spot 99, 98, and 97, they can only be reached from 1 to 3 spots prior to each of them respectively since these are the only moves we make from these locations.
+
+We can see that we have subproblems forming.
+We're able to find the total number of ways to reach any spot on the board if we know the total number of ways to reach the prior 3 spots since the steps we can take from any location is 1, 2, or 3 hops.
+
+Let's visualize this using our sample input/output where we had a board length of 4:
+
+<Image src="/images/three-moves-example.png" alt="A small board lists sequences of jumps of length one, two, or three that reach each position." width={1736} height={1162} />
+
+- There is 1 path to reach the final spot by going through spot 1
+- There are 2 paths to reach the final spot by going through spot 2
+- There are 4 paths to reach the final spot by going through spot 3
+
+So since we reach spot 1 once and then do a 3-jump, this is 1 path to the final spot.
+We reach spot 2 twice and do a 2-jump both times which is 2 paths to the final spot.
+We reach spot 3 four times and do a 1-jump which is 4 paths to the final spot.
+
+If we count the number of ways to the final spot from these 3 prior spots, we see it is our solution of 7.
+There are 7 total unique paths to reach spot 4 by using a 1-jump, 2-jumps, and 3-jumps from the three previous spots.
+
+<Image src="/images/sum-of-moves.png" alt="The paths to a position are combined from paths ending one, two, and three spaces earlier." width={1906} height={1168} />
+
+Also notice that we're only counting the ways to reach the final spot and not any of the spots in between.
+When we found the number of ways to reach spot 2, this already accounted for the fact that we had a path `1,1` which went through spot 1.
+When we looked at the paths to reach spot 3, this already accounted for the ways to reach spot 3 by going through both spots 1 and 2.
+We'll see in a moment, this is formally defined because they were already accounted for when solving each prior spot's subproblem.
+
+There is a path to the final spot through the 3 prior spots.
+So if we sum the total number of ways to reach the 3 prior spots on the board,
+this produces the combination of total unique paths to reach the final spot.
+
+And this is true for _any_ board length.
+
+To express it in code, to count the ways to reach any board length
+we sum the number of ways to reach the 3 spots prior:
+
+<SimpleSum />
+
+And how do we know the number of ways to find those spots?
+For each, we simply need the number of ways to reach any of the 3 spots to it.
+
+This logic shows we've found repeating subproblems!
+If we were to express this recursively it would be:
+
+<RecursiveSolution />

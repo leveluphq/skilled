@@ -1,0 +1,29 @@
+```go
+func case1(input []int) {
+	for i := 0; i < len(input); i++ {
+		fmt.Println(i * 2) // O(n)
+	}
+	for i := 0; i < len(input); i++ {
+		fmt.Println(i * 10) // O(n)
+	}
+	for i := 0; i < len(input); i++ {
+		fmt.Println(i * 42) // O(n)
+	}
+}
+
+func case2(input []int) {
+	for i := 0; i < len(input); i++ {
+		fmt.Println(i * 2)  // O(n)
+		fmt.Println(i * 10) // O(n)
+		fmt.Println(i * 42) // O(n)
+	}
+}
+
+func case3(input []int) {
+	for i := 0; i < len(input); i++ {
+		for j := 0; j < len(input); j++ {
+			fmt.Println(i, j)
+		}
+	}
+}
+```

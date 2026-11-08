@@ -1,0 +1,12 @@
+```java
+import java.util.*;
+
+class FifoOrderExample {
+static List<Integer> fifoOrder(List<Integer> values) {
+    Deque<Integer> queue = new ArrayDeque<>(values);
+    List<Integer> output = new ArrayList<>();
+    while (!queue.isEmpty()) output.add(queue.removeFirst());
+    return output;
+}
+}
+```

@@ -1,0 +1,100 @@
+Backtracking explores a sequence of choices while keeping enough state to undo the most recent choice. It is useful when a problem asks for combinations, permutations, valid arrangements, or one arrangement satisfying constraints. The search can reject a partial candidate before constructing a complete one.
+
+Start by defining what one recursive call represents. A call might mean “decide whether to include input position i” or “choose the next unused value.” Those are different search trees. A correct template depends on which choices create a result, which state is shared, and when that state is restored.
+
+## Define a node in the decision tree
+
+For subsets of distinct input values, each position has two choices: skip it or include it. A call with index i has already made decisions for positions before i. The current path contains exactly the included values from that prefix. When i reaches the input length, all decisions are complete.
+
+```javascript
+function subsets(values) {
+  const results = [];
+  const path = [];
+
+  function visit(index) {
+    if (index === values.length) {
+      results.push([...path]);
+      return;
+    }
+    visit(index + 1);
+    path.push(values[index]);
+    visit(index + 1);
+    path.pop();
+  }
+
+  visit(0);
+  return results;
+}
+```
+
+With `["a", "b"]`, the output order is `[]`, `["b"]`, `["a"]`, `["a", "b"]`. Skipping first produces this order; choosing first would produce a different valid order. Unless the task specifies ordering, correctness concerns the result set and the independence of each result, not which leaf appears first.
+
+The empty input produces one subset: the empty subset. It has one complete sequence of zero decisions. Returning no results would omit that valid choice and can break callers that combine subsets from smaller inputs.
+
+## Copy results and restore shared state
+
+The path is one mutable array reused across branches. Saving `path` directly would put multiple references to that same object into the result. Subsequent pushes and pops would change earlier outputs. Copy it at a completed result, then continue searching with the shared working array.
+
+A push must have a matching pop after the recursive call. The invariant is that each call returns with the shared path exactly as it found it. Trace the included-a branch: after both choices for b finish, the path must contain only a. After returning to the root, it must be empty again.
+
+This is a shallow copy. It gives independent output arrays, while object values inside those arrays remain the original objects. If the contract requires independent copies of mutable objects too, specify and implement that separately. Avoid silently deep-copying arbitrary inputs, which raises questions about identity, cycles, and unsupported value types.
+
+## Permutations need a different state
+
+A permutation chooses one remaining input position for every output position. Unlike a subset search, it can choose input positions in any order. Track used indexes so the same position cannot appear twice in a path.
+
+```javascript
+function permutations(values) {
+  const results = [];
+  const path = [];
+  const used = Array(values.length).fill(false);
+
+  function visit() {
+    if (path.length === values.length) {
+      results.push([...path]);
+      return;
+    }
+    for (let index = 0; index < values.length; index += 1) {
+      if (used[index]) continue;
+      used[index] = true;
+      path.push(values[index]);
+      visit();
+      path.pop();
+      used[index] = false;
+    }
+  }
+
+  visit();
+  return results;
+}
+```
+
+This implementation treats input positions as distinct. With equal values at different positions, equal output arrays can occur. If the contract asks for unique value permutations, sort a copy and skip an equal value when the previous equal position has not been used in the current branch. Explain why that rule selects one ordering among equivalent choices. A result set can deduplicate after the search, but still pays for exploring duplicate branches.
+
+For `[1, 2, 3]`, each first choice has two possible second choices and one remaining final choice, producing six results. Compare the state with [Generate All Permutations](/course/generate-all-permutations). State whether you are distinguishing positions or values before describing the expected count.
+
+## Prune only with a valid impossibility argument
+
+Constraint search can stop as soon as a partial candidate cannot lead to a valid completion. In a bracket-generation problem, a prefix with more closing than opening brackets can never be repaired by appending characters. A candidate that already uses too many opening brackets is also invalid. These facts let the search avoid entire subtrees.
+
+In a target-sum combination search with strictly positive choices, a partial sum above the target cannot be reduced by adding more choices. With negative choices, that pruning rule is invalid: a later negative value may bring the sum back down. The same signed-value issue appears in the [prefix-sum guide](/patterns/prefix-sums).
+
+Pruning changes the explored tree only when you can prove no valid answer is removed. “This branch looks unlikely” is insufficient for an exact algorithm. An interviewer may accept a heuristic for an explicitly approximate task, but it needs a different correctness claim.
+
+If choices can repeat without a bound, also establish that recursion terminates. A zero-valued reusable choice can keep the state unchanged forever. A decreasing remaining count or an advancing index is a concrete progress measure; a hopeful target comparison is not.
+
+## Account for the output you construct
+
+Distinct n-element input has 2ⁿ subsets. Copying each output path takes time proportional to that path's length. Across all subsets, the total number of copied element references is n·2ⁿ⁻¹ for n at least one. The resulting time and output space are Θ(n·2ⁿ); the recursion and working path use O(n) additional space excluding output.
+
+Permutations have n! results, each containing n elements. Materializing them requires Θ(n·n!) output work and space for n at least one. The shown search also scans candidate positions at internal calls. Its work remains O(n·n!), and its path, used array, and recursive depth use O(n) auxiliary space excluding results.
+
+An algorithm returning every arrangement cannot promise polynomial time when the output itself is exponential or factorial. If the task requests only a count, an existence answer, or the first valid solution, consider whether memoization, a formula, or early termination can avoid constructing every output. [Dynamic programming](/patterns/dynamic-programming) helps when different branches reach equivalent future states; a memo key must include everything that affects those futures.
+
+## Check branch independence
+
+For subsets, compare output masks with all bit masks on small distinct arrays. Check that there are 2ⁿ results, that each input position appears at most once per result, and that changing one returned array does not change another. For permutations, check n! results, each with exactly the input values, and no repeated value sequences when the input is distinct.
+
+Test empty and one-element inputs separately. Then introduce duplicate input values and explain the positional behavior before writing a deduplicated variant. Check that neither function mutates the input array.
+
+Finally, trace one chosen branch and its sibling on paper, including every push, pop, used flag, and result copy. The [recursion topic](/topics/recursion) develops call contracts; the [pattern quiz](/tools/pattern-quiz) asks when include-or-skip branching matches the requested output.

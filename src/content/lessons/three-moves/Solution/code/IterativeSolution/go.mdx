@@ -1,0 +1,23 @@
+```go
+func countTotalMoves(boardLength int) int {
+	if boardLength < 0 {
+		return 0
+	}
+
+	threeSpotsBack := 0
+	twoSpotsBack := 0
+	oneSpotBack := 1
+
+	for i := 0; i < boardLength; i++ {
+		finalSpot := oneSpotBack + twoSpotsBack + threeSpotsBack
+
+		threeSpotsBack = twoSpotsBack
+		twoSpotsBack = oneSpotBack
+		oneSpotBack = finalSpot
+	}
+
+	// We return oneSpotBack because it was actually updated to the finalSpot
+	// during the last iteration of the loop when we moved values forward
+	return oneSpotBack
+}
+```

@@ -1,0 +1,19 @@
+```javascript
+class Stack {
+  stack: any[];
+
+  constructor() {
+    this.stack = [];
+  }
+  peek(): any {
+    return this.stack[this.stack.length - 1];
+  }
+  push(item: any): any {
+    this.stack.push(item);
+    return item;
+  }
+  pop(): any {
+    return this.stack.pop();
+  }
+}
+```

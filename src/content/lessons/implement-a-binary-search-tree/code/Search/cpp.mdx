@@ -1,0 +1,21 @@
+```cpp
+BinaryNode* search(int data) {
+    if (!root) {
+        return nullptr;
+    }
+
+    BinaryNode* currentNode = root;
+
+    while (currentNode) {
+        if (data < currentNode->data) {
+            currentNode = currentNode->left;
+        } else if (data > currentNode->data) {
+            currentNode = currentNode->right;
+        } else if (currentNode->data == data) {
+            return currentNode;
+        }
+    }
+
+    return nullptr;
+}
+```

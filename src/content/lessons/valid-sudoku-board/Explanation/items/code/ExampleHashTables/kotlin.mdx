@@ -1,0 +1,14 @@
+```kotlin
+// keys = number found in a cell
+// values = count for this number in a row, column, sub-square
+// mutableMapOf(number to count)
+rows or columns = arrayOf(
+    // ... hash tables before
+    mutableMapOf(
+        1 to 1,
+        4 to 1,
+        7 to 2, // this would return false since we found a duplicate
+    ),
+    // ... hash tables after
+)
+```

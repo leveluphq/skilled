@@ -1,0 +1,28 @@
+```python
+def insert(self, data):
+    node = BinaryNode(data)
+
+    # First insert becomes root
+    if self.root == None:
+        self.root = node
+        return self
+
+    current_node = self.root
+    while True:
+        if data < current_node.data:
+            # Insert the node if you reach a leaf and return
+            if not current_node.left:
+                current_node.left = node
+                return self
+
+            # Continue by traversing left
+            current_node = current_node.left
+        else:
+            # Insert the node if you reach a leaf and return
+            if not current_node.right:
+                current_node.right = node
+                return self
+            
+            # Continue by traversing right
+            current_node = current_node.right
+```

@@ -1,0 +1,52 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+By introducing a hash table to our solution, we know that we can get constant time lookups.
+We will first add all of our emails to a hash table where the key is the email and the value is the number of times it occurs.
+
+Next we will iterate through all the items in the hash table and track the email and maximum count.
+As we iterate through the items, we get the count of the current email by doing a constant time lookup in the table.
+If the count of the current email is larger than the existing maximum, then this email-count pair becomes the new maximum.
+
+After completely iterating through the hash table,
+we will have our hacker's email address which corresponds to the email with the largest number of occurrences in the original array.
+
+Understanding how to loop through a hash table is essential, and it is an issue I've seen many interviewees get stuck on.
+
+Since our solution solves this in two separate steps instead of nested loops (create a hash table and then loop through a hash table),
+we have reduced the complexity from <BigO.n2 /> to <BigO.n />.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+Our complexity is <BigO.n /> time and <BigO.n /> space.
+
+We loop through all `n` items of the array once and create the additional hash table for lookups.
+We then loop through all the items in the hash table once which will be another <BigO.n /> operation.
+
+Notice here we call the additional space needed <BigO.n />.
+We know that Big O is used to set bounds and show how complexity grows as the input size increases.
+In a best case scenario, the hash table would be <BigO.constant /> space if there is only 1 email duplicated multiple times (1 key in the table and the count is equal to the length of the array).
+The worst case would be exactly <BigO.n /> when there are no duplicate emails, and the hash table would have a key-value pair for all `n` items.
+
+There is no reason to think we will have a best case scenario, so we should determine the space complexity to be the worst case bound which is reasonable.
+Let's say we knew that each email was duplicated ~3 times.
+This would be <em>O(1/3 n)</em> space complexity, but since we drop constants, it still results in <BigO.n />.
+
+<VariationsSubtitle />
+
+Scanning an array and comparing items is the basis for many different kinds of questions.
+Very often, the best way to solve it is by using one or more hash tables.
+
+- Find a unique or duplicate string in an array
+- Determine the number of unique or duplicate strings in an array
+- Determine if all the letters of the alphabet are used in a string
+- Given an array of strings, determine if another array of strings is a subset of the first list (the Ransom Note interview question).
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

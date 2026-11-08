@@ -1,0 +1,7 @@
+```kotlin
+fun suffixCopies(values: List<Int>): List<List<Int>> {
+    val suffixes = mutableListOf<List<Int>>()
+    for (index in values.indices) suffixes.add(values.subList(index, values.size).toList())
+    return suffixes
+}
+```

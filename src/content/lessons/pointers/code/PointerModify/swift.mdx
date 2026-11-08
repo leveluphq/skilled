@@ -1,0 +1,9 @@
+```swift
+print(parent.c1!.mood, child1.mood) // happy, happy
+
+child1.mood = "sad"
+print(parent.c1!.mood, child1.mood) // sad, sad
+
+parent.c1!.mood = "stoked"
+print(parent.c1!.mood, child1.mood) // stoked, stoked
+```

@@ -1,0 +1,24 @@
+```typescript
+class Dispatcher<T> {
+  private listeners = new Map<string, Array<{ callback: (data: T) => void }>>();
+
+  subscribe(event: string, callback: (data: T) => void): () => void {
+    const subscription = { callback };
+    const bucket = this.listeners.get(event) ?? [];
+    bucket.push(subscription);
+    this.listeners.set(event, bucket);
+    return () => {
+      const current = this.listeners.get(event);
+      if (!current) return;
+      const index = current.indexOf(subscription);
+      if (index !== -1) current.splice(index, 1);
+      if (current.length === 0) this.listeners.delete(event);
+    };
+  }
+
+  publish(event: string, data: T): void {
+    const snapshot = (this.listeners.get(event) ?? []).slice();
+    for (const subscription of snapshot) subscription.callback(data);
+  }
+}
+```

@@ -1,0 +1,32 @@
+```csharp
+public class Solution {
+    public bool IsBST(BinaryNode root) {
+        // Every int is strictly between these, so they work like -Infinity and Infinity
+        bool isValid = RecursiveValidate(root, long.MinValue, long.MaxValue);
+        return isValid;
+    }
+
+    private bool RecursiveValidate(BinaryNode root, long lowerBound, long upperBound) {
+        // Base case 1 (reached leaf, valid)
+        if (root == null) {
+            return true;
+        }
+
+        // Base case 2 (invalid)
+        if (root.data <= lowerBound || root.data >= upperBound) {
+            return false;
+        }
+
+        // When we traverse left, the current node's value must be the newest upper bound
+        // This ensures it's always strictly decreasing from the current node
+        bool isValidLeft = RecursiveValidate(root.left, lowerBound, root.data);
+
+        // When we traverse right, the current node's value must be the newest lower bound
+        // This ensures it's always strictly increasing from the current node
+        bool isValidRight = RecursiveValidate(root.right, root.data, upperBound);
+
+        // Both must be true for this to return true
+        return isValidLeft && isValidRight;
+    }
+}
+```

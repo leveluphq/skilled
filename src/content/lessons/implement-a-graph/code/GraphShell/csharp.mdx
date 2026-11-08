@@ -1,0 +1,24 @@
+```csharp
+public class Graph {
+    public Dictionary<string, List<string>> adjacencyList;
+    public bool undirected;
+
+    public Graph(bool undirected = true) {
+        this.adjacencyList = new Dictionary<string, List<string>>();
+        this.undirected = undirected;
+    }
+
+    public void AddVertex(string vertex) {
+        // Add a node to the adjacency list
+    }
+
+    public void AddEdge(string source, string destination) {
+        // Connect two nodes by an edge
+        // If undirected, create a reciprocal edge
+    }
+
+    public void RemoveVertex(string vertex) {
+        // Remove a vertex and clean up the edges pointing to it
+    }
+}
+```

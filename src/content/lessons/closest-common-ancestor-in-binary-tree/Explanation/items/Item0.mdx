@@ -1,0 +1,23 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+import ConceptModal from 'content/blocks/ConceptModal';
+import Traversal from 'content/lessons/tree-traversal-in-order-pre-order-post-order/traversal.mdx';
+
+Our function will be given a root node and the values of two other nodes in the tree,
+and we need to determine the closest ancestor that they have in common and return that node.
+
+This isn't much information to start with, so we have to map out everything ourselves.
+First, let's visualize what it means for a node to be the closest common ancestor.
+
+<Image src="/images/common-ancestor-examples.png" alt="Three node pairs in the same binary tree have different closest shared ancestors." width={2165} height={610} />
+
+Let's think a little deeper about what it means to be an ancestor.
+
+- Nodes can have many ancestors, but we care about the ancestor closest to the children
+- The closest ancestor will be the node where its `left` path and its `right` each eventually lead to one of the children
+- The root is guaranteed to be a common ancestor of all nodes
+- A node can be an ancestor to itself and the other child
+
+Given our limited starting information, we can't do anything until we find our target child nodes.
+To find nodes, we need to <ConceptModal content={<Traversal />}>traverse our tree</ConceptModal>.
+Once found, we need to figure out how to rewind our traversal the lowest node where its paths split to reach the target nodes (or recombine when walking backward).

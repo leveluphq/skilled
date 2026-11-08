@@ -1,0 +1,23 @@
+```rust
+impl Solution {
+    pub fn combine_blockchains(
+        chain_head1: Option<Box<ListNode>>,
+        chain_head2: Option<Box<ListNode>>,
+    ) -> Option<Box<ListNode>> {
+        match (chain_head1, chain_head2) {
+            // Stopping condition when one of lists is empty, we return the other
+            (None, chain) | (chain, None) => chain,
+            // Recursively call our function
+            (Some(mut node1), Some(mut node2)) => {
+                if node1.data < node2.data {
+                    node1.next = Self::combine_blockchains(node1.next.take(), Some(node2));
+                    Some(node1)
+                } else {
+                    node2.next = Self::combine_blockchains(Some(node1), node2.next.take());
+                    Some(node2)
+                }
+            }
+        }
+    }
+}
+```

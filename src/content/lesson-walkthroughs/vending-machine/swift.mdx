@@ -1,0 +1,101 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Given positive coin denominations and a nonnegative target amount, return the minimum number of coins needed to make that amount. Each denomination may be reused without limit. Return -1 when the target is unreachable, and return zero for target zero. With denominations `[1, 3, 4]` and target 6, two coins of value 3 beat the greedy choice 4 + 1 + 1.
+
+## Define one optimum per amount
+
+Let `best[a]` be the minimum coins needed for amount a. Initialize `best[0]` to zero and every positive amount to an unreachable sentinel. Process amounts in ascending order. For each denomination c no greater than a, consider one coin c plus the best answer for amount a - c.
+
+Take the smallest candidate over all denominations. Since every coin is positive, a - c is strictly smaller than a and its state has already been computed. Unlimited reuse is natural here: the earlier state may already contain more copies of c, and adding one more copy remains legal.
+
+## Trace a nongreedy solution
+
+For `[1, 3, 4]`, the table through amount six is `[0, 1, 2, 1, 1, 2, 2]`. At amount six, coin 1 gives one plus the five-amount answer, or three. Coin 3 gives one plus the three-amount answer, or two. Coin 4 gives one plus the two-amount answer, or three. The minimum is two.
+
+The algorithm tests possible final coins rather than committing to the largest one. A greedy rule works for some denomination systems but needs a separate proof. The counterexample above shows that denomination size alone does not establish that proof for an arbitrary supplied set.
+
+## Preserve unreachable states safely
+
+If no denomination can lead from a reachable smaller amount, the state remains unreachable. With coins `[4, 6]`, all odd amounts are unreachable. A numeric infinity sentinel naturally stays infinite when one is added. A maximum-integer sentinel needs a guard before addition, because adding one can overflow and appear smaller than a valid count.
+
+Some versions use target + 1 as a finite sentinel. Because every positive coin is at least one, no valid solution can require more than target coins. That bound makes target + 1 distinguishable under a target range that itself fits the type. Return -1 only after examining the final state's sentinel.
+
+## Prove optimality by the final coin
+
+Any nonempty solution for amount a ends with some allowed denomination c. Removing that coin leaves a solution for a - c, whose coin count cannot beat the already computed optimum. Therefore the best solution for a must appear among the recurrence's candidates.
+
+Conversely, every candidate from a reachable earlier state is a valid construction of a, so taking the minimum cannot invent an impossible solution. Starting at the correct zero state and proceeding upward proves every table entry by induction. The recurrence answers a minimum-count question; summing candidates would instead count combinations or sequences under a different contract.
+
+## Complexity and input-dependent limits
+
+For target A and d denominations, time is O(A × d) and table storage is O(A). This is pseudopolynomial in the target's numeric value: a huge amount needs a huge table even if its decimal representation is short. An empty denomination list can make only amount zero. Zero and negative denominations are outside the positive-coin contract.
+
+Test exact single-coin amounts, target zero, unreachable gaps, duplicate denomination values, denominations larger than the target, and the nongreedy `[1, 3, 4]` case. Compare small targets with a breadth-first search over reachable amounts, where each edge adds one coin. A follow-up can reconstruct the chosen coins by storing the last improving denomination alongside each table entry.
+
+## Swift implementation
+
+The `Int.max` sentinel cannot safely be incremented. The predecessor guard keeps unreachable states out of candidate arithmetic.
+
+The course uses the class shown here and supplies any declared node classes. Swift arrays have value semantics with copy-on-write storage, while class instances such as linked nodes retain reference identity. Optional values require an explicit absence case. Keep the starter's argument labels when calling the method. Swift integer overflow traps, so expanded constraints require a checked arithmetic policy.
+
+```swift
+class Solution {
+    // Int has no infinity, so the largest Int stands in for it
+    private let infinity = Int.max
+
+    func minCoinsForChange(_ denominations: [Int], _ target: Int) -> Int {
+        /*
+          Init all values to infinity which indicates there isn't a valid coin combination for an amount (yet)
+          This is our dp / memo array that we're using to memoize the solution to subproblems
+        */
+        var minCoinsForAmount = [Int](repeating: infinity, count: target + 1)
+
+        // Bottom-up, start with 0 which is always 0
+        minCoinsForAmount[0] = 0
+
+        /*
+          Begin at the smallest amount and build a running table of
+          the smallest values required to reach EVERY amount up to the target
+        */
+        for amount in 0..<minCoinsForAmount.count {
+            // Try each denomination to reach the current amount
+            for coin in denominations where coin <= amount {
+                // The current minimum (subproblem solution) found at this amount.
+                let existingMinCoinForAmount = minCoinsForAmount[amount]
+
+                // An amount we can't reach yet can't be reached with one more coin either
+                // (and adding 1 to Int.max would overflow)
+                let minCoinsForRest = minCoinsForAmount[amount - coin]
+                if minCoinsForRest == infinity {
+                    continue
+                }
+
+                /*
+                  Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                  Always increment by +1 because we are trying one additional coin.
+                */
+                let minAmountWithCurrentCoin = minCoinsForRest + 1
+
+                /*
+                  Memoize the minimum coins to reach the current amount.
+                  This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                  If there isn't a valid combination, this just remains infinity.
+                */
+                minCoinsForAmount[amount] = min(existingMinCoinForAmount, minAmountWithCurrentCoin)
+            }
+        }
+
+        /*
+          If we didn't find a combination that matched our target (target === infinity), return -1.
+          Otherwise, the target does exist for that amount and we return it.
+        */
+        return minCoinsForAmount[target] == infinity ? -1 : minCoinsForAmount[target]
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Vending Machine](/course/vending-machine) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Swift conventions and practice problems, use the [Swift interview guide](/interview-prep/swift).

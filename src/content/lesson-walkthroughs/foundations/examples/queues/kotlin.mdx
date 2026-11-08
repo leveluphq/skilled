@@ -1,0 +1,8 @@
+```kotlin
+fun fifoOrder(values: List<Int>): List<Int> {
+    val queue = java.util.ArrayDeque<Int>(values)
+    val output = mutableListOf<Int>()
+    while (queue.isNotEmpty()) output.add(queue.removeFirst())
+    return output
+}
+```

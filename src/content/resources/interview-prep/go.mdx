@@ -1,0 +1,83 @@
+Go interview code depends on a few distinctions that compact syntax can hide: a slice and its backing array, an absent map key and a stored zero, a byte offset and a rune, a copied slice header and copied elements. Prepare those distinctions while practicing the collection operations your algorithm needs.
+
+The examples use standard Go without a dependency or a generic helper library. The integer-pair function deliberately uses an explicit int64 value model. The lesson editor may provide a different signature, so adapt the types and return shape to the published exercise contract.
+
+## Separate slice length, capacity, and ownership
+
+A slice describes a window into a backing array. Assigning a slice to another variable copies that description, so both slices can still refer to the same elements. Mutating an overlapping element through one view can be visible through the other.
+
+Appending may reuse available capacity or allocate new storage. A program that appears independent after one append can behave differently when spare capacity changes. Choose whether shared backing storage is allowed instead of using allocation behavior as an accidental ownership rule. The [Go slices article](https://go.dev/blog/slices-intro) explains the representation and copying behavior.
+
+When saving a backtracking result, allocate a new slice and copy the path into it. For an empty result, decide whether a nil slice and an allocated empty slice are equivalent in your output contract. Their lengths match, but an external serializer can represent them differently. A copied slice of pointers still refers to the same pointed-to objects.
+
+## Use the map presence result
+
+A lookup in `map[int64]int` returns an integer's zero value when the key is missing. Index zero is also a valid stored index, so checking that value alone loses information. Go's two-result lookup supplies the missing presence bit.
+
+```go
+package main
+
+func twoSum(values []int64, target int64) ([2]int, bool) {
+    previous := make(map[int64]int)
+    for index, value := range values {
+        if earlier, exists := previous[target-value]; exists {
+            return [2]int{earlier, index}, true
+        }
+        previous[value] = index
+    }
+    return [2]int{}, false
+}
+
+func bfsOrder(graph map[string][]string, start string) []string {
+    queue := []string{start}
+    seen := map[string]bool{start: true}
+    order := make([]string, 0)
+    for head := 0; head < len(queue); head++ {
+        node := queue[head]
+        order = append(order, node)
+        for _, neighbor := range graph[node] {
+            if !seen[neighbor] {
+                seen[neighbor] = true
+                queue = append(queue, neighbor)
+            }
+        }
+    }
+    return order
+}
+```
+
+For this Two Sum implementation, values and target are guaranteed to lie between negative one billion and positive one billion. Their differences fit int64. The function does not validate that precondition, and it should not be advertised as overflow-safe for unrestricted int64 inputs. A successful result contains distinct indexes because lookup precedes insertion. When the bool is false, the zero-filled pair is not an answer.
+
+A nil map supports reads but cannot receive an assignment. `make` creates a writable map for earlier indexes. Map iteration order is unspecified; this function traverses the input slice instead, so result discovery follows input order. Expected linear hash-map work is the standard algorithmic model, not a language promise that every map operation has a strict worst-case constant bound.
+
+## Explain the queue's retained storage
+
+The BFS uses a slice with a moving head index. Appending adds new work, and advancing head consumes the next queued value. Marking a neighbor before appending prevents repeated queue entries in cyclic or converging graphs. A missing adjacency key behaves as an empty neighbor slice.
+
+This short-lived queue retains all appended labels until the function returns, including consumed entries. That is O(V) queue storage over the reachable vertices, alongside the visited map and returned order. It is appropriate for this bounded traversal, but a long-lived queue may need to clear consumed reference values, compact, or use a circular buffer to avoid retaining old objects indefinitely.
+
+For a graph with integer labels, the same invariant can use an integer slice and a membership set represented by `map[int]struct{}`. The set representation communicates that only key presence matters. A bool map can also model membership when your convention never stores false as a meaningful visited entry.
+
+## Distinguish bytes, runes, and displayed characters
+
+A Go string contains bytes. Its length is a byte length, and indexing returns a byte. Ranging over a valid UTF-8 string decodes runes, with the loop index identifying a byte offset rather than a consecutive rune position.
+
+For `"a🙂b"`, the rune-start byte offsets are zero, one, and five. Converting to `[]rune` gives three indexed code points and allocates storage for them. If a substring must be returned using original byte boundaries, track the offsets instead of treating a rune count as a byte index.
+
+Runes are still code points, which can combine into a single user-perceived grapheme cluster. An exercise restricted to ASCII avoids those extra segmentation questions. General text needs an explicit character model, as well as a policy for invalid UTF-8 if the input may contain arbitrary bytes. The [Go language specification](https://go.dev/ref/spec#For_statements) defines string range behavior, including its indexes.
+
+## Use heap interfaces and numeric types deliberately
+
+The standard `container/heap` package operates on a collection implementing its interface, including length, ordering, swapping, and pointer-receiver push/pop methods. The collection's Pop method removes the final backing-slice element; the package's heap operation performs the priority rearrangement first. Confusing those two layers can return the wrong item.
+
+Read the [heap package contract](https://pkg.go.dev/container/heap) before implementing a priority queue from memory. Choose whether smaller or larger values compare first and test duplicate priorities. A queue for BFS does not need this ordering machinery because every edge represents the same one-hop step.
+
+Use int for ordinary slice indexes. Choose a value type from the problem's numeric bounds, rather than assuming int has the same width in every environment. Integer wraparound does not make a mathematically overflowing answer correct. If the result can exceed the chosen type, widen operands before arithmetic where a wider type exists, check operations, or choose a larger-number representation.
+
+## Test data sharing as well as output values
+
+For Two Sum, include an index-zero answer, duplicate values, one value, no match, negative values, and the stated numeric boundaries. Validate the pair's positions and sum instead of requiring a particular valid pair. For BFS, include a cycle, a shared neighbor, a neighbor-only node, and an absent start key.
+
+For a copied path, modify the original after saving and verify the saved result remains unchanged. Repeat with slices that have spare capacity so your test does not depend on append allocating. For text, test ASCII and a supplementary code point and state whether your output counts bytes or runes.
+
+Work through [Two Sum](/course/target-two-sum), [BFS](/course/breadth-first-search), and [linked-list reversal](/course/reverse-a-linked-list). Use the [backtracking guide](/patterns/backtracking) to practice restoration and result copying, then explain the memory retained by the Go values you actually used.

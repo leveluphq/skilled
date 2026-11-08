@@ -1,0 +1,52 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A recursive function solves a problem through smaller calls to the same function. Each call needs enough local state to finish after its child returns. The recording uses examples to connect that control flow with the call stack. Understanding the saved work makes it easier to choose a base case and to translate a recursive solution into an iterative one.
+
+## State what one call promises
+
+For factorial on nonnegative integers, one call returns the product from 1 through its argument, with factorial of zero equal to 1. A recursive step reduces the argument by one and multiplies by the returned smaller answer. That argument reaches the base case, so the chain terminates. A function that calls itself without making progress can exhaust its stack even if its syntax looks plausible.
+
+Trace a small call with separate lines for entering and returning. Factorial of 3 first waits for factorial of 2; the multiplication by 3 happens after the smaller call finishes. That pending multiplication explains why this form needs stack frames and why its recursive call is not in tail position.
+
+## Preserve order when replacing the stack
+
+Flattening nested arrays is another useful trace. For `[1, [2, 3], 4]`, depth-first expansion should produce `[1, 2, 3, 4]`. An iterative replacement must put pending nested work in the right place. Appending every discovered child to a FIFO queue can process 4 before 2 and 3. Compare the order of unfinished work with the recursive version before claiming equivalence.
+
+The [flattening guide](/guides/javascript-flatten-arrays) uses an explicit stack and discusses holes, shared branches, and cycles. Those extra contracts matter for general input. A finite nested-array example does not establish that a traversal can handle a self-referential structure.
+
+## Count depth as well as calls
+
+Time depends on how many calls execute and what each call does. Peak stack space depends on the longest active chain. A branching recursion may execute exponentially many calls while having only linear depth. Repeated subproblems may benefit from memoization, but recursion alone does not imply dynamic programming.
+
+Use the [recursion tool](/tools/recursion-call-stack) to follow pending frames. Then try [Sum Digits](/watch/sum-digits) and explain both its reduction step and the storage used for an input with many digits.
+
+## Follow the return path for factorial
+
+The example uses factorial to expose the call stack: factorial(4) waits for 4 × factorial(3), which waits for 3 × factorial(2), which waits for 2 × factorial(1). Returning one at the base case lets those suspended multiplications complete in reverse order. factorial(0) is also one by the function's contract.
+
+Each call reduces n by one, so a nonnegative integer eventually reaches a base case. Removing that progress step, or starting with a negative number without a rejection policy, invalidates the termination argument. The published example assumes integer inputs from zero through twelve so its results also fit the signed 32-bit integer implementations shown alongside it.
+
+## Include stack frames in the cost
+
+There are O(n) calls and O(n) simultaneously active frames in the recursive version. The result is one integer, but that does not make auxiliary storage constant. An iterative accumulator could use constant additional storage for this same recurrence.
+
+Testing only factorial(4) would miss a wrong zero base case. Check zero, one, and the upper supported boundary as well as a few intermediate results. Languages differ in overflow behavior and integer precision, so “works for every number” would be an unsupported extension. For larger exact results, change the numeric representation and reassess the cost of arithmetic. The [recursion visualizer](/tools/recursion-call-stack) is useful for comparing a single recursive chain with branching recursive calls.
+
+## C++ example and implementation choices
+
+The int return type is used only for inputs whose exact result fits. Signed integer overflow would be undefined behavior, so the bounded contract is part of correctness rather than a cosmetic testing choice. Recursive calls retain pending multiplications on the stack. There is no promised tail-call optimization, and this multiplication-after-return structure is not a simple tail-recursive accumulator.
+
+### Worked example
+
+```cpp
+int factorial(int n) {
+    if (n == 0) return 1;
+    return n * factorial(n - 1);
+}
+```
+
+## Continue in C++
+
+[Open Recursion](/course/recursion) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the C++ example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [C++ interview preparation guide](/interview-prep/cpp) connects these language choices with further practice and the cross-language operation reference.

@@ -1,0 +1,27 @@
+```rust
+use std::collections::{HashSet, VecDeque};
+
+fn breadth_first_search(starting_node: &Rc<RefCell<GraphNode>>) {
+    let mut bfs_queue = VecDeque::from([Rc::clone(starting_node)]);
+    // Each node's data is unique, so we track the visited nodes by their data
+    let mut visited_nodes = HashSet::new();
+
+    visited_nodes.insert(starting_node.borrow().data);
+
+    while let Some(node) = bfs_queue.pop_front() {
+        let node = node.borrow();
+
+        // Use node value for the question
+        visit(&node);
+
+        for child_node in &node.edges {
+            let child_data = child_node.borrow().data;
+
+            if !visited_nodes.contains(&child_data) {
+                bfs_queue.push_back(Rc::clone(child_node));
+                visited_nodes.insert(child_data);
+            }
+        }
+    }
+}
+```

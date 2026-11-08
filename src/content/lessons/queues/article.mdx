@@ -1,0 +1,81 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { ItemWithMargin } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import QueueVisual from './QueueVisual';
+import AnimatedQueue from './AnimatedQueue';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+import { SideBySide, SideBySideText } from './styles';
+
+<Section>
+
+<Container>
+
+<SideBySide>
+
+<SideBySideText>
+  <div>
+    A queue is a linear data structure that handles items based on the order in which they are
+    added. We add items to the back of the queue and remove items from the front, all in{' '}
+    <BigO.constant /> time. <strong>Queues operate in first-in-first-out (FIFO) order.</strong>
+    The first item added (the one that has been in the queue the longest) is the first one that will be removed.
+  </div>
+  <div style={{ marginTop: '24px' }}>
+    A queue data structure is exactly how we handle lines at stores. The first person (the one who
+    has been waiting the longest) is going to be at the front of the line and will be helped first.
+  </div>
+</SideBySideText>
+
+<AnimatedQueue />
+
+</SideBySide>
+
+</Container>
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+<CheatSheetTables table={<BigOTable {...bigO} />} dataStructure={<QueueVisual />} />
+
+<ProsCons pros={pros} cons={cons} />
+
+**Queues in Interviews**
+
+- Build a stack using queues
+- Task scheduling or ordering items
+- Caching or storing some fixed number of items
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Queues" />
+
+Queues are fundamental data structures to how we execute code, but they also easily map to real-world scenarios.
+Anytime we wait in line, we are behaving just like a queue — the first person who arrived will be helped first.
+Call centers function in the same manner. The operators handle calls based on who phoned in first.
+
+Queues are utilized in programming in many ways:
+
+- A CPU handling multiple processes and scheduling
+- Events and message queues (ex. RabbitMQ, ZeroMQ, pub/sub)
+- LRU Cache
+- Fundamental to the <a href="https://www.youtube.com/watch?v=8aGhZQkoFbQ" target="_blank" rel="noopener noreferrer">JavaScript event loop</a>
+- Breadth-first search
+
+</Section>

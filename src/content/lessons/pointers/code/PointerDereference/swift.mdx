@@ -1,0 +1,14 @@
+```swift
+parent.c1 = nil
+print(parent.c1 == nil, child1.mood) // true, stoked
+
+parent.c1 = child1
+
+// A Swift variable keeps its type, so child1 now points to a different Child object
+child1 = Child(age: 10, mood: "a different object")
+print(parent.c1!.mood, child1.mood) // stoked, a different object
+
+parent.c1 = nil
+print(parent.c1 == nil, child1.mood) // true, a different object
+// Nothing references the stoked child anymore, so Swift frees its memory
+```

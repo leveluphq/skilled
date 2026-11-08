@@ -1,0 +1,29 @@
+import * as React from 'react';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+
+<SubsectionHeader>Amortized Time</SubsectionHeader>
+
+<React.Fragment>
+  {props.note}
+</React.Fragment>
+
+When we calculate the Big O of an algorithm, we do so by considering the worst case scenario, which is the slowest time complexity.
+There is an exception to this rule known as amortized time.
+
+When we have numerous operations that occur with a fast time complexity and then on a very rare occasion have a slow operation,
+we average (amortize) its cost across the many fast operations.
+The fast operations overpower the slow one because they happen in nearly all the cases.
+
+An example of this is a dynamic array that resizes and doubles its capacity each time it becomes filled.
+A `push` to the array takes <BigO.constant /> time.
+If we have 1,000,000 items in the array and a capacity to hold 2,000,000, we could push 999,999 times at <BigO.constant /> time
+before it is resized once at <BigO.n /> time.
+
+A simple way to think about it mathematically is that we have 1 operation that requires <BigO.n /> time.
+We have `n - 1` operations that use <BigO.constant /> time.
+Since it takes nearly `n` operations before our <BigO.n /> occurs again,
+we say that the frequent fast operations pay for the cost of the very rare and slow operation.
+
+Typically for Big O we like to look at the worst case we can expect per _algorithm_.
+With amortization, we consider the complexity per _operation_ since they are so unevenly distributed.

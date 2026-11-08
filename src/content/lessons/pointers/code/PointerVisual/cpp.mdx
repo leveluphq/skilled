@@ -1,0 +1,29 @@
+```cpp
+struct Object {
+    string hi;
+    bool is;
+};
+
+Object* pointer = new Object{"world", true};
+// The object { hi: "world", is: true } is created in memory
+// The pointer variable references/points to the object
+// pointer ----> { hi: "world", is: true }
+
+cout << pointer->hi << endl;
+// pointer accesses the object from memory and requests the value stored for `hi`
+// pointer ----> { hi: "world", is: true } ----> hi
+//                                         <---- "world"
+
+pointer->hi = "friends";
+// pointer reassigns the value for `hi`
+// pointer ----> { hi: "world", is: true } ----> hi = "friends"
+
+pointer = nullptr;
+// pointer changes its reference from the object to nullptr
+// The object still exists in memory but is just no longer referenced to by the variable
+//
+// pointer           { hi: "friends", is: true }
+//       |
+//       |
+//       |--> nullptr
+```

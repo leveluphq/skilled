@@ -1,0 +1,15 @@
+```kotlin
+// isBadVersion(version) is provided by VersionControl
+class Solution : VersionControl() {
+    fun firstBadVersionBruteForce(totalVersions: Int): Int {
+        for (currentVersion in 1..totalVersions) {
+            if (isBadVersion(currentVersion)) {
+                return currentVersion
+            }
+        }
+
+        // No bad version found
+        return -1
+    }
+}
+```

@@ -1,0 +1,66 @@
+import ReactPlayer from 'react-player';
+import { videoProps } from 'utils/constants/lesson';
+import { Container } from 'style/elements';
+import Image from 'content/blocks/Image';
+import LanguageMaxValue from 'content/blocks/LanguageMaxValue';
+import MinFunction from './inlineCode/MinFunction.tsx';
+import { VideoWrapper } from 'style/elements/lesson';
+
+We are going to try both denominations of 2 and 3 at each `amount` from `0` to the `target`.
+We store the results in an array as we build up the solution.
+
+<Image src="/images/vending-machine-2-3-coins-empty.png" alt="The coin-change table starts with zero coins for amount zero and infinity for amounts not yet reached." width={1734} height={952} />
+
+To track the minimum required coins, we'll create a memoization array with a length of `target + 1` which corresponds to every value from `0` to the `target`.
+This is the memoization array we're using for dynamic programming.
+We set `amount[0] = 0` which is our smallest value and starting point since no coins can be combined to reach 0.
+We initialize every other value to <LanguageMaxValue />,
+and this way when we calculate the minimum coins at an `amount`, it's easy and intuitive to replace the default value since all numbers must be smaller than <LanguageMaxValue />.
+
+At each `amount`, we subtract `-2` and `-3` and see if there was a prior coin combination that can use either of these coins to reach the current value at this step.
+If there is a valid combination, we just increment `+1` the minimum coins it took to reach a prior `amount` since we are trying to add just 1 additional coin to this combination, allowing us to reach the current `amount`.
+
+If we have multiple valid coin combinations at an `amount`, we just store the minimum in our array.
+For example at 6, we can use `2 + 2 + 2` or `3 + 3`, so we store the minimum coins to be 2 in the memoization array which corresponds to `3 + 3`.
+
+At each `amount` for each denomination, we do something similar as the following:
+
+<Container>
+
+```javascript
+memo[i] = minimum(memo[i], prior spot min coins + 1)
+```
+
+</Container>
+
+The entire solution:
+
+<Container style={{marginTop: '16px'}}>
+  <ReactPlayer {...videoProps} width="100%" url="https://vimeo.com/468332705" />
+</Container>
+
+The top table is just to visualize the possible combinations.
+All we actually need to store in our question is the number of coins to reach an amount, which is the bottom table.
+We don't actually care what the coins were, we just need to know that there was a valid combination and the number of coins used produced it.
+
+The logic step-by-step:
+
+1. We start at 0 which is the base case of 0.
+2. We move to 1 and there is no valid combination of coins.
+3. At 2, subtract `2 - 2 = 0`. The min coins for 0 is 0, and we increment it to 1 for using a single 2 denomination.
+4. At 3, we have 1 coin which is using the 3 denomination `3 - 3 = 0`.
+5. At 4, subtract `4 - 2 = 2`. At 2 we found the minimum coins needed was 1, and we increment that to account for using another 2 denomination.
+6. At 5, we can find the valid combinations from `5 - 2 = 3` or `5 - 3 = 2`. In either case, the minimum coins is 1 to reach the amounts 2 and 3, and we increment that for a minimum of 2 coins required to reach 5.
+7. At 6, we again try both denominations `6 - 2 = 4` and `6 - 3 = 3`. We see the 2 denomination gets us here in 3 coins, but the 3 denomination gets us here in 2 coins (after incrementing), so that is the minimum.
+8. At 7, we do `7 - 2 = 5` and `7 - 3 = 4`, and in either case the min coins from the prior step was 2. We increment that to get 3.
+9. At 8, we do `8 - 2 = 6` and `8 - 3 = 5`, and in either case the min coins from the prior step was 2. We increment that to get 3.
+
+Each step is a decision, and our choice is what coin should I use from all my available denominations to reach the current `amount` from a prior value that will get here with the minimum number of coins.
+We use the knowledge of previously calculated subproblem minimums to make the best decisions as we continue to build up the solution.
+
+This is a textbook example of dynamic programming in action.
+We start at 0 (the smallest value) and build the solution up by solving the same subproblem repeatedly with different input values.
+We store the answer to each subproblem in a memoization data structure.
+We go through each value from the smallest to largest step-by-step and find the optimal solution locally for each subproblem.
+We remove duplicate work by accessing previously calculated subproblem results from the memoization array which stores the minimum coins needed to reach any `amount`.
+Once we reach the `target` and solve this subproblem, it is also the global solution and answer to the question.

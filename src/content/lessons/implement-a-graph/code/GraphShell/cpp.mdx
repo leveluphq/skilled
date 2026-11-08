@@ -1,0 +1,22 @@
+```cpp
+class Graph {
+public:
+    unordered_map<string, vector<string>> adjacencyList;
+    bool undirected;
+
+    Graph(bool undirected = true) : undirected(undirected) {}
+
+    void addVertex(const string& vertex) {
+        // Add a node to the adjacency list
+    }
+
+    void addEdge(const string& source, const string& destination) {
+        // Connect two nodes by an edge
+        // If undirected, create a reciprocal edge
+    }
+
+    void removeVertex(const string& vertex) {
+        // Remove a vertex and clean up the edges pointing to it
+    }
+};
+```

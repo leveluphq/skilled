@@ -1,0 +1,12 @@
+```swift
+func fibonacci(_ n: Int) -> Int {
+    var memo = [0: 0, 1: 1]
+
+    for i in stride(from: 2, through: n, by: 1) {
+        let currentFib = memo[i - 1]! + memo[i - 2]!
+        memo[i] = currentFib
+    }
+
+    return memo[n]!
+}
+```

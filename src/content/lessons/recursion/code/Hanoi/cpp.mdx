@@ -1,0 +1,15 @@
+```cpp
+void hanoi(int disc, const string& src, const string& aux, const string& dest) {
+    // Base case (stop moving discs)
+    if (disc == 0) {
+        return;
+    }
+
+    // Recursively rotate discs
+    hanoi(disc - 1, src, dest, aux);
+    cout << "Move disc " << disc << " from " << src << " to " << dest << endl;
+    hanoi(disc - 1, aux, src, dest);
+}
+
+hanoi(4, "left peg", "middle peg", "right peg");
+```

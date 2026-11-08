@@ -1,0 +1,25 @@
+```python
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+    # O(1)
+    def prepend(self, data):
+        prepended_node = Node(data)
+        prepended_node.next = self
+
+        return prepended_node
+
+    # O(n)
+    def append(self, data):
+        appended_node = Node(data)
+        current_node = self
+
+        while current_node.next is not None:
+            current_node = current_node.next
+
+        current_node.next = appended_node
+
+        return appended_node
+```

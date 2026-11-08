@@ -1,0 +1,13 @@
+```rust
+impl Solution {
+    pub fn brute_force_first_bad_version(&self, total_versions: i32) -> i32 {
+        for current_version in 1..=total_versions {
+            if self.is_bad_version(current_version) {
+                return current_version;
+            }
+        }
+
+        unreachable!("one of the versions is bad")
+    }
+}
+```

@@ -1,0 +1,73 @@
+```typescript
+class HashTable {
+  size: number;
+  table: any[][];
+
+  constructor(size: number) {
+    this.size = size;
+    this.table = [];
+  }
+
+  get(key: string): any | undefined {
+    const index = this.hash(key);
+    const bucket = this.table[index];
+
+    if (bucket) {
+      for (let i = 0; i < bucket.length; i++) {
+        if (bucket[i].key === key) {
+          return bucket[i].value;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  insert(key: string, value: any): void {
+    const index = this.hash(key);
+
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+
+    const bucket = this.table[index];
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i].key === key) {
+        bucket[i].value = value;
+        return;
+      }
+    }
+
+    bucket.push({ key, value });
+  }
+
+  remove(key: string): any {
+    const index = this.hash(key);
+    const bucket = this.table[index];
+
+    if (bucket) {
+      for (let i = 0; i < bucket.length; i++) {
+        if (bucket[i].key === key) {
+          const value = bucket[i].value;
+          bucket.splice(i, 1);
+
+          return value;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  hash(key: string): number {
+    let hash = 0;
+
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash + key.charCodeAt(i)) % this.size;
+    }
+
+    return hash;
+  }
+}
+```

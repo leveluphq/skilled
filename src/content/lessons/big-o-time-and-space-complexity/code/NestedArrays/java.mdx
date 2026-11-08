@@ -1,0 +1,37 @@
+```java
+int n = 1000000000; // or some large number
+int[] arrayOfN = new int[n];
+
+// O(n^3)
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        for (int k = 0; k < n; k++) {
+            // ...
+        }
+    }
+}
+
+// O(n^3)
+for (int i : arrayOfN) {
+    for (int j : arrayOfN) {
+        for (int k : arrayOfN) {
+            // ...
+        }
+    }
+}
+
+// O(n)
+for (int i = 0; i < n; i++) {
+    // ...
+}
+for (int j = 0; j < n; j++) {
+    // ...
+}
+for (int k = 0; k < n; k++) {
+    // ...
+}
+
+// Nested is 1000000000 ^ 3 = 1000000000000000000000000000
+// Sequential is 3000000000
+// Sequential is MUCH MUCH smaller
+```

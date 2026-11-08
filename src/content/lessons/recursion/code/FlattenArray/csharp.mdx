@@ -1,0 +1,35 @@
+```csharp
+// Each item is either an int or a nested List<object>
+List<int> RecursiveFlatten(List<object> array) {
+    var flattenedArray = new List<int>();
+
+    foreach (object item in array) {
+        // If the item is a list, flatten it with a recursive call
+        if (item is List<object> nestedArray) {
+            flattenedArray.AddRange(RecursiveFlatten(nestedArray));
+        } else {
+            flattenedArray.Add((int)item);
+        }
+    }
+
+    return flattenedArray;
+}
+
+List<int> IterativeFlatten(List<object> array) {
+    var output = new List<int>();
+    List<object> toBeFlattened = [array];
+
+    while (toBeFlattened.Count > 0) {
+        object current = toBeFlattened[0];
+        toBeFlattened.RemoveAt(0);
+
+        if (current is List<object> nestedArray) {
+            toBeFlattened = [.. nestedArray, .. toBeFlattened];
+        } else {
+            output.Add((int)current);
+        }
+    }
+
+    return output;
+}
+```

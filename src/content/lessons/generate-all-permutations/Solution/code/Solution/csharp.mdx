@@ -1,0 +1,32 @@
+```csharp
+public class Solution {
+    public string[] GeneratePermutations(string s) {
+        // ** Base case ** - if the string is empty or 1 character, we just return that value
+        if (s.Length < 2) {
+            return new[] { s };
+        }
+
+        var permutations = new List<string>();
+
+        // Iterate through all the characters in the string
+        for (int i = 0; i < s.Length; i++) {
+            // We move a character to the front and recursively find the permutations of all the characters after it
+            // Note that the "front" is relative to a given permutation depth
+            char frontCharacter = s[i];
+
+            // Remove the new front character from the string
+            string remainingChars = s.Substring(0, i) + s.Substring(i + 1);
+
+            // Recursive call to generate an array of strings of the permutations of the remaining characters
+            string[] remainingPermutations = GeneratePermutations(remainingChars);
+
+            // Add each permutation to the result for a given depth
+            foreach (string permutation in remainingPermutations) {
+                permutations.Add(frontCharacter + permutation);
+            }
+        }
+
+        return permutations.ToArray();
+    }
+}
+```

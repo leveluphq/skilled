@@ -1,0 +1,46 @@
+import Image from 'content/blocks/Image';
+import { MarginContainer } from 'content/blocks/styles';
+
+import { ImageColumns } from './styles';
+
+To traverse the matrix, we can quickly see that this is a combination of subproblems where at each individual node, we have a decision where we can move down and right to look for a valid path.
+We continue to walk these paths until we either hit the edge of the matrix, a blocking node, or find the exit.
+
+<MarginContainer>
+<ImageColumns>
+<img src="/images/robot-maze-simple.png" alt="A grid contains open cells and blocked cells, with a destination in the lower-right corner." width={1252} height={1246} />
+<img src="/images/robot-path-simple.png" alt="A highlighted route moves right and down through open cells while avoiding blocked cells." width={1252} height={1246} />
+</ImageColumns>
+</MarginContainer>
+
+It would be complex to traverse all the paths iteratively because we would need to keep track of many locations and all the different combinations of paths we try.
+However, with recursion we can visit a node and then recursively check right and down.
+By interacting with each node individually (as a subproblem), it simplifies the logic.
+
+This is actually similar to a classic backtracking problem which is to solve a maze.
+We traverse a path completely, and if we reach an unsuccessful point, we step back through our recursion until we reach a point that we could have made a different decision and follow that path.
+A primary difference in this question is that we can pass through the same point multiple times, so we need to ensure we don't do unnecessary work.
+
+We've already mentioned our stopping conditions as well:
+
+1. Reach an edge of the matrix
+2. Encounter a blocking node `1`
+3. Find the exit node `2`
+
+Our function returns a boolean true or false.
+If we reach the edge of the matrix or encounter a blocking node, we return false for this path.
+If we find the exit node, we return true and propagate that up to the original function call.
+
+Our recursive case is to continue to follow the paths right and down.
+
+So at each node, we wait for the recursion to return and receive either a true or false result from the right and down paths.
+The result from these paths will determine if the current node is true (on a successful path) or false (did not lead to the exit).
+So the value for the current node depends on the result from items that exist further in the path.
+
+To be on a successful path, only one of the directions (right or down) needs to lead to the exit.
+We only need 1 successful path for the input to be valid, and if at least one of the paths through an item reaches the exit, we consider this node to part of a successful path and its value is true.
+If both paths return false, then we know it's on a failed path because none of the paths through this node can reach the exit, so we return false for the current node.
+
+There are 4 possible outcomes for a node:
+
+<Image src="/images/robot-maze-path-result.png" alt="A cell&#x27;s path status depends on whether its right or lower neighbor can reach the destination." width={1872} height={1312} />

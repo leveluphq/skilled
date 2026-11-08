@@ -1,0 +1,22 @@
+```python
+def case_1(input):
+    for i in range(len(input)):
+        print(i * 2) # O(n)
+
+    for i in range(len(input)):
+        print(i * 10) # O(n)
+
+    for i in range(len(input)):
+        print(i * 42) # O(n)
+
+def case_2(input):
+    for i in range(len(input)):
+        print(i * 2) # O(n)
+        print(i * 10) # O(n)
+        print(i * 42) # O(n)
+
+def case_3(input):
+    for i in range(len(input)):
+        for j in range(len(input)):
+            print(i, j)
+```

@@ -1,0 +1,34 @@
+import BigO from 'content/blocks/BigO';
+import { Container } from 'style/elements';
+import OptionalNode from 'content/blocks/OptionalNode';
+import IsPermutationOfPalindrome from './code/IsPermutationOfPalindrome';
+import HashTableStorage from './code/HashTableStorage';
+
+Translating that to code, we can determine if there is a permutation of a palindrome by doing the following:
+
+<IsPermutationOfPalindrome />
+
+<OptionalNode nodes={{
+  JAVASCRIPT: <blockquote>
+    <p>
+      We loop over the string's characters directly with <code>for...of</code>.
+      We also use the method <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values">Object.values</a>.
+    </p>
+  </blockquote>,
+  TYPESCRIPT: <blockquote>
+    <p>
+      We loop over the string's characters directly with <code>for...of</code>.
+      We also use the method <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values">Object.values</a>.
+    </p>
+  </blockquote>,
+}} />
+
+First we create a hash table that tracks the count of each character in a string.
+
+Then we iterate through all the character counts in our hash table and increment a counter every time we see an odd number.
+If we have 0 or 1 odd number character counts, we return true and otherwise false.
+
+<HashTableStorage />
+
+All the operations are linear time and space, so the function itself is <BigO.n letter="c" /> where `c` is the number of characters in an arbitrarily large string.
+When we use this function for all `n` words in our list, that will be <BigO.n letter="n x c" />.

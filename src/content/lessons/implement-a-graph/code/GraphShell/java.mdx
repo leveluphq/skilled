@@ -1,0 +1,29 @@
+```java
+class Graph {
+    private Map<String, List<String>> adjacencyList;
+    private boolean undirected;
+
+    // The graph is undirected by default
+    public Graph() {
+        this(true);
+    }
+
+    public Graph(boolean undirected) {
+        this.adjacencyList = new HashMap<>();
+        this.undirected = undirected;
+    }
+
+    public void addVertex(String vertex) {
+        // Add a node to the adjacency list
+    }
+
+    public void addEdge(String source, String destination) {
+        // Connect two nodes by an edge
+        // If undirected, create a reciprocal edge
+    }
+
+    public void removeVertex(String vertex) {
+        // Remove a vertex and clean up the edges pointing to it
+    }
+}
+```

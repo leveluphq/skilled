@@ -1,0 +1,36 @@
+```kotlin
+class Solution {
+    fun getMaxValueKnapsack(items: Array<Item>, capacity: Int): Int {
+        /*
+          maxValueAtWeight[i][weight] is the max value we can fit in a bag that holds `weight`
+          using only the first i items. This is our dp / memo table for the subproblems.
+          Row 0 means we haven't tried any items yet, so every weight starts at 0.
+        */
+        val maxValueAtWeight = Array(items.size + 1) { IntArray(capacity + 1) }
+
+        // Try each item at every weight from 0 up to the capacity
+        for (i in 1..items.size) {
+            val item = items[i - 1]
+
+            for (weight in 0..capacity) {
+                // Option 1: skip the current item and keep the best value from the previous items
+                val valueWithoutItem = maxValueAtWeight[i - 1][weight]
+                maxValueAtWeight[i][weight] = valueWithoutItem
+
+                /*
+                  Option 2: if the item fits, take it and add its value to the best value
+                  the previous items can fit in the weight that is left over.
+                  We look at the previous row, so each item is only used once.
+                */
+                if (item.weight <= weight) {
+                    val valueWithItem = item.value + maxValueAtWeight[i - 1][weight - item.weight]
+                    maxValueAtWeight[i][weight] = maxOf(valueWithoutItem, valueWithItem)
+                }
+            }
+        }
+
+        // The last cell has tried every item at the full capacity
+        return maxValueAtWeight[items.size][capacity]
+    }
+}
+```

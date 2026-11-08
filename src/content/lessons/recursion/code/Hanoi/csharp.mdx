@@ -1,0 +1,15 @@
+```csharp
+void Hanoi(int disc, string src, string aux, string dest) {
+    // Base case (stop moving discs)
+    if (disc == 0) {
+        return;
+    }
+
+    // Recursively rotate discs
+    Hanoi(disc - 1, src, dest, aux);
+    Console.WriteLine($"Move disc {disc} from {src} to {dest}");
+    Hanoi(disc - 1, aux, src, dest);
+}
+
+Hanoi(4, "left peg", "middle peg", "right peg");
+```

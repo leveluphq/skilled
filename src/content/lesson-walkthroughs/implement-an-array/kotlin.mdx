@@ -1,0 +1,112 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+This exercise implements an array-shaped API using numeric keys in an object. The point is to expose the bookkeeping behind `get`, `push`, `pop`, `insert`, and `remove`. It is a teaching representation: a native array implementation also manages storage capacity, whereas the object in this lesson delegates its storage to the language runtime.
+
+## Keep length and occupied indexes consistent
+
+Maintain one invariant: valid entries occupy indexes from zero through length minus one. An empty instance has length zero. Pushing an item stores it at the old length, then increments length. Popping must save the final item, remove its property, and reduce length. Returning the item and returning the new length are different API decisions; follow each method's contract in the current code.
+
+For an instance containing `[4, 8, 12]`, pushing 16 writes index 3. Popping then returns 16 and restores the original state. Test repeated pushes and pops so an old property cannot survive beyond the reported length and reappear later.
+
+## Shift in the direction that preserves unread values
+
+To insert 6 at index 1, first move 12 to index 3, then 8 to index 2, then write 6. Moving from the insertion index toward the end would overwrite values before copying them. Removal has the opposite dependency: shift later values left, then delete the obsolete final property.
+
+The current Python insertion fixes the loop boundary for insertion at index zero. Include that case in a trace: the first existing value must move too. Also test insertion at length, removal of the only item, and removal at the front. Agree on behavior for invalid indexes before extending the exercise beyond its supplied contract.
+
+## Explain the cost of the teaching model
+
+Under expected constant-time object-key operations, indexed access and tail changes take constant work. Inserting or removing near the beginning shifts up to every element and takes linear time. Length itself is stored, so reading it does not require counting properties.
+
+Do not use this object-backed implementation to claim that native arrays never resize or that all hash operations have a worst-case constant bound. Review [Arrays](/watch/arrays) for the capacity model, then open the [current implementation lesson](/course/implement-an-array) and explain each mutation before running it.
+
+## Understand the backing store used here
+
+This teaching DynamicArray stores numeric positions in a map or object and tracks a separate logical length. It exposes shifting and index bookkeeping without managing a contiguous memory allocation or a growth capacity. It therefore does not demonstrate the amortized resize proof of a production vector. The native array concept example is the better place to compare host-language collection operations.
+
+Push 4, 8, and 12, then insert 6 at position 1. Length becomes four and the right-to-left shift preserves the old suffix. Shifting left-to-right would overwrite a value before copying it. Removing position 2 then shifts the suffix left and deletes the obsolete final entry.
+
+## State this API's boundaries
+
+`insert` accepts an existing index only. It does not insert into an empty structure or append at length; use `push` for those operations. Removal returns the language's absent result for an invalid position. Retrieval policies vary: some versions return an optional/default value and others throw on a missing key; the language notes identify those differences. Rust uses unsigned indices, so a negative external index must be rejected before conversion.
+
+Expected constant-time backing-map access gives expected O(1) get, push, and pop. Insert and remove take expected O(n) because of shifting. The store retains O(n) active entries. Check invalid indices, empty pop, first and last removal, and repeated drain/refill cycles. After removal, no old value should remain retrievable beyond the logical end. This last check catches stale backing entries even when the displayed length looks correct.
+
+## Kotlin example and implementation choices
+
+`HashMap<Int, Int>` provides nullable lookup, letting get, pop, and remove distinguish a missing result from zero. insert returns the backing map on success and null for an invalid position. Because that map is mutable and exposed, callers could violate the length invariant; the lesson assumes they use the methods. A production wrapper should keep representation mutation behind its API.
+
+### Complete implementation
+
+```kotlin
+class DynamicArray {
+    var length = 0
+    val data = HashMap<Int, Int>()
+
+    fun get(index: Int): Int? {
+        return data[index]
+    }
+
+    fun push(item: Int): Int {
+        data[length] = item
+        length++
+
+        return length
+    }
+
+    fun pop(): Int? {
+        if (length == 0) {
+            return null
+        }
+
+        val poppedItem = data[length - 1]
+        data.remove(length - 1)
+        length--
+
+        return poppedItem
+    }
+
+    fun insert(index: Int, item: Int): HashMap<Int, Int>? {
+        if (index > length - 1 || index < 0) {
+            return null
+        }
+
+        length++
+
+        for (i in length - 1 downTo index + 1) {
+            data[i] = data.getValue(i - 1)
+        }
+
+        data[index] = item
+
+        return data
+    }
+
+    fun remove(index: Int): Int? {
+        if (length == 0) {
+            return null
+        }
+
+        if (index > length - 1 || index < 0) {
+            return null
+        }
+
+        val itemToBeRemoved = data[index]
+
+        for (i in index until length - 1) {
+            data[i] = data.getValue(i + 1)
+        }
+
+        data.remove(length - 1)
+        length--
+
+        return itemToBeRemoved
+    }
+}
+```
+
+## Continue in Kotlin
+
+[Open Implement an Array](/course/implement-an-array) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Kotlin example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Kotlin interview preparation guide](/interview-prep/kotlin) connects these language choices with further practice and the cross-language operation reference.

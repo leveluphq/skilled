@@ -1,0 +1,19 @@
+```swift
+func hasValidShape(_ board: [[Int]]) -> Bool {
+    // If we don't have any rows or columns, it must be false
+    if board.isEmpty || board[0].isEmpty {
+        return false
+    }
+
+    // # of rows and columns must be equal to be a square
+    let rowCount = board.count
+    let columnCount = board[0].count
+    let isSquare = rowCount == columnCount
+
+    if !isSquare {
+        return false
+    }
+
+    // ... the sub-squares are checked next
+}
+```

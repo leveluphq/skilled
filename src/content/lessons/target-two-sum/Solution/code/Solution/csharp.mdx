@@ -1,0 +1,39 @@
+```csharp
+public class Solution {
+    public int[][] GetTargetIndexes(int[] array, int target) {
+        var results = new List<int[]>();
+        var arrayElementAtIndex = new Dictionary<int, int>();
+
+        // Loop through our input array and
+        // create a hash table that stores the array value and
+        // its corresponding index.
+        for (int i = 0; i < array.Length; i++) {
+            int element = array[i];
+            arrayElementAtIndex[element] = i;
+        }
+
+        for (int i = 0; i < array.Length; i++) {
+            // We find the element that would be the match current value
+            // and check if it is our hash table.
+            int currentValue = array[i];
+            int matchedValue = target - currentValue;
+
+            // Check if our matched index is a valid array index
+            // ----
+            // NOTE: TryGetValue returns false when the value
+            // isn't in the hash table at all.
+            if (arrayElementAtIndex.TryGetValue(matchedValue, out int matchedIndex) &&
+                matchedIndex >= 0 &&
+                matchedIndex != i) {
+                results.Add(new[] { i, matchedIndex });
+
+                // Make sure we don't use these values again
+                arrayElementAtIndex[currentValue] = -1;
+                arrayElementAtIndex[matchedValue] = -1;
+            }
+        }
+
+        return results.ToArray();
+    }
+}
+```

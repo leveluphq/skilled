@@ -1,0 +1,8 @@
+```rust
+fn lifo_order(values: &[i32]) -> Vec<i32> {
+    let mut stack = values.to_vec();
+    let mut output = Vec::new();
+    while let Some(value) = stack.pop() { output.push(value); }
+    output
+}
+```

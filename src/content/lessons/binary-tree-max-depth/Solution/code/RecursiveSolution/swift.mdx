@@ -1,0 +1,14 @@
+```swift
+class Solution {
+    func findMaxDepth(_ root: BinaryNode?) -> Int {
+        guard let root else {
+            return -1
+        }
+
+        let leftDepth = findMaxDepth(root.left)
+        let rightDepth = findMaxDepth(root.right)
+
+        return max(leftDepth, rightDepth) + 1
+    }
+}
+```

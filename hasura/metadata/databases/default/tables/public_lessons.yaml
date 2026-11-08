@@ -1,0 +1,42 @@
+table:
+  name: lessons
+  schema: public
+object_relationships:
+- name: category
+  using:
+    foreign_key_constraint_on: categoryId
+select_permissions:
+- permission:
+    columns:
+    - accessLevel
+    - categoryId
+    - description
+    - difficulty
+    - id
+    - introductionVideoUrl
+    - metaDescription
+    - metaTitle
+    - position
+    - slug
+    - status
+    - title
+    - type
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - accessLevel
+    - categoryId
+    - description
+    - difficulty
+    - id
+    - introductionVideoUrl
+    - metaDescription
+    - metaTitle
+    - position
+    - slug
+    - status
+    - title
+    - type
+    filter: {}
+  role: user

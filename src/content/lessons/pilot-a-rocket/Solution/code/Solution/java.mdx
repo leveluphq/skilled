@@ -1,0 +1,63 @@
+```java
+class Solution {
+    private static final String START_NODE = "base";
+    private static final String END_NODE = "ship";
+
+    public String[] pilotRocket(Map<String, String[]> satellites) {
+        // Queue to handle BFS (ArrayDeque adds to the back and removes from the front in O(1) time)
+        Queue<String> bfsNodeQueue = new ArrayDeque<>();
+        bfsNodeQueue.offer(START_NODE);
+
+        // Use a hash table to track the node that came
+        // prior to the current in our BFS to track the path
+        Map<String, String> previousNodeInPath = new HashMap<>();
+        previousNodeInPath.put(START_NODE, null);
+
+        // Perform our BFS
+        while (!bfsNodeQueue.isEmpty()) {
+            String node = bfsNodeQueue.poll();
+
+            // We've successfully reached the end, and now we should build the path to get here
+            if (node.equals(END_NODE)) {
+                return getShortestPathToShip(previousNodeInPath);
+            }
+
+            for (String connectedNode : satellites.get(node)) {
+                // Check if we have visited this node yet
+                // (containsKey, since the start node is stored with a null previous node)
+                if (!previousNodeInPath.containsKey(connectedNode)) {
+
+                    // Add the node to the queue for our BFS
+                    bfsNodeQueue.offer(connectedNode);
+
+                    // Set the current node as the one that came before each of its siblings
+                    previousNodeInPath.put(connectedNode, node);
+                }
+            }
+        }
+
+        // We iterated through all the nodes, and no paths lead to the ship
+        return null;
+    }
+
+    private String[] getShortestPathToShip(Map<String, String> previousNodeInPath) {
+        List<String> pathToShip = new ArrayList<>();
+
+        // We start at the final node and work our way backward to the start
+        String node = END_NODE;
+
+        while (node != null) {
+            pathToShip.add(node);
+
+            // Doing a look up on the hash table for each node
+            // will yield the previous node in the path
+            node = previousNodeInPath.get(node);
+        }
+
+        // Since we worked our way backward,
+        // we must reverse the path to be in the correct order base -> ship
+        Collections.reverse(pathToShip);
+        return pathToShip.toArray(new String[0]);
+    }
+}
+```

@@ -1,0 +1,28 @@
+```rust
+use std::collections::VecDeque;
+
+// Using a VecDeque as a queue
+// push_back == enqueue
+// pop_front == dequeue
+fn breadth_first_search(root: &Option<Rc<RefCell<BinaryTreeNode>>>) {
+    let Some(root) = root else {
+        return;
+    };
+
+    let mut queue = VecDeque::from([Rc::clone(root)]);
+
+    while let Some(current_node) = queue.pop_front() {
+        let current_node = current_node.borrow();
+
+        visit_node(&current_node);
+
+        if let Some(left) = &current_node.left {
+            queue.push_back(Rc::clone(left));
+        }
+
+        if let Some(right) = &current_node.right {
+            queue.push_back(Rc::clone(right));
+        }
+    }
+}
+```

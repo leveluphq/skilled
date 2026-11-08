@@ -1,0 +1,54 @@
+table:
+  name: users_lessons_status
+  schema: public
+object_relationships:
+- name: lesson
+  using:
+    foreign_key_constraint_on: lessonId
+- name: user
+  using:
+    foreign_key_constraint_on: userId
+insert_permissions:
+- permission:
+    check:
+      userId:
+        _eq: X-Hasura-User-Id
+    columns:
+    - confidence
+    - explanationStepsViewed
+    - lessonId
+    - notes
+    - savedCode
+    - status
+    - userId
+    - validationStepsViewed
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - confidence
+    - explanationStepsViewed
+    - lessonId
+    - notes
+    - savedCode
+    - status
+    - userId
+    - validationStepsViewed
+    filter:
+      userId:
+        _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - confidence
+    - explanationStepsViewed
+    - notes
+    - savedCode
+    - status
+    - validationStepsViewed
+    filter:
+      userId:
+        _eq: X-Hasura-User-Id
+  role: user

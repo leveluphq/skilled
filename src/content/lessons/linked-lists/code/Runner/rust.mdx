@@ -1,0 +1,16 @@
+```rust
+fn runner(head: &Option<Box<Node>>) {
+    // We initialize our fast and slow to the head
+    let mut fast = head.as_deref();
+    let mut slow = head.as_deref();
+
+    // We iterate through until fast reaches the end
+    while let Some(fast_next) = fast.and_then(|node| node.next.as_deref()) {
+        // We skip to every second node with the fast runner
+        fast = fast_next.next.as_deref();
+        slow = slow.and_then(|node| node.next.as_deref());
+    }
+
+    // ... do something with this information
+}
+```

@@ -1,0 +1,53 @@
+Use the timeline to decide what a callback should do during a burst of events. The first row contains the input timestamps. The next two rows show when a debounced or throttled wrapper would invoke its callback with the selected options. The table records which input event supplies each callback's value.
+
+This tool simulates a specified contract. It does not send requests or attach a handler to your page's scroll events. Exact timestamps make the scheduling decisions inspectable, while recording your own clicks gives you a less regular input to compare.
+
+## Read one example before changing settings
+
+The default input contains events at 0, 80, 160, 600, and 680 milliseconds. With a 250 ms wait and trailing calls enabled, debounce waits until 410 ms for the first burst and 930 ms for the second. The earlier deadlines are replaced when another event arrives.
+
+With the same trailing-only settings, throttle schedules periodic eligibility from its active window instead of waiting for every burst to become quiet. Compare its callback timestamps with debounce, then enable leading calls to see the first event run immediately.
+
+The input timestamp column answers a separate question from the callback time. If an event at 160 ms produces a callback at 250 ms, the callback receives the latest pending value from 160 ms. It does not receive a new value sampled at 250 ms.
+
+## Choose leading and trailing behavior
+
+A leading call processes the first event when a new burst or available throttle window begins. A trailing call processes pending input at the end of the relevant waiting period. Both controls apply to both wrappers so you can compare the same requested options.
+
+When both edges are enabled, choose the single-event preset. One input produces one leading callback and does not produce an unnecessary second trailing callback. Add another event within the window to create pending input that can justify a later call.
+
+When both edges are disabled, no callback runs. That configuration is useful as a boundary test even if an application would not normally expose it. The tool keeps the input visible so an empty output cannot be mistaken for missing data.
+
+The [implementation guide](/guides/debounce-vs-throttle) includes a trailing debounce and a leading-only throttle. The visualizer covers the additional option combinations as a behavioral model; the small code examples deliberately state their narrower contracts.
+
+## Compare a burst with continuous activity
+
+Choose the typing preset and compare how many calls each wrapper produces. Then choose continuous events. A trailing debounce keeps replacing its deadline while activity continues, so its output may be postponed until the stream stops. A throttle can continue producing updates during sustained input.
+
+That difference matters when choosing behavior. A typeahead search often needs the settled query. A progress display may need updates during a gesture. An autosave that must run periodically cannot rely on an indefinitely postponed trailing debounce alone.
+
+Change the wait value and predict the output before inspecting the table. A shorter wait does not always mean the same number of calls shifted slightly earlier; it can split one apparent burst into several windows and change the call count.
+
+## Enter a boundary case precisely
+
+Use comma-separated nonnegative millisecond values to describe a custom stream. The tool accepts up to 100 timestamps, each at most 60,000 ms, and orders them before simulation. Repeated timestamps represent separate events at the same modeled instant.
+
+Try a wait of 250 ms with inputs `0, 249, 250`. Then compare `0, 250, 251`. The model processes due timers before inputs with the same timestamp. That tie rule can affect whether an event starts a fresh window or joins a new pending one.
+
+A real browser's exact task ordering and main-thread availability can change when a timer callback actually runs. Use this tool to test the wrapper's contract, then test production code in its actual environment. The [event-loop guide](/guides/javascript-event-loop) explains why timer registration and callback execution are different steps.
+
+## Record your own clicks
+
+Choose Record my clicks, then press the same button repeatedly. The first click establishes time zero. Later clicks use elapsed time from that start. Finish recording to copy the captured times into the editable input.
+
+Recording is capped at 100 events to keep the chart readable. It measures the times the page handles the clicks, not hardware input latency. Clearing events removes the stream and returns both callback rows to an empty result.
+
+After recording, try to explain why one specific event became the last pending value in a window. That explanation is a useful test of whether you understand the state the wrapper needs.
+
+## Turn the trace into tests
+
+Choose a small input and write down the expected callback times and values. Reproduce it with a fake clock in a unit test. Include a single event, a burst, a pause longer than the wait, continuous events, and an exact boundary.
+
+For real wrapper code, also test receiver preservation, cancellation, and a callback that invokes the wrapper again. The visualizer models event timing; it does not establish that your function forwards arguments, returns a useful value, or cancels a pending request correctly.
+
+Practice the [debounce](/course/debounce) and [throttle](/course/throttle) lessons after predicting the output for one custom trace. Keep that trace beside your implementation as a concrete contract to verify.

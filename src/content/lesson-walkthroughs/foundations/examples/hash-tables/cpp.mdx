@@ -1,0 +1,12 @@
+```cpp
+#include <vector>
+#include <unordered_map>
+
+std::vector<int> frequencyCounts(const std::vector<int>& values) {
+    std::unordered_map<int, int> counts;
+    for (int value : values) ++counts[value];
+    std::vector<int> output;
+    for (int value : values) output.push_back(counts.at(value));
+    return output;
+}
+```

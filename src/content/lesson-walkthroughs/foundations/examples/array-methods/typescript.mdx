@@ -1,0 +1,12 @@
+```typescript
+function summarize(values: readonly number[]) {
+  return {
+    doubled: values.map(value => value * 2),
+    positives: values.filter(value => value > 0),
+    hasZero: values.includes(0),
+    firstPositive: values.find(value => value > 0) ?? null,
+    allNonNegative: values.every(value => value >= 0),
+    anyNegative: values.some(value => value < 0),
+  };
+}
+```

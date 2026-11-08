@@ -1,0 +1,98 @@
+Choose a Python collection from the operations the algorithm repeats. A frequency counter, a queue, and a priority queue preserve different information, even when all three can be represented with familiar brackets. The type should make the state easy to explain and keep the repeated operation within the intended cost bound.
+
+This reference develops working examples for counts, adjacency lists, distances, and stable priority processing. It assumes hashable keys and ordinary bounded integer priorities. The [Python preparation guide](/interview-prep/python) covers the broader practice sequence, numeric model, and text assumptions.
+
+## Distinguish a missing key from a missing count
+
+A dictionary maps keys to arbitrary values. If zero, false, or None is a valid stored result, a truthiness check does not establish absence. Use membership or a separate sentinel when the contract distinguishes those values.
+
+A Counter models frequencies. Its missing-key lookup returns zero, which fits counting but differs from ordinary dictionary indexing. A zero count can still have an explicit entry in the Counter; a positive-count test and a membership test answer different questions. Do not infer the number of distinct positive-frequency values solely from the container's length after arbitrary updates.
+
+```python
+from collections import Counter, defaultdict, deque
+from heapq import heappop, heappush
+
+
+def first_unique_index(values):
+    counts = Counter(values)
+    for index, value in enumerate(values):
+        if counts[value] == 1:
+            return index
+    return None
+
+
+def adjacency_list(edges):
+    graph = defaultdict(list)
+    for source, target in edges:
+        graph[source].append(target)
+    return dict(graph)
+```
+
+The unique-index function accepts a reusable sequence, because it traverses the input twice. Passing a one-shot generator would exhaust it during counting and leave nothing for the second traversal. Convert such an iterable to a list first if that extra storage is acceptable, or change the function's interface and algorithm.
+
+The adjacency helper constructs a directed graph. It preserves repeated edges and each source's insertion order. A target with no outgoing edge need not appear as a key, so consumers must use a missing-neighbor convention or explicitly add those vertices. Those choices concern graph representation, not whether defaultdict happened to save a few lines.
+
+## Use a factory that creates separate mutable values
+
+`defaultdict(list)` calls list when a missing key is indexed, creating a separate empty list for that key. A factory returning one shared list would make several keys refer to the same adjacency list. Updating one source could then change another source's apparent neighbors.
+
+Indexing a missing defaultdict key can also mutate the dictionary by inserting the default. Its `get` method does not call the default factory. That distinction matters when a read-only traversal must not create new vertices merely by checking for neighbors. Returning an ordinary dict from the helper gives consumers a familiar missing-key contract.
+
+The [collections documentation](https://docs.python.org/3/library/collections.html) specifies Counter's counting behavior, defaultdict's factory operations, and deque's end operations. Keep the key and value assumptions alongside the collection choice rather than treating a specialized container as a correctness guarantee.
+
+## Use deque for a FIFO frontier
+
+A BFS queue repeatedly removes the oldest discovered vertex and appends newly discovered neighbors. A deque supports those operations at opposite ends. Removing the first element of a list instead introduces element movement under the usual list cost model.
+
+```python
+def shortest_hops(graph, start):
+    distance = {start: 0}
+    queue = deque([start])
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph.get(node, ()):
+            if neighbor not in distance:
+                distance[neighbor] = distance[node] + 1
+                queue.append(neighbor)
+    return distance
+```
+
+The distance dictionary also records discovery. A distance of zero is valid for the start, so `if not distance.get(neighbor)` would incorrectly treat it as unseen. A cycle returning to the start exposes that mistake. Membership ensures each reachable vertex enters the queue once.
+
+Each examined edge has unit cost in this contract. BFS therefore discovers the minimum hop distance to every reachable vertex. It does not minimize arbitrary edge weights. Missing keys have no outgoing edges, neighbor lists determine discovery order, and unreachable vertices are absent from the result.
+
+Expected traversal work is O(V + E) under the usual hash-operation model. The queue and distance table retain O(V) entries. Accessing the middle of a deque repeatedly is a different operation from its efficient end operations; do not substitute it for a general indexed list without checking the access pattern.
+
+## Break heap ties before comparing payloads
+
+Python's heapq uses a list as a min-heap. For jobs with equal priorities, a tuple containing only priority and payload may force Python to compare payloads. Dictionary payloads, for example, do not provide the ordering needed by that tuple comparison.
+
+```python
+def stable_priority_order(jobs):
+    heap = []
+    for sequence, (priority, payload) in enumerate(jobs):
+        heappush(heap, (priority, sequence, payload))
+    ordered = []
+    while heap:
+        _, _, payload = heappop(heap)
+        ordered.append(payload)
+    return ordered
+```
+
+A unique sequence number settles equal-priority comparisons before the payload is reached. The function returns lower priorities first and preserves arrival order among equal priorities. It returns references to the original payload objects, which are not deep-copied. That is an explicit output-ownership choice.
+
+This example performs repeated insertion and removal, taking O(n log n) comparison work for n jobs and O(n) heap storage. For a static collection that simply needs stable sorted order, Python's sort may be a clearer option. The heap becomes more useful when jobs arrive incrementally or priorities drive an evolving search. Read the [heapq contract](https://docs.python.org/3/library/heapq.html) when moving from this example to replacement, bounded top-K, or custom ordering.
+
+## Count copying and key construction
+
+A list slice allocates a new list of references, while a shallow dictionary copy creates a new mapping that still shares referenced values. Neither operation recursively copies a graph. Include the number of elements copied when analyzing recursive slicing or repeated snapshots.
+
+A tuple of integer coordinates is a convenient hashable grid key. A tuple containing a mutable list is not hashable merely because its outer object is a tuple. If a key is a long string or a large tuple, computing or comparing it can add work beyond the bounded-key model used in introductory O(1) hash-table explanations.
+
+For dense integer-indexed state, a list or list-of-independent-lists can avoid dictionary entry overhead. For sparse or irregular coordinates, a set of tuples may express the visited state more directly. The [Python island-counting guide](/guides/count-islands-python) compares a visited-set contract with deliberate in-place marking.
+
+## Test the operation your algorithm relies on
+
+Check first-unique results on empty input, all-repeated values, a unique value at index zero, and a unique value near the end. Build an adjacency list with several sources, mutate one neighbor list, and verify the other lists remain independent.
+
+For distances, test a cycle back to the start, two routes of different lengths, a target-only vertex, and an isolated start. For heap jobs, use equal priorities with dictionary payloads and verify their stable order without attempting to compare the dictionaries. Then change the exercise's output contract and decide whether counts, membership, indexes, distances, or payload identity must be preserved by the collection you choose.

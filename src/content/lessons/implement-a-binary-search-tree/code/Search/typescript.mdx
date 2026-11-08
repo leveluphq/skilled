@@ -1,0 +1,21 @@
+```javascript
+search(data: number): BinaryNode | null {
+  if (!this.root) {
+    return null;
+  }
+
+  let currentNode = this.root;
+
+  while(currentNode) {
+    if(data < currentNode.data) {
+      currentNode = currentNode.left;
+    } else if(data > currentNode.data) {
+      currentNode = currentNode.right;
+    } else if (currentNode.data === data) {
+      return currentNode;
+    }
+  }
+
+  return null;
+}
+```

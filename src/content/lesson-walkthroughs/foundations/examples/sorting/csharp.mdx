@@ -1,0 +1,12 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class SortCopyExample {
+public static List<int> SortCopy(List<int> values) {
+    var copy = new List<int>(values);
+    copy.Sort();
+    return copy;
+}
+}
+```

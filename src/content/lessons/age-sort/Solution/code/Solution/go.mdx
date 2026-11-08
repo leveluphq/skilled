@@ -1,0 +1,25 @@
+```go
+const (
+	minAge = 0
+	maxAge = 100
+)
+
+func sortByAge(ageList []int) []int {
+	sortedAgeList := make([]int, 0, len(ageList))
+	ageCount := make([]int, maxAge+1)
+
+	for _, age := range ageList {
+		ageCount[age]++
+	}
+
+	for age := minAge; age <= maxAge; age++ {
+		count := ageCount[age]
+
+		for i := 0; i < count; i++ {
+			sortedAgeList = append(sortedAgeList, age)
+		}
+	}
+
+	return sortedAgeList
+}
+```

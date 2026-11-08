@@ -1,0 +1,29 @@
+```go
+// #1
+func printHello(input []int) {
+	ten := 5 + 5
+	twenty := 2 * ten
+
+	for i := 0; i < twenty; i++ {
+		fmt.Println("Hello, world!")
+	}
+}
+
+// #2
+func printInput(input []int) {
+	n := len(input)
+	for i := 0; i < n; i++ {
+		fmt.Println(i)
+	}
+}
+
+// #3
+func printNestedInput(input []int) {
+	n := len(input)
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			fmt.Println(i * j)
+		}
+	}
+}
+```

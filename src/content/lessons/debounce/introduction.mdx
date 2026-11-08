@@ -1,0 +1,38 @@
+import Link from 'next/link';
+import Image from 'content/blocks/Image';
+import { Section } from 'style/elements/lesson';
+import { PageRoot } from 'utils/constants/routes';
+import InputOutput from './code/InputOutput';
+
+<Section>
+
+Have you noticed that when you type into a search input, there will be a delay before the typeahead results appear.
+This functionality is frequently controlled by a pattern called a debounce (it could also be a throttle function that has a similar outcome).
+The debounce function delays the processing of the `keyup` event until the user has stopped typing for a predetermined amount of time.
+
+<Image src="/images/debounce-real.gif" maxWidth="320px" alt="A browser address bar updates suggestions after typing pauses, illustrating a debounced interaction." width={1242} height={948} />
+
+This prevents your UI code from needing to process every event and also drastically reduces the number of API calls sent to your server.
+Processing every character as it's entered could harm performance and add unnecessary load to your backend.
+
+Let's see a more obvious example and compare it to what we would expect without debouncing.
+
+<Image src="/images/debounce-typing.gif" alt="Two text inputs compare delayed debounced output with immediate output on each keystroke." width={1260} height={560} />
+
+Implementing a debounce from scratch is a common interview question.
+It tests your understanding of intermediate and advanced JavaScript concepts such as async programming, callbacks, scope, and closures.
+It is also a practical solution used in real-world applications to improve performance and demonstrates that you understand the tools to write good code for real users.
+
+A debounce is a cousin of the <Link href={`/${PageRoot.Course}/throttle`} passHref><a>throttle</a></Link>, and they both improve the performance of web applications. However, they are used in different cases.
+A debounce is utilized when you only care about the final state. For example, waiting until a user stops typing to fetch typeahead search results.
+A throttle is best used when you want to handle all intermediate states but at a controlled rate. For example, track the screen width as a user resizes the window and rearrange page content while it changes instead of waiting until the user has finished.
+
+**Write a function `debounce` that takes a callback function and a `wait` time and prevents the callback from executing until the `wait` time elapses.**
+
+<InputOutput />
+
+Anytime the debounce function is called, it should restart the timer and only execute the callback once the `wait` completely elapses.
+
+<Image src="/images/debounce-block.gif" alt="The debounced output waits for a pause in typing instead of updating on every keystroke." width={1442} height={294} />
+
+</Section>

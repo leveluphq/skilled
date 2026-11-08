@@ -1,0 +1,64 @@
+```java
+class Solution {
+    private static final int OPEN = 0;
+    private static final int BLOCKED = 1;
+    private static final int EXIT = 2;
+
+    public boolean hasExitPath(int[][] roomMatrix) {
+        // Return false if the matrix is invalid
+        if (roomMatrix == null || roomMatrix.length == 0 || roomMatrix[0].length == 0) {
+            return false;
+        }
+
+        // Init our memoize matrix
+        // A Boolean starts as null, which means we haven't checked that spot yet
+        Boolean[][] memoizedPathValidity = new Boolean[roomMatrix.length][roomMatrix[0].length];
+
+        // Recursively walk through the room to check if there is a valid path
+        boolean isValidPath = walkThroughRoom(roomMatrix, 0, 0, memoizedPathValidity);
+
+        return isValidPath;
+    }
+
+    // Recursive helper function
+    private boolean walkThroughRoom(int[][] roomMatrix, int row, int col, Boolean[][] memo) {
+        // Base case 1: Outside of room, so there can't be a path through this
+        boolean isOutsideRoom = row > roomMatrix.length - 1 || col > roomMatrix[0].length - 1;
+        if (isOutsideRoom) {
+            return false;
+        }
+
+        // Base case 2: A path successfully reached the end, so propagate this upward
+        boolean isOnValidPath = Boolean.TRUE.equals(memo[row][col]);
+        boolean isExitNode = roomMatrix[row][col] == EXIT;
+        if (isOnValidPath || isExitNode) {
+            // Set the current node as true as well
+            memo[row][col] = true;
+            return true;
+        }
+
+        // Base case 3: We reached a blocking node
+        boolean isOnInvalidPath = Boolean.FALSE.equals(memo[row][col]);
+        boolean isBlockingNode = roomMatrix[row][col] == BLOCKED;
+        if (isOnInvalidPath || isBlockingNode) {
+            memo[row][col] = false;
+            return false;
+        }
+
+        // Recursive case: move down and right
+        boolean downResult = walkThroughRoom(roomMatrix, row + 1, col, memo);
+        boolean rightResult = walkThroughRoom(roomMatrix, row, col + 1, memo);
+
+        if (!downResult && !rightResult) {
+            // If both this node's right and down are false, we memoize this to false
+            memo[row][col] = false;
+        } else {
+            // If either of the paths are true, we set this node as true since at least one can reach the exit
+            memo[row][col] = true;
+        }
+
+        // Returns true if either is successful
+        return downResult || rightResult;
+    }
+}
+```

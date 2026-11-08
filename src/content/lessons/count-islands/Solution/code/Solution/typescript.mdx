@@ -1,0 +1,51 @@
+```javascript
+const LAND = '#';
+const WATER = '~';
+
+function countIslands(map: string[][]): number {
+  if (!map || !map[0] || !map[0][0]) {
+    return 0;
+  }
+
+  const numRows = map.length;
+  const numCols = map[0].length;
+  let islandCount = 0;
+
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      // We found another uncounted island
+      if (map[row][col] === LAND) {
+        islandCount = islandCount + 1;
+        // Mark all the pieces of land for the island as viewed
+        markLandAsViewedDFS(map, row, col);
+      }
+    }
+  }
+
+  return islandCount;
+};
+
+function markLandAsViewedDFS(map: string[][], row: number, col: number): void {
+  const numRows = map.length;
+  const numCols = map[0].length;
+
+  // Stopping condition:
+  // 1. Outside of the map
+  // 2. Reached an adjacent water node
+  const isOutsideMap = row < 0 || col < 0 || row >= numRows || col >= numCols;
+  if (isOutsideMap || map[row][col] === WATER) {
+    return;
+  }
+
+  // Recursive case:
+  // 1. Mark the node as viewed by flipping it to water
+  // 2. Check the nodes adjacent to the current
+  map[row][col] = WATER;
+  markLandAsViewedDFS(map, row - 1, col);
+  markLandAsViewedDFS(map, row + 1, col);
+  markLandAsViewedDFS(map, row, col - 1);
+  markLandAsViewedDFS(map, row, col + 1);
+
+  return;
+};
+```

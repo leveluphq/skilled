@@ -1,0 +1,43 @@
+Dynamic programming reuses answers to repeated subproblems. This explorer compares plain recursion, memoized recursion, and a bottom-up table for one small recurrence, so you can see exactly where the reuse happens.
+
+The task counts ordered ways to climb n stairs with hops of one or two. It accepts zero through ten stairs to keep the complete execution readable. Change the evaluation method while keeping the same n, then compare the final answer, function calls, cached returns, active frames, and stored states. These are deterministic execution traces, not timing benchmarks.
+
+## Start with a state that has one meaning
+
+Define ways(n) as the number of ordered hop sequences that consume exactly n stairs. The empty sequence is the one solution for zero stairs. One stair also has one solution. For larger n, separate sequences according to their first hop: one or two stairs.
+
+The two groups cannot overlap because their first hops differ. Removing that hop leaves a smaller instance of the same task. Therefore ways(n) equals ways(n − 1) plus ways(n − 2). For n = 4 the answer is five: 1111, 112, 121, 211, and 22.
+
+A recurrence is not justified merely because its results look familiar. Explain why every valid solution belongs to one branch, why no solution is counted twice, and why the base cases represent real outputs. These checks catch mistakes that a table alone can conceal.
+
+## Observe repeated work in plain recursion
+
+Select Plain recursion and follow the two branches from ways(4). The left branch computes ways(2), and the right branch later asks for ways(2) again. Their arguments and answers are identical, but a plain function recomputes the descendants.
+
+The same overlap repeats as n grows. The total number of function calls increases much faster than the number of distinct states. The tool counts calls including the base-case invocations, and it shows the active stack at each moment.
+
+This is an example where caching helps because the state completely determines the answer. If a function also depends on an unstated remaining budget, previous choice, or visited set, caching only n may reuse an answer from a different problem. Define the full state before choosing a cache key.
+
+## Store an answer after its dependencies resolve
+
+Memoized recursion retains the top-down structure. On entry, check whether the requested answer is already known. A cache hit returns it immediately. Otherwise compute the dependencies, combine them, store the answer, and return.
+
+The table records completed answers rather than guesses. The first visit to a state can still recurse deeply. Later visits avoid repeating its descendants. For this recurrence there are O(n) distinct states and at most two transitions per state, giving O(n) work under constant-cost integer arithmetic.
+
+The cache uses O(n) storage. The recursive call chain can also have O(n) depth. Adding those linear terms still gives O(n) auxiliary space, while explaining both sources makes the implementation's practical limits clearer.
+
+## Fill the same states in dependency order
+
+Bottom-up evaluation initializes ways(0) and, when needed, ways(1). It then fills entries from two through n. Every entry reads two earlier entries, which are already available because their indexes are smaller.
+
+The table method performs no recursive calls, so its function-call counter remains zero. That does not mean it performs no work: it still fills each needed table entry. Different counters describe different operations. Compare the number of filled states and recurrence additions when analyzing tabulation.
+
+Only two previous answers are needed to compute the next one. An ordinary implementation can keep those two scalars and reduce auxiliary table storage to O(1) when it only needs the final count. The explorer retains the whole table because seeing the intermediate answers is its teaching purpose. If reconstruction of a chosen path were required, the retained information might need to change again.
+
+## Test the recurrence independently
+
+For small n, enumerate every ordered sequence of one- and two-step hops and count those whose total is n. This provides an independent reference rather than checking one DP implementation against another implementation of the same formula.
+
+Test zero and one separately. Then verify n = 2 gives two, n = 3 gives three, and n = 4 gives five. Check that all three evaluation methods agree, while acknowledging that agreement alone would not prove a shared recurrence correct.
+
+For larger counts, fixed-width arithmetic eventually overflows. The page's small cap avoids that issue; an expanded implementation would need an explicit numeric policy. Practice [Three Moves](/course/three-moves), [Vending Machine](/course/vending-machine), and [Steal Packages](/course/steal-packages) after reading the [DP pattern guide](/patterns/dynamic-programming). For each exercise, name the state, transition, base cases, dependency order, and output contract before selecting memoization or tabulation.

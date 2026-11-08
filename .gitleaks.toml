@@ -1,0 +1,18 @@
+# gitleaks reads this from the repo root: its default rules, minus the
+# made-up values in tests that look like secrets. Each entry matches one
+# value exactly, so a real secret in the same files is still reported.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Made-up values in tests"
+regexes = [
+  # src/services/server/encryption/__tests__/keyManagement.test.ts
+  '''^(VALID_64_BYTE_KEY(_2)?|INVALID_32_BYTE_KEY)$''',
+  # test/pages/api/v1/judge0/refresh/token.test.ts
+  '''^6a3b1d2e-0f4c-4b5a-9e8d-7c6b5a4f3e2d$''',
+  # cookies, sentry and withApollo tests: JWTs with a fake signature
+  '''^eyJ[\w-]+\.eyJ[\w-]+\.s3cr3t-s1gnatur3(-do-not-leak)?$''',
+  # test/pages/api/v1/payments/stripe/checkout.test.ts
+  '''^sk_live_supersecret$''',
+]

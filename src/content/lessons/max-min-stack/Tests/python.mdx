@@ -1,0 +1,63 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "simple min max"
+        stack = MaxMinStack()
+        stack.push(1)
+        stack.push(42)
+        max = stack.get_stack_max()
+        min = stack.get_stack_min()
+        self.actual_result = { "min": min, "max": max }
+        self.expected_result = { "min": 1, "max": 42 }
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+     
+    def test_2(self):
+        self.description = "change min/max"
+        stack = MaxMinStack()
+        stack.push(1)
+        stack.push(42)
+        stack.push(-10)
+        stack.push(100)
+        stack.push
+        max = stack.get_stack_max()
+        min = stack.get_stack_min()
+        self.actual_result = { "min": min, "max": max }
+        self.expected_result = { "min": -10, "max": 100 }
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "push and pop"
+        stack = MaxMinStack()
+        stack.push(1)
+        stack.push(42)
+        stack.push(-10)
+        stack.push(100)
+        stack.pop()
+        stack.pop()
+        stack.pop()
+        max = stack.get_stack_max()
+        min = stack.get_stack_min()
+        self.actual_result = { "min": min, "max": max }
+        self.expected_result = { "min": 1, "max": 1 }
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

@@ -1,0 +1,26 @@
+```rust
+fn brute_force_find_email(emails: &[String]) -> String {
+    let mut max_count = 0;
+    let mut email = String::new();
+
+    // Nested for loops - immediately think O(n^2)
+    for i in 0..emails.len() {
+        let current_email = &emails[i];
+        let mut current_count = 0;
+
+        for j in 0..emails.len() {
+            if emails[j] == *current_email {
+                current_count += 1;
+            }
+        }
+
+        let is_new_max = current_count > max_count;
+        if is_new_max {
+            max_count = current_count;
+            email = current_email.clone();
+        }
+    }
+
+    email
+}
+```

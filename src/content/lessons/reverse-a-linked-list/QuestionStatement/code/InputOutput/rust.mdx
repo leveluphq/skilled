@@ -1,0 +1,20 @@
+```rust
+#[derive(PartialEq, Eq, Clone)]
+pub struct ListNode {
+    pub data: i32,
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    pub fn new(data: i32) -> Self {
+        ListNode { data, next: None }
+    }
+}
+
+// Input
+let head = Some(Box::new(ListNode::new(42))); // ... then add more nodes
+42 -> 52 -> 4 -> 6 -> 1 -> 9000
+
+// Output
+9000 -> 1 -> 6 -> 4 -> 52 -> 42
+```

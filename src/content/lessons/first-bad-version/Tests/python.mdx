@@ -1,0 +1,71 @@
+```python
+import unittest
+
+expected_results = [1, 1, 10, 42, 2]
+test_results = []
+test_index = 0
+
+def is_bad_version(version):
+    bad_version = expected_results[test_index]
+    return version >= bad_version
+
+class TestSum(unittest.TestCase):
+
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+
+    def tearDown(self):
+        test_results.append({ 'passed': self.test_passed , 'description': self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False
+
+    def test_one_version(self):
+        global test_index
+        test_index = 0
+        self.description = "only one version"
+        self.actual_result = first_bad_version(1)
+        self.expected_result = expected_results[test_index]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_first_item_is_bad(self):
+        global test_index
+        test_index = 1
+        self.description = "first item is bad"
+        self.actual_result = first_bad_version(10)
+        self.expected_result = expected_results[test_index]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_last_item_is_bad(self):
+        global test_index
+        test_index = 2
+        self.description = "last item is bad"
+        self.actual_result = first_bad_version(10)
+        self.expected_result = expected_results[test_index]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_item_between_first_and_last(self):
+        global test_index
+        test_index = 3
+        self.description = "item between first and last"
+        self.actual_result = first_bad_version(100)
+        self.expected_result = expected_results[test_index]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_exact_middle_item(self):
+        global test_index
+        test_index = 4
+        self.description = "exact middle item"
+        self.actual_result = first_bad_version(3)
+        self.expected_result = expected_results[test_index]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

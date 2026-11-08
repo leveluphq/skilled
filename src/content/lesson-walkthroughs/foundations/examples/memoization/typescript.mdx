@@ -1,0 +1,13 @@
+```typescript
+function fibMemoStats(n: number): number[] {
+  const memo = new Map<number, number>();
+  function fib(value: number): number {
+    if (memo.has(value)) return memo.get(value)!;
+    const answer = value < 2 ? value : fib(value - 1) + fib(value - 2);
+    memo.set(value, answer);
+    return answer;
+  }
+  const answer = fib(n);
+  return [answer, memo.size];
+}
+```

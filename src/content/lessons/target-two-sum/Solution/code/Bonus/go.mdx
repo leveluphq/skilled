@@ -1,0 +1,23 @@
+```go
+func getTargetIndexes(array []int, target int) [][]int {
+	results := [][]int{}
+	arrayElementAtIndex := map[int]int{}
+
+	for i, currentValue := range array {
+		matchedValue := target - currentValue
+		matchedIndex, found := arrayElementAtIndex[matchedValue]
+
+		if found && matchedIndex >= 0 {
+			results = append(results, []int{i, matchedIndex})
+
+			arrayElementAtIndex[currentValue] = -1
+			arrayElementAtIndex[matchedValue] = -1
+		}
+
+		// Add values after we see them
+		arrayElementAtIndex[currentValue] = i
+	}
+
+	return results
+}
+```

@@ -1,0 +1,47 @@
+```javascript
+const OPEN = 0;
+const BLOCKED = 1;
+const EXIT = 2;
+
+// Main function
+function hasExitPath(roomMatrix: number[][]): boolean {
+  // Return false if the matrix is invalid
+  if (!roomMatrix || roomMatrix.length === 0 || roomMatrix[0].length === 0) {
+    return false;
+  }
+
+  // Recursively walk through the room to check if there is a valid path
+  const isValidPath = walkThroughRoom(roomMatrix, 0, 0);
+
+  return isValidPath;
+};
+
+// Recursive helper function
+function walkThroughRoom(roomMatrix: number[][], row: number, col: number): boolean {
+  // Base case 1: Outside of room, so there can't be a path through this
+  const isOutsideRoom = row > roomMatrix.length - 1 || col > roomMatrix[0].length - 1;
+  if (isOutsideRoom) {
+    return false;
+  }
+
+  // Base case 2: A path successfully reached the end, so propagate this upward
+  const isExitNode = roomMatrix[row][col] === EXIT;
+  if (isExitNode) {
+    // Set the current node as true as well
+    return true;
+  }
+
+  // Base case 3: We reached a blocking node
+  const isBlockingNode = roomMatrix[row][col] === BLOCKED;
+  if (isBlockingNode) {
+    return false;
+  }
+
+  // Recursive case: move down and right
+  const downResult = walkThroughRoom(roomMatrix, row + 1, col);
+  const rightResult = walkThroughRoom(roomMatrix, row, col + 1);
+
+  // Returns true if either is successful
+  return downResult || rightResult;
+};
+```

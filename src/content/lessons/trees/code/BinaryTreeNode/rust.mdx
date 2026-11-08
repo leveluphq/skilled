@@ -1,0 +1,21 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+struct BinaryTreeNode {
+    data: i32,
+    // left and right point to either None or another BinaryTreeNode
+    left: Option<Rc<RefCell<BinaryTreeNode>>>,
+    right: Option<Rc<RefCell<BinaryTreeNode>>>,
+}
+
+impl BinaryTreeNode {
+    fn new(data: i32) -> Self {
+        BinaryTreeNode {
+            data,
+            left: None,
+            right: None,
+        }
+    }
+}
+```

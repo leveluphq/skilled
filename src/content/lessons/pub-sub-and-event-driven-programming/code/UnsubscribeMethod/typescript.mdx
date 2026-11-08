@@ -1,0 +1,10 @@
+```javascript
+type EventCallback = (data: any) => void;
+
+unsubscribe(eventName: string, callback: EventCallback) {
+  if (Array.isArray(this.subscribers[eventName])) {
+    // Keeps all the callbacks that aren't equal to the one we unsubscribe
+    this.subscribers[eventName] = this.subscribers[eventName].filter(cb => cb !== callback);
+  }
+}
+```

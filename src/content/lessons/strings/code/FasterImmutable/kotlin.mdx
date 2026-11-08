@@ -1,0 +1,15 @@
+```kotlin
+// If immutable, do operations on a mutable StringBuilder and combine
+fun duplicateString(str: String, numDuplicates: Int): String {
+    val solutionBuilder = StringBuilder()
+
+    for (i in 0 until numDuplicates) {
+        // .append only adds the new characters to the end
+        solutionBuilder.append(str)
+
+        // Faster than str += str which would be O(n) for copying each time
+    }
+
+    return solutionBuilder.toString()
+}
+```

@@ -1,0 +1,86 @@
+```cpp
+struct BinaryNode {
+    int data;
+    BinaryNode* left;
+    BinaryNode* right;
+    BinaryNode(int x) : data(x), left(nullptr), right(nullptr) {}
+};
+
+class BinarySearchTree {
+public:
+    BinarySearchTree(const BinarySearchTree&) = delete;
+    BinarySearchTree& operator=(const BinarySearchTree&) = delete;
+    ~BinarySearchTree() {
+        while (root) {
+            if (root->left) {
+                auto node = root->left;
+                root->left = node->right;
+                node->right = root;
+                root = node;
+            } else {
+                auto node = root;
+                root = root->right;
+                delete node;
+            }
+        }
+    }
+
+    BinarySearchTree() = default;
+
+    BinaryNode* root = nullptr;
+
+    BinarySearchTree& insert(int data) {
+        BinaryNode* node = new BinaryNode(data);
+
+        // First insert becomes root
+        if (root == nullptr) {
+            root = node;
+            return *this;
+        }
+
+        BinaryNode* currentNode = root;
+
+        while (true) {
+            if (data < currentNode->data) {
+                // Insert the node if you reach a leaf and return
+                if (currentNode->left == nullptr) {
+                    currentNode->left = node;
+                    return *this;
+                }
+
+                // Continue by traversing left
+                currentNode = currentNode->left;
+            } else {
+                // Insert the node if you reach a leaf and return
+                if (currentNode->right == nullptr) {
+                    currentNode->right = node;
+                    return *this;
+                }
+
+                // Continue by traversing right
+                currentNode = currentNode->right;
+            }
+        }
+    }
+
+    BinaryNode* search(int data) {
+        if (!root) {
+            return nullptr;
+        }
+
+        BinaryNode* currentNode = root;
+
+        while (currentNode) {
+            if (data < currentNode->data) {
+                currentNode = currentNode->left;
+            } else if (data > currentNode->data) {
+                currentNode = currentNode->right;
+            } else if (currentNode->data == data) {
+                return currentNode;
+            }
+        }
+
+        return nullptr;
+    }
+};
+```

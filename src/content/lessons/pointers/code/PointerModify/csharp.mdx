@@ -1,0 +1,9 @@
+```csharp
+Console.WriteLine($"{parent.c1.mood}, {child1.mood}"); // happy, happy
+
+child1.mood = "sad";
+Console.WriteLine($"{parent.c1.mood}, {child1.mood}"); // sad, sad
+
+parent.c1.mood = "stoked";
+Console.WriteLine($"{parent.c1.mood}, {child1.mood}"); // stoked, stoked
+```

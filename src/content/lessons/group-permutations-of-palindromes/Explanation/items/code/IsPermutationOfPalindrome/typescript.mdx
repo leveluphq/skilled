@@ -1,0 +1,30 @@
+```javascript
+// We use the modulo operator to determine if a number is odd
+const isOdd = (num: number): boolean => num % 2 !== 0;
+
+// All O(c) operations
+function isPermutationOfPalindrome(string: string): boolean {
+  // Use a hash table to count the occurence of each character in a string
+  // These are sequential O(c) operations
+  const characterCountTable = {};
+
+  for (let char of string) {
+    if (!characterCountTable[char]) {
+      characterCountTable[char] = 0;
+    }
+
+    characterCountTable[char]++;
+  }
+
+  // Sum the number of characters that contain an odd count
+  let oddCharacterCount = 0;
+  Object.values(characterCountTable).forEach((numCharacters) => {
+    if (isOdd(numCharacters)) {
+      oddCharacterCount++;
+    }
+  });
+
+  // If only one character has an odd count, this function returns true
+  return oddCharacterCount <= 1;
+}
+```

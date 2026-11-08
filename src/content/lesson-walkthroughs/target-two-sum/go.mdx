@@ -1,0 +1,84 @@
+This Go version follows the course's all-pairs Two Sum contract. Given unique integers, return every matching pair of original indexes. For `[4, 1, 5, 2, 3]` and target `6`, the answer includes both `[1, 2]` and `[0, 3]`. Pair order is unspecified, and the input slice must remain unchanged.
+
+A `map[int]int` stores each earlier number's position. Go's comma-ok lookup is useful here because position zero is a valid result. The Boolean tells us whether the key exists independently of the retrieved integer's zero value.
+
+## Check membership and then record the current value
+
+Before an iteration, the map contains only earlier indexes. Look for the complement first and insert afterward. Each pair is then discovered once, when its later member arrives, without allowing an item to match itself.
+
+```go
+func getTargetIndexes(array []int, target int) [][]int {
+    seen := make(map[int]int)
+    pairs := make([][]int, 0)
+    maxInt := int(^uint(0) >> 1)
+    minInt := -maxInt - 1
+
+    for j, value := range array {
+        overflows := (value > 0 && target < minInt+value) ||
+            (value < 0 && target > maxInt+value)
+        if !overflows {
+            complement := target - value
+            if i, ok := seen[complement]; ok {
+                pairs = append(pairs, []int{i, j})
+            }
+        }
+        seen[value] = j
+    }
+    return pairs
+}
+```
+
+The output is initialized as an empty, non-nil slice. Its length starts at zero, so every answer is appended rather than assigned into a nonexistent slot. Each inner slice is freshly created and holds exactly two indexes.
+
+## Do not treat the map's zero value as absence
+
+Reading an absent integer-valued map entry returns zero. Reading a present entry whose value is index zero also returns zero. A condition based only on that integer cannot tell those cases apart.
+
+The form `i, ok := seen[complement]` provides both pieces of information. Only `ok` controls the branch. For `[0, 6]` with target `6`, the lookup must succeed with `i == 0`; treating zero as missing would drop the answer.
+
+The map itself must be initialized before assignment. Reading a nil map is permitted, but assigning into it panics. Using make gives the insertion operations a valid mutable map while requiring no guessed capacity.
+
+## Guard int subtraction before it happens
+
+Go's int width depends on the target architecture. The max/min values above derive from that width rather than assuming int is always 32-bit. Even if both operands are valid ints, their difference may not fit.
+
+For a positive `value`, subtraction would go below the minimum if `target < minInt + value`. For a negative value, it would exceed the maximum if `target > maxInt + value`. The additions in these guards stay representable because they move inward from the corresponding boundary.
+
+When a mathematical complement is out of range, it cannot be equal to any element stored in this int slice, so skipping the lookup is correct. The current value still enters the map because it may be a partner for a later input. Go's [integer-overflow rules](https://go.dev/ref/spec#Integer_overflow) explain why overflow must be considered explicitly rather than assumed to throw.
+
+## Trace two matches and a rejected self-match
+
+For `[4, 1, 5, 2, 3]`, the first two entries become `4 → 0` and `1 → 1`. The value `5` finds the earlier `1`, producing `[1, 2]`. The next value `2` finds `4`, producing `[0, 3]`.
+
+The final `3` does not match itself because it is inserted after its lookup. The same ordering makes `[3]` with target `6` return no pairs. Returning inside a successful branch would miss a later match and violate the complete-result contract.
+
+## Run examples inside a local main package
+
+```go
+func checkExamples() {
+    pairs := getTargetIndexes([]int{4, 1, 5, 2, 3}, 6)
+    found := make(map[[2]int]bool)
+    for _, pair := range pairs {
+        if len(pair) != 2 { panic("invalid pair shape") }
+        i, j := pair[0], pair[1]
+        if i > j { i, j = j, i }
+        key := [2]int{i, j}
+        if found[key] { panic("duplicate pair") }
+        found[key] = true
+    }
+    if len(found) != 2 || !found[[2]int{0, 3}] || !found[[2]int{1, 2}] {
+        panic("missing pairs")
+    }
+    if len(getTargetIndexes([]int{3}, 6)) != 0 { panic("self-match") }
+}
+```
+
+The fixed-length array key is comparable and can be used as a map key. A slice itself is not comparable and cannot serve that role. The helper rejects duplicates before recording membership, so normalization cannot conceal an implementation that emits an answer twice.
+
+For boundary tests, derive maximum and minimum from the same target int width as the function. Hard-coding a 32-bit limit on a 64-bit machine would exercise ordinary large numbers without testing the actual overflow branch.
+
+## State what uniqueness buys us
+
+With unique values, storing one earlier position for each number is enough. If duplicate values become legal and all index pairs are wanted, retain every earlier position per value instead. That generalized problem can also have quadratically many output pairs.
+
+Under ordinary hash-map assumptions, this version takes expected `O(n + k)` work and `O(n)` map space, plus output. With unique inputs, `k` is at most linear. Before practicing, explain comma-ok lookup and the overflow guard separately, then reconstruct the scan from the earlier-prefix invariant.

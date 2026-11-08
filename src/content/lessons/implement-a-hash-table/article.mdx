@@ -1,0 +1,108 @@
+import { Section, VideoWrapper } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import ConceptModal from 'content/blocks/ConceptModal';
+import HashFunctions from 'content/lessons/hash-tables/HashFunctions.mdx';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import HashTableShell from './code/HashTableShell';
+import HashFunction from './code/HashFunction';
+import Get from './code/Get';
+import Insert from './code/Insert';
+import Remove from './code/Remove';
+import HashTableComplete from './code/HashTableComplete';
+
+<Section>
+
+Every major programming language has its own native implementation of a hash table.
+For example, in JavaScript we can simply use an object as a hash table, and Python's implementation is the Dictionary data type.
+
+To understand how a hash table works, we'll build one from scratch and implement three common methods: `get`, `insert`, and `remove`. With bounded key costs and short collision chains, their expected cost is <BigO.constant />. A bucket containing many entries takes longer to search.
+We will also implement our own <ConceptModal content={<HashFunctions />}>hash function</ConceptModal> and need to handle collisions by using buckets.
+
+Our fixed-size teaching table does not promise constant worst-case lookup. If many keys collide, a method may scan every stored pair in their bucket. Hashing a variable-length string also requires work proportional to its representation.
+
+Native hash tables commonly resize to control their load factor. A resize itself can be expensive; expected lookup costs and amortized growth costs need separate explanations.
+For simplicity, we'll just initialize it to a fixed `size`.
+This will also allow us to play with different values for the `size` to see how they impact the speed of lookups.
+
+Our implementation will take the following form:
+
+<HashTableShell />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>hash(key)</SubsectionHeader>
+
+Our `hash` function will convert a string `key` to an integer which maps to an index in the `table` array.
+All characters have a universally recognized integer value based on different standards such as ASCII or Unicode.
+
+We will sum the values of the encoding for each of the key's characters to create an index in the `table` array and normalize it by the `size` so that we never get an index outside the array's length.
+
+<HashFunction />
+
+The hash must agree with the language's key-equality rule: equal keys must choose the same bucket. Swift considers canonically equivalent Unicode spellings equal, so its version normalizes strings before summing scalar values. Other versions use their own string representations; their numeric bucket indices need not match across languages.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>get(key)</SubsectionHeader>
+
+To `get` an item in our hash table, we pass it the `key` we want to look up.
+We call the `hash` function with the `key`, and it returns the index for the bucket that the item is located in our `table`.
+
+If there is no `bucket` or no matching `key`, we return `undefined` because we're trying to access an item that does not exist.
+
+If there is a `bucket` that exists for the `index`, we iterate through the bucket's items it until we find the item matching our `key`.
+
+<Get />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>insert(key, value)</SubsectionHeader>
+
+The `insert` function is how we add or update items in our hash table.
+First we check if the bucket exists, and if doesn't we initialize it.
+Then we iterate through the bucket to check if there is already an item with that key.
+If there is, we replace its value.
+Otherwise, we add the item to that bucket.
+
+<Insert />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>remove(key)</SubsectionHeader>
+
+To `remove` an item, we find its bucket using the `hash` function and iterate through the bucket until we find the item matching our `key`.
+We delete that key-value pair from the bucket and return its value.
+If the `key` doesn't exist, we return `undefined`.
+
+<Remove />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Complete Hash Table Implementation</SubsectionHeader>
+
+You can use the <a href="https://repl.it/@TreyHuffine/HashTables-Implement-JavaScript" target="_blank" rel="noopener noreferrer">implementation in a REPL</a> or see the completed code below:
+
+<HashTableComplete />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Wrap Up</SubsectionHeader>
+
+If we set the `size` to 1, then every item would have a collision which degrades to our <BigO.n /> worst case.
+However, if we set the size sufficiently large relative to the number of items we add, there will be minimal collisions, making all the operations <BigO.constant /> time.
+
+You can try tuning these values yourself in the <a href="https://repl.it/@TreyHuffine/HashTables-Implement-JavaScript" target="_blank" rel="noopener noreferrer">REPL</a> to visualize the impact.
+
+</Section>

@@ -1,0 +1,15 @@
+```go
+// Input
+[]Interval{
+	{Start: 0, End: 4}, // meeting 1
+	{Start: 3, End: 6}, // meeting 2
+}
+// 0  1  2  3  4  5  6
+// |   mtg 1   |
+//          |  mtg 2 |
+
+// Combined
+[]Interval{{Start: 0, End: 6}}
+// 0  1  2  3  4  5  6
+// |  mtg 1 + mtg 2  |
+```

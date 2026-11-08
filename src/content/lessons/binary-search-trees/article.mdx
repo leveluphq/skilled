@@ -1,0 +1,120 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { SvgSimple } from 'content/blocks/SvgWrapper/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import BinarySearchTree from 'svg/BinarySearchTree';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+
+<Section>
+
+A binary search tree is a special implementation of a binary tree and is commonly used for tree interview questions.
+Just like a standard binary tree, each node can have at most two children.
+Additionally, we call it a "search" tree because it gets fast data access in <BigO.logn /> time.
+
+A BST is intentionally constructed in ascending order starting with the left-most node (keep following `left` pointers from the root) as the smallest value and the right-most node as the largest value.
+This means at any node in the tree, all the children to its left will be smaller, and all the children to its right will be larger.
+By doing this, we are able to get <BigO.logn /> operations.
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+<CheatSheetTables table={<BigOTable {...bigO} />} dataStructure={<SvgSimple fill="none"><BinarySearchTree /></SvgSimple>} />
+
+<ProsCons pros={pros} cons={cons} />
+
+**Binary Search Trees in Interviews**
+
+- Recognize you can get a <BigO.logn /> solution with a BST
+- Validate if a binary tree is also a BST
+- Build a binary search tree or convert to/from another data structure
+- Find the position of an element based on the order
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Binary Search Trees" />
+
+Let's break down the definition of a binary search tree:
+
+**Binary Tree**: Any node can have at most two children by using a left and right pointer
+
+<Image src="/images/bst-nodes.png" maxWidth="400px" alt="A binary search tree with root 50 has the smaller value 40 on the left and larger value 55 on the right." width={738} height={636} />
+
+**Binary Search**: You can perform binary search on the tree because nodes are ordered
+
+<Image src="/images/binary-search-visualized.png" alt="The midpoint divides a sorted array into a smaller left half and a larger right half." width={2616} height={618} />
+
+So a **binary search tree** is a **sorted binary tree**.
+
+This means with a BST, we have ordered data.
+Looking at any given node, if we follow its left child, all the items will be smaller than the current node.
+If we follow its right child, all the items will be larger.
+
+<Image src="/images/bst-visualize.gif" maxWidth="560px" alt="A binary search tree orders values throughout its left and right subtrees." width={720} height={529} />
+
+When we see a BST in interviews, it often means two possible things:
+
+1. We want to make use of its ordering
+2. We want to perform operations in <BigO.logn /> time
+
+The ordering is what separates a BST from a standard binary tree.
+
+<Image src="/images/bst-vs-not-bst.jpg" alt="Two binary trees compare valid search ordering with a misplaced node that violates an ancestor&#x27;s bound." width={745} height={376} />
+
+To achieve <BigO.logn /> time, the BST much be **balanced**.
+There isn't a strict definition of balanced,
+but it means that every time you traverse to a child,
+you eliminate approximately half of the remaining nodes.
+Being able to divide the data by 2 on each step is exactly what it means to be <BigO.logn />.
+
+<Image src="/images/balanced-bst.gif" isVisuAlgo alt="Searching a balanced binary search tree follows a short path from the root toward the target." width={600} height={233} />
+
+The tree has `n = 28` total nodes, but we only need to touch 5 of them to find the value we want.
+This is the power of <BigO.logn /> time and balanced BST operations.
+
+If our tree is unbalanced, and there is a long path to the final node, it will degrade to <BigO.n /> time.
+This is because in the worst case where you traverse a long branch of nodes, you must iterate through all ~`n` items.
+
+<Image src="/images/unbalanced-bst.gif" isVisuAlgo alt="An unbalanced binary search tree can form a long chain, making a search visit a linear number of nodes." width={600} height={244} />
+
+In the example above, we only have `n = 8` nodes in the tree, but we must touch 6 nodes in order to find the value.
+If we had many more nodes, this would look much worse and is why it's essential to have a balanced tree.
+
+It is rare to need to actually balance a tree in an interview,
+but you should still be prepared to discuss why being balanced is required to achieve <BigO.logn /> time.
+In production, you will likely use a library to implement balancing,
+and the two most common are AVL trees and red-black trees.
+Let's take a quick look at each.
+
+**AVL Trees**
+
+AVL trees apply a weight to the nodes and will automatically rotate nodes to rebalance if the height of two child subtrees differs by more than one.
+
+<Image src="/images/avl-example.gif" alt="An AVL tree tracks subtree heights and uses rotations to restore balance." width={320} height={180} />
+
+**Red-Black Trees**
+
+Each node in the tree stores an extra data bit in memory which gives a node two possible states that are referred to as red or black.
+The tree maintains balance by enforcing a specific arrangements of colors and will adjust as needed when new nodes are added.
+
+<Image src="/images/red-black-tree.png" alt="A red-black search tree colors nodes red or black as part of its balancing rules." width={7941} height={2886} />
+
+</Section>

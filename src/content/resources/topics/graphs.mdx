@@ -1,0 +1,41 @@
+A graph models relationships that do not fit a single list or parent-child tree. Nodes can have several incoming edges, cycles can lead back to earlier nodes, and some nodes may be unreachable from a chosen start. Those features make representation and visited-state rules part of the algorithm's correctness.
+
+Read [Graphs](/course/graphs), then [Depth-First Search](/course/depth-first-search) and [Breadth-First Search](/course/breadth-first-search). The [worked comparison](/guides/bfs-vs-dfs) and [interactive playground](/tools/graph-traversal) let you inspect the same graph under both exploration orders.
+
+## Describe the edges before choosing an algorithm
+
+A directed edge from A to B does not imply a route back from B to A. An undirected adjacency list normally stores both directions. A weighted edge introduces a cost that may differ from the number of edges traversed.
+
+Ask whether the graph can contain cycles, self-loops, disconnected components, or duplicate neighbor entries. Determine whether all nodes are listed or whether a neighbor-only name represents a node with no outgoing edges.
+
+An adjacency list stores actual neighbors, while a matrix can require scanning potential neighbors. Traversal complexity depends on that representation. “Visit every node” does not capture the edge work needed to find those nodes.
+
+## Give discovery a precise meaning
+
+A visited or discovered set prevents repeated exploration. BFS normally marks a node when adding it to the queue, before another parent can enqueue it. DFS needs a rule that prevents cycles from reopening an active or completed branch indefinitely.
+
+For some questions, one set is insufficient. Detecting a directed cycle can require distinguishing nodes on the active path from nodes whose exploration has finished. The relevant state depends on the property being proved.
+
+[Implement a Graph](/course/implement-a-graph) helps connect these algorithms to stored neighbor relationships. Test the structure's updates before relying on it to produce traversal input.
+
+## Use BFS for equal-cost shortest routes
+
+[Pilot a Rocket](/course/pilot-a-rocket) asks for a route through a satellite network. A queue explores all shorter edge distances before longer ones, and first-discovery parents can reconstruct one shortest route under equal edge costs.
+
+Store a predecessor when a node is first discovered. To reconstruct the path, follow predecessors backward from the destination and reverse the result. If the destination was never discovered, the output must reflect that failure under the exercise's contract.
+
+DFS can find a route, but its first discovered route need not have the fewest edges. A weighted problem needs additional reasoning; fewer hops and lower total weight can be different objectives.
+
+## Treat grids as implicit graphs
+
+[Count Islands](/course/count-islands) and [Robot Maze](/course/robot-maze) represent relationships with matrix coordinates. The allowed movement directions define adjacency. Diagonal contact can count as connected in one contract and remain separate in another.
+
+Validate bounds before accessing a cell. Decide whether the algorithm may change the input to mark visits or must retain a separate set. Count starts of new unseen land traversals to count regions, rather than incrementing for every land cell.
+
+A maze's movement restrictions can also remove cycles or change available paths. Read those rules before reusing a four-direction traversal template.
+
+## Explain complete traversal and memory
+
+Starting at one node visits only its reachable region. An outer loop over all vertices is needed when the task asks for every disconnected component. Keep shared visited state across those searches.
+
+With an adjacency list and suitable bookkeeping, a full traversal can examine O(V + E) structure. A visited set, parent map, output, and frontier each contribute storage. Describe the structures your implementation actually retains, then test a cycle, an unreachable target, and a single isolated node.

@@ -1,0 +1,79 @@
+The course's Two Sum exercise returns every matching pair of original indexes from an array of unique integers. For `[4, 1, 5, 2, 3]` and target `6`, the answer contains both `[1, 2]` and `[0, 3]`. A function that returns after its first match solves a different contract.
+
+TypeScript lets us describe that answer as an array of tuples. The input stays unchanged, pair order is unspecified, and an index cannot match itself. We will use the starter's function name and add types that expose missing lookups without disguising them as valid positions.
+
+## Describe a pair with a tuple
+
+`[number, number]` describes exactly two numeric entries. By comparison, `number[]` would also permit an empty array or a three-element array as one result. The tuple improves the function's public contract without introducing a runtime wrapper around each pair.
+
+```typescript
+type ResultTuple = [number, number];
+
+const getTargetIndexes = (array: number[], target: number): ResultTuple[] => {
+  const seen = new Map<number, number>();
+  const pairs: ResultTuple[] = [];
+
+  for (const [j, value] of array.entries()) {
+    const complement = target - value;
+    const earlier = seen.get(complement);
+    if (earlier !== undefined) {
+      pairs.push([earlier, j]);
+    }
+    seen.set(value, j);
+  }
+
+  return pairs;
+};
+```
+
+`Map<number, number>` has numeric keys and numeric index values. Its `get` method can return `undefined`, so the local `earlier` starts with type `number | undefined`. The explicit comparison narrows it to `number` inside the successful branch. That narrowed type fits the tuple without a cast.
+
+## Separate absence from index zero
+
+The condition must not be `if (earlier)`. Zero is a legitimate earlier position and is false in a JavaScript Boolean context. For `[0, 6]` and target `6`, the matching index is precisely zero. Comparing with `undefined` asks whether a map entry exists while preserving that answer.
+
+This works because our map stores only numeric indexes, never `undefined`. If a map's values could themselves be undefined, membership and retrieved value would need separate consideration. Types help describe a storage policy, but the code still has to follow it.
+
+An object with numeric-looking keys could be used instead, but object index signatures deserve care. TypeScript's [noUncheckedIndexedAccess option](https://www.typescriptlang.org/tsconfig/noUncheckedIndexedAccess.html) makes unknown indexed accesses include undefined. A Map already exposes missing retrievals through its method signature; we can handle that possibility directly.
+
+## Keep the current index out of the lookup table
+
+Before processing position `j`, `seen` contains only earlier input positions. Look up the complement before inserting the current value. This means every emitted pair has an earlier member and a later member, so self-matches and reversed duplicates are impossible.
+
+On the example, the map first receives `4 → 0` and `1 → 1`. The `5` finds index `1`, yielding `[1, 2]`. The `2` then finds index `0`, yielding `[0, 3]`. Finally, `3` cannot find itself because it has not yet been inserted.
+
+Putting insertion first would let `[3]` with target `6` produce `[0, 0]`. Returning inside the success branch would miss the second pair in the larger example. These bugs concern control flow, so a perfectly typed function can still contain either one.
+
+## Test the complete shape and contents
+
+Normalize both index order and pair order before comparison. Keep duplicates in the normalized representation: a set would hide a function that emitted the same answer twice.
+
+```typescript
+const pairKey = (pairs: ResultTuple[]): string => JSON.stringify(
+  pairs.map(([i, j]) => [Math.min(i, j), Math.max(i, j)])
+    .sort((a, b) => a[0]! - b[0]! || a[1]! - b[1]!)
+);
+
+const cases: Array<[number[], number, ResultTuple[]]> = [
+  [[], 6, []],
+  [[3], 6, []],
+  [[0, 6], 6, [[0, 1]]],
+  [[4, 1, 5, 2, 3], 6, [[0, 3], [1, 2]]],
+  [[-3, 7, 2, -2], 4, [[0, 1]]],
+];
+for (const [input, target, expected] of cases) {
+  if (pairKey(getTargetIndexes(input, target)) !== pairKey(expected)) {
+    throw new Error('Unexpected index pairs');
+  }
+}
+```
+
+The normalization helper's assertions refer to arrays constructed with exactly two elements. They do not repair an invalid implementation. The published function itself needs no non-null assertion for map retrieval, because its branch proves the retrieved index exists.
+
+## State the runtime assumptions
+
+TypeScript's `number` is JavaScript's runtime number representation. It does not distinguish integer values from fractions or promise exact arithmetic outside the safe-integer range. Assume input values, target, and complement calculations are safe integers. Static annotations disappear at runtime and do not validate data received from JSON or another untyped source.
+
+Under typical hash-map assumptions, the method uses expected `O(n + k)` work and `O(n)` map storage, plus the returned pairs. With unique integers, the number of answers `k` is at most linear. Repeated input values would require a different storage model if every index pair were required: one earlier index per value would no longer be enough.
+
+Before practicing, explain the tuple contract, the undefined check, and the lookup-before-insertion invariant separately. Then implement the function without copying it and test a match that uses index zero.

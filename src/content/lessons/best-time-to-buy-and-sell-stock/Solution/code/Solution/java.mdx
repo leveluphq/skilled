@@ -1,0 +1,21 @@
+```java
+class Solution {
+    public int getMaxProfit(int[] prices) {
+        // We need at least two prices to buy and then sell
+        if (prices.length < 2) {
+            return 0;
+        }
+
+        int maxProfit = 0;
+        int minPrice = prices[0];
+
+        for (int price : prices) {
+            int profitAtCurrentDay = price - minPrice;
+            maxProfit = Math.max(maxProfit, profitAtCurrentDay);
+            minPrice = Math.min(price, minPrice);
+        }
+
+        return maxProfit;
+    }
+}
+```

@@ -1,0 +1,34 @@
+import { CodingLanguage } from 'utils/constants/lesson';
+import { Container } from 'style/elements'
+import SampleInputOutput from './SampleInputOutput.mdx';
+import SolutionSignature from './inlineCode/SolutionSignature.tsx';
+import IsBadVersion from './inlineCode/IsBadVersion.tsx';
+
+You have been working on a key feature for your company's application,
+but after coding for months, you realize you need a break and decide to go on vacation.
+When you return, you pull all the latest code from the main branch into your feature branch...
+But there's an issue — the code is now broken.
+
+You know that your code was working before you left,
+but one of the commits introduced from the main branch causes a bug with your feature (_womp womp_).
+
+You know that all the commits before the one that caused the bug must still work,
+but then any of the commits after the breaking change was added must all be broken.
+It must look something like the following:
+
+<Container>
+
+```javascript
+[good, good, good, good, bad, bad, bad]
+```
+
+</Container>
+
+You also have a helper function <IsBadVersion /> where you invoke it with a version number, and the function will return a boolean false if the version is working or true if the version is broken.
+
+**The input to the solution function is an integer that represents the total number of versions, and the output will be the first version that's broken.**
+**Write a function <SolutionSignature /> that returns the version number of the first commit that is broken.**
+
+So if the input is 100, there are 100 total versions. We need to determine the version between 1 and 100 that represents the first broken commit.
+
+<SampleInputOutput />

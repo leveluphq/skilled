@@ -1,0 +1,54 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A string is an ordered sequence of text units, but the unit depends on the language and operation. Interview solutions often reason about characters as if every visible symbol occupies one index. That assumption works for a stated ASCII contract and can fail for general Unicode. The recording introduces string operations; these notes keep their costs and text assumptions explicit.
+
+## Decide what an index means
+
+JavaScript string indexes address UTF-16 code units. Iterating a JavaScript string with `for...of` yields code points, which still do not always correspond to a complete visible symbol. A base character followed by a combining mark is one example. Other languages expose different indexing and iteration APIs, so translating a loop character for character can change behavior.
+
+Before solving a text problem, clarify the allowed input and normalization rules. Case folding, removing punctuation, and treating accented spellings as equivalent are requirements to agree on. Applying them without permission can change an identifier or make two distinct inputs compare equal. A palindrome exercise and an exact-key lookup can need different policies.
+
+## Track the cost of building the answer
+
+Strings are immutable in languages such as JavaScript and Python. Creating a new substring or appending into a repeatedly rebuilt string can copy existing content. A loop with an apparent single assignment may therefore do increasing work. Collecting pieces and joining once can avoid repeated reconstruction under the language's usual representation model.
+
+Reversing text also requires a choice of unit. Reversing UTF-16 units can split a surrogate pair. Reversing code points still moves combining marks independently. State a limited alphabet when that is what the exercise promises, and choose segmentation deliberately when the requirement is visible-character reversal.
+
+## Practice frequency and order separately
+
+An anagram comparison ignores arrangement while retaining character counts. A palindrome comparison depends on symmetry in order. A permutation generator changes arrangement while retaining the original positions' contents. These are related uses of strings with different invariants.
+
+Continue with [Palindromes, Permutations, Anagrams](/watch/palindromes-permutataions-anagrams) for examples. The [JavaScript preparation guide](/interview-prep/javascript) connects language behavior with interview practice. When testing a solution, include an empty input, repeated letters, and the exact text-unit boundary your stated contract supports.
+
+## Repeat a value and count the actual output
+
+The example repeats a complete string a nonnegative number of times. Repeating `ab` three times gives `ababab`; repeating it zero times gives an empty string. If the input contains an emoji or a combining character sequence, this operation repeats that sequence intact. It does not need to decide where individual user-perceived characters begin.
+
+That distinction keeps the example's contract narrow. A separate task such as reversing visible characters requires an explicit text model: bytes, code points, or grapheme clusters. A repetition function should not be used as evidence that every indexing operation has the same Unicode behavior across these languages.
+
+## Account for construction strategy
+
+Let m be the size of one copy in the representation used by the language and k be the repeat count. The returned text occupies O(mk) space, and constructing its contents requires O(mk) copying work. Versions retaining k references before joining add O(k) temporary storage and loop work, including when m is zero. Implementations here use an appropriate repetition operation, builder, or growable buffer. Repeatedly copying a growing immutable prefix can do more work than the final output size suggests.
+
+The example assumes k is nonnegative and small enough for the result to fit in memory. Test an empty string, zero repetitions, one repetition, line breaks, and multibyte text. If accepting arbitrary external requests, put a product-specific bound on output size before allocating it. A valid integer can still request an impractically large string.
+
+## JavaScript example and implementation choices
+
+The function collects references to the original string in an array and joins them once. That avoids explicitly concatenating an ever-growing prefix in a loop. The pieces array adds O(k) slots, even when the string is empty, so account for O(k + mk) work/storage across construction and output. JavaScript string length measures UTF-16 code units, not visible characters.
+
+### Worked example
+
+```javascript
+function repeatText(text, count) {
+    const pieces = [];
+    for (let index = 0; index < count; index++)
+        pieces.push(text);
+    return pieces.join('');
+}
+```
+
+## Continue in JavaScript
+
+[Open Strings](/course/strings) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

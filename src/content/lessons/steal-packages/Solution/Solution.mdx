@@ -1,0 +1,41 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+This question is a perfect opportunity to use a bottom-up dynamic programming approach.
+Instead of overwhelming ourselves with trying to analyze the entire input array,
+we can find the answer by solving subproblems and combining their results.
+
+Each subproblem is a decision to calculate the max profit for each house individually.
+We have the choice to either steal the current package and add its value to the max profit from two houses back or just keep the max profit from one house back.
+This is how we satisfy the constraint of not stealing from adjacent houses.
+
+We build up the max profit by starting at the first house and continue to make the optimal choice at each step and calcualte the max profit for every item up to the final house.
+When we solve the final house, this will also mean we have the overall max profit.
+
+The steps we follow:
+
+1. Initialize our max profit and max profit from two houses back to 0
+2. Iterate through each house
+3. For each current house, you store the max profit to a temporary variable
+4. Solve the current house's subproblem by calculating the max profit to either be the `current house's item value + max profit at house two houses back` or the existing `max profit`
+5. At the end of each step, we update our variables to move forward
+
+If the array is empty, our solution just returns 0 since that is our initialized value.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.constant /> space.
+</p>
+
+We iterate through all `n` items once and only use two variables to track the max profit values that we need.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

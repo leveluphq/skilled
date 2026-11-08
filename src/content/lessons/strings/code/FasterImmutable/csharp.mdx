@@ -1,0 +1,16 @@
+```csharp
+// If immutable, do operations on a list and combine
+string DuplicateString(string str, int numDuplicates) {
+    var solutionArray = new List<string>();
+
+    for (int i = 0; i < numDuplicates; i++) {
+        // .Add is O(1)
+        solutionArray.Add(str);
+
+        // Faster than str += str which would be O(n) for copying each time
+    }
+
+    // A StringBuilder (Append each piece, then ToString) works the same way
+    return string.Join("", solutionArray);
+}
+```

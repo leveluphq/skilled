@@ -1,0 +1,15 @@
+```rust
+fn hanoi(disc: u32, src: &str, aux: &str, dest: &str) {
+    // Base case (stop moving discs)
+    if disc == 0 {
+        return;
+    }
+
+    // Recursively rotate discs
+    hanoi(disc - 1, src, dest, aux);
+    println!("Move disc {disc} from {src} to {dest}");
+    hanoi(disc - 1, aux, src, dest);
+}
+
+hanoi(4, "left peg", "middle peg", "right peg");
+```

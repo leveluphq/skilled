@@ -1,0 +1,28 @@
+```go
+type Node struct {
+	Data int
+	Next *Node
+}
+
+// O(1)
+func (n *Node) Prepend(data int) *Node {
+	prependedNode := &Node{Data: data}
+	prependedNode.Next = n
+
+	return prependedNode
+}
+
+// O(n)
+func (n *Node) Append(data int) *Node {
+	appendedNode := &Node{Data: data}
+	currentNode := n
+
+	for currentNode.Next != nil {
+		currentNode = currentNode.Next
+	}
+
+	currentNode.Next = appendedNode
+
+	return appendedNode
+}
+```

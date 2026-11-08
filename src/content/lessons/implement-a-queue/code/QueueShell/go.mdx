@@ -1,0 +1,27 @@
+```go
+type Node struct {
+	Data int
+	Prev *Node
+}
+
+type Queue struct {
+	first *Node
+	last  *Node
+}
+
+func NewQueue() *Queue {
+	return &Queue{first: nil, last: nil}
+}
+
+func (q *Queue) Peek() *Node {
+	// get the first item of the list
+}
+
+func (q *Queue) Enqueue(item int) *Node {
+	// add an item to the end of the list
+}
+
+func (q *Queue) Dequeue() *Node {
+	// remove the first item from the list
+}
+```

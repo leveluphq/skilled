@@ -1,0 +1,59 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A subproblem asks the same kind of question about a smaller or more specific state. Overlap occurs when several paths in the calculation ask for the same state. The recording separates those ideas with factorial and Fibonacci examples. Recognizing repeated calls is useful only after you know exactly which inputs identify the same question.
+
+## Define what one answer represents
+
+For factorial, the answer for n uses the answer for n minus one. A single evaluation follows one decreasing chain to a base case. Those calls solve subproblems, but they do not repeatedly request the same smaller factorial within that chain. Adding a cache may be useful across separate requests, but it does not remove repeated branches from this particular recurrence.
+
+Naive Fibonacci recursion behaves differently. Computing Fibonacci of 5 requests Fibonacci of 4 and 3. Computing Fibonacci of 4 requests Fibonacci of 3 again. The same state appears in more than one branch. Draw the call tree and label equal arguments to see which work repeats.
+
+## Include every input that changes the answer
+
+For a grid route problem, the state may be a row and column together with a fixed grid and movement rule. For coin change, it may be a remaining amount under a fixed set of coin values. If the allowed coins or grid change, a cache retained from the old problem can produce an incorrect answer even when the numeric key matches.
+
+State compression is a claim of equivalence: two histories mapped to the same state must have the same remaining possibilities and result. If a rule depends on the path already taken, an index alone may not identify the subproblem. Add the relevant information or prove it does not affect the future.
+
+## Use repetition to justify storage
+
+Memoization stores a completed state's result so later requests reuse it. It does not choose the recurrence, prove the base case, or fix a state that omits necessary information. Estimate complexity from the number of distinct states and the transitions examined per state, then include stack depth and stored results separately.
+
+Continue with [Memoization](/watch/memoization) for cache behavior and [Dynamic Programming](/watch/dynamic-programming) for complete recurrences. Try [Robot Maze](/watch/robot-maze) and explain why remembering an unreachable cell is as useful as remembering a reachable one when several paths can arrive there.
+
+## Count work in the naive Fibonacci recursion
+
+The example returns both the Fibonacci value and the number of recursive invocations. With F(0) = 0 and F(1) = 1, computing F(4) returns `[3, 9]`. The value is three, but nine calls were needed because the same smaller states were recomputed along different branches.
+
+The count includes the initial call and every base-case call. Its recurrence is C(n) = 1 + C(n − 1) + C(n − 2), with C(0) = C(1) = 1. That gives C(n) = 2F(n + 1) − 1. Counting only non-base calls would produce a different number.
+
+## Identify state before introducing a cache
+
+Each subproblem here is determined entirely by n. No partial path or external mutable state affects the answer. That makes n a sufficient cache key in the memoized version. In a grid or subsequence problem, one integer might be insufficient because different positions can share the same remaining length.
+
+The naive recursion has exponential call growth and O(n) maximum stack depth. The published checks use small nonnegative inputs through fifteen so the example stays quick and its integer results fit every listed language. Test zero and one before tracing four. The [memoization lesson](/course/memoization) computes the same recurrence while retaining each solved state, making the difference in work measurable.
+
+## Go example and implementation choices
+
+The function variable is declared before assignment so its closure can call itself recursively. The closure shares one calls integer with the enclosing invocation. Both recursive branches complete before the returned slice records the final count. Architecture-dependent int width is irrelevant within the small tested range, but it should not support a claim that arbitrary Fibonacci call counts always fit.
+
+### Worked example
+
+```go
+func FibCalls(n int) []int {
+    calls := 0
+    var fib func(int) int
+    fib = func(value int) int {
+        calls++
+        if value < 2 { return value }
+        return fib(value-1)+fib(value-2)
+    }
+    answer := fib(n)
+    return []int{answer, calls}
+}
+```
+
+## Continue in Go
+
+[Open Subproblems and Overlapping Subproblems](/course/subproblems-and-overlapping-subproblems) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Go example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Go interview preparation guide](/interview-prep/go) connects these language choices with further practice and the cross-language operation reference.

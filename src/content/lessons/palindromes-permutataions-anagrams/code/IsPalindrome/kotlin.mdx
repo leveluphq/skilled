@@ -1,0 +1,20 @@
+```kotlin
+// Regex to remove non-alphanumeric
+fun removeNonAlphanumeric(string: String) = string.replace(Regex("[^0-9a-z]", RegexOption.IGNORE_CASE), "")
+
+fun isPalindrome(string: String): Boolean {
+    // For simplicity, I'm doing the transforming here at an assumed O(n) cost
+    // You could also not transform it and consider this when you compare characters
+    val formattedString = removeNonAlphanumeric(string).lowercase()
+
+    // Walk from the beginning and end to the middle and compare each character
+    for (i in 0 until formattedString.length / 2) {
+        // If the characters are ever not equal, it's not a palindrome
+        if (formattedString[i] != formattedString[formattedString.length - 1 - i]) {
+            return false
+        }
+    }
+
+    return true
+}
+```

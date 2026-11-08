@@ -1,0 +1,29 @@
+```go
+// O(n) append
+func appendNode(head *Node, data int) *Node {
+	// Create a new node to append
+	appendedNode := &Node{Data: data}
+	// Start at the current node which is the head
+	currentNode := head
+
+	// Iterate through our list until we reach the last node
+	for currentNode.Next != nil {
+		// Step through nodes
+		currentNode = currentNode.Next
+	}
+
+	currentNode.Next = appendedNode
+
+	// Return the head of the list
+	return head
+}
+
+head := &Node{Data: 42}
+head.Next = &Node{Data: 9000}
+head.Next.Next = &Node{Data: 10}
+head.Next.Next.Next = &Node{Data: 20}
+// 42 -> 9000 -> 10 -> 20
+
+head = appendNode(head, 8)
+// 42 -> 9000 -> 10 -> 20 -> 8
+```

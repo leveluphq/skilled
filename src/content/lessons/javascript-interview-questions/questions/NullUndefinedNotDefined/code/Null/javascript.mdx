@@ -1,0 +1,15 @@
+```javascript
+const explicitlyEmpty = null;
+
+// Serializes to JSON
+JSON.stringify({ explicitlyEmpty }); // '{"explicitlyEmpty":null}'
+
+// Does not trigger default parameters
+const sayHello = (name = 'world!') => {
+  console.log(`Hello, ${name}`);
+}
+sayHello(explicitlyEmpty);
+
+// Checking for null
+explicitlyEmpty === null; // true
+```

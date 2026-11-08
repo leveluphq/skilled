@@ -1,0 +1,36 @@
+```typescript
+interface AdjacencyList {
+  [node: string]: string[];
+}
+
+class Graph {
+  adjacencyList: AdjacencyList;
+  undirected: boolean;
+
+
+  constructor(undirected: boolean = true) {
+    this.adjacencyList = {};
+    this.undirected = undirected;
+  }
+
+  addVertex(vertex: string): void  {
+    this.adjacencyList[vertex] = [];
+  }
+
+  addEdge(source: string, destination: string): void {
+    this.adjacencyList[source].push(destination);
+
+    if (this.undirected) {
+      this.adjacencyList[destination].push(source);
+    }
+  }
+
+  removeVertex(vertex: string): void {
+    delete this.adjacencyList[vertex];
+
+    Object.keys(this.adjacencyList).forEach(node => {
+      this.adjacencyList[node] = this.adjacencyList[node].filter(v => v !== vertex);
+    });
+  }
+}
+```

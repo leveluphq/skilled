@@ -1,0 +1,24 @@
+```cpp
+struct Node {
+    int data;
+    Node* next;
+    Node* previous;
+
+    Node(int data) : data(data), next(nullptr), previous(nullptr) {}
+};
+
+class LinkedList {
+public:
+    Node* head;
+    Node* tail;
+
+    LinkedList(int data) {
+        Node* node = new Node(data);
+        head = node;
+        tail = node;
+    }
+
+    void append(int data) { /* add item to back and update tail */ }
+    void prepend(int data) { /* add item to front and update head */ }
+};
+```

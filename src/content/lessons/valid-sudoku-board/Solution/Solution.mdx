@@ -1,0 +1,45 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+First we check for a valid shape:
+
+1. Make sure the board exists
+2. Make sure the board is a square
+3. Make sure the board is composed of sub-squares
+
+Then we need to check that there are no duplicate values in any row, column, or sub-square:
+
+1. Initialize a `rows` and `columns` array with `k` hash tables where k is the length of the rows/columns
+2. Initialize a `j x j` two-dimensional array where `j` is the width/height of a sub-square, or `j = sqrt(k)`.
+3. Iterate through all `n` cells in order. It will be a double nested loop where you iterate through all `k` rows and columns.
+5. At each cell, if a value exists, increment its count for that cell value in the corresponding row/column/sub-square hash table.
+6. If you have a duplicate, you return false. If you reach the end, return true.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+Linear <BigO.n /> time and <BigO.n /> space.
+
+We are calling `n` the total number of cells.
+
+We walked through each cell once for linear time.
+
+We create 3 arrays to store our hash tables.
+The arrays will contain `k` hash tables, and the hash tables can contain `k` values,
+which is <code>k<sup>2</sup></code> space, and we defined `n = k x k`.
+
+There is actually a very interesting note for the complexity though.
+We know our Big O determines how an algorithm scales with input size.
+What if we ONLY wanted to solve a standard `9 x 9` board?
+The time and space complexity would become constant <BigO.constant />
+because our input size would never change (it is also constant).
+We would always walk 81 cells and create hash tables of constant size.
+However, since this question says to consider an arbitrarily large board, our complexity becomes linear to account for any `n` size.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

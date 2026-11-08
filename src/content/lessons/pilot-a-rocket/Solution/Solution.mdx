@@ -1,0 +1,40 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+This question gives a graph represented by an adjacency list.
+We are told to find the shortest path from the first node `base` to the final node `ship`.
+We know that breadth-first search yields the shortest path between any two nodes, so we use this method to traverse.
+
+There is an additional challenge though — we want to actually return the entire shortest path as the solution.
+To do this, we use a hash table to store the first node that leads us to any item in the graph.
+We also use this hash table to indicate that a node has been visited so we don't get caught in a cycle.
+
+The hash table stores the nodes that enabled us to reach each point following the shortest path.
+Once we reach the final node, we iterate backward using the hash table until we return the beginning which reconstructs the shortest path through the graph.
+Since we iterate backward, we reverse the array and return it as the solution.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="V + E" /> time and <BigO.n letter="V" /> space where V is the number of vertices and E is the number of edges.
+</p>
+
+In a worst case scenario, we visit each node (vertex) once.
+We also visit each nodes' neighbors, so we account for the additional operations on the edges as well.
+
+The space complexity is <BigO.n letter="V" /> because in the worst case you will add every item to your queue.
+
+<p>
+<BigO.n letter="V + E" /> for BFS and DFS is something you can memorize and are typically fine saying outright.
+If you are asked to say why, it's because you visit each node and its neighbors.
+</p>
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

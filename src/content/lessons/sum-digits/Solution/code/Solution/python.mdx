@@ -1,0 +1,18 @@
+```python
+def sum_digits(number):
+	# ** Base case ** - we know to stop when our number no longer has digits
+	if number == 0:
+		return 0
+
+	""" Recursive Case:
+	1. Extract the digit in the one's place using % 10
+	2. Remove the one's place by dividing by 10 and rounding down (keeping it an int)
+	3. Sum it recursively with the rest of the digits in the integer
+	"""
+
+	ones_place_value = number % 10
+	trimmed_items = number // 10
+	sum_of_remaining_items = sum_digits(trimmed_items) # recursive call
+
+	return ones_place_value + sum_of_remaining_items
+```

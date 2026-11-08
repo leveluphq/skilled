@@ -1,0 +1,22 @@
+```swift
+func reverseString(_ str: String) -> String {
+    // Base case
+    guard let firstCharacter = str.first else {
+        return ""
+    }
+
+    // Recursively add the front character to end of the remaining string
+    return reverseString(String(str.dropFirst())) + String(firstCharacter)
+}
+
+reverseString("dev")
+// reverseString("dev")
+//   reverseString("ev")
+//     reverseString("v")
+//       reverseString("")
+//       return ""
+//     return "" + "v"
+//   return "v" + "e"
+// return "ve" + "d"
+// -> "ved"
+```

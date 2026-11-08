@@ -1,0 +1,47 @@
+```swift
+let openSpot = 0
+let blockedSpot = 1
+let exitSpot = 2
+
+// Main function
+func hasExitPath(_ roomMatrix: [[Int]]) -> Bool {
+    // Return false if the matrix is invalid
+    if roomMatrix.isEmpty || roomMatrix[0].isEmpty {
+        return false
+    }
+
+    // Recursively walk through the room to check if there is a valid path
+    let isValidPath = walkThroughRoom(roomMatrix, 0, 0)
+
+    return isValidPath
+}
+
+// Recursive helper function
+func walkThroughRoom(_ roomMatrix: [[Int]], _ row: Int, _ col: Int) -> Bool {
+    // Base case 1: Outside of room, so there can't be a path through this
+    let isOutsideRoom = row > roomMatrix.count - 1 || col > roomMatrix[0].count - 1
+    if isOutsideRoom {
+        return false
+    }
+
+    // Base case 2: A path successfully reached the end, so propagate this upward
+    let isExitNode = roomMatrix[row][col] == exitSpot
+    if isExitNode {
+        // Set the current node as true as well
+        return true
+    }
+
+    // Base case 3: We reached a blocking node
+    let isBlockingNode = roomMatrix[row][col] == blockedSpot
+    if isBlockingNode {
+        return false
+    }
+
+    // Recursive case: move down and right
+    let downResult = walkThroughRoom(roomMatrix, row + 1, col)
+    let rightResult = walkThroughRoom(roomMatrix, row, col + 1)
+
+    // Returns true if either is successful
+    return downResult || rightResult
+}
+```

@@ -1,0 +1,25 @@
+```python
+# O(n + m) - we add sequential operations together
+def multiple_input(input1, input2):
+    n = len(input1)
+    m = len(input2)
+
+    # O(n)
+    for i in range(n):
+        # do something
+
+    # O(m)
+    for i in range(m):
+        # do something
+
+# O(nm) - we multiply nested input
+def multiple_input(input1, input2):
+    n = len(input1)
+    m = len(input2)
+
+    # O(n)
+    for i in range(n):
+        # O(m)
+        for j in range(m):
+            # do something
+```

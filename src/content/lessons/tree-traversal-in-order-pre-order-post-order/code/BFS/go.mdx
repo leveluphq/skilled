@@ -1,0 +1,28 @@
+```go
+// Using a slice as a queue
+// append == enqueue
+// take queue[0], then queue = queue[1:] == dequeue
+func breadthFirstSearch(root *BinaryTreeNode) {
+	if root == nil {
+		return
+	}
+
+	currentNode := root
+	queue := []*BinaryTreeNode{currentNode}
+
+	for len(queue) > 0 {
+		currentNode = queue[0]
+		queue = queue[1:]
+
+		visitNode(currentNode)
+
+		if currentNode.Left != nil {
+			queue = append(queue, currentNode.Left)
+		}
+
+		if currentNode.Right != nil {
+			queue = append(queue, currentNode.Right)
+		}
+	}
+}
+```

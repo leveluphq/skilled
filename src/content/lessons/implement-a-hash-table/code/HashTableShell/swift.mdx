@@ -1,0 +1,25 @@
+```swift
+class HashTable {
+    let size: Int
+    // A bucket for each index, holding the key-value pairs whose keys hash to it
+    var table: [[(key: String, value: Int)]]
+
+    init(_ size: Int) {
+        self.size = size
+        self.table = Array(repeating: [], count: size)
+    }
+
+    func get(_ key: String) -> Int? {
+        // get a value by key
+    }
+    func insert(_ key: String, _ value: Int) {
+        // add/update a value at a key
+    }
+    func remove(_ key: String) -> Int? {
+        // remove a value by key
+    }
+    func hash(_ key: String) -> Int {
+        // our custom hash function
+    }
+}
+```

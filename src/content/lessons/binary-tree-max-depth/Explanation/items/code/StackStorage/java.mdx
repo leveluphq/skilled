@@ -1,0 +1,7 @@
+```java
+// A node on the stack, along with its depth
+record NodeAtDepth(BinaryNode node, int depth) {}
+
+stack.push(new NodeAtDepth(node.right, depth + 1));
+stack.push(new NodeAtDepth(node.left, depth + 1));
+```

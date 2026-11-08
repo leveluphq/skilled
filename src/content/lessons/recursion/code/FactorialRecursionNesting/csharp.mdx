@@ -1,0 +1,17 @@
+```csharp
+RecursiveFactorial(4) = 4 * RecursiveFactorial(3)
+  RecursiveFactorial(3) = 3 * RecursiveFactorial(2)
+    RecursiveFactorial(2) = 2 * RecursiveFactorial(1)
+      RecursiveFactorial(1) = 1 // base case
+
+// or
+
+RecursiveFactorial(4)
+  RecursiveFactorial(3)
+    RecursiveFactorial(2)
+      RecursiveFactorial(1)
+      return 1 // base case
+    return 2 * 1 // -> 2 * 1
+  return 3 * 2 // -> 3 * 2 * 1
+return 4 * 6 // 4 * 3 * 2 * 1
+```

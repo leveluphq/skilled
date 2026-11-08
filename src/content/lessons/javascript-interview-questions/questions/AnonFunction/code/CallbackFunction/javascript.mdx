@@ -1,0 +1,13 @@
+```javascript
+// Array.prototype.map: arr.map(callback)
+const arr = [1, 2, 3];
+const squaredArray = arr.map((item) => item * item); // [1, 4, 9]
+// (item) => item * item is an anonymous function callback
+// It is executed on each item
+
+// setTimeout(callback, milliseconds)
+setTimeout(function() {
+  alert('I am alerting in a callback')
+}, 1000);
+// After 1000ms, the setTimeout function executes the anonymous function callback
+```

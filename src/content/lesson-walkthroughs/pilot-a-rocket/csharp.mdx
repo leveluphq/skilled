@@ -1,0 +1,107 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Find a shortest route from the vertex named `base` to the vertex named `ship` in an unweighted adjacency map. Return the vertex names in route order, including both endpoints. If no route exists, return null rather than an empty route. Every referenced neighbor has an entry in the supplied graph, and the route follows the listed edge directions.
+
+## Explore routes in increasing edge count
+
+Breadth-first search uses a first-in, first-out queue. Start by enqueuing `base`. When removing a vertex, enqueue each neighbor that has not already been discovered. All vertices one edge from the start are discovered before vertices two edges away, and so on. The first discovery of a vertex therefore uses a shortest route to it.
+
+Keep a predecessor map. Set the start's predecessor to an absence sentinel and record each newly discovered neighbor's predecessor as the current vertex. The map also serves as the discovered set. Record a neighbor before enqueueing it, so several incoming edges cannot add it to the queue repeatedly.
+
+## Reconstruct one route
+
+Suppose base connects to a and b, a connects to c, b connects to ship, and c also connects to ship. Breadth-first search discovers a and b at distance one. Processing b discovers ship at distance two, before the route through a and c can improve anything. Its predecessor chain is ship, b, base.
+
+Follow that chain backward from ship until the start sentinel, collect the names, then reverse the collection. The result is `[base, b, ship]`. Keeping only a visited set would establish reachability but would lose the information needed to return the route. Storing a full route in every queue item is possible, but copies many shared prefixes.
+
+## Preserve the shortest-route guarantee
+
+The queue processes vertices in nondecreasing distance from base. When a vertex is first discovered from a distance-d predecessor, it gets distance d + 1. Any shorter predecessor would already have been processed and discovered it earlier. The recorded predecessor thus belongs to a shortest route.
+
+Cycles do not break termination because each vertex is discovered once. A self-loop on base sees the existing start entry and adds nothing. If the queue empties without finding ship, every reachable vertex has been explored, proving that no route exists. Several equal-length routes may exist; adjacency order selects one unless the contract supplies a tie rule.
+
+## Inspect the queue implementation's cost
+
+The graph algorithm examines O(V + E) reachable vertices and edges when queue operations take amortized O(1) time. A queue implemented with front insertion or removal on an array can move all its elements on each operation, adding O(V²) work in a wide search. A head index, deque, or linked queue avoids that repeated shifting.
+
+The queue and predecessor map use O(V) storage. Reconstructing a route costs time and output space proportional to its length. String-key hashing also depends on identifier lengths. The unweighted assumption matters: breadth-first search minimizes edge count, not a sum of arbitrary fuel costs or travel durations.
+
+## Test reachability and route validity
+
+Test a direct base-to-ship edge, an unreachable ship, a cycle, a self-loop, and a tempting longer route listed before a shorter one. Include branching paths with a shared destination to check discovery-time deduplication. Verify that every adjacent pair in the returned route is an edge and that the endpoints are correct.
+
+For generated checks, compute shortest distances independently and require the returned route length to equal the minimum distance plus one. If exact output order is required, make the shortest route unique or specify the tie behavior. A weighted follow-up needs an algorithm such as Dijkstra's for nonnegative weights; changing the queue order alone without distance relaxation does not establish correctness.
+
+## C# implementation
+
+The queue holds pending vertex names. The predecessor dictionary supports reconstructing one shortest route without storing a route per pending item.
+
+The runner constructs the solution class and supplies standard collection namespaces and any declared node types. Arrays, lists, and class instances share references when assigned. Follow the method's exact capitalization and return type from the starter. The integer operations in this implementation are bounded; wider inputs may require `long` intermediates and a corresponding change to the return contract.
+
+```csharp
+public class Solution {
+    private const string StartNode = "base";
+    private const string EndNode = "ship";
+
+    public string[] PilotRocket(Dictionary<string, string[]> satellites) {
+        // Queue to handle BFS
+        var bfsNodeQueue = new Queue<string>();
+        bfsNodeQueue.Enqueue(StartNode);
+
+        // Use a hash table to track the node that came
+        // prior to the current in our BFS to track the path
+        var previousNodeInPath = new Dictionary<string, string>();
+        previousNodeInPath[StartNode] = null;
+
+        // Perform our BFS
+        while (bfsNodeQueue.Count > 0) {
+            string node = bfsNodeQueue.Dequeue();
+
+            // We've successfully reached the end, and now we should build the path to get here
+            if (node == EndNode) {
+                return GetShortestPathToShip(previousNodeInPath);
+            }
+
+            foreach (string connectedNode in satellites[node]) {
+                // Check if we have visited this node yet
+                if (!previousNodeInPath.ContainsKey(connectedNode)) {
+                    // Add the node to the queue for our BFS
+                    bfsNodeQueue.Enqueue(connectedNode);
+
+                    // Set the current node as the one that came before each of its siblings
+                    previousNodeInPath[connectedNode] = node;
+                }
+            }
+        }
+
+        // We iterated through all the nodes, and no paths lead to the ship
+        return null;
+    }
+
+    private string[] GetShortestPathToShip(Dictionary<string, string> previousNodeInPath) {
+        var pathToShip = new List<string>();
+
+        // We start at the final node and work our way backward to the start
+        string node = EndNode;
+
+        while (node != null) {
+            pathToShip.Add(node);
+
+            // Doing a look up on the hash table for each node
+            // will yield the previous node in the path
+            node = previousNodeInPath[node];
+        }
+
+        // Since we worked our way backward,
+        // we must reverse the path to be in the correct order base -> ship
+        pathToShip.Reverse();
+        return pathToShip.ToArray();
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Pilot a Rocket](/course/pilot-a-rocket) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more C# conventions and practice problems, use the [C# interview guide](/interview-prep/csharp).

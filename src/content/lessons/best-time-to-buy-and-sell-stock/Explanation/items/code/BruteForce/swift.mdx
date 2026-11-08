@@ -1,0 +1,17 @@
+```swift
+func bruteForceGetMaxProfit(_ prices: [Int]) -> Int {
+    var maxProfit = 0
+
+    for buyDay in 0..<prices.count {
+        let buyPrice = prices[buyDay]
+
+        for sellDay in (buyDay + 1)..<prices.count {
+            let sellPrice = prices[sellDay]
+            let profit = sellPrice - buyPrice
+            maxProfit = max(profit, maxProfit)
+        }
+    }
+
+    return maxProfit
+}
+```

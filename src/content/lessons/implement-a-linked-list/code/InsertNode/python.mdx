@@ -1,0 +1,35 @@
+```python
+def insert_node(head, index, value):
+    # First check if we want to add a node at the head
+    if index == 0:
+        # Inserting at 0 is equivalent to prepending
+        return prepend(head, value)
+
+    # Create the node we want to insert
+    inserted_node = Node(value)
+    preceding_node = head
+
+    # Find the node that precedes the index of the node that we want to insert
+    for i in range(index - 1):
+        preceding_node = preceding_node.next
+
+    # Store the node that should come after the one we insert
+    node_after_inserted = preceding_node.next
+
+    # Insert our new node at the desired index
+    preceding_node.next = inserted_node
+
+    # Set the inserted node's `next` pointer
+    inserted_node.next = node_after_inserted
+
+    return head
+
+head = Node(42)
+head.next = Node(9000)
+head.next.next = Node(10)
+head.next.next.next = Node(20)
+# 42 -> 9000 -> 10 -> 20
+
+head = insert_node(head, 2, 777)
+# 42 -> 9000 -> 777 -> 10 -> 20
+```

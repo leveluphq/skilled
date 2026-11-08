@@ -1,0 +1,83 @@
+Rust interview preparation needs an ownership plan alongside the algorithm. Decide which data the function reads, which state it owns, and which values must be copied into the result. That usually produces a simpler implementation than adding clones whenever the borrow checker reports a conflict.
+
+The examples use stable standard-library features available with the Rust 2021 edition. They return owned numeric results and borrow the input slices. Exercise harnesses may supply their own node types or signatures; use those published interfaces rather than replacing them with an unrelated tree model.
+
+## Borrow input and own the working state
+
+A parameter such as `values: &[i64]` lets the function read a borrowed slice without taking ownership of the caller's vector. Its local map or heap belongs to the function. A returned pair of indexes contains Copy values, so it needs no lifetime tied to the borrowed input.
+
+Iterating with `values.iter().enumerate()` produces an index and a reference to each value. The pattern `&value` copies an i64 out of that reference. This is inexpensive fixed-size value copying, distinct from cloning a string, vector, or reference-counted graph.
+
+For a mutable backtracking path, push a choice, recurse, then pop it. Saving the path requires an owned snapshot if later mutations must not change earlier results. Cloning the working vector at a completed answer can be correct and necessary; cloning it at every intermediate call may allocate much more than the output contract requires.
+
+## Return Option and handle arithmetic range
+
+Two Sum returns `Option<(usize, usize)>`. A None result is different from an index-zero success, and a successful tuple always has two positions. The map lookup happens before storing the current value, preserving the distinct-position rule.
+
+```rust
+use std::cmp::Reverse;
+use std::collections::{BinaryHeap, HashMap};
+
+fn two_sum(values: &[i64], target: i64) -> Option<(usize, usize)> {
+    let mut previous: HashMap<i64, usize> = HashMap::new();
+    for (index, &value) in values.iter().enumerate() {
+        if let Some(complement) = target.checked_sub(value) {
+            if let Some(&earlier) = previous.get(&complement) {
+                return Some((earlier, index));
+            }
+        }
+        previous.insert(value, index);
+    }
+    None
+}
+
+fn largest_k(values: &[i64], k: usize) -> Vec<i64> {
+    if k == 0 { return Vec::new(); }
+    let mut retained: BinaryHeap<Reverse<i64>> = BinaryHeap::new();
+    for &value in values {
+        retained.push(Reverse(value));
+        if retained.len() > k { retained.pop(); }
+    }
+    retained.into_iter().map(|Reverse(value)| value).collect()
+}
+```
+
+An overflowing complement cannot equal any i64 value in the earlier-input map, so that iteration can safely skip lookup and still insert the current value. `checked_sub` expresses this case without relying on a build profile's overflow behavior. Tests should include i64 extremes as well as small duplicates and missing answers.
+
+The map solution uses expected O(n) time under the usual hash-operation model and O(n) additional entries. Hashing and equality can cost more for long or composite keys; the numeric-key model here keeps those operations bounded. The [HashMap reference](https://doc.rust-lang.org/std/collections/struct.HashMap.html) documents its lookup, entry, and key contracts.
+
+## Choose heap orientation from the eviction rule
+
+Rust's `BinaryHeap` is a max-heap by default. Wrapping values in `Reverse` makes the smallest numeric value the highest-priority element. In the top-K function, that element is the weakest retained candidate and therefore the one to discard when the heap grows past K.
+
+The code temporarily retains at most K + 1 values, then removes the smallest. Equal values remain separate arrivals. If K exceeds the input length, every value is returned. The final vector has heap iteration order, not sorted order; sort it separately if the requested output requires ordering.
+
+Selection takes O(n log(K + 1)) comparison work for positive K, with O(min(n, K)) retained elements after each completed update. Allocation growth has its own cost. The empty-K branch returns immediately without examining the input. Read the [BinaryHeap reference](https://doc.rust-lang.org/std/collections/struct.BinaryHeap.html) for its priority and allocation guarantees, and compare with the [heap pattern guide](/patterns/heaps-and-priority-queues).
+
+## Keep mutable and shared borrows short
+
+A map's `get` returns a shared reference into the map. Mutating that map while still needing the reference can conflict with the borrow. When the mapped value is Copy, extracting an owned index as the example does often ends the lookup's useful borrow before insertion.
+
+For frequencies, the entry API can provide one mutable reference to the mapped count: `*counts.entry(value).or_insert(0) += 1`. That fits a single-key update. It does not automatically solve an operation that needs several simultaneous mutable references to related entries.
+
+A borrow-checker error can reveal an unclear state transition. Identify which value you need after mutation and whether you can copy that value, split the operation, or change the representation. Replacing every borrowed value with a clone may compile while concealing unnecessary allocation or an ownership model that no longer matches the intended graph.
+
+## Use VecDeque for FIFO traversal
+
+A `Vec` supports stack operations efficiently at its end. Removing index zero shifts remaining elements and is a poor default for a growing BFS queue. `VecDeque` supplies push-back and pop-front operations for FIFO processing.
+
+A graph with integer labels can use a visited `HashSet` and a `VecDeque` of copied labels. Mark a neighbor when inserting it, so a cycle or a second parent does not queue it again. For owned String labels, decide whether the traversal owns cloned labels or borrows names from a stable graph representation. Include those string copies in the memory discussion.
+
+A proper tree exercise may supply `Option<Box<Node>>`, borrowed nodes, or shared nodes through `Rc<RefCell<Node>>`. Those representations support different mutation and sharing operations. Start with the exercise's type, define the recursive return value, and avoid introducing interior mutability solely to reproduce a template written for another representation.
+
+## Clarify UTF-8 and indexing
+
+A Rust String contains valid UTF-8, and its byte length differs from its number of Unicode scalar values. Ordinary integer indexing cannot retrieve a character from a string. Iterating with `chars` visits scalar values, while `char_indices` also supplies byte offsets.
+
+Collecting characters into a vector gives indexed access at the cost of allocation. Slicing text by byte boundaries requires valid character boundaries; an arbitrary byte index can panic. Scalar values still do not define user-perceived grapheme clusters. For ASCII-only interview input, state the constraint and use byte processing deliberately.
+
+## Verify ownership and the result contract
+
+Compare Two Sum with exhaustive pairs using widened reference arithmetic so the test itself does not overflow. Check that None agrees with no valid pair and that any returned indexes are distinct, in bounds, and sum to the target mathematically. Include minimum and maximum i64 values and a valid later pair after an earlier complement overflow.
+
+For top-K, sort a copy of the input in descending order and compare its first K values with a sorted result from the heap. Include K zero, K larger than n, negative values, and duplicates. Then practice [permutation generation](/course/generate-all-permutations), [BFS](/course/breadth-first-search), and a full [solution explanation](/guides/explain-your-interview-solution) that names which collections own their data and which inputs remain borrowed.

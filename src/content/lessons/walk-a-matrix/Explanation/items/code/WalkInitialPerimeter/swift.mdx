@@ -1,0 +1,27 @@
+```swift
+// All rows in the matrix
+let rowCount = matrix.count
+// All columns in the 0th row
+let columnCount = matrix[0].count
+
+// Walk right (top row)
+for column in 0..<columnCount - 1 {
+    let nodeInFirstRow = matrix[0][column]
+}
+
+// Walk down (right column)
+for row in 0..<rowCount - 1 {
+    let nodeInLastColumn = matrix[row][columnCount - 1]
+}
+
+// Walk left (bottom row)
+for column in stride(from: columnCount - 1, through: 0, by: -1) {
+    let nodeInLastRow = matrix[rowCount - 1][column]
+}
+
+// Walk up (left column)
+// NOTE: notice stop before the 0th node at (1,0)
+for row in stride(from: rowCount - 2, through: 1, by: -1) {
+    let nodeInFirstColumn = matrix[row][0]
+}
+```

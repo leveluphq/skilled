@@ -1,0 +1,64 @@
+```cpp
+struct Node {
+    int data;
+    Node* prev;
+
+    Node(int data) : data(data), prev(nullptr) {}
+};
+
+class Queue {
+public:
+    Queue(const Queue&) = delete;
+    Queue& operator=(const Queue&) = delete;
+    ~Queue() {
+        while (first) { auto node = first; first = first->prev; delete node; }
+    }
+
+    Node* first;
+    Node* last;
+
+    Queue() {
+        first = nullptr;
+        last = nullptr;
+    }
+
+    // Get the first item
+    Node* peek() {
+        return first;
+    }
+
+    // Add a new last item
+    Node* enqueue(int item) {
+        Node* newLastNode = new Node(item);
+        bool isEmptyList = !first && !last;
+
+        if (isEmptyList) {
+            first = newLastNode;
+            last = newLastNode;
+        } else {
+            last->prev = newLastNode;
+            last = newLastNode;
+        }
+
+        return newLastNode;
+    }
+
+    // Remove the first item
+    Node* dequeue() {
+        Node* removedItem = first;
+
+        if (!removedItem) {
+            return nullptr;
+        }
+
+        if (first == last) {
+            last = nullptr;
+        }
+
+        first = removedItem->prev;
+
+        // The caller now owns removedItem and should delete it when done
+        return removedItem;
+    }
+};
+```

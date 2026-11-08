@@ -1,0 +1,71 @@
+Review a coding attempt using observable evidence: the contract the candidate clarified, the invariant they explained, the tests they chose, and the corrections they made. This rubric supports solo practice or a partner session. It does not predict a hiring outcome or translate into a company's interview score.
+
+Use three review states for each dimension: demonstrated, partial, and not yet observed. Record a concrete example before choosing a state. If a task never required a particular skill, mark that dimension unobserved instead of treating the absence as failure. The goal is a specific next practice task.
+
+## Clarification and contract handling
+
+Look for questions that change the implementation. Did the candidate establish whether an answer must contain all matching pairs or one pair? Did they confirm the meaning of empty input, duplicates, missing results, mutation, identity, and numeric or text bounds when those details mattered?
+
+Demonstrated clarification includes a short restatement of the agreed contract and an example consistent with it. Partial clarification may identify some constraints while silently importing a different familiar problem's output. Unobserved clarification means the session provided no evidence, perhaps because the problem was already fully specified and no restatement occurred.
+
+Record the exact ambiguity and its consequence. “Good communication” is too broad to guide practice. “Asked whether edges were weighted before selecting BFS” identifies an action and the algorithmic reason for it. A partner should answer consistently with the chosen task rather than inventing new constraints during grading.
+
+## Correctness and invariant reasoning
+
+Check whether the approach solves the agreed task and whether the candidate can explain why. A working sample is useful but insufficient. Ask what remains true before each iteration, why every update preserves it, and why termination gives the required result.
+
+For a valid-brackets scan, the stack should contain unmatched opening delimiters in order. For a strict BST, inherited lower and upper bounds must apply to every descendant. For product except self, the current position must be excluded from both accumulated segments. These statements are concrete enough to test against a trace.
+
+Distinguish an implementation bug from a broken approach. A missing boundary update in a sound binary-search argument needs different practice from an argument that discards valid candidates. Record how the candidate discovered and corrected the issue. A correction with an explained failing case is valuable evidence of debugging skill.
+
+## Approach selection and tradeoffs
+
+Look for a direct baseline, an identified cost, and a reason the improved method removes repeated work or stores useful information. The candidate does not need to recite every possible alternative. They should explain the choice that matters for this contract.
+
+A complement map trades additional storage for expected linear pair lookup. A two-pointer scan may need sorted input and can lose original-index meaning if sorting is introduced carelessly. A heap maintains a useful frontier order but is unnecessary when FIFO order already establishes shortest unweighted paths.
+
+Mark tradeoff reasoning partial when the chosen method works but depends on an unstated assumption. Ask one follow-up that changes that assumption: weighted edges, repeated values, streaming input, or an input-preservation rule. Observe whether the candidate can explain which part of the earlier reasoning changes.
+
+## Testing and debugging
+
+A useful test has an expected answer and a purpose. Look for ordinary examples, contract boundaries, and cases tied to plausible mistakes. A candidate should be able to say why an all-false predicate, a self-loop, a zero index, or an invalid deep BST descendant challenges their implementation.
+
+Check whether they inspect side effects as well as the return value. Did an input-preserving helper leave the original collection unchanged? Did a returned node come from the original structure when identity was required? Did output normalization preserve required duplicates?
+
+When a test fails, observe the debugging process. Tracing the state that violates an invariant is stronger evidence than changing several unrelated lines until the sample passes. The [edge-case practice](/tools/edge-case-practice) and [worksheet](/reference/interview-practice-worksheet) provide concrete prompts for a follow-up session.
+
+## Complexity and resource accounting
+
+Ask for input variables, dominant operations, and peak retained state. For graph traversal, a V-only claim can omit edge scans. For recursion, a logarithmic space claim can silently assume balance. For generated permutations, the required output can dominate both time and storage.
+
+Demonstrated analysis derives a bound from the implementation. It includes preprocessing, collection-operation costs, and a clear output-space convention. Partial analysis may name a familiar bound without connecting it to the loops or state. A correct bound reached through a mistaken explanation still deserves a follow-up.
+
+Use one changed input family to test the reasoning. A sorted array reveals early exit in bubble sort but does not remove selection sort's suffix scans. A skewed tree exposes worst-case recursion depth. The [sorting comparison](/tools/sorting-comparison) and [complexity practice](/tools/complexity-practice) make those distinctions inspectable.
+
+## Communication during the attempt
+
+Assess whether another person could follow the plan, the uncertainty, and the correction. Useful communication includes naming the retained state, explaining an invariant before coding, tracing a small example, and announcing a change in approach with a reason.
+
+Do not grade speaking style, accent, speed, or confidence as substitutes for technical evidence. A quiet candidate may provide clear written reasoning. A fluent explanation can still hide an incorrect contract. Agree on an accessible format for the practice session and review the reasoning expressed through it.
+
+A partner can ask “what does this map contain before the lookup?” or “which candidates did that boundary update discard?” Those questions probe a decision already present in the solution. Avoid rescuing the candidate by supplying the full algorithm and later treating the result as independently demonstrated.
+
+## Record a review that leads to another attempt
+
+Use the following table after the session. Quote a line, describe a test, or identify a trace step in the evidence column. Select one or two follow-ups rather than scheduling an unfocused rewrite of the whole curriculum.
+
+<table>
+<thead><tr><th scope="col">Dimension</th><th scope="col">Demonstrated, partial, or unobserved</th><th scope="col">Evidence</th><th scope="col">Next action</th></tr></thead>
+<tbody>
+<tr><td>Contract</td><td></td><td></td><td></td></tr>
+<tr><td>Correctness</td><td></td><td></td><td></td></tr>
+<tr><td>Approach and tradeoffs</td><td></td><td></td><td></td></tr>
+<tr><td>Testing and debugging</td><td></td><td></td><td></td></tr>
+<tr><td>Complexity</td><td></td><td></td><td></td></tr>
+<tr><td>Communication</td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+
+For example, a missed ancestor bound suggests rebuilding a BST validator and testing a descendant that violates the root. A queue implementation with repeated front shifts suggests writing a head-index queue and testing a wide frontier. Set a later retry date and define what improvement would look like.
+
+The [interview rehearsal](/tools/interview-rehearsal) provides a timer, notes, and a downloadable version of its self-review checklist. Use the same rubric on a later attempt to compare specific evidence. Avoid converting the checkboxes into an unsupported pass threshold; the value is the link between an observed gap and the next exercise.

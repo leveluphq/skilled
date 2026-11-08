@@ -1,0 +1,25 @@
+```csharp
+public class Solution {
+    public int[][] GetTargetIndexes(int[] array, int target) {
+        var results = new List<int[]>();
+        var arrayElementAtIndex = new Dictionary<int, int>();
+
+        for (int i = 0; i < array.Length; i++) {
+            int currentValue = array[i];
+            int matchedValue = target - currentValue;
+
+            if (arrayElementAtIndex.TryGetValue(matchedValue, out int matchedIndex) && matchedIndex >= 0) {
+                results.Add(new[] { i, matchedIndex });
+
+                arrayElementAtIndex[currentValue] = -1;
+                arrayElementAtIndex[matchedValue] = -1;
+            }
+
+            // Add values after we see them
+            arrayElementAtIndex[currentValue] = i;
+        }
+
+        return results.ToArray();
+    }
+}
+```

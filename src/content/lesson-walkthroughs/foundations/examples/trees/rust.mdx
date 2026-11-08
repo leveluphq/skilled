@@ -1,0 +1,9 @@
+```rust
+fn max_depth(values: &[Option<i32>]) -> i32 {
+    fn height(values: &[Option<i32>], index: usize) -> i32 {
+        if index >= values.len() || values[index].is_none() { return -1; }
+        1 + height(values, 2 * index + 1).max(height(values, 2 * index + 2))
+    }
+    height(values, 0)
+}
+```

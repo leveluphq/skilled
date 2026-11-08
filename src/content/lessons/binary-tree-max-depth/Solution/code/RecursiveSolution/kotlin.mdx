@@ -1,0 +1,14 @@
+```kotlin
+class Solution {
+    fun findMaxDepth(root: BinaryNode?): Int {
+        if (root == null) {
+            return -1
+        }
+
+        val leftDepth = findMaxDepth(root.left)
+        val rightDepth = findMaxDepth(root.right)
+
+        return maxOf(leftDepth, rightDepth) + 1
+    }
+}
+```

@@ -1,0 +1,57 @@
+```swift
+class Solution {
+    func walkMatrix(_ matrix: [[Int]]) -> [Int] {
+        if matrix.isEmpty { return [] }
+        var result: [Int] = []
+
+        // Initialize the upper and lower bounds indexes
+        let rowCount = matrix.count
+        let columnCount = matrix[0].count
+        var startRow = 0
+        var endRow = rowCount - 1
+        var startColumn = 0
+        var endColumn = columnCount - 1
+
+        // We will keep walking as long as rows or columns remain.
+        // That happens as long as the end is greater or equal to the start.
+        // (stride(from:through:by:) is empty when there is nothing left to walk)
+        while endRow >= startRow && endColumn >= startColumn {
+            // Walk across the top starting row for each column from beginning to end
+            // This is left-right across the top
+            for column in stride(from: startColumn, through: endColumn, by: 1) {
+                // Add the item to result in order
+                result.append(matrix[startRow][column])
+            }
+
+            // Increment our start row since we visited each value
+            startRow += 1
+
+            // Walk top-bottom for the end column
+            for row in stride(from: startRow, through: endRow, by: 1) {
+                result.append(matrix[row][endColumn])
+            }
+            endColumn -= 1
+
+            // Since we increment startRow, we need to make sure we are still in bounds
+            if endRow >= startRow {
+                //  Walk right-left on the bottom row
+                for column in stride(from: endColumn, through: startColumn, by: -1) {
+                    result.append(matrix[endRow][column])
+                }
+            }
+            endRow -= 1
+
+            // Since we decrement endColumn, we need to make sure we are still in bounds
+            if endColumn >= startColumn {
+                // walk bottom-top for the start column
+                for row in stride(from: endRow, through: startRow, by: -1) {
+                    result.append(matrix[row][startColumn])
+                }
+            }
+            startColumn += 1
+        }
+
+        return result
+    }
+}
+```

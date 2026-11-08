@@ -1,0 +1,29 @@
+```rust
+impl Solution {
+    pub fn has_loop(head: &Option<Box<ListNode>>) -> bool {
+        // Both runners start at the first node
+        let mut fast = head.as_deref();
+        let mut slow = head.as_deref();
+
+        // Walk through the nodes and only break if the fast runner reaches the tail
+        while let Some(fast_next) = fast.and_then(|node| node.next.as_deref()) {
+            // Move our slow pointer 1 node and fast pointer 2 nodes
+            slow = slow.and_then(|node| node.next.as_deref());
+            fast = fast_next.next.as_deref();
+
+            // If the fast meets the slow pointer at the same node, we know we have a cycle.
+            // We compare the nodes themselves (their addresses) and not their data,
+            // since different nodes can hold the same data.
+            if let (Some(slow_node), Some(fast_node)) = (slow, fast)
+                && std::ptr::eq(slow_node, fast_node)
+            {
+                return true;
+            }
+        }
+
+        // If our fast pointer above reaches the end of the list (None),
+        // we break the loop and know we have reached the tail
+        false
+    }
+}
+```

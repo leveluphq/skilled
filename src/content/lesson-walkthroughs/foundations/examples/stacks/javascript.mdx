@@ -1,0 +1,11 @@
+```javascript
+function lifoOrder(values) {
+    const stack = [];
+    const output = [];
+    for (const value of values)
+        stack.push(value);
+    while (stack.length > 0)
+        output.push(stack.pop());
+    return output;
+}
+```

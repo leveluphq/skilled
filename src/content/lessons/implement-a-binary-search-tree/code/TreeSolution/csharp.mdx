@@ -1,0 +1,75 @@
+```csharp
+public class BinaryNode {
+    public int data;
+    public BinaryNode left;
+    public BinaryNode right;
+
+    public BinaryNode(int data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+public class BinarySearchTree {
+    public BinaryNode root;
+
+    public BinarySearchTree() {
+        this.root = null;
+    }
+
+    public BinarySearchTree Insert(int data) {
+        var node = new BinaryNode(data);
+
+        // First insert becomes root
+        if (this.root == null) {
+            this.root = node;
+            return this;
+        }
+
+        BinaryNode currentNode = this.root;
+
+        while (true) {
+            if (data < currentNode.data) {
+                // Insert the node if you reach a leaf and return
+                if (currentNode.left == null) {
+                    currentNode.left = node;
+                    return this;
+                }
+
+                // Continue by traversing left
+                currentNode = currentNode.left;
+            } else {
+                // Insert the node if you reach a leaf and return
+                if (currentNode.right == null) {
+                    currentNode.right = node;
+                    return this;
+                }
+
+                // Continue by traversing right
+                currentNode = currentNode.right;
+            }
+        }
+    }
+
+    public BinaryNode Search(int data) {
+        if (this.root == null) {
+            return null;
+        }
+
+        BinaryNode currentNode = this.root;
+
+        while (currentNode != null) {
+            if (data < currentNode.data) {
+                currentNode = currentNode.left;
+            } else if (data > currentNode.data) {
+                currentNode = currentNode.right;
+            } else if (currentNode.data == data) {
+                return currentNode;
+            }
+        }
+
+        return null;
+    }
+}
+```

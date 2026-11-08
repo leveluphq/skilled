@@ -1,0 +1,21 @@
+```javascript
+remove(key) {
+  const index = this.hash(key);
+  const bucket = this.table[index];
+
+  // Find the key in the bucket, delete the key-value pair, and return its value
+  if (bucket) {
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i].key === key) {
+        const value = bucket[i].value;
+        bucket.splice(i, 1);
+
+        return value;
+      }
+    }
+  }
+
+  // Return undefined if the key didn't exist
+  return undefined;
+}
+```

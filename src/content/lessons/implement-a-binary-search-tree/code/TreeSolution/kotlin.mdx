@@ -1,0 +1,67 @@
+```kotlin
+class BinaryNode(var data: Int) {
+    var left: BinaryNode? = null
+    var right: BinaryNode? = null
+}
+
+class BinarySearchTree {
+    var root: BinaryNode? = null
+
+    fun insert(data: Int): BinarySearchTree {
+        val node = BinaryNode(data)
+        val rootNode = root
+
+        // First insert becomes root
+        if (rootNode == null) {
+            root = node
+            return this
+        }
+
+        var currentNode: BinaryNode = rootNode
+
+        while (true) {
+            if (data < currentNode.data) {
+                // Insert the node if you reach a leaf and return
+                val leftNode = currentNode.left
+                if (leftNode == null) {
+                    currentNode.left = node
+                    return this
+                }
+
+                // Continue by traversing left
+                currentNode = leftNode
+            } else {
+                // Insert the node if you reach a leaf and return
+                val rightNode = currentNode.right
+                if (rightNode == null) {
+                    currentNode.right = node
+                    return this
+                }
+
+                // Continue by traversing right
+                currentNode = rightNode
+            }
+        }
+    }
+
+    fun search(data: Int): BinaryNode? {
+        if (root == null) {
+            return null
+        }
+
+        var currentNode = root
+
+        while (currentNode != null) {
+            if (data < currentNode.data) {
+                currentNode = currentNode.left
+            } else if (data > currentNode.data) {
+                currentNode = currentNode.right
+            } else if (currentNode.data == data) {
+                return currentNode
+            }
+        }
+
+        return null
+    }
+}
+```

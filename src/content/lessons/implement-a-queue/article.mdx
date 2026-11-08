@@ -1,0 +1,76 @@
+import { Section } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Null from 'content/blocks/Null';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import QueueShell from './code/QueueShell';
+import Peek from './code/Peek';
+import Enqueue from './code/Enqueue';
+import Dequeue from './code/Dequeue';
+import QueueComplete from './code/QueueComplete';
+
+<Section>
+
+With a queue, we need fast operations at both ends because we will `enqueue` the last item at the back and `dequeue` first item from the front.
+This makes a linked list the perfect data structure to implement a queue because we can achieve operations at the ends in <BigO.constant /> time.
+
+> Unlike stacks, a queue built on a plain dynamic array is slow at one end because adding or removing an item at the front of the array requires <BigO.n /> time for re-indexing. (An array used as a circular buffer avoids this, but a linked list is simpler.)
+
+Our linked list will be built using `Node` objects that store `data` and use the `prev` attribute to reference the node behind it in the queue.
+
+We will implement a `peek`, `enqueue`, and `dequeue` methods which operate in <BigO.constant /> time because our queue maintains a <ConceptModal content={<PointersConcept />}>pointer</ConceptModal> that references the `first` and `last` item.
+
+<QueueShell />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>peek()</SubsectionHeader>
+
+Peek allows us to view the first item that is at the front of the queue.
+This is the oldest item that has been in the queue the longest.
+We just return the value in our `first` pointer.
+
+<Peek />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>enqueue(item)</SubsectionHeader>
+
+This method adds an item to the back of the queue.
+The item that was previously at the end sets its `prev` pointer to reference the new item on the end.
+Then we update the `last` pointer of the queue object to reference this new node since it is now at the back.
+
+If an item is the first to be added (the queue was previously empty), we set it to be both the `first` and `last` item.
+
+<Enqueue />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>dequeue()</SubsectionHeader>
+
+We remove the first item in the list.
+The queue's `first` pointer is now set to the item after the one that was removed by setting `this.first = removedItem.prev` which sets a new front item.
+
+If we only have one item remaining in the queue (`first` and `last` reference the same node), we also need to make sure that we set the `last` pointer to <Null /> to empty out the queue.
+In the case of an empty queue, the `first` pointer will be set to <Null /> automatically because `removedItem.prev` is <Null />.
+
+<Dequeue />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Complete Queue Implementation</SubsectionHeader>
+
+Putting it all together, we have the following implementation. If you want to see it in action, you can use it in this <a href="https://repl.it/@TreyHuffine/Queues-Implement-JavaScript" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+<QueueComplete />
+
+</Section>

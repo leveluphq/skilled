@@ -1,0 +1,18 @@
+```javascript
+// let can be reassigned
+let hello = 'world';
+hello = 'Skilled.dev';
+console.log(hello) // Skilled.dev
+
+function test() {
+  let funcScoped = 123;
+  console.log(funcScoped); // 123
+}
+console.log(funcScoped); // ReferenceError
+
+if (true) {
+  let blockScoped = ':)';
+  console.log(blockScoped); // :)
+}
+console.log(blockScoped) // ReferenceError
+```

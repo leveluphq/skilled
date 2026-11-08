@@ -1,0 +1,16 @@
+```javascript
+let empty;
+
+// Does NOT serialize to JSON
+JSON.stringify({ empty }); // "{}"
+
+// Triggers default parameters
+const sayHello = (name = 'world!') => {
+  console.log(`Hello, ${name}`);
+}
+sayHello(empty); // Hello, world!
+
+// Checking for undefined
+empty === undefined; // true
+typeof empty === 'undefined'; // true
+```

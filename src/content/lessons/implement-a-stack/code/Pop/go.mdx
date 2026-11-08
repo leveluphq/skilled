@@ -1,0 +1,12 @@
+```go
+func (s *Stack) Pop() *Node {
+	removedItem := s.last
+
+	// Update `last` as long as we have items left in the stack
+	if removedItem != nil {
+		s.last = removedItem.Prev
+	}
+
+	return removedItem
+}
+```

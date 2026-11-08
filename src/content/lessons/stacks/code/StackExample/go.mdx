@@ -1,0 +1,23 @@
+```go
+func run(id string) float64 {
+	return calculatePrice(NewItem(id))
+}
+
+func calculatePrice(item *Item) float64 {
+	return item.price + calculateTax(item.price)
+}
+
+func calculateTax(price float64) float64 {
+	return price * 0.1
+}
+
+run("id1")
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run("id1")                            |
+------------------------------------------
+   Call Stack
+```

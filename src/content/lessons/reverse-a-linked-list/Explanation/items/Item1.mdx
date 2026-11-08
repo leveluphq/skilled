@@ -1,0 +1,14 @@
+import Null from 'content/blocks/Null';
+import Image from 'content/blocks/Image';
+
+We can actually solve this question by walking through the linked list once.
+What we do is maintain a pointer to the previous node, current node, and next node in the list.
+
+We iterate through each item and set the current node's `next` reference to the previous node in the linked list.
+By pointing `next` to the prior node instead of the following node, this is how we achieve the reverse.
+Then we move to the following item and continue to repeat this swap for each node.
+
+We initialize the pointer of the previous node to <Null /> and the current node to the `head`.
+The pointer to the next node is a temporary variable that we initialize on each iteration of the loop and is used so we can maintain our ability to move forward through the list since we are changing the value for any given node's `next` pointer.
+
+<Image src="/images/reverse-linked-list.gif" alt="Reversing a linked list redirects node links while previous, current, and next references track the traversal." width={1200} height={417} />

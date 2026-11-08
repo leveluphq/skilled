@@ -1,0 +1,21 @@
+```rust
+// The test runner provides ListNode (which {:?} prints as 1 -> 2 -> 3):
+// #[derive(PartialEq, Eq, Clone)]
+// pub struct ListNode {
+//     pub data: i32,
+//     pub next: Option<Box<ListNode>>,
+// }
+//
+// impl ListNode {
+//     pub fn new(data: i32) -> Self { ... }
+// }
+
+impl Solution {
+    /// Returns whether the list has a loop. `head` is borrowed: in a list with a loop,
+    /// two `Box`es point at the same node, so no one can own it.
+    pub fn has_loop(head: &Option<Box<ListNode>>) -> bool {
+        // Your solution here
+        false
+    }
+}
+```

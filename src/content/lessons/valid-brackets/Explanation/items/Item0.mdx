@@ -1,0 +1,33 @@
+import { Container } from 'style/elements';
+
+Let's first get the intuition as to what valid and invalid brackets look like.
+The best data structure and logic to use may not be immediately obvious,
+but we will quickly gain an understanding as we think through it.
+
+- We know that we must open a bracket before we can close it.
+- We know that we can have multiple open brackets in a row.
+
+Let's assume we have the following opening brackets:
+
+<Container>
+
+```javascript
+[ ( { [
+```
+
+</Container>
+
+What would be the sequence of closing brackets that would make it valid?
+
+<Container>
+
+```javascript
+// The closing brackets that would make string valid
+] } ) ]
+
+// Putting them together
+// open       close
+[ ( { [       ] } ) ]
+```
+
+</Container>

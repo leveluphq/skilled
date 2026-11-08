@@ -1,0 +1,36 @@
+```java
+class Solution {
+    // We will use -1 to indicate an unfilled spot
+    private static final int UNCOUNTED_SPOT = -1;
+
+    public int countTotalMoves(int boardLength) {
+        if (boardLength < 0) return 0;
+
+        // Initialize our memoize array
+        int[] memo = new int[boardLength + 1];
+        Arrays.fill(memo, UNCOUNTED_SPOT);
+        int totalMoves = countTotalMovesMemoized(boardLength, memo);
+        return totalMoves;
+    }
+
+    // Recursive helper function that also tracks memoized values
+    private int countTotalMovesMemoized(int boardLength, int[] memo) {
+        // Base case 1: Invalid board length
+        if (boardLength < 0) {
+            return 0;
+        // Base case 2: Prompt says length 0 is still 1 step
+        } else if (boardLength == 0) {
+            return 1;
+        } else if (memo[boardLength] != UNCOUNTED_SPOT) {
+            return memo[boardLength];
+        } else {
+            // Recursive case (and memoize its result)
+            memo[boardLength] = countTotalMovesMemoized(boardLength - 1, memo) +
+                countTotalMovesMemoized(boardLength - 2, memo) +
+                countTotalMovesMemoized(boardLength - 3, memo);
+
+            return memo[boardLength];
+        }
+    }
+}
+```

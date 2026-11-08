@@ -1,0 +1,30 @@
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn find_hacker_email(emails: Vec<String>) -> String {
+        let mut email_count_table: HashMap<String, i32> = HashMap::new();
+        let mut max_count = 0;
+        let mut hacker_email = String::new();
+
+        // Create a hash table that tracks the count of each email
+        // This is an O(n) operation
+        for email in emails {
+            // If we haven't seen the email yet, add it to the table with a count of 0,
+            // then increment the count for the email
+            *email_count_table.entry(email).or_insert(0) += 1;
+        }
+
+        // Iterate the hash table to find the email that appears the most
+        // This is an O(n) operation
+        for (email, count) in email_count_table {
+            if count > max_count {
+                max_count = count;
+                hacker_email = email;
+            }
+        }
+
+        hacker_email
+    }
+}
+```

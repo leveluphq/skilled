@@ -1,0 +1,37 @@
+import PointerVisual from './code/PointerVisual';
+import PointerExample from './code/PointerExample';
+import PointerModify from './code/PointerModify';
+import PointerDereference from './code/PointerDereference';
+
+> I highly recommend the video because it makes it much easier to grasp what's going on.
+
+Let's take a deeper look by creating 3 objects and assigning them to variables: `parent`, `child1`, and `child2`.
+Our programming language will create these 3 objects in memory,
+and the variables we assign them to will reference/point to these memory addresses.
+
+<PointerExample />
+
+When we set the parent object's `parent.c1 = child1` attribute,
+we're not creating any new objects or variables.
+What happens is that `c1` _points_ to the same memory slot that `child1` points to.
+
+If we were to modify the object's data through one of our variables that is referencing it,
+the change would be recognized in both since they are referencing the item in memory.
+
+<PointerModify />
+
+If we delete a reference or reassign the variable to a new value,
+this will make _no changes_ to the underlying object in memory.
+It has just changed the location where the variable looks for an object in memory.
+
+<PointerDereference />
+
+If we remove _all_ the references to an object in memory, it will no longer be accessible or used by our program.
+Our programming language will see memory that was previously allocated is no longer needed and will clear the memory slots it was using.
+
+In higher-level programming languages, this entire process is handled for us.
+Our runtime will allocate the memory when variables are created and then free the memory (garbage collect it)
+when there is no longer a variable referencing that location.
+In some languages like C++ you need to manually clear the memory yourself to free it up.
+Swift and Rust sit in between: Swift frees an object as soon as the last reference to it goes away, and Rust frees it when the variable that owns it goes out of scope.
+This requires more effort from the developer, but it allows your code to be finely-tuned and optimized to your exact needs.

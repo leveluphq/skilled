@@ -1,0 +1,31 @@
+Given positive coin denominations and a nonnegative target amount, return the minimum number of coins needed to make that amount. Each denomination may be reused without limit. Return -1 when the target is unreachable, and return zero for target zero. With denominations `[1, 3, 4]` and target 6, two coins of value 3 beat the greedy choice 4 + 1 + 1.
+
+## Define one optimum per amount
+
+Let `best[a]` be the minimum coins needed for amount a. Initialize `best[0]` to zero and every positive amount to an unreachable sentinel. Process amounts in ascending order. For each denomination c no greater than a, consider one coin c plus the best answer for amount a - c.
+
+Take the smallest candidate over all denominations. Since every coin is positive, a - c is strictly smaller than a and its state has already been computed. Unlimited reuse is natural here: the earlier state may already contain more copies of c, and adding one more copy remains legal.
+
+## Trace a nongreedy solution
+
+For `[1, 3, 4]`, the table through amount six is `[0, 1, 2, 1, 1, 2, 2]`. At amount six, coin 1 gives one plus the five-amount answer, or three. Coin 3 gives one plus the three-amount answer, or two. Coin 4 gives one plus the two-amount answer, or three. The minimum is two.
+
+The algorithm tests possible final coins rather than committing to the largest one. A greedy rule works for some denomination systems but needs a separate proof. The counterexample above shows that denomination size alone does not establish that proof for an arbitrary supplied set.
+
+## Preserve unreachable states safely
+
+If no denomination can lead from a reachable smaller amount, the state remains unreachable. With coins `[4, 6]`, all odd amounts are unreachable. A numeric infinity sentinel naturally stays infinite when one is added. A maximum-integer sentinel needs a guard before addition, because adding one can overflow and appear smaller than a valid count.
+
+Some versions use target + 1 as a finite sentinel. Because every positive coin is at least one, no valid solution can require more than target coins. That bound makes target + 1 distinguishable under a target range that itself fits the type. Return -1 only after examining the final state's sentinel.
+
+## Prove optimality by the final coin
+
+Any nonempty solution for amount a ends with some allowed denomination c. Removing that coin leaves a solution for a - c, whose coin count cannot beat the already computed optimum. Therefore the best solution for a must appear among the recurrence's candidates.
+
+Conversely, every candidate from a reachable earlier state is a valid construction of a, so taking the minimum cannot invent an impossible solution. Starting at the correct zero state and proceeding upward proves every table entry by induction. The recurrence answers a minimum-count question; summing candidates would instead count combinations or sequences under a different contract.
+
+## Complexity and input-dependent limits
+
+For target A and d denominations, time is O(A × d) and table storage is O(A). This is pseudopolynomial in the target's numeric value: a huge amount needs a huge table even if its decimal representation is short. An empty denomination list can make only amount zero. Zero and negative denominations are outside the positive-coin contract.
+
+Test exact single-coin amounts, target zero, unreachable gaps, duplicate denomination values, denominations larger than the target, and the nongreedy `[1, 3, 4]` case. Compare small targets with a breadth-first search over reachable amounts, where each edge adds one coin. A follow-up can reconstruct the chosen coins by storing the last improving denomination alongside each table entry.

@@ -1,0 +1,7 @@
+```python
+def post_order_traversal(node):
+    if node != None:
+        post_order_traversal(node.left)
+        post_order_traversal(node.right)
+        visit_node(node)
+```

@@ -1,0 +1,12 @@
+```kotlin
+val previousNodeInPath = mutableMapOf<String, String?>(
+    "base" to null,
+    "sat0" to "base",
+    "sat1" to "sat0",
+    "sat3" to "sat0", // Ignore sat2's connection
+    "sat4" to "sat0", // Ignore sat2's and sat3's connection
+    "sat2" to "sat1",
+    "sat5" to "sat4",
+    "ship" to "sat5",
+)
+```

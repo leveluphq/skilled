@@ -1,0 +1,81 @@
+```javascript
+class BinaryNode {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+const tests = [
+  {
+    input: null,
+    expected: -1,
+    description: 'handles an empty tree',
+  },
+  {
+    input: new BinaryNode(42),
+    expected: 0,
+    description: 'handles only a root',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(20);
+      root.left.left = new BinaryNode(20);
+      root.left.left.right = new BinaryNode(17);
+
+      root.right = new BinaryNode(50);
+      root.right.left = new BinaryNode(70);
+
+      return root;
+    })(),
+    expected: 3,
+    description: 'normal case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(55);
+      root.right.right.right = new BinaryNode(65);
+      root.right.right.right.right = new BinaryNode(75);
+      root.right.right.right.right.right = new BinaryNode(85);
+
+      return root;
+    })(),
+    expected: 5,
+    description: 'unbalanced case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(20);
+      root.left.left = new BinaryNode(17);
+      root.left.left.left = new BinaryNode(12);
+      root.left.left.right = new BinaryNode(18);
+      root.left.right = new BinaryNode(25);
+      root.left.right.left = new BinaryNode(24);
+      root.left.right.right = new BinaryNode(27);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(70);
+      root.right.right.right = new BinaryNode(80);
+
+      return root;
+    })(),
+    expected: 3,
+    description: 'multiple nodes at the same level',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = findMaxDepth(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

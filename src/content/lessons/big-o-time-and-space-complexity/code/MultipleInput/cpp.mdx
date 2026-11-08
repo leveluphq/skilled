@@ -1,0 +1,31 @@
+```cpp
+// O(n + m) - we add sequential operations together
+void multipleInput(const vector<int>& input1, const vector<int>& input2) {
+    int n = input1.size();
+    int m = input2.size();
+
+    // O(n)
+    for (int i = 0; i < n; i++) {
+        /* do something */
+    }
+
+    // O(m)
+    for (int i = 0; i < m; i++) {
+        /* do something */
+    }
+}
+
+// O(nm) - we multiply nested input
+void multipleInput(const vector<int>& input1, const vector<int>& input2) {
+    int n = input1.size();
+    int m = input2.size();
+
+    // O(n)
+    for (int i = 0; i < n; i++) {
+        // O(m)
+        for (int j = 0; j < m; j++) {
+            /* do something */
+        }
+    }
+}
+```

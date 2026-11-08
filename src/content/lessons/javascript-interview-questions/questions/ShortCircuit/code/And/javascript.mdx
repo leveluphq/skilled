@@ -1,0 +1,17 @@
+```javascript
+true && true         returns true
+true && false        returns false
+false && true        returns false
+false && false       returns false
+
+// Short circuit with &&
+// Will only perform the expensive calculation if you are logged in
+isLoggedIn && doExpensiveCalculationIfLoggedIn();
+
+// Conditional rendering
+const canSeeComponent = true;
+
+<div>
+  {canSeeComponent && <RenderThisConditionally />}
+</div>
+```

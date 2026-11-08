@@ -1,0 +1,91 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+This lesson builds a stack by keeping a reference to the latest linked node. Each node points to the item that was previously on top. The API exposes `push`, `pop`, and `peek`, followed by an array-backed comparison. Both representations implement last-in, first-out order; their storage bookkeeping differs.
+
+## Link each new top to the old top
+
+Pushing creates a node whose previous link contains the old top reference, then replaces the stack's top with that node. Starting empty, pushing A creates a node with no predecessor. Pushing B then makes B point to A. The latest value is reachable immediately without scanning older items.
+
+Peeking inspects the current top while preserving it. Check the current API's returned shape when using the implementation: a node object and its data are different results. A wrapper can intentionally expose either, but its callers and tests must agree. Empty access also needs a clear rule rather than relying on an accidental property error.
+
+## Save the popped item before changing the reference
+
+To pop, save the current top, move the top reference to its predecessor, then return the saved item. The current solution returns null only when the stack was already empty. Popping the final item returns that item and leaves the top empty. Checking emptiness only after updating the reference would incorrectly discard that last result.
+
+Use a short operation trace: push A, push B, pop B, pop A, then pop from empty. Add another push afterward to check that the empty-to-nonempty transition still works. If you also track size, assert that it agrees with the reachable chain after every operation.
+
+## State the storage model behind the cost
+
+The linked version performs a constant number of reference operations per method and stores one node per retained item. An array-backed stack can use its final position instead. Dynamic array growth makes append amortized constant time under geometric resizing; a particular resize can still copy all retained values.
+
+Continue with [Stacks](/watch/stacks) for call-stack intuition and [Valid Brackets](/watch/valid-brackets) for a concrete use. Open the [current implementation](/course/implement-a-stack) and explain why each pop returns the formerly newest item even when it also empties the structure.
+
+## Trace the top link through a push and pop
+
+Push 4, then 9. The top node contains 9 and points to the earlier node containing 4. Pop returns 9 and replaces top with that earlier link. The next pop returns 4 and leaves an absent top. A later push must create a fresh valid stack without depending on the old nodes.
+
+The linked implementation needs one endpoint because every operation uses the top. This differs from a queue, which needs access to both insertion and removal ends for constant-time operations. The node field named `prev` points toward the older stack entry.
+
+## Separate a returned node from a returned payload
+
+Most versions return a node from peek and pop; Rust returns an optional integer. Neither policy permits a valid zero to mean empty. Tests normalize the observed payload while still checking the structural state. A consumer retaining a returned node may also retain the older chain if links remain attached.
+
+Push, peek, and pop use O(1) structural work and O(n) retained node storage for n entries. Check empty peek/pop, one push/pop, repeated payloads, alternating operations, and draining then refilling. Also verify that peek does not remove the entry. A linked stack exposes pointer updates clearly, although a native growable array is often simpler when a product only needs stack behavior.
+
+## Rust example and implementation choices
+
+`Option<Box<Node>>` gives the stack exclusive ownership of its chain. take moves out the old top during push/pop, avoiding shared ownership or RefCell. Pop transfers the older link back into last and returns a copied integer, so callers never own an exposed node. Option preserves zero as valid data. The owned chain still occupies linear memory despite constant-time endpoint updates.
+
+### Complete implementation
+
+```rust
+struct Node {
+    data: i32,
+    prev: Option<Box<Node>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, prev: None }
+    }
+}
+
+struct Stack {
+    last: Option<Box<Node>>,
+}
+
+impl Stack {
+    fn new() -> Self {
+        Stack { last: None }
+    }
+
+    fn peek(&self) -> Option<i32> {
+        self.last.as_ref().map(|last| last.data)
+    }
+
+    fn push(&mut self, item: i32) -> i32 {
+        let previous_last_item = self.last.take();
+
+        let last = self.last.insert(Box::new(Node::new(item)));
+        last.prev = previous_last_item;
+
+        last.data
+    }
+
+    fn pop(&mut self) -> Option<i32> {
+        // Return None if the stack is empty
+        let removed_item = self.last.take()?;
+
+        // The item behind it becomes `last` (None if no items are left)
+        self.last = removed_item.prev;
+
+        Some(removed_item.data)
+    }
+}
+```
+
+## Continue in Rust
+
+[Open Implement a Stack](/course/implement-a-stack) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Rust example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Rust interview preparation guide](/interview-prep/rust) connects these language choices with further practice and the cross-language operation reference.

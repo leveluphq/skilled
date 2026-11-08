@@ -1,0 +1,19 @@
+```java
+import java.util.*;
+
+class FibMemoStatsExample {
+static List<Integer> fibMemoStats(int n) {
+    Map<Integer, Integer> memo = new HashMap<>();
+    class Solver {
+        int fib(int value) {
+            if (memo.containsKey(value)) return memo.get(value);
+            int answer = value < 2 ? value : fib(value - 1) + fib(value - 2);
+            memo.put(value, answer);
+            return answer;
+        }
+    }
+    int answer = new Solver().fib(n);
+    return List.of(answer, memo.size());
+}
+}
+```

@@ -1,0 +1,17 @@
+#!/bin/sh
+# kotlinc, tuned for one short compile in a fresh container: the compiler runs
+# straight on the JVM (not through the kotlinc launcher script, which starts a
+# second JVM to read the Java version), with the serial GC and C1 only, and
+# loads its classes from the AOT cache the Dockerfile builds with these same
+# flags. A heap that starts at 256 MB and a code cache bigger than the 15 MB
+# a compile fills spare it about 25 young and 2 full collections (0.2-0.3 s).
+# The rest keep the output to the compiler's messages: no colours (which
+# would load a native library), no AOT adapter code (which logs warnings in
+# this JDK), and no warning about the compiler's use of Unsafe.
+# KOTLINC_AOT replaces the cache option, which is how the Dockerfile trains it.
+exec java -Xms256m -Xmx512m -XX:ReservedCodeCacheSize=128m \
+  -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -XX:-UsePerfData \
+  -XX:+UnlockDiagnosticVMOptions -XX:-AOTAdapterCaching -XX:-AOTStubCaching \
+  --sun-misc-unsafe-memory-access=allow -Dkotlin.colors.enabled=false \
+  ${KOTLINC_AOT:--XX:AOTCache=/opt/kotlinc/kotlinc.aot} \
+  -cp /opt/kotlinc/lib/kotlin-compiler.jar org.jetbrains.kotlin.cli.jvm.K2JVMCompiler "$@"

@@ -1,0 +1,27 @@
+import Image from 'content/blocks/Image';
+import ConceptModal from 'content/blocks/ConceptModal';
+import DFS from 'content/lessons/depth-first-search/article.mdx';
+import BFS from 'content/lessons/breadth-first-search/article.mdx';
+
+Now that we understand the data structure we're working with,
+let's figure out how we iterate through it.
+We want to find the shortest path starting at the `base` node and ending at the `ship` node.
+
+There are two ways to traverse through a graph: using <ConceptModal content={<DFS />}>depth-first search (DFS)</ConceptModal> or <ConceptModal content={<BFS />}>breadth-first search (BFS)</ConceptModal>.
+DFS goes deep first and follows a path fully before moving on to the next path.
+BFS checks its closest neighbors first and then moves outward.
+This means that **BFS will find the shortest path to a node**.
+
+If we look at the gif below, we can imagine 0 is the base and 9 is the ship.
+With BFS, we check nodes 1, 2, and 3 as its neighbors.
+Then we check those nodes' neighbors and we go from 3 to 9.
+This gets us to the ship in just two moves and shows it is the shortest path.
+
+<Image src="/images/bfsrocket.gif" maxWidth="500px" isVisuAlgo alt="Breadth-first search marks increasing distances from the source to candidate destinations." width={600} height={390} />
+
+The key concepts to remember with breadth-first search:
+
+1. It is implemented using a queue
+2. When you visit a node, you add its neighbors to the back of the queue
+3. You iterate `while` there are still nodes remaining in the queue
+4. Once you visit a node, you need to mark that you have seen it so you don't visit it again

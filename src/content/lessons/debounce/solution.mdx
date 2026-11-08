@@ -1,0 +1,48 @@
+import { Section } from 'style/elements/lesson';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import DebounceSolution from './code/DebounceSolution';
+import DebounceUsage from './code/DebounceUsage';
+import DebounceCommented from './code/DebounceCommented';
+
+<Section>
+
+Let's dive in and see what a debounce looks like:
+
+<DebounceSolution />
+
+A debounce is a higher-order function, which is a function that returns another function (named `executedFunction` here for clarity).
+This is done to form a closure around the `func` and `wait` function parameters and the `timeout` variable so that their values are preserved.
+The following is a definition of each variable:
+
+- `func`: The function that you want to execute after the debounce time
+- `wait`: The amount of time you want the debounce function to wait after the last received action before executing `func`. For our typeahead example, it would be the amount of time to wait after the last key press.
+- `timeout`: The value used to indicate a running debounce.
+
+We can use a debounce by doing:
+
+<DebounceUsage />
+
+Since debounce returns a function, the `executedFunction` from the first example and the `returnedFunction` function from the second example are the same function. Every time the window is resized, it will execute `executedFunction`/`returnedFunction`.
+
+Our `executedFunction` spreads over the parameters (`...args`) to allow for the debounce function to receive any number of arguments to pass to the callback.
+
+We declare a callback function named `later` which is the function that is executed after the end of the debounce timer.
+This is what will be called after the `setTimeout` expires.
+
+Next, we `clearTimeout` which had prevented the callback from being executed and thus restarts the debounce.
+Then we (re-)declare `timeout` which starts the debounce waiting period.
+If the full `wait` time elapses before another event, then we execute the `later` callback function.
+This in turn calls `func(...args)`.
+
+There is a more advanced version of this where we can pass an `immediate` flag to debounce.
+Currently we always wait until the end of the debounce to execute the callback,
+but with `immediate`, you can change it such that the function executes at the leading edge and won't allow you to execute again until it has delayed calling long enough to deplete the timer.
+
+Common scenarios for a debounce are resize, scroll, and keyup/keydown events.
+In addition, you should consider wrapping any interaction that triggers excessive calculations or API calls with a debounce.
+
+Here’s a commented version of the function as well.
+
+<DebounceCommented />
+
+</Section>

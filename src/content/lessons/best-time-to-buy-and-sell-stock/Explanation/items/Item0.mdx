@@ -1,0 +1,11 @@
+import NaiveExample from './code/NaiveExample';
+
+Your initial plan may be to find the difference between the smallest and largest value in the input array.
+Since the input prices are sequential days, it will fail anytime the largest price comes before the smallest price
+because it would indicate that we should buy in the future and sell in the past, which unfortunately we can't do until time travel is invented.
+
+A quick check to see this would be:
+
+<NaiveExample />
+
+So we know that we're going to have to iterate through the array and process the items based on the order that they appear.

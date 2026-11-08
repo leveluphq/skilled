@@ -1,0 +1,57 @@
+```csharp
+public class DoublyNode {
+    public int data;
+    public DoublyNode next;
+    public DoublyNode prev;
+
+    public DoublyNode(int data) {
+        this.data = data;
+        this.next = null;
+        this.prev = null;
+    }
+}
+
+public class DoublyLinkedList {
+    public int length;
+    public DoublyNode head;
+    public DoublyNode tail;
+
+    public DoublyLinkedList(int data) {
+        var initialNode = new DoublyNode(data);
+
+        this.length = 1;
+        this.head = initialNode;
+        this.tail = initialNode;
+    }
+
+    // O(1)
+    public DoublyNode Prepend(int data) {
+        var prependedNode = new DoublyNode(data);
+        DoublyNode previousHead = this.head;
+
+        this.head = prependedNode;
+        this.head.next = previousHead;
+
+        previousHead.prev = this.head;
+
+        this.length++;
+
+        return this.head;
+    }
+
+    // O(1)
+    public DoublyNode Append(int data) {
+        var appendedNode = new DoublyNode(data);
+        DoublyNode previousTail = this.tail;
+
+        this.tail = appendedNode;
+        this.tail.prev = previousTail;
+
+        previousTail.next = this.tail;
+
+        this.length++;
+
+        return appendedNode;
+    }
+}
+```

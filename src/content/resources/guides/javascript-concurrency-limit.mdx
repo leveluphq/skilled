@@ -1,0 +1,82 @@
+`Promise.all` collects results from promises; it does not limit how many operations begin. If `urls.map(fetch)` has already started a hundred requests, wrapping the returned promises cannot undo that start. A concurrency limiter needs functions that create work only when a worker claims a slot.
+
+The mapper below runs at most limit task factories at once, stores results in input order, and stops starting new work after observing a failure. It waits for already active tasks to settle before rejecting. This makes its lifetime clear: when its returned promise settles, no task that it started is still running. It cannot forcibly cancel an operation that ignores cancellation.
+
+## Choose ordered output and a failure policy
+
+Input order and completion order are separate. Task zero may finish last, but its result still belongs at output index zero. Give every claimed task a unique index and store its result in that slot. An array push on completion would instead return completion order and break callers that match results to their original inputs.
+
+There are several valid failure policies. A fail-fast return can reject immediately while background work continues. An all-settled design can keep starting tasks and report every outcome. This implementation stops new starts after the first observed failure, drains active work, and rejects with that failure. It does not collect partial successes into a nominally complete output array.
+
+```javascript
+async function mapWithLimit(tasks, limit, { signal } = {}) {
+  if (!Array.isArray(tasks) || Array.from(tasks).some((task) => typeof task !== 'function'))
+    throw new TypeError('tasks must be an array of factories');
+  if (!Number.isSafeInteger(limit) || limit < 1)
+    throw new RangeError('limit must be a positive safe integer');
+  const output = new Array(tasks.length);
+  let next = 0;
+  let failed = false;
+  let failure;
+  const fail = (error) => {
+    if (!failed) { failed = true; failure = error; }
+  };
+  async function worker() {
+    while (!failed) {
+      if (signal?.aborted) {
+        fail(signal.reason === undefined ? new Error('Operation aborted') : signal.reason);
+        break;
+      }
+      if (next === tasks.length) break;
+      const index = next++;
+      try {
+        output[index] = await tasks[index]({ index, signal });
+      } catch (error) {
+        fail(error);
+      }
+    }
+  }
+  if (signal?.aborted) throw signal.reason === undefined ? new Error('Operation aborted') : signal.reason;
+  await Promise.all(Array.from({ length: Math.min(limit, tasks.length) }, worker));
+  if (failed) throw failure;
+  return output;
+}
+```
+
+## Explain why the index claim is safe
+
+Each worker checks and increments `next` synchronously before awaiting its task. JavaScript does not interleave another worker in the middle of that synchronous section on the same event loop. Two workers therefore cannot claim the same index. After the await, a worker repeats the claim only when its previous task has settled.
+
+There are at most limit worker functions, and each has at most one active task. That establishes the concurrency bound. A task that internally starts several requests can still exceed a request-level limit; the mapper bounds factories, not hidden suboperations. Place the limiter at the layer corresponding to the resource you intend to control.
+
+For five tasks and limit two, workers initially claim indexes zero and one. If task one finishes first, its worker claims two while task zero remains active. The pool does not wait for an artificial batch barrier. A pair-by-pair chunked `Promise.all` approach would leave a slot idle until the slowest member of each chunk completed.
+
+## Drain active work without losing failures
+
+Each worker catches its own task failure and records it. That lets the worker promises themselves fulfill, so the outer `Promise.all` waits for every worker to stop. The final throw happens after that drain. A separate Boolean tracks failure because JavaScript permits rejection reasons such as undefined, null, false, or zero.
+
+The first observed error wins. A later failure from another active task is still consumed by its worker, preventing an unhandled rejection, but it does not replace the selected error. If the caller needs every failure, return outcome records under a different all-settled contract.
+
+A worker that fulfills just before another worker's rejection is observed may claim another task. The policy is to stop after an observed failure, not to predict a future rejection. Similarly, a synchronous throw from the first factory can prevent other initial workers from starting anything. Both follow the same shared failure state.
+
+## Use cancellation cooperatively
+
+An already aborted signal rejects before any task starts. Workers check again before each claim and pass the signal into their task. A cooperative task can abort its active request, settle, and let the pool finish draining. If an active task never settles, this mapper also never settles; JavaScript cannot forcibly terminate an arbitrary promise.
+
+This version does not create its own controller to abort peers on a task failure. That would be another useful policy, but it needs a signal-composition and failure-reason rule. Forwarding an external signal is enough to make the present contract explicit without implying that ordinary promise rejection cancels other operations.
+
+See [Promise.all's documented behavior](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) for the difference between aggregating fulfillment and controlling when work begins. The [retry guide](/guides/javascript-retry-backoff) explains why each repeated attempt also needs a fresh operation factory.
+
+## Test occupancy rather than elapsed speed
+
+Use manually controlled deferred promises. Record active task count when each factory starts and decrement it when the task settles. Assert that the peak never exceeds the limit. Resolve tasks in reverse or mixed order and confirm that the returned result indexes still match their inputs.
+
+Reject one task while another remains pending. Check that no further task starts after the failure is observed, and that the mapper stays pending until the other active task settles. Then verify the original rejection reason, including a falsy reason. Also test synchronous factories, synchronous throws, an empty task list, limit one, and a limit larger than the task count.
+
+Validate every factory before starting any task. The initial scan rejects a bad later entry before earlier factories have side effects. `Array.from` also turns sparse holes into explicit undefined entries for validation. Holes are not task factories, so they reject immediately. That boundary belongs in tests alongside numeric limit validation.
+
+## Cost and resource limits
+
+For n tasks and p workers, scheduling requires O(n) claims, O(n) result storage, and O(p) worker state. The tasks' own time and memory dominate their payload costs. A concurrency limit does not impose a requests-per-second quota, because fast tasks can complete many times within one second. A rate limiter needs a clock and a separate start-rate policy.
+
+For an interview follow-up, add progress notifications or an async-iterable input. Progress callbacks need an exception policy, and streaming inputs need backpressure and a bound on queued work. Preserve the same claims about active count, output order, and completion lifetime before adding those features.

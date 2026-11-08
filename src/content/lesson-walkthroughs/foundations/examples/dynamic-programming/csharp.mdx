@@ -1,0 +1,21 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class MinimumCoinsExample {
+public static int MinimumCoins(List<int> coins, int amount) {
+    int impossible = amount + 1;
+    var best = new int[amount + 1];
+    Array.Fill(best, impossible);
+    best[0] = 0;
+    for (int value = 1; value <= amount; value++) {
+        foreach (int coin in coins) {
+            if (coin <= value && best[value - coin] != impossible) {
+                best[value] = Math.Min(best[value], 1 + best[value - coin]);
+            }
+        }
+    }
+    return best[amount] == impossible ? -1 : best[amount];
+}
+}
+```

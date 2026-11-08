@@ -1,0 +1,10 @@
+```java
+public Node<T> push(T item) {
+    Node<T> previousLastItem = this.last;
+
+    this.last = new Node<>(item);
+    this.last.prev = previousLastItem;
+
+    return this.last;
+}
+```

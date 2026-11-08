@@ -1,0 +1,20 @@
+```rust
+fn dequeue(&mut self) -> Option<i32> {
+    let Some(removed_item) = self.first.take() else {
+        return None;
+    };
+
+    // `first` and `last` were the same node, so the queue is now empty
+    if self
+        .last
+        .as_ref()
+        .is_some_and(|last| Rc::ptr_eq(last, &removed_item))
+    {
+        self.last = None;
+    }
+
+    self.first = removed_item.borrow_mut().prev.take();
+
+    Some(removed_item.borrow().data)
+}
+```

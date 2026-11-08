@@ -1,0 +1,43 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "simple input"
+        input = [1, 2, 3, 4, 5]
+        self.actual_result = build_product_array(input)
+        self.expected_result = [120, 60, 40, 30, 24]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "with 0"
+        input = [0, 2, 3, 4, 5]
+        self.actual_result = build_product_array(input)
+        self.expected_result = [120, 0, 0, 0, 0]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "with negative int"
+        input = [-1, 2, 3, 4, 5]
+        self.actual_result = build_product_array(input)
+        self.expected_result = [120, -60, -40, -30, -24]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

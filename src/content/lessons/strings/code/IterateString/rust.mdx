@@ -1,0 +1,9 @@
+```rust
+let s = "hello, world!";
+
+// A Rust string is UTF-8, where a character can take 1 to 4 bytes,
+// so it can't be indexed by position (s[i]). We iterate its characters instead.
+for character in s.chars() {
+    println!("{character}");
+}
+```

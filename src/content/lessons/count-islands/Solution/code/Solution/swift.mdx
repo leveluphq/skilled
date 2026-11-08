@@ -1,0 +1,53 @@
+```swift
+class Solution {
+    private let land: Character = "#"
+    private let water: Character = "~"
+
+    func countIslands(_ grid: [[Character]]) -> Int {
+        if grid.isEmpty || grid[0].isEmpty {
+            return 0
+        }
+
+        // Arrays are values in Swift, so we mark a copy of the map
+        var map = grid
+        let numRows = map.count
+        let numCols = map[0].count
+        var islandCount = 0
+
+        for row in 0..<numRows {
+            for col in 0..<numCols {
+                // We found another uncounted island
+                if map[row][col] == land {
+                    islandCount = islandCount + 1
+                    // Mark all the pieces of land for the island as viewed
+                    markLandAsViewedDFS(&map, row, col)
+                }
+            }
+        }
+
+        return islandCount
+    }
+
+    private func markLandAsViewedDFS(_ map: inout [[Character]], _ row: Int, _ col: Int) {
+        let numRows = map.count
+        let numCols = map[0].count
+
+        // Stopping condition:
+        // 1. Outside of the map
+        // 2. Reached an adjacent water node
+        let isOutsideMap = row < 0 || col < 0 || row >= numRows || col >= numCols
+        if isOutsideMap || map[row][col] == water {
+            return
+        }
+
+        // Recursive case:
+        // 1. Mark the node as viewed by flipping it to water
+        // 2. Check the nodes adjacent to the current
+        map[row][col] = water
+        markLandAsViewedDFS(&map, row - 1, col)
+        markLandAsViewedDFS(&map, row + 1, col)
+        markLandAsViewedDFS(&map, row, col - 1)
+        markLandAsViewedDFS(&map, row, col + 1)
+    }
+}
+```

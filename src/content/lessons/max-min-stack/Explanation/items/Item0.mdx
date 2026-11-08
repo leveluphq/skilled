@@ -1,0 +1,8 @@
+import BigO from 'content/blocks/BigO';
+
+In a brute force approach, we could find the maximum or minimum integer by iterating through all the items.
+We could `pop` all the nodes and maintain the max or min until we reach the bottom of the stack and then return that value after we have visited all the items.
+Then we would need to `push` all the items back on to the stack to return it to its original state.
+
+The brute force solution would require <BigO.n /> time and space.
+We would iterate through all `n` items and would need a data structure store the items that we `pop` while we iterate through the stack.

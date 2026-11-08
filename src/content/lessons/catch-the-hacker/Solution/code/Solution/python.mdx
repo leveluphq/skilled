@@ -1,0 +1,26 @@
+```python
+def find_hacker_email(emails):
+    email_count_table = {}
+    max_count = 0
+    hacker_email = ''
+
+    # Create a hash table that tracks the count of each email
+    # This is an O(n) operation
+    for email in emails:
+        # If we haven't seen the email yet, add it to the table
+        if email not in email_count_table:
+            email_count_table[email] = 0
+
+        email_count_table[email] += 1
+
+    # Iterate the object to find the email that appears the most
+    # This is an O(n) operation
+    for email in email_count_table:
+        count = email_count_table[email]
+
+        if count > max_count:
+            max_count = count
+            hacker_email = email
+
+    return hacker_email
+```

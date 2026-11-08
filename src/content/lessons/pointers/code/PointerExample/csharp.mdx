@@ -1,0 +1,20 @@
+```csharp
+var parent = new Parent { age = 45, c1 = null, c2 = null };
+var child1 = new Child { age = 10, mood = "happy" };
+var child2 = new Child { age = 12, mood = "bored" };
+
+parent.c1 = child1;
+parent.c2 = child2;
+
+// Classes are reference types, so each variable holds a pointer to its object
+class Parent {
+    public int age;
+    public Child c1;
+    public Child c2;
+}
+
+class Child {
+    public int age;
+    public string mood;
+}
+```

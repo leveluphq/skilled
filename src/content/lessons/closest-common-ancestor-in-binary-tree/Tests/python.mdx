@@ -1,0 +1,82 @@
+```python
+import unittest
+test_results = []
+
+class BinaryNode:
+    def __init__(self, data):
+        self.data = data
+        self.left = None
+        self.right = None
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "basic case"
+
+        root = BinaryNode(42)
+        root.left = BinaryNode(20)
+        root.left.left = BinaryNode(13)
+        root.left.left.left = BinaryNode(8)
+        root.left.left.right = BinaryNode(17)
+        root.left.left.right.right = BinaryNode(40)
+        root.right = BinaryNode(50)
+        root.right.left = BinaryNode(70)
+
+        input = {"root": root, "child1": 8, "child2": 40}
+        self.actual_result = find_closest_ancestor(input["root"], input["child1"], input["child2"]).data
+        self.expected_result = 13
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "unbalanced and root case"
+
+        root = BinaryNode(42)
+        root.left = BinaryNode(7)
+        root.right = BinaryNode(50)
+        root.right.right = BinaryNode(55)
+        root.right.right.right = BinaryNode(65)
+        root.right.right.right.right = BinaryNode(75)
+        root.right.right.right.right.right = BinaryNode(85)
+
+        input = {"root": root, "child1": 7, "child2": 85}
+        self.actual_result = find_closest_ancestor(input["root"], input["child1"], input["child2"]).data
+        self.expected_result = 42
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "ancestor is also a child"
+
+        root = BinaryNode(42)
+        root.left = BinaryNode(20)
+        root.left.left = BinaryNode(17)
+        root.left.left.left = BinaryNode(12)
+        root.left.left.right = BinaryNode(18)
+        root.left.left.right.left = BinaryNode(100)
+        root.left.right = BinaryNode(25)
+        root.left.right.left = BinaryNode(24)
+        root.left.right.right = BinaryNode(27)
+        root.right = BinaryNode(50)
+        root.right.right = BinaryNode(70)
+        root.right.right.right = BinaryNode(80)
+
+        input = {"root": root, "child1": 17, "child2": 100}
+        self.actual_result = find_closest_ancestor(input["root"], input["child1"], input["child2"]).data
+        self.expected_result = 17
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

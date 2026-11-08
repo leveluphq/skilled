@@ -1,0 +1,31 @@
+```swift
+class Graph {
+    var adjacencyList: [String: [String]]
+    let undirected: Bool
+
+    init(undirected: Bool = true) {
+        self.adjacencyList = [:]
+        self.undirected = undirected
+    }
+
+    func addVertex(_ vertex: String) {
+        adjacencyList[vertex] = []
+    }
+
+    func addEdge(_ source: String, _ destination: String) {
+        adjacencyList[source]?.append(destination)
+
+        if undirected {
+            adjacencyList[destination]?.append(source)
+        }
+    }
+
+    func removeVertex(_ vertex: String) {
+        adjacencyList.removeValue(forKey: vertex)
+
+        for node in adjacencyList.keys {
+            adjacencyList[node]?.removeAll { $0 == vertex }
+        }
+    }
+}
+```

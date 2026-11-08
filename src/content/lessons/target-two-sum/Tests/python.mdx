@@ -1,0 +1,75 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "simple input"
+        input = { "array": [1, 2], "target": 3 }
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result = [[0, 1]]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "multiple results"
+        input = { "array": [3, 4, 1, 8, 9, 2, 10], "target": 11 }
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result = [[0, 3], [2, 6], [4, 5]]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "neg and pos matches"
+        input = { "array": [4, -1, 2, 80, 9, 10, 7], "target": 9 }
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result = [[1, 5], [2, 6]]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "sums with 0"
+        input = { "array": [4, 8, 0], "target": 8 }
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result = [[1, 2]]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "won\'t match with itself"
+        input = { "array": [4, -3, 80, 2, 9, 13, 5, 8], "target": 10}
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result = [[1, 5], [3, 7]]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "empty input"
+        input = { "array": [], "target": 1 }
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result = []
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "no result input"
+        input = { "array": [-5, 10], "target": 1 }
+        self.actual_result = sorted(sorted(pair) for pair in get_target_indexes(input["array"], input["target"]))
+        self.expected_result =  []
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

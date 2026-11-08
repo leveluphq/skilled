@@ -1,0 +1,15 @@
+import Image from 'content/blocks/Image';
+
+You may be wondering to yourself, "how does this work when we skip two houses to steal a package when we're saying it's the three-house example?"
+Keep in mind we’re tracking the profit at each house, which would account for this.
+So the profit at any given house may actually be the profit carried forward from the house one spot back.
+It was the solution to the subproblem to find the max profit at that point.
+
+Let’s see a four-house example where we skip two houses.
+When solving the second house's subproblem, we carry forward the `11` max profit from the first house since it is larger than the value of `10` for the second house.
+This means it was more profitable to steal the first house.
+At the third house, we add its value to the max profit from two houses back for its subproblem.
+Then when we solve the subproblem for the final house, when we add its value to the profit from two houses back, we're adding it to the max profit found from solving the subproblem at the second house.
+The solution to the subproblem at the second house was actually just using the max profit from the first house since it was larger than stealing its own item.
+
+<Image src="/images/package-memo-array-four-items.png" alt="For four house values, the memo array compares taking the current house with retaining the best previous total." width={1914} height={896} />

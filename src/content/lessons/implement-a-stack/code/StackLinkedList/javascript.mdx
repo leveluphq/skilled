@@ -1,0 +1,38 @@
+```javascript
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.prev = null;
+  }
+}
+
+class Stack {
+  constructor() {
+    this.last = null;
+  }
+
+  peek() {
+    return this.last;
+  }
+
+  push(item) {
+    const previousLastItem = this.last;
+
+    this.last = new Node(item);
+    this.last.prev = previousLastItem;
+
+    return this.last;
+  }
+
+  pop() {
+    const removedItem = this.last;
+
+    // Update `last` as long as we have items left in the stack
+    if (removedItem) {
+      this.last = removedItem.prev;
+    }
+
+    return removedItem;
+  }
+}
+```

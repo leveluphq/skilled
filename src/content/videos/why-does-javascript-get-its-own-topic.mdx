@@ -1,0 +1,19 @@
+The JavaScript part of the course studies language behavior alongside data structures and algorithms. Knowing how to choose a map or traverse a tree does not answer what a detached method uses as `this`, when a promise handler runs, or which calls a debounce retains. The recording introduces that additional practice area.
+
+## Connect behavior to an observable result
+
+A language question becomes easier to reason about when you specify the result. For a callback, identify when it executes and which values it can read then. For a method, identify the call form and receiver. For an asynchronous wrapper, write a timeline of calls and settlements before proposing an implementation.
+
+The [Fix this lesson](/watch/fix-this) has two independent failures: a method loses its intended receiver, and callbacks share a function-scoped loop variable. Both can produce incorrect output even when the underlying array traversal is straightforward. Explaining each failure separately is more useful than labeling the whole example a JavaScript quirk.
+
+## Choose the abstraction that matches the contract
+
+[Array Methods](/watch/array-methods) asks you to replace loops according to their purpose: transformation, selection, membership, or a quantified predicate. [Pub-Sub](/watch/pub-sub-and-event-driven-programming) stores callbacks by event name and then manages their lifetime. [Build a JavaScript Promise](/watch/build-a-javascript-promise) introduces settlement and queued reactions through a limited teaching implementation.
+
+These exercises also have algorithmic costs. Publishing to many listeners requires visiting them. Copying arrays allocates storage. A callback that captures a large object can retain it for as long as the callback remains reachable. Language semantics and resource analysis belong in the same explanation.
+
+## Practice with timelines and small counterexamples
+
+For timing utilities, compare a quiet period with a continuous burst. For closures, change the captured binding before invoking the callback. For reference identity, use two equal-looking objects and ask whether a map or removal operation treats them as the same value. Name the behavior before running the example, then compare the observed output.
+
+Use the [JavaScript preparation guide](/interview-prep/javascript) for a broader sequence and the [output quiz](/tools/javascript-output-quiz) for short reasoning practice. The goal is to explain a specific program's behavior and test the explanation, rather than guessing which detail an interviewer intends to call a trick.

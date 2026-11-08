@@ -1,0 +1,41 @@
+```java
+class HashTable<V> {
+    // A key-value pair stored in a bucket
+    private class Entry {
+        String key;
+        V value;
+
+        Entry(String key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private int size;
+    private List<Entry>[] table;
+
+    public HashTable(int size) {
+        this.size = size;
+        this.table = new List[size];
+    }
+
+    public V get(String key) {
+        // get a value by key
+        return null;
+    }
+
+    public void insert(String key, V value) {
+        // add/update a value at a key
+    }
+
+    public V remove(String key) {
+        // remove a value by key
+        return null;
+    }
+
+    public int hash(String key) {
+        // our custom hash function
+        return 0;
+    }
+}
+```

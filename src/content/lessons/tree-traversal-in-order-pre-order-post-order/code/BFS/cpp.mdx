@@ -1,0 +1,29 @@
+```cpp
+// Using the standard library's queue
+// push == enqueue
+// front + pop == dequeue
+void breadthFirstSearch(BinaryTreeNode* root) {
+    if (root == nullptr) {
+        return;
+    }
+
+    BinaryTreeNode* currentNode = root;
+    queue<BinaryTreeNode*> nodeQueue;
+    nodeQueue.push(currentNode);
+
+    while (!nodeQueue.empty()) {
+        currentNode = nodeQueue.front();
+        nodeQueue.pop();
+
+        visitNode(currentNode);
+
+        if (currentNode->left != nullptr) {
+            nodeQueue.push(currentNode->left);
+        }
+
+        if (currentNode->right != nullptr) {
+            nodeQueue.push(currentNode->right);
+        }
+    }
+}
+```

@@ -1,0 +1,18 @@
+```python
+def breadth_first_search(starting_node):
+    bfs_queue = [starting_node]
+    visited_nodes = set()
+
+    visited_nodes.add(starting_node)
+
+    while len(bfs_queue) > 0:
+        node = bfs_queue.pop()
+
+        # Use node value for the question
+        visit(node)
+
+        for child_node in node.edges:
+            if child_node not in visited_nodes:
+                bfs_queue.insert(0,child_node)
+                visited_nodes.add(child_node)
+```

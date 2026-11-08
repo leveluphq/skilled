@@ -1,0 +1,32 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+From each node, we recursively walk through the matrix by stepping down and right to look for a `2`.
+Since it's possible many paths cross through the same nodes,
+we memoize the result for a given node after both its down and right paths return.
+Then if we try to enter this node again, we can immediately return the memoized result instead of executing the recursive case.
+If we reach an exit, we propagate `true` up to the original function call and it becomes our solution.
+If no paths can reach and exit, all the nodes become `false`, and that is eventually returned to the original function call as the answer.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="r x c" /> time and <BigO.n letter="r x c" /> space.
+</p>
+
+We solve this recursively using a top-down approach and memoize the solution to each node's subproblem to improve our run-time.
+We visit each cell once, which means we perform `r x c` operations.
+We also incur `r x c` space for our memoization data structure, while the call stack only grows `r+c` calls deep since each path moves down or right.
+
+Without memoization, this would be <BigO.bin letter="r+c" /> because we would visit two additional nodes for every single node in the matrix,
+each time we encounter that node.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

@@ -1,0 +1,37 @@
+```cpp
+// We will use -1 to indicate an unfilled spot
+const int UNCOUNTED_SPOT = -1;
+
+class Solution {
+public:
+    int countTotalMoves(int boardLength) {
+        if (boardLength < 0) return 0;
+
+        // Initialize our memoize array
+        vector<int> memo(boardLength + 1, UNCOUNTED_SPOT);
+        int totalMoves = countTotalMovesMemoized(boardLength, memo);
+        return totalMoves;
+    }
+
+private:
+    // Recursive helper function that also tracks memoized values
+    int countTotalMovesMemoized(int boardLength, vector<int>& memo) {
+        // Base case 1: Invalid board length
+        if (boardLength < 0) {
+            return 0;
+        // Base case 2: Prompt says length 0 is still 1 step
+        } else if (boardLength == 0) {
+            return 1;
+        } else if (memo[boardLength] != UNCOUNTED_SPOT) {
+            return memo[boardLength];
+        } else {
+            // Recursive case (and memoize its result)
+            memo[boardLength] = countTotalMovesMemoized(boardLength - 1, memo) +
+                countTotalMovesMemoized(boardLength - 2, memo) +
+                countTotalMovesMemoized(boardLength - 3, memo);
+
+            return memo[boardLength];
+        }
+    }
+};
+```

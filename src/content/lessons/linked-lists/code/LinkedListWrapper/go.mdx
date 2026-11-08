@@ -1,0 +1,25 @@
+```go
+type Node struct {
+	Data     int
+	Next     *Node
+	Previous *Node
+}
+
+type LinkedList struct {
+	head *Node
+	tail *Node
+}
+
+func NewLinkedList(data int) *LinkedList {
+	node := &Node{Data: data}
+	return &LinkedList{head: node, tail: node}
+}
+
+func (l *LinkedList) Append(data int) {
+	// add item to back and update tail
+}
+
+func (l *LinkedList) Prepend(data int) {
+	// add item to front and update head
+}
+```

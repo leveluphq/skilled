@@ -1,0 +1,16 @@
+```swift
+// If immutable, do operations on an array and combine
+func duplicateString(_ str: String, _ numDuplicates: Int) -> String {
+    var solutionArray: [String] = []
+
+    for _ in 0..<numDuplicates {
+        // .append is O(1)
+        solutionArray.append(str)
+
+        // Faster than creating a new string each time, which would be O(n) for copying
+        // (a Swift var string can also append in place with +=)
+    }
+
+    return solutionArray.joined()
+}
+```

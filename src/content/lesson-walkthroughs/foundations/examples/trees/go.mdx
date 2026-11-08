@@ -1,0 +1,12 @@
+```go
+func MaxDepth(values []*int) int {
+    var height func(int) int
+    height = func(index int) int {
+        if index >= len(values) || values[index] == nil { return -1 }
+        left, right := height(2*index+1), height(2*index+2)
+        if left > right { return 1+left }
+        return 1+right
+    }
+    return height(0)
+}
+```

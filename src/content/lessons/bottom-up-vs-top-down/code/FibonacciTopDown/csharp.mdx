@@ -1,0 +1,11 @@
+```csharp
+long Fibonacci(int n) {
+    // Base case
+    if (n < 2) {
+        return n;
+    }
+
+    // Sum the two previous numbers to get the current value
+    return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+```

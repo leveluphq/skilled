@@ -1,0 +1,14 @@
+import { CodingLanguage } from 'utils/constants/lesson';
+import SampleInputOutput from './SampleInputOutput.mdx';
+import InlineCode from './inlineCode';
+
+You start day trading while working as a remote software engineer, and you realize that you may have found a strategy that will allow you to make tons of money by going against hedge funds.
+You realize this strategy will require you to <a target="_blank" href="https://www.investopedia.com/terms/h/hodl.asp" rel="noopener noreferrer">hodl</a> for multiple days to realize the largest profit, so you know that you will need <a target="_blank" href="https://seekingalpha.com/instablog/1046492-markus-heitkoetter/5551655-paper-hands-vs-diamond-hands-boomer-s-guide-to-wallstreetbets-lingo" rel="noopener noreferrer">diamond hands 💎🙌</a>.
+In order to backtest this strategy, you want to see the maximum you could have earned by buying at the lowest point and selling at the highest point.
+
+**Write a function <InlineCode /> that takes an array of stock prices ordered sequentially by day and returns the max profit you could earn by buying and selling at the optimal time.**
+**You never want to lose money, so if there is no max profit, return 0.**
+
+Since these are stock prices, we will assume the items in the array will all be positive integers.
+
+<SampleInputOutput />

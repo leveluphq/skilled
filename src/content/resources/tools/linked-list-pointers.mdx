@@ -1,0 +1,43 @@
+A linked-list operation changes references between nodes. Drawing the same values in a different order can hide the hardest part: which reference still reaches the unprocessed suffix? This visualizer keeps node IDs fixed and displays every `next` link alongside the temporary pointers used by the algorithm.
+
+Choose reversal, insertion at the head, deletion at the head, or cycle detection. Step forward and backward, including on an empty list or a single node. The cards are a textual diagram: node 2 always identifies the same node, even when another node starts pointing to it.
+
+## Reverse links without losing the rest of the list
+
+At the beginning of each reversal iteration, `previous` points to the already reversed prefix and `current` points to the first unprocessed node. The unprocessed suffix still follows its original links. Initially the prefix is empty, so `previous` is null.
+
+Save `current.next` before assigning a different value to that field. Then point the current node at `previous`, advance `previous` to the current node, and advance `current` using the saved reference. The saved link is the route back to the unprocessed suffix after its incoming edge changes.
+
+With nodes 0, 1, and 2, the first rewritten link is node 0 to null. Node 1 remains reachable through `saved`. After the last iteration, `current` is null and `previous` reaches node 2, then node 1, then node 0. Return `previous` as the new head. Returning the original head would expose only the old first node, now the tail.
+
+## Insert a node before moving the head
+
+Head insertion needs two changes. Allocate a new node whose next reference points to the old head, then move head to that new node. The order preserves the original chain. On an empty list the old head is null, so exactly the same assignments produce a one-node list.
+
+The tool assigns the new node the next unused ID. Its position in the displayed card collection is irrelevant to list order; the head and links define that order. This distinction matters when reasoning about memory layouts. Real nodes can live far apart in memory and still form a valid list.
+
+Inserting after an interior node uses the same preservation principle: connect the new node to the old successor before connecting its predecessor to it. Otherwise the old successor may become unreachable from the list.
+
+## Delete the head and account for other references
+
+Move head to the old head's successor. The demonstration then clears the removed node's next link so the detachment is visible. On an empty list there is no node to detach. On a singleton the new head becomes null.
+
+A removed node is not necessarily destroyed at the moment head changes. Another variable, iterator, or owner may still refer to it. Garbage-collected languages reclaim unreachable storage according to their runtime rules. Languages with explicit ownership require an ownership design that safely transfers or releases that storage. A link diagram describes reachability, not a complete memory-management policy.
+
+For deleting an interior node in a singly linked list, finding its predecessor generally requires a scan unless that reference is already available. The pointer reassignment itself can be constant work while the search still takes linear time.
+
+## Detect a cycle by comparing node identity
+
+Floyd's algorithm advances slow by one link and fast by two. Check that fast and its next reference are present before taking two hops. If both pointers meet after moving, a cycle exists. If fast reaches null, the chain ends.
+
+The tail selector can connect the final node to any existing node, including itself. A one-node self-loop is a useful boundary case. The algorithm compares node identities, not their stored values: two different nodes containing 7 do not form a meeting.
+
+This tool detects a cycle; it does not locate the cycle entry or remove its closing edge. Those are useful follow-ups with additional reasoning. After a meeting, resetting one pointer to head and advancing both one hop at a time can locate the entry. Explain that relationship before extending the implementation.
+
+## Count work and retained state
+
+Reversing an acyclic list visits each of its n nodes once and keeps a fixed number of references: O(n) time and O(1) auxiliary space. Head insertion and head deletion use constant pointer work. Cycle detection also takes linear time in the reachable noncyclic prefix plus cycle length, using constant auxiliary pointer storage.
+
+The visualizer retains snapshots so you can step backward. That teaching history uses additional memory and is not part of the algorithm's constant-space implementation. Reversing a cyclic list with the ordinary null-terminated loop is outside the reversal contract.
+
+Practice [Reverse a Linked List](/course/reverse-a-linked-list), then [Mirror Delete](/course/mirror-delete). Use the [linked-list learning path](/topics/linked-lists) to connect these operations with their representation and boundary conventions. Before coding, trace an empty list, a singleton, and three nodes while naming the reference that preserves the remaining work.

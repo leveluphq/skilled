@@ -1,0 +1,36 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+struct Parent {
+    age: u32,
+    c1: Option<Rc<RefCell<Child>>>,
+    c2: Option<Rc<RefCell<Child>>>,
+}
+
+#[derive(Debug)]
+struct Child {
+    age: u32,
+    mood: &'static str,
+}
+
+// Rc lets several variables point to the same child,
+// and RefCell lets us change the child through any of them
+let mut parent = Parent {
+    age: 45,
+    c1: None,
+    c2: None,
+};
+let child1 = Rc::new(RefCell::new(Child {
+    age: 10,
+    mood: "happy",
+}));
+let child2 = Rc::new(RefCell::new(Child {
+    age: 12,
+    mood: "bored",
+}));
+
+// Rc::clone copies the pointer, not the child
+parent.c1 = Some(Rc::clone(&child1));
+parent.c2 = Some(Rc::clone(&child2));
+```

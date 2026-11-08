@@ -1,0 +1,76 @@
+```rust
+use std::collections::HashMap;
+
+struct DynamicArray {
+    length: usize,
+    data: HashMap<usize, i32>,
+}
+
+impl DynamicArray {
+    fn new() -> Self {
+        DynamicArray {
+            length: 0,
+            data: HashMap::new(),
+        }
+    }
+
+    fn get(&self, index: usize) -> Option<i32> {
+        self.data.get(&index).copied()
+    }
+
+    fn push(&mut self, item: i32) -> usize {
+        self.data.insert(self.length, item);
+        self.length += 1;
+
+        self.length
+    }
+
+    fn pop(&mut self) -> Option<i32> {
+        if self.length == 0 {
+            return None;
+        }
+
+        let popped_item = self.data.remove(&(self.length - 1));
+        self.length -= 1;
+
+        popped_item
+    }
+
+    fn insert(&mut self, index: usize, item: i32) -> Option<&HashMap<usize, i32>> {
+        if index >= self.length {
+            return None;
+        }
+
+        self.length += 1;
+
+        for i in (index + 1..self.length).rev() {
+            self.data.insert(i, self.data[&(i - 1)]);
+        }
+
+        self.data.insert(index, item);
+
+        Some(&self.data)
+    }
+
+    fn remove(&mut self, index: usize) -> Option<i32> {
+        if self.length == 0 {
+            return None;
+        }
+
+        if index >= self.length {
+            return None;
+        }
+
+        let item_to_be_removed = self.data[&index];
+
+        for i in index..self.length - 1 {
+            self.data.insert(i, self.data[&(i + 1)]);
+        }
+
+        self.data.remove(&(self.length - 1));
+        self.length -= 1;
+
+        Some(item_to_be_removed)
+    }
+}
+```

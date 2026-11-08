@@ -1,0 +1,17 @@
+```javascript
+// const can NOT be reassigned
+const hello = 'world';
+hello = 'Skilled.dev'; // TypeError: Assignment to constant variable.
+
+function test() {
+  const funcScoped = 123;
+  console.log(funcScoped); // 123
+}
+console.log(funcScoped); // ReferenceError
+
+if (true) {
+  const blockScoped = ':)';
+  console.log(blockScoped); // :)
+}
+console.log(blockScoped) // ReferenceError
+```

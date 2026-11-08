@@ -1,0 +1,45 @@
+```javascript
+type EventCallback = (data: any) => void;
+
+interface Subscribers {
+  [eventName: string]: EventCallback[];
+}
+
+class PubSub {
+  subscribers: Subscribers;
+
+  constructor() {
+    this.subscribers = {};
+  }
+
+  subscribe(eventName: string, callback: EventCallback): void {
+    // Initialize a channel if it doesn't exist yet
+    if (!Array.isArray(this.subscribers[eventName])) {
+      this.subscribers[eventName] = [];
+    }
+
+    // Add a callback to the channel
+    this.subscribers[eventName].push(callback);
+  }
+
+  publish(eventName: string, data: any): void {
+    // Return if no callbacks have been subscribed to an event
+    if (!Array.isArray(this.subscribers[eventName])) {
+      return;
+    }
+
+    // Execute all the callbacks subscribed to an event
+    // Pass the callback the data from the event
+    this.subscribers[eventName].forEach((callback) => {
+      callback(data);
+    });
+  }
+
+  unsubscribe(eventName: string, callback: EventCallback): void {
+    if (Array.isArray(this.subscribers[eventName])) {
+      // Keeps all the callbacks that aren't equal to the one we unsubscribe
+      this.subscribers[eventName] = this.subscribers[eventName].filter(cb => cb !== callback);
+    }
+  }
+}
+```

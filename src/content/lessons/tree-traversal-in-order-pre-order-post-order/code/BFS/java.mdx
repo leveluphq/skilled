@@ -1,0 +1,28 @@
+```java
+// Using an ArrayDeque as a queue
+// offer == enqueue (add to the back)
+// poll == dequeue (remove from the front)
+static void breadthFirstSearch(BinaryTreeNode root) {
+    if (root == null) {
+        return;
+    }
+
+    BinaryTreeNode currentNode = root;
+    Queue<BinaryTreeNode> queue = new ArrayDeque<>();
+    queue.offer(currentNode);
+
+    while (!queue.isEmpty()) {
+        currentNode = queue.poll();
+
+        visitNode(currentNode);
+
+        if (currentNode.left != null) {
+            queue.offer(currentNode.left);
+        }
+
+        if (currentNode.right != null) {
+            queue.offer(currentNode.right);
+        }
+    }
+}
+```

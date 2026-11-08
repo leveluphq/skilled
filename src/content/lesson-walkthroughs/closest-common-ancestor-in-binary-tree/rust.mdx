@@ -1,0 +1,94 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Return the lowest common ancestor of two target values in an ordinary binary tree. The ancestor may be one of the targets itself. The course identifies targets by value and expects the returned object to be a node from the original tree. It is not a binary-search-tree problem, so value comparisons cannot choose a left or right search direction.
+
+## Let each subtree report a useful node
+
+A recursive call returns null if its subtree contains neither target. If the current node matches either target, return that node. Otherwise search both children. If both searches return a non-null node, the targets have been found in different child subtrees, and the current node is their common ancestor.
+
+If only one child returns a node, propagate it upward. That returned node may be a target still waiting to meet the other target, or it may already be the completed common ancestor. The parent does not need to distinguish those cases: without a result from its other side, it has no reason to replace that node.
+
+## Trace a split and an ancestor target
+
+Consider root 10 with children 4 and 15, where 4 has children 2 and 7. Searching for 2 and 7 makes both child calls at node 4 return a match. Node 4 returns itself. At root 10, only the left call has a result, so 4 propagates to the final answer.
+
+Searching for 4 and 7 returns 4 as soon as that node is reached. Under the promise that both targets exist, 4 is already a common ancestor because it contains itself and its descendant 7. The answer can therefore be a target node, even though its name includes the word ancestor.
+
+## State the presence and identity promises
+
+This compact recursion assumes the two requested values exist and identify the intended nodes unambiguously. If one is absent, it may return the other target rather than signal that a pair was never found. Supporting absent targets requires additional presence information, such as a count of discovered targets or a separate validation step.
+
+Return the original node, not a freshly allocated object containing the same data. The runner's `BinaryNodeRef` contract checks that relationship before reporting the data value. A value-only test can otherwise accept a fabricated node and miss an identity error. Duplicate target values require node references or another unique identifier to remove ambiguity.
+
+## Why the first split is the lowest ancestor
+
+When both child subtrees return matches, no descendant confined to one of those subtrees can contain both targets. The current node is therefore the lowest node that contains them together. Once that result propagates upward, higher ancestors cannot improve it, and the algorithm keeps the lower result.
+
+If a current node is itself a target, no proper descendant can be an ancestor of that node, so returning it is also lowest whenever the other target lies beneath it. These two cases cover a split across children and a target on the ancestor path. Null leaves supply the no-match base case.
+
+## Costs and revealing tests
+
+The traversal visits at most n nodes and takes O(n) time. Its recursive stack uses O(h) space for tree height h, with O(n) worst-case depth on a chain. No parent map or sorted ordering is required. Very deep trees can motivate an iterative parent-map solution at the cost of O(n) auxiliary storage.
+
+Test targets on opposite sides of the root, targets in one small subtree, a target that is the ancestor, reversed target argument order, and a skewed tree. Build an independent oracle by finding each target's root path and taking their final shared node. For a follow-up with many repeated queries on one fixed tree, discuss preprocessing rather than repeating a complete traversal for every pair.
+
+## Rust implementation
+
+Cloned `Rc` handles preserve pointer identity. The temporary `RefCell` borrow is released before recursion needs the child handles.
+
+The course supplies any declared node types and invokes the entry in `impl Solution`, or the design constructor shown here. Owned values move unless borrowed or cloned; the signature makes that choice explicit. An `Option` separates a missing node or result from a valid value. The runner enables integer overflow checks, so wider constraints require deliberate type and arithmetic changes.
+
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    pub fn find_closest_ancestor(
+        root: Option<Rc<RefCell<BinaryNode>>>,
+        first_child_value: i32,
+        second_child_value: i32,
+    ) -> Option<Rc<RefCell<BinaryNode>>> {
+        // Base case 1: We recursed to the end of a path
+        let node = root?;
+        let (data, left, right) = {
+            let node = node.borrow();
+            (node.data, node.left.clone(), node.right.clone())
+        };
+
+        // Base case 2: We found one of the target child nodes
+        if data == first_child_value || data == second_child_value {
+            return Some(node);
+        }
+
+        /*
+          Continue searching left and right.
+          This ensures we check all the nodes below this one recursively before we handle the current value.
+          This is a post-order traversal.
+        */
+        let left_search_result =
+            Self::find_closest_ancestor(left, first_child_value, second_child_value);
+        let right_search_result =
+            Self::find_closest_ancestor(right, first_child_value, second_child_value);
+
+        /*
+          We found the common ancestor node.
+          Return it, and it will propagate up and be the solution.
+        */
+        if left_search_result.is_some() && right_search_result.is_some() {
+            return Some(node);
+        }
+
+        /*
+          Return whichever node isn't None.
+          If they both are None, it doesn't matter which we return.
+        */
+        left_search_result.or(right_search_result)
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Closest Common Ancestor in Binary Tree](/course/closest-common-ancestor-in-binary-tree) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Rust conventions and practice problems, use the [Rust interview guide](/interview-prep/rust).

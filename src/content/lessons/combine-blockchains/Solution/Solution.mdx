@@ -1,0 +1,58 @@
+import BigO from 'content/blocks/BigO';
+import Null from 'content/blocks/Null';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+import RecursiveCode from './code/Recursive';
+import HeadNode from './inlineCode/HeadNode';
+import CurrentNode1 from './inlineCode/CurrentNode1';
+import CurrentNode2 from './inlineCode/CurrentNode2';
+
+We're going to solve our solution iteratively, so let's talk through what we do:
+
+1. Check the timestamp (`data`) of the input nodes and whichever is smaller, we assign it to <HeadNode />.
+2. Initialize the `combined` blockchain to the same head node since it is both the head and tail to start.
+3. Create pointers to walk through the input linked lists <CurrentNode1 /> and <CurrentNode2 />.
+4. Since we set the <HeadNode /> to the smallest node, we need to move the pointer for that input list forward one spot before we iterate since it has already been added.
+5. Iterate through the linked lists `while` neither <CurrentNode1 /> nor <CurrentNode2 /> is <Null />.
+6. Each iteration through the list, we look for the lower timestamp node, and if they are equal, it doesn't matter which we pick.
+7. Whichever node has the smaller timestamp, we append it to the `combined` list and then we move the pointer of that input list forward one node to its `next`.
+8. Before we complete the loop, we move the pointer for `combined` forward so it is at the new tail.
+9. Once our list is complete, whichever list is not <Null />, we point `combined` to the front node of the remaining items.
+10. Return <HeadNode /> which is the start of our combined sorted list.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.constant /> space.
+</p>
+
+Here `n` is the size of the combined blockchain.
+
+- Time: We iterate through the linked list once to combine all the nodes.
+- Space: We only create pointers, so we solve this in constant space.
+
+### Bonus
+For the recursive solution, we actually don't maintain any additional pointers.
+The order of our output list is determined by the order in which we call our function.
+We still compare the timestamp of the front nodes, and whichever is smaller, we set its `next` value to the result of the recursive call that comes after it.
+Whichever is used, we increment it forward so that the new front nodes are compared.
+We continue this process until one of the lists is <Null /> which is our stopping condition, and then all the remaining nodes are returned.
+There is a new function call created that works deeper into the list until we hit a stopping node, and then all function calls will unwind and return their value.
+This is why we get the additional <BigO.n /> space.
+
+<RecursiveCode />
+
+<VariationsSubtitle />
+
+- What if a list could be empty?
+- What if we wanted to sort an unordered list?
+- What if we had an arbitrary number of `k` sorted linked lists - how would you merge those?
+- We could also merge sorted arrays in a similar manner.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

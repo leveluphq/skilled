@@ -1,0 +1,56 @@
+```swift
+class Node {
+    var data: Int
+    var prev: Node?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+class Queue {
+    var first: Node?
+    var last: Node?
+
+    init() {
+        first = nil
+        last = nil
+    }
+
+    // Get the first item
+    func peek() -> Node? {
+        return first
+    }
+
+    // Add a new last item
+    func enqueue(_ item: Int) -> Node {
+        let newLastNode = Node(item)
+        let isEmptyList = first == nil && last == nil
+
+        if isEmptyList {
+            first = newLastNode
+            last = newLastNode
+        } else {
+            last?.prev = newLastNode
+            last = newLastNode
+        }
+
+        return newLastNode
+    }
+
+    // Remove the first item
+    func dequeue() -> Node? {
+        guard let removedItem = first else {
+            return nil
+        }
+
+        if first === last {
+            last = nil
+        }
+
+        first = removedItem.prev
+
+        return removedItem
+    }
+}
+```

@@ -1,0 +1,33 @@
+```javascript
+// We will using -1 to indicate unfilled spot
+const UNCOUNTED_SPOT = -1;
+
+function countTotalMoves(boardLength) {
+  if (boardLength < 0) return 0;
+
+  // Initialize our memoize array
+  const memo = new Array(boardLength + 1).fill(UNCOUNTED_SPOT);
+  const totalMoves = countTotalMovesMemoized(boardLength, memo);
+  return totalMoves;
+}
+
+// Recursive helper function that also tracks memoized values
+function countTotalMovesMemoized(boardLength, memo) {
+  // Base case 1: Invalid board length
+  if (boardLength < 0) {
+    return 0;
+  // Base case 2: Prompt says length 0 is still 1 step
+  } else if (boardLength === 0) {
+    return 1;
+  } else if (memo[boardLength] !== UNCOUNTED_SPOT) {
+    return memo[boardLength];
+  } else {
+    // Recursive case (and memoize its result)
+    memo[boardLength] = countTotalMovesMemoized(boardLength - 1, memo) +
+      countTotalMovesMemoized(boardLength - 2, memo) +
+      countTotalMovesMemoized(boardLength - 3, memo);
+
+    return  memo[boardLength];
+  }
+}
+```

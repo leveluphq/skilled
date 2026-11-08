@@ -1,0 +1,20 @@
+```kotlin
+fun hasValidShape(board: Array<IntArray>): Boolean {
+    // If we don't have any rows or columns, it must be false
+    if (board.isEmpty() || board[0].isEmpty()) {
+        return false
+    }
+
+    // # of rows and columns must be equal to be a square
+    val rowCount = board.size
+    val columnCount = board[0].size
+    val isSquare = rowCount == columnCount
+
+    if (!isSquare) {
+        return false
+    }
+
+    // The board is a square (we check its sub-squares next)
+    return true
+}
+```

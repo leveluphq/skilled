@@ -1,0 +1,35 @@
+```rust
+impl Solution {
+    pub fn search_matrix(matrix: Vec<Vec<i32>>, target: i32) -> Vec<i32> {
+        // Start from the bottom-left item
+        // (the row is signed, as it moves up past the top row when the target isn't there)
+        let mut row = matrix.len() as i32 - 1;
+        let mut col = 0;
+
+        // Continue to iterate until you reach an edge of the matrix
+        // and run out of moves in that direction
+        while row >= 0 && col < matrix[0].len() {
+            let current_item = matrix[row as usize][col];
+
+            // Return the target if we found it
+            if current_item == target {
+                return vec![row, col as i32];
+            }
+
+            // One of the following cases must be true
+            //
+            // 1. Move up if the current item is larger than target
+            if current_item > target {
+                row -= 1;
+            }
+            // 2. Move right if the current item is smaller than target
+            else if current_item < target {
+                col += 1;
+            }
+        }
+
+        // Value not found
+        vec![-1, -1]
+    }
+}
+```

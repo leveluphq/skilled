@@ -1,0 +1,57 @@
+```cpp
+class Solution {
+public:
+    vector<int> walkMatrix(vector<vector<int>>& matrix) {
+        if (matrix.empty()) return {};
+        vector<int> result;
+
+        // Initialize the upper and lower bounds indexes
+        int rowCount = matrix.size();
+        int columnCount = matrix[0].size();
+        int startRow = 0;
+        int endRow = rowCount - 1;
+        int startColumn = 0;
+        int endColumn = columnCount - 1;
+
+        // We will keep walking as long as rows or columns remain.
+        // That happens as long as the end is greater or equal to the start.
+        while (endRow >= startRow && endColumn >= startColumn) {
+            // Walk across the top starting row for each column from beginning to end
+            // This is left-right across the top
+            for (int column = startColumn; column <= endColumn; column++) {
+                // Add the item to result in order
+                result.push_back(matrix[startRow][column]);
+            }
+
+            // Increment our start row since we visited each value
+            startRow++;
+
+            // Walk top-bottom for the end column
+            for (int row = startRow; row <= endRow; row++) {
+                result.push_back(matrix[row][endColumn]);
+            }
+            endColumn--;
+
+            // Since we increment startRow, we need to make sure we are still in bounds
+            if (endRow >= startRow) {
+                // Walk right-left on the bottom row
+                for (int column = endColumn; column >= startColumn; column--) {
+                    result.push_back(matrix[endRow][column]);
+                }
+            }
+            endRow--;
+
+            // Since we decrement endColumn, we need to make sure we are still in bounds
+            if (endColumn >= startColumn) {
+                // Walk bottom-top for the start column
+                for (int row = endRow; row >= startRow; row--) {
+                    result.push_back(matrix[row][startColumn]);
+                }
+            }
+            startColumn++;
+        }
+
+        return result;
+    }
+};
+```

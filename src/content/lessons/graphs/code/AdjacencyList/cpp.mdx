@@ -1,0 +1,13 @@
+```cpp
+// unordered_map<int, vector<int>> adjacencyListGraph = {
+//     {currentNode, {list of connected nodes (the edges)}},
+// };
+
+unordered_map<int, vector<int>> adjacencyListGraph = {
+    {0, {1, 2}}, // node 0 has edges with 1 and 2
+    {1, {0, 3}}, // node 1 has edges with 0 and 3
+    {2, {0, 3}}, // node 2 has edges with 0 and 3
+    {3, {1, 2, 4}}, // node 3 has edges with 1, 2, and 4
+    {4, {3}}, // node 4 has an edge with 3
+};
+```

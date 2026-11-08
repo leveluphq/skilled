@@ -1,0 +1,24 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class DfsOrderExample {
+public static List<int> DfsOrder(List<List<int>> graph, int start) {
+    var output = new List<int>();
+    if (start < 0 || start >= graph.Count) return output;
+    var stack = new Stack<int>();
+    var visited = new HashSet<int>();
+    stack.Push(start);
+    while (stack.Count > 0) {
+        int node = stack.Pop();
+        if (!visited.Add(node)) continue;
+        output.Add(node);
+        for (int index = graph[node].Count - 1; index >= 0; index--) {
+            int neighbor = graph[node][index];
+            if (!visited.Contains(neighbor)) stack.Push(neighbor);
+        }
+    }
+    return output;
+}
+}
+```

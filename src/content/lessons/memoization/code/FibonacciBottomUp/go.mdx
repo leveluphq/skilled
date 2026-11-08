@@ -1,0 +1,12 @@
+```go
+func fibonacci(n int) int {
+	memo := map[int]int{0: 0, 1: 1}
+
+	for i := 2; i <= n; i++ {
+		currentFib := memo[i-1] + memo[i-2]
+		memo[i] = currentFib
+	}
+
+	return memo[n]
+}
+```

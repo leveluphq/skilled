@@ -1,0 +1,14 @@
+```swift
+func inOrder(_ values: [Int?]) -> [Int] {
+    var output: [Int] = []
+    func walk(_ index: Int) {
+        if index >= values.count { return }
+        guard let value = values[index] else { return }
+        walk(2 * index + 1)
+        output.append(value)
+        walk(2 * index + 2)
+    }
+    walk(0)
+    return output
+}
+```

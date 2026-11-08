@@ -1,0 +1,43 @@
+Choose an algorithm from the constraints in a problem statement, then check the explanation and compare alternatives. This quiz covers two pointers, sliding windows, prefix sums, binary-search boundaries, graph traversal, backtracking, dynamic programming, monotonic stacks, and heap-based selection.
+
+Each prompt states the output, relevant input properties, and a time or space target when those affect the choice. Several options can solve a related task. Select the one that meets the complete contract given here. After answering, use the follow-up to test whether you can explain the choice beyond recognizing its name.
+
+## Read constraints before matching a pattern
+
+A sorted pair-sum problem with constant auxiliary space suggests two pointers. Remove the sorted-input guarantee and that elimination proof disappears. A hash map can handle unsorted values in expected linear time, but uses additional space. Choosing between them requires reading both the input and memory requirements.
+
+A contiguous sum target does not automatically imply a sliding window. Negative values can reduce an oversized sum after a start has been discarded. Prefix sums with a frequency map can count matching signed subarrays because the method tracks earlier cumulative totals rather than assuming sums move in one direction.
+
+Likewise, “shortest path” needs an edge-cost qualification. BFS gives fewest-hop paths in an unweighted graph. If edges have different nonnegative weights, counting queue layers is insufficient to minimize total weight. The quiz's graph prompt deliberately says every edge counts as one hop.
+
+## Check what an answer must return
+
+Finding any matching value differs from finding its first position. When duplicate values exist, returning immediately on an equal binary-search midpoint can produce a valid match without producing the requested boundary. A lower-bound search keeps equality as a possible upper boundary and continues left.
+
+Generating every subset differs from returning a count or an existence answer. Materializing the outputs has exponential cost, and each saved path needs an independent array. A method that quickly identifies one large-sum subset cannot satisfy a request for every subset.
+
+For the K largest arrivals in a stream, the heap must expose the weakest retained candidate. A min-heap does that even though the desired output contains large values. The result can be the right multiset without being sorted. State whether output order is part of the contract before adding a final sort.
+
+## Use the explanations after an attempt
+
+Check answer reveals the selected approach and its reasoning. If your choice differs, read the explanation of why it violates a stated constraint. Compare every alternative for the remaining explanations. Some alternatives are correct algorithms with a slower bound or a larger memory requirement; others change the problem by sorting away original positions.
+
+Before advancing, answer the follow-up aloud or write a small trace. The question about signed subarrays asks why a frequency map needs counts instead of membership alone. The warmer-temperature question asks what equal temperatures resolve. These checks target state meaning and comparison rules that a pattern label can hide.
+
+The complete question bank and correct explanations are also available in the expandable reference. Use it for direct study or a keyboard-readable review after a round. The reference includes the same prompts and follow-ups, so there is no need to retain a separate answer key.
+
+## Treat the score as a practice record
+
+The result reports correct answers in the current round. Retry missed questions starts a new round containing those prompts, with fresh answers. Start all questions again returns to the full set. Neither action claims to estimate interview performance, and repeated exposure can make answer recognition easier than independent problem solving.
+
+Answers remain in this page and reset on reload. There is no account requirement, saved profile, or ranking among learners. If you want a lasting record, write down the prompt, your wrong assumption, and a counterexample that invalidates it. That note is more useful for later practice than preserving a percentage without its mistakes.
+
+A perfect round is a reason to attempt implementation. Choose one approach, close its guide, and build it from the contract. Compare against an independent slower baseline on small inputs. Then change one assumption, such as allowing negative values, requesting the first occurrence, or imposing a smaller space budget, and determine whether your proof survives.
+
+## Turn missed questions into focused exercises
+
+After a prefix-sum miss, trace `[0, 0]` with target zero. Distinguish the three nonempty intervals and identify which earlier zero boundary supplies each one. After a stack miss, trace `[70, 70, 71]` and explain why equality must remain unresolved for a strictly warmer answer.
+
+After a DP miss, compare taking the largest value in `[4, 5, 4]` with taking both outside values. Write the recurrence in terms of skipping or taking the current position, then test an all-negative input when an empty selection is allowed. After a backtracking miss, mutate one returned subset and check whether another result changes.
+
+Use the [pattern guides](/patterns) for the worked implementations and the [study-plan builder](/tools/study-plan-builder) to reserve time for a fresh attempt. For a complete problem discussion, finish by explaining your invariant, complexity, and smallest useful counterexample using the [solution walkthrough guide](/guides/explain-your-interview-solution).

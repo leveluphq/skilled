@@ -1,0 +1,9 @@
+```kotlin
+println("${parent.c1?.mood}, ${child1.mood}") // happy, happy
+
+child1.mood = "sad"
+println("${parent.c1?.mood}, ${child1.mood}") // sad, sad
+
+parent.c1?.mood = "stoked"
+println("${parent.c1?.mood}, ${child1.mood}") // stoked, stoked
+```

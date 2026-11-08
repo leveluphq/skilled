@@ -1,0 +1,22 @@
+```csharp
+public class Stack {
+    // List<T> is C#'s dynamic array
+    private readonly List<int> stack;
+
+    public Stack() {
+        this.stack = new List<int>();
+    }
+    public int Peek() {
+        return this.stack[^1];
+    }
+    public int Push(int item) {
+        this.stack.Add(item);
+        return item;
+    }
+    public int Pop() {
+        int item = this.stack[^1];
+        this.stack.RemoveAt(this.stack.Count - 1);
+        return item;
+    }
+}
+```

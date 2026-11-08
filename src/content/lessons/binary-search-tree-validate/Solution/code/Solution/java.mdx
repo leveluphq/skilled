@@ -1,0 +1,32 @@
+```java
+class Solution {
+    private boolean recursiveValidate(BinaryNode root, long lowerBound, long upperBound) {
+        // Base case 1 (reached leaf, valid)
+        if (root == null) {
+            return true;
+        }
+
+        // Base case 2 (invalid)
+        if (root.data <= lowerBound || root.data >= upperBound) {
+            return false;
+        }
+
+        // When we traverse left, the current node's value must be the newest upper bound
+        // This ensures it's always strictly decreasing from the current node
+        boolean isValidLeft = recursiveValidate(root.left, lowerBound, root.data);
+
+        // When we traverse right, the current node's value must be the newest lower bound
+        // This ensures it's always strictly increasing from the current node
+        boolean isValidRight = recursiveValidate(root.right, root.data, upperBound);
+
+        // Both must be true for this to return true
+        return isValidLeft && isValidRight;
+    }
+
+    public boolean isBST(BinaryNode root) {
+        // A long holds every int, so its smallest and largest values act as -Infinity and Infinity
+        boolean isValid = recursiveValidate(root, Long.MIN_VALUE, Long.MAX_VALUE);
+        return isValid;
+    }
+}
+```

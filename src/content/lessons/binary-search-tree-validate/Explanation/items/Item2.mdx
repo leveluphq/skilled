@@ -1,0 +1,23 @@
+import Null from 'content/blocks/Null';
+import LanguageMinMax from './code/LanguageMinMax'
+
+For any recursive function, we need a base case.
+If we reach a <Null />, we return true because there are no additional values to test.
+
+We perform a pre-order DFS traversal.
+We test a current node's value against the lower and upper bound before making the recursive calls.
+If the value is smaller than the lower bound or larger than the upper bound, we return false.
+This also acts as a base case because there is no need to continue the recursive calls if we find an invalid node,
+meaning we can immediately return.
+
+For our recursive case, we call the function and update the lower or upper bound accordingly.
+If either path returns false, we propagate the false upward.
+If both return true, we return also return true for that function call which means
+that this node and all of its descendants are ordered correctly.
+
+The final piece is the initial lower and upper bound.
+For these, they are just the smallest and largest number in your language.
+Since the root node has no parent, its relative lower and upper bound can be anything.
+When we traverse, we then update the bounds accordingly.
+
+<LanguageMinMax />

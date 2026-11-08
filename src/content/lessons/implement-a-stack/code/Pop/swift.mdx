@@ -1,0 +1,12 @@
+```swift
+func pop() -> Node? {
+    let removedItem = last
+
+    // Update `last` as long as we have items left in the stack
+    if let removedItem {
+        last = removedItem.prev
+    }
+
+    return removedItem
+}
+```

@@ -1,0 +1,86 @@
+```python
+import math
+
+def is_valid_sudoku_board(board):
+    # Exit early if the board does not have a valid shape
+    if not has_valid_shape(board):
+        return False
+
+    return has_valid_cells(board)
+
+# The function to check for a valid shape is all constant time and space O(1)
+def has_valid_shape(board):
+    # We have an empty board, it is automatically invalid
+    if len(board) == 0 or len(board[0]) == 0:
+        return False
+
+    row_count = len(board)
+    column_count = len(board[0])
+    is_square = row_count == column_count
+
+    # The board is not a square, so we know it is invalid
+    if not is_square:
+        return False
+
+    # For a board to be composed of sub-squares,
+    # the square root of `k` must be a whole number
+    has_subsquares = math.sqrt(row_count) % 1 == 0
+    if not has_subsquares:
+        return False
+
+    # All conditions are met, so it is a valid shape
+    return True
+
+# Helper function to init our array of objects.
+def array_of_objects(size):
+    return [{} for _ in range(size)]
+
+def nested_array_of_objects(size):
+    return [array_of_objects(size) for _ in range(size)]
+
+def has_valid_cells(board):
+    # Get the dimensions of the board and sub-squares
+    size_of_board = len(board)
+    size_of_subsquare = math.sqrt(size_of_board)
+
+    # Create our one-dimensional array of hash tables for rows and columns
+    rows = array_of_objects(size_of_board)
+    columns = array_of_objects(size_of_board)
+
+    # Create a two-dimensional array of hash tables
+    # where there is a separate hash table for each sub-square
+    subsquares = nested_array_of_objects(int(size_of_subsquare))
+
+    for row in range(size_of_board):
+        for col in range(size_of_board):
+            cell_value = board[row][col]
+
+            # If we have a value, we need to add it to our hash tables
+            # and return false if a value already existed.
+            if cell_value > 0:
+                # Since the sub-square tracker is a 2D jxj array,
+                # we need to normalize the coordinates by j
+                subsquare_row = math.floor(row / size_of_subsquare)
+                subsquare_col = math.floor(col / size_of_subsquare)
+
+                # Initialize and/or increment the cell value for the corresponding row, column, sub-square
+                # rows and columns are a 1-D array where we look for the cell_value in a hash table
+
+                rows[row][cell_value] = (rows[row].get(cell_value) or 0) + 1
+                columns[col][cell_value] = (columns[col].get(cell_value) or 0) + 1
+
+                # subsquares is a 2-D matrix
+                subsquares[subsquare_row][subsquare_col][cell_value] = (subsquares[subsquare_row][subsquare_col].get(cell_value) or 0) + 1
+
+                # If the value is greater than 1, we have already seen this in the hash table
+                has_row_duplicate = rows[row][cell_value] > 1
+                has_column_duplicate = columns[col][cell_value] > 1
+                has_subsquare_duplicate = subsquares[subsquare_row][subsquare_col][cell_value] > 1
+
+                # Return if there are any duplicates
+                if (has_row_duplicate or has_column_duplicate or has_subsquare_duplicate):
+                    return False
+
+    # We iterated to the end and didn't find any duplicates
+    return True
+```

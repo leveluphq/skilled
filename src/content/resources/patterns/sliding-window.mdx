@@ -1,0 +1,97 @@
+A sliding window represents a contiguous part of an input with two boundaries. Instead of rebuilding the answer for every possible subarray or substring, update the state when an item enters or leaves that interval.
+
+The technique works when the state can be maintained cheaply and the condition tells you how the boundaries may move. Fixed-size windows have a simple schedule. Variable-size windows require a stronger argument: expanding or shrinking must change validity in a predictable direction. A problem mentioning a substring is a reason to investigate the technique, not proof that it applies.
+
+## Define the window and its state
+
+Choose a boundary convention and keep it consistent. In the examples here, a window includes both left and right indices. Its length is `right - left + 1`. An empty window occurs when the left boundary has moved past the right boundary.
+
+The maintained state depends on the question. It might be a sum, a count of character frequencies, the number of distinct values, or a count of constraints currently violated. Write down what the state means before updating it.
+
+For a sum, adding the new right-hand value and subtracting the departing left-hand value is enough. For a maximum, removing the previous maximum is harder: one number does not tell you which remaining value is largest. That version may need another data structure, such as a monotonic deque. The same boundary shape can have different state requirements.
+
+## A fixed-size maximum sum
+
+Find the maximum sum among all subarrays of exactly k entries. Computing each sum independently takes O(k) work per candidate. Neighboring windows share k - 1 entries, so most of that work repeats.
+
+```javascript
+function maxFixedWindowSum(values, k) {
+  if (!Number.isInteger(k) || k <= 0 || k > values.length) return null;
+  let sum = 0;
+  for (let i = 0; i < k; i += 1) sum += values[i];
+  let best = sum;
+
+  for (let right = k; right < values.length; right += 1) {
+    sum += values[right] - values[right - k];
+    best = Math.max(best, sum);
+  }
+  return best;
+}
+```
+
+For `[4, -1, 2, 7, -3]` and k = 3, the first sum is 5. Moving right removes 4 and adds 7, producing 8. The final move removes -1 and adds -3, producing 6. The maximum is 8.
+
+Initialize `best` from an actual window instead of zero. If every valid sum is negative, zero is not an achievable answer. The function returns null for an invalid window size under the chosen contract; a different API could throw, but it should not silently pretend an invalid request has sum zero.
+
+This algorithm takes O(n) time and O(1) additional state for a fixed-size numeric model. Negative values cause no difficulty because the window's movement schedule does not depend on the sum.
+
+## A variable-size window without repeated characters
+
+Now find the longest substring containing no repeated code points. Expanding the right boundary can introduce a duplicate. Shrinking the left boundary can remove that duplicate. A map of counts records the contents of the current window.
+
+```javascript
+function longestUniqueLength(text) {
+  const characters = [...text];
+  const counts = new Map();
+  let left = 0;
+  let best = 0;
+
+  for (let right = 0; right < characters.length; right += 1) {
+    const added = characters[right];
+    counts.set(added, (counts.get(added) || 0) + 1);
+    while (counts.get(added) > 1) {
+      const removed = characters[left++];
+      counts.set(removed, counts.get(removed) - 1);
+      if (counts.get(removed) === 0) counts.delete(removed);
+    }
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}
+```
+
+Before each new right-hand character arrives, the existing window has no duplicates. Adding one character can only make that character's count exceed one. The while loop removes characters until its count returns to one, restoring validity. Only then does the algorithm update the best valid length.
+
+For `abba`, the best length is two. At the second `b`, removing only the first `a` would leave a duplicate. The loop must continue until the previous `b` leaves. A single `if` would not express that repair correctly.
+
+The conversion with spread chooses code points rather than UTF-16 code units. A user-perceived character can still contain several code points, so this is not a general grapheme-aware text editor algorithm. An interview problem restricted to lowercase ASCII can use a simpler character model. State which model the function supports.
+
+## Why the nested loop is still linear
+
+The right boundary advances at most once per character. The left boundary also advances at most once per character across the entire run. It does not return to zero for each right boundary. There are therefore O(n) boundary advances, even though the source contains a while loop inside a for loop.
+
+Under expected constant-time map operations, the counting work is O(n). The character array uses O(n) additional storage. The counts map can use up to O(n) entries for a general alphabet, or a bounded number when the problem fixes the alphabet. Avoid calling the entire implementation constant-space while it creates the character array.
+
+A last-seen-index implementation can jump the left boundary past a duplicate instead of decrementing counts one by one. Its invariant differs slightly. In that version, take the maximum of the current left boundary and the candidate new boundary so an old occurrence cannot move left backward.
+
+## Find the condition that permits shrinking
+
+A common variable-window question asks for the shortest subarray whose sum reaches a threshold. With strictly positive values, adding a value never decreases the sum and removing one never increases it. That monotonic relationship lets the algorithm shrink a valid window while searching for a shorter one.
+
+Negative values break that reasoning. Consider `[1, -1, 5]` with threshold 5. A naive “shrink while valid” scan can stop shrinking after removing 1 makes the remaining sum 4. It then misses the shorter valid window `[5]`, which appears after removing the negative value as well.
+
+The failure comes from the validity rule, not from an off-by-one error. A different method, such as prefix sums with suitable additional structure, may be needed. Check the input constraints before transferring a template from a positive-number problem.
+
+## Avoid common window mistakes
+
+Update the state when a value enters and when it leaves. If the state includes a distinct-value count, decrement it only when the final occurrence of a value leaves. Keeping zero-count keys can make a map's size disagree with the number of distinct values actually present.
+
+Record an answer only when the window meets the requested condition. A longest-valid-window problem usually repairs invalidity before updating the answer. A shortest-valid-window problem may update the answer repeatedly while shrinking a still-valid window. The order follows the objective.
+
+Be explicit about “exactly k,” “at most k,” and “at least k.” Those conditions support different counting arguments. A formula for counting windows with at most k distinct values is not automatically a formula for exactly k.
+
+## Practice the invariant before the template
+
+For each exercise, write the window's boundaries, the retained state, the validity condition, and the justification for moving each boundary. Trace an empty input, a one-item input, duplicate-heavy data, and the point where shrinking happens several times in one iteration.
+
+Start with the fixed-size sum, then the no-repeated-character problem. Compare the technique with [two pointers](/patterns/two-pointers), which can use opposite ends of sorted data without representing every intermediate value as a maintained window. Use the [arrays topic](/topics/arrays) for prerequisite traversal and matrix exercises.

@@ -1,0 +1,16 @@
+```java
+static void myAlgorithm(int[] inputArray) {
+    int n = inputArray.length;
+
+    // We touch all n items, requiring O(n) operations
+    for (int i = 0; i < n; i++) {
+        // We don't care what happens in here as long as it's not another loop
+    }
+}
+
+// myAlgorithm(new int[] { 1 })  -->  input size = n = 1  -->  O(1) operations
+// myAlgorithm(new int[] { 1, 2 })  -->  input size = n = 2  -->  O(2) operations
+// myAlgorithm(new int[] { 1, 2, 3 })  -->  input size = n = 3  -->  O(3) operations
+// ...
+// myAlgorithm(new int[] { 1, 2, 3, ..., n })  -->  input size = n  -->  O(n) operations
+```

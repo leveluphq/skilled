@@ -1,0 +1,7 @@
+We saw how we could sort the data to improve the time complexity over brute force and also simplify the logic of the algorithm.
+
+
+Sorting by start time allowed us to order the meetings based on when they occur throughout the day,
+so we ever only compared one meeting against a combined interval of meetings.
+Once sorted, all meetings must start after the current meeting,
+so if the current meeting doesn't overlap, then all meetings after it won't overlap as well, which means we initialize a new merged interval block.

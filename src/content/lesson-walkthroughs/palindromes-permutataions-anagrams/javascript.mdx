@@ -1,0 +1,58 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Palindromes, permutations, and anagrams describe different properties of text. A palindrome reads symmetrically, a permutation rearranges positions, and anagrams have equal character counts. The recording introduces these terms so a problem statement can become a precise test rather than a collection of similar-sounding words.
+
+## Compare mirrored positions for a palindrome
+
+Under an exact character comparison, `level` is a palindrome and `lever` is not. Compare the outer positions, then move inward. The first mismatch proves failure; passing every mirrored comparison proves symmetry. This approach uses constant extra storage when the representation permits efficient indexed access to the chosen text unit.
+
+Some exercises first ignore case, spaces, or punctuation. Those rules change the predicate and should be named. The current Python normalization also removes underscores to match the corresponding JavaScript lesson example. Avoid transferring that cleanup to a different exercise that requires exact identifiers.
+
+## Count arrangements and repeated values carefully
+
+A positional permutation assigns an original position to each output position. For distinct items, n positions have n factorial arrangements. Repeated characters can produce equal-looking strings through different positional choices. Decide whether the output must retain those duplicates or contain only distinct results before choosing a generation method.
+
+Anagrams use a simpler summary. Two strings are anagrams when they have the same multiplicity for every relevant character. Sorting can reveal the same signature, while a frequency table counts directly. Merely checking that both strings use the same set of letters loses repeated-character information: `aab` and `abb` use the same set but are not anagrams.
+
+## Combine the conditions without generating every arrangement
+
+A character multiset can form a palindrome exactly when at most one character has an odd count. Every mirrored pair consumes two equal characters; an odd-length result can leave one character at the center. This gives a counting test without constructing every permutation.
+
+Practice that distinction in [Group Permutations of Palindromes](/watch/group-permutations-of-palindromes). That exercise filters for palindrome-permutable strings and then groups anagrams; it is not ordinary anagram grouping. Use [Generate All Permutations](/watch/generate-all-permutations) when you want to study enumeration itself, including how output size limits the best possible running time.
+
+## Define exactly which text counts
+
+The worked function checks a palindrome after keeping ASCII letters and digits and folding uppercase ASCII letters to lowercase. `A man, a plan, a canal: Panama!` passes. `ab` fails. A string containing only punctuation becomes empty and passes under this contract.
+
+The ASCII rule is deliberate. An accented letter, an emoji, or a non-Latin script character is ignored here. This is not a general natural-language palindrome detector. Language helpers such as an unrestricted alphanumeric predicate may accept a wider alphabet, so substituting one without changing the tests would change the problem being solved.
+
+## Compare the normalized sequence from both ends
+
+After normalization, the left and right positions move inward. Every successful comparison establishes equality for one pair outside the remaining interval. A mismatch is enough to return false; reaching the middle proves all pairs matched. The comparison does not need a sorted copy, which would lose the order that defines a palindrome.
+
+For input length n, normalization and comparison take O(n) time. The filtered sequence uses O(n) space in these examples. A direct scan over the original text could reduce additional storage in some representations, but it would need equally careful character handling.
+
+Include mixed case, digits, punctuation between letters, an empty input, and accented characters in your checks. Predict the filtered sequence first. That catches disagreements about the alphabet before they look like pointer or indexing errors.
+
+## JavaScript example and implementation choices
+
+The regular expression retains only ASCII ranges before lowercasing. String indexing is safe for the resulting restricted alphabet because each retained character occupies one UTF-16 code unit. Applying the same indexing logic to unrestricted Unicode would need a new text contract. Empty normalized text starts with right equal to −1, so the comparison loop correctly performs no iterations.
+
+### Worked example
+
+```javascript
+function asciiPalindrome(text) {
+    const clean = text.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+    for (let left = 0, right = clean.length - 1; left < right; left++, right--) {
+        if (clean[left] !== clean[right])
+            return false;
+    }
+    return true;
+}
+```
+
+## Continue in JavaScript
+
+[Open Palindromes, Permutations, Anagrams](/course/palindromes-permutataions-anagrams) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

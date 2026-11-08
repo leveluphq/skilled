@@ -1,0 +1,17 @@
+```cpp
+void insert(const string& key, int value) {
+    int index = hash(key);
+    auto& bucket = table[index];
+
+    // If the key already exists in the bucket, replace its value
+    for (size_t i = 0; i < bucket.size(); i++) {
+        if (bucket[i].first == key) {
+            bucket[i].second = value;
+            return;
+        }
+    }
+
+    // Otherwise, add the new key-value pair
+    bucket.push_back({key, value});
+}
+```

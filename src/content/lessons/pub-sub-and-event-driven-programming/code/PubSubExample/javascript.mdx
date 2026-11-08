@@ -1,0 +1,14 @@
+```javascript
+const pubSub = new PubSub();
+
+// Example as browser event
+pubSub.subscribe('click', (eventData) => console.log('Received a click!'));
+
+pubSub.publish('click', { target: 'node' });
+
+// Example as error captured
+pubSub.subscribe('error', (errorData) => pageTeamWithError(errorData));
+pubSub.subscribe('error', (errorData) => storeErrorDetails(errorData));
+
+pubSub.publish('error', { message: 'It broke' });
+```

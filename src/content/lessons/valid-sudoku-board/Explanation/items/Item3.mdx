@@ -1,0 +1,24 @@
+import { MarginContainer } from 'content/blocks/styles';
+import SudokuBoard from '../../SudokuBoard';
+
+One unique case to consider is `k = 2` which looks like this:
+
+<MarginContainer>
+  <SudokuBoard board={[
+    [0,0],
+    [0,0],
+  ]} />
+</MarginContainer>
+
+Visually, it looks like it should be valid.
+However, it is actually invalid determined by our previous tests because `k = 2`,
+and the square root of 2 is not a whole number.
+
+You may be wondering why.
+Each sub-square must consist of values `1-k` to be valid, but in this case, a sub-square can only fit one number.
+This means it can contain 1 or 2 but no both.
+The math prevails over intuition.
+
+On the other hand, a `1 x 1` board would be valid, and the math works to prove it out.
+
+Okay, we can test for a valid shape. Now, how would we check for valid content in the board?

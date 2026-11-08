@@ -1,0 +1,16 @@
+```cpp
+Node* enqueue(int item) {
+    Node* newLastNode = new Node(item);
+    bool isEmptyList = !first && !last;
+
+    if (isEmptyList) {
+        first = newLastNode;
+        last = newLastNode;
+    } else {
+        last->prev = newLastNode;
+        last = newLastNode;
+    }
+
+    return newLastNode;
+}
+```

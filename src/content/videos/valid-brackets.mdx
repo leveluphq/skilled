@@ -1,0 +1,19 @@
+Bracket validation asks whether every closing bracket matches the latest unmatched opening bracket and whether no opening remains at the end. Parentheses, square brackets, and braces share that nesting rule. The current exercise ignores other characters, so text between brackets does not change the stack state.
+
+## Let the stack represent unmatched openings
+
+For each opening bracket, push its type. For a closing bracket, first require a nonempty stack, then compare with the top opening. A mismatch proves failure immediately. A successful match removes the top because that obligation is complete. After the entire input, an empty stack means every opening received a compatible closing.
+
+For `([{}])`, the closing brace matches the most recent opening brace, then the closing square bracket matches its opening, and finally the closing parenthesis completes the outer pair. For `([)]`, the first closing parenthesis encounters an opening square bracket and fails. Counting bracket types would miss that ordering error.
+
+## Treat underflow and leftovers as separate failures
+
+The input `)` fails because there is no opening to match. The input `(` fails later because an opening remains. An implementation that pops before checking emptiness may throw instead of returning false. The corrected Python code handles this underflow case explicitly, including a closing bracket after an otherwise completed prefix.
+
+An empty string is valid under the balanced-bracket predicate because it contains no unmatched brackets. For ordinary ignored text, validity follows the same rule. If a different application needs to understand comments, string literals, or escaped brackets, it needs a parser contract beyond this exercise's character scan.
+
+## Test nesting, not only pairs
+
+Use nested mixed types, adjacent groups, an early closing bracket, a wrong closing type, and leftover openings. A deep string of openings followed by matching closings exercises stack growth. A nearby single-character mutation should turn a valid string into a rejection without causing an exception.
+
+The scan takes linear time in the input length. Worst-case auxiliary space is linear when many openings accumulate before any closing appears. Read the [JavaScript walkthrough](/course/valid-brackets/javascript) for the full implementation and links to the other languages, or open the [normal exercise](/course/valid-brackets) to run your own tests. Explain the meaning of the stack after each input prefix.

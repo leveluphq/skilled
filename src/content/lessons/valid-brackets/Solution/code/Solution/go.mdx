@@ -1,0 +1,40 @@
+```go
+import (
+	"maps"
+	"slices"
+)
+
+func hasValidBrackets(s string) bool {
+	matchingBrackets := map[rune]rune{
+		'(': ')',
+		'[': ']',
+		'{': '}',
+	}
+	// Collect the keys into a slice of opening brackets
+	openingBrackets := slices.Collect(maps.Keys(matchingBrackets))
+	// Collect the values into a slice of closing brackets
+	closingBrackets := slices.Collect(maps.Values(matchingBrackets))
+	bracketStack := []rune{}
+
+	for _, character := range s {
+		if slices.Contains(openingBrackets, character) {
+			bracketStack = append(bracketStack, character)
+		} else if slices.Contains(closingBrackets, character) {
+			// A closing bracket with no open bracket left can't match
+			if len(bracketStack) == 0 {
+				return false
+			}
+
+			latestBracket := bracketStack[len(bracketStack)-1]
+			bracketStack = bracketStack[:len(bracketStack)-1]
+
+			if character != matchingBrackets[latestBracket] {
+				return false
+			}
+		}
+	}
+
+	// Check if we opened/closed all brackets which creates an empty stack.
+	return len(bracketStack) == 0
+}
+```

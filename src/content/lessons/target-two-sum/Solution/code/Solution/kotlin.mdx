@@ -1,0 +1,38 @@
+```kotlin
+class Solution {
+    fun getTargetIndexes(array: IntArray, target: Int): List<List<Int>> {
+        val results = mutableListOf<List<Int>>()
+        val arrayElementAtIndex = mutableMapOf<Int, Int>()
+
+        // Loop through our input array and
+        // create a hash table that stores the array value and
+        // its corresponding index.
+        for (i in array.indices) {
+            val element = array[i]
+            arrayElementAtIndex[element] = i
+        }
+
+        for (i in array.indices) {
+            // We find the element that would be the match current value
+            // and check if it is our hash table.
+            val currentValue = array[i]
+            val matchedValue = target - currentValue
+            val matchedIndex = arrayElementAtIndex[matchedValue]
+
+            // Check if our matched index is a valid array index
+            // ----
+            // NOTE: In Kotlin, matchedIndex will be null
+            // if it does not exist in the hash table.
+            if (matchedIndex != null && matchedIndex >= 0 && matchedIndex != i) {
+                results.add(listOf(i, matchedIndex))
+
+                // Make sure we don't use these values again
+                arrayElementAtIndex[currentValue] = -1
+                arrayElementAtIndex[matchedValue] = -1
+            }
+        }
+
+        return results
+    }
+}
+```

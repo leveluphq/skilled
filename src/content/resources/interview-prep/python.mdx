@@ -1,0 +1,97 @@
+Python lets you express many interview algorithms with little syntax, but a short expression can still hide repeated work, a copied list, or an unhandled input case. Prepare by choosing the right collection and explaining what your implementation does with it.
+
+This guide focuses on data structures and problem-solving habits you can reproduce in an interview. It uses standard Python syntax and library tools. Confirm the available Python version and any environment restrictions before relying on a package or an API that the editor may not provide.
+
+## Choose lists, dictionaries, and sets deliberately
+
+Use a list for indexed sequences and stack operations at the end. Use a dictionary when a key needs an associated value, such as a count, an earlier index, or a cached answer. Use a set when membership alone is enough.
+
+Dictionary and set keys must be hashable. A tuple can be a convenient coordinate key when its contents are hashable; a mutable list cannot serve as the same kind of key. A coordinate tuple also makes the row/column relationship explicit when tracking grid visits.
+
+For map-based Two Sum, check for a complement before storing the current index. That order prevents a single entry from matching itself.
+
+```python
+def two_sum(values, target):
+    previous = {}
+    for index, value in enumerate(values):
+        complement = target - value
+        if complement in previous:
+            return [previous[complement], index]
+        previous[value] = index
+    return None
+```
+
+For `[3, 3]` and target 6, the second entry finds the first. For `[3]`, the function returns None. Explain the expected hash-table operation model when stating O(n) time, and include the O(n) additional dictionary storage.
+
+## Use a queue with suitable end operations
+
+A breadth-first search repeatedly removes the next item from the front. Removing index zero from a list requires moving later entries in the usual list model. `collections.deque` supplies end operations suited to queue behavior; see the [Python collections documentation](https://docs.python.org/3/library/collections.html#collections.deque).
+
+```python
+from collections import deque
+
+def bfs_order(graph, start):
+    queue = deque([start])
+    seen = {start}
+    order = []
+    while queue:
+        node = queue.popleft()
+        order.append(node)
+        for neighbor in graph.get(node, []):
+            if neighbor not in seen:
+                seen.add(neighbor)
+                queue.append(neighbor)
+    return order
+```
+
+Marking on insertion prevents the same neighbor from being queued by several parents. The returned order includes only nodes reachable from start. A missing key is treated here as a node with no outgoing edges; validate that contract if your exercise requires all vertices to be listed explicitly.
+
+Practice queue state in the [graph visualizer](/tools/graph-traversal), then write the Python version without looking at the example. The representation changes across languages, while the discovery invariant remains the same.
+
+## Understand slicing and comprehensions
+
+A list slice creates another list containing references to the selected elements. It can be a readable choice, but the copying work and storage belong in the complexity analysis. Recursive code that passes progressively smaller slices has different costs from code that passes index boundaries into the same list.
+
+A list comprehension materializes its result. A generator expression produces values as it is consumed, which can reduce retained intermediate storage for a suitable caller. It does not remove the work required to produce those values.
+
+Beware nested initialization that repeats a reference. `[[0] * columns] * rows` repeats the same inner list. Editing one apparent row affects the others. A row-by-row comprehension creates separate row lists. This matters in visited grids and dynamic-programming tables, where shared rows can produce convincing but incorrect results.
+
+## Make heap entries comparable
+
+Python's `heapq` provides min-heap operations on a list. For priority-based work, make the ordering of entries explicit. A tuple such as `(priority, sequence_number, item)` can use a unique sequence number to break priority ties before comparison reaches an item that has no ordering relation.
+
+For ordinary integer priorities, one way to model a maximum priority is to negate it before pushing into a min-heap. State that representation and convert back when reading the result. If a newer environment provides a direct API you want to use, verify it rather than assuming the interview editor matches your machine.
+
+A heap is useful when repeatedly choosing the next minimum or retaining a bounded top-k set. Sorting the whole collection may be simpler when all results are needed once. Compare the number of operations and the required output before choosing the structure.
+
+## Separate a recursion limit from an algorithmic bound
+
+A recursive tree traversal can be correct and still fail on a sufficiently deep input because the runtime call stack is finite. Practice an explicit-stack traversal for chain-shaped trees and large graphs. Raising a recursion limit is an environment change, not proof that stack usage is safe.
+
+For recursive reasoning, define what each call returns and when it stops. Maximum depth can return zero for an empty tree and one plus the larger child depth for a node. A recursive graph search also needs visited state to avoid cycling.
+
+When using a cache, keep its lifetime aligned with the input. A cached function that closes over mutable data can return stale answers if that data changes while keys remain the same. For a small interview solution, a cache created inside the top-level call is often easier to reason about.
+
+## Account for Python's numeric and text behavior
+
+Python integers support values beyond a fixed machine-word range, but arithmetic on arbitrarily large integers is not constant work. Most introductory complexity explanations use a bounded numeric model. Say when that assumption matters for a problem producing very large counts.
+
+A Python string is immutable. Building larger strings repeatedly can have costs beyond a single character assignment model. Collecting fragments and joining them is a useful construction strategy, especially when you can determine the pieces independently.
+
+String indices operate on Unicode code points, which are not always complete user-perceived characters. If an exercise promises lowercase English letters, that constraint simplifies the character model. If it accepts general user text, clarify normalization and segmentation requirements before building frequency keys.
+
+## Test absence and valid zero results
+
+Use membership tests when a dictionary may store a valid zero, false, empty collection, or None. The expression `if memo.get(state)` treats several valid results as absent. That can break a cache's performance or change a function's behavior.
+
+Do not use a mutable default argument as a fresh per-call result list or visited set. A default object is reused across calls. Initialize per-invocation state inside the function or use a None default and create the object explicitly.
+
+When tests allow multiple valid answers, validate the returned answer's contract. For Two Sum, check distinct indices, bounds, and the target sum. Requiring the exact same pair as a reference can reject a different valid solution.
+
+## Use a sequence that exposes different kinds of state
+
+Start with [arrays](/topics/arrays), [hash tables](/topics/hashtables), and [strings](/topics/strings). Then practice bracket matching with a stack, list reversal with references, and tree depth with recursive return values. Move to graph traversal after you can explain the visited set and queue separately.
+
+For dynamic programming, implement the [non-adjacent-sum recurrence](/patterns/dynamic-programming) with a local cache, then with a table. Compare the output on empty inputs, negative values, and a small brute-force reference.
+
+Use the [30-day study plan](/study-plans/30-day-coding-interview-plan) to schedule those exercises and revisit them. During a timed rehearsal, explain the meaning of the collection you are using, the total work, and the memory retained by the actual Python operations you wrote.

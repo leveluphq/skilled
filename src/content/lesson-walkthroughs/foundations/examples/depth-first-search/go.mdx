@@ -1,0 +1,20 @@
+```go
+func DfsOrder(graph [][]int, start int) []int {
+    if start < 0 || start >= len(graph) { return []int{} }
+    stack, output := []int{start}, []int{}
+    visited := make([]bool, len(graph))
+    for len(stack) > 0 {
+        last := len(stack)-1
+        node := stack[last]
+        stack = stack[:last]
+        if visited[node] { continue }
+        visited[node] = true
+        output = append(output, node)
+        for index := len(graph[node])-1; index >= 0; index-- {
+            neighbor := graph[node][index]
+            if !visited[neighbor] { stack = append(stack, neighbor) }
+        }
+    }
+    return output
+}
+```

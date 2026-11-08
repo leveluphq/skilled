@@ -1,0 +1,59 @@
+Testing a coding exercise requires more than running one reference solution against familiar examples. The task statement, language adapters, comparison policy, starter program, and expected outputs can each contain a mistake. A useful review checks those boundaries separately and uses independent ways to establish the answer.
+
+This guide describes the approach used by Skilled.dev's repository checks and gives a process for extending an exercise across languages. It applies both to a small local learning project and to a hosted course. The [runner architecture](/guides/multilingual-code-runner) explains how a shared spec becomes an executable program.
+
+## Write a contract that can be tested
+
+State parameter types, supported ranges, output meaning, ordering, multiplicity, mutation, identity, and missing-result behavior. An apparently standard problem can have a different convention in a specific course. Tests should establish that actual convention rather than silently importing another site's version.
+
+For Two Sum, decide whether the output contains one pair or all pairs, values or indexes, and whether repeated input values are supported. For tree depth, decide whether the measure counts nodes or edges. For permutations, decide whether repeated letters produce repeated arrangements. For a shortest route, distinguish null for unreachable from an empty route if the contract does.
+
+Keep these decisions aligned in the prompt, examples, runner spec, reference solution, and public explanation. A mismatch between any two is a learner-facing bug even if the code compiles. Review the contract before translating the implementation into another language.
+
+## Establish answers with an independent method
+
+For small inputs, a simple exhaustive reference is often easier to trust than another optimized implementation. Enumerate distinct index pairs for Two Sum. Multiply all other positions directly for product except self. Enumerate subsets for a small scheduling or nonadjacent-choice problem.
+
+Use the independent method only within a domain where its cost is manageable. The purpose is to challenge the optimized implementation across many cases, not to run an exponential oracle on production-sized input. Keep the oracle structurally different so it is less likely to repeat the same boundary or state-update mistake.
+
+Agreement between two implementations is evidence, not a proof by itself. Pair it with a correctness argument and explicit edge cases. If both functions copied the same wrong recurrence or comparison convention, generated inputs can confirm their agreement while missing the shared error.
+
+## Define exactly what comparison may ignore
+
+Some outputs permit several correct orders. A list of index pairs may be compared after normalizing pair direction and result order. A collection of permutations may permit any sequence order while still requiring repeated entries. A grouped output may ignore group order and member order without discarding multiplicity.
+
+A set comparison is too weak when duplicates matter. Sorting an answer before comparison is also wrong if order is itself the task, as in a traversal with a specified neighbor policy. Use the smallest normalization that removes only irrelevant variation.
+
+Structured results require another distinction. A newly created binary node with equal data is not an original-tree node reference. A list can have the right values while containing a cycle or losing identity constraints. The comparison contract must match what the prompt asks the implementation to preserve.
+
+## Challenge language representation deliberately
+
+JavaScript numeric integers, Python integers, and fixed-width integer types have different overflow behavior. A complement subtraction can overflow before a map lookup in one language while remaining exact in another. Choose a supported numeric domain and use safe arithmetic or explicit rejection where needed.
+
+Text APIs also differ. UTF-8 byte indexes, UTF-16 code units, Unicode scalars, and grapheme clusters are different units. An ASCII delimiter task can scan a representation that reliably recognizes those ASCII symbols even when ordinary surrounding text is ignored. A general character-count task needs a more precise unit.
+
+Collection aliasing can affect input preservation. A slice or copied container may still share nested storage. Test caller-visible mutation after the function returns. Check missing-key behavior separately from valid zero, false, null, or undefined payloads when the language and contract allow them.
+
+## Verify starter and failure controls
+
+A starter should have the required declarations and compile, but fail the actual task. If it passes, inspect whether the tests reach its implementation and whether the comparator checks meaningful output. A driver that invokes the wrong function can make every language look consistent for the wrong reason.
+
+Exercise compiler errors, runtime exceptions, timeouts, early exit, and excessive output through the real execution path. Confirm that each becomes an understandable verdict instead of a permanent loading state or a false pass. A test process exiting does not establish that every required result event was produced.
+
+Resource tests need bounded expectations and appropriate execution limits. An infinite loop control should verify timeout handling without consuming an unbounded worker. Keep public execution backend configuration separate from local convenience modes, as documented in the repository's runner-service guide.
+
+## Test the published code, not a copied substitute
+
+When an article includes a complete implementation, extract and compile or execute that code as part of author verification. Testing a separate fixture that once resembled the article allows later edits to break the published example unnoticed.
+
+Include the example invocations too. A correct helper can be paired with an incorrect claimed output or an example that no longer matches its signature. Language-specific compilation settings should reflect the page's assumptions, such as strict TypeScript indexing or fixed-width overflow checks where available.
+
+The repository's resource and walkthrough checkers use temporary build directories and explicit compiler choices. Requested missing compilers fail visibly. Production publishing does not need every author compiler installed; it uses the checked-in public content inventory and integrity checks. Keep the author-verification result distinct from a deployment capability claim.
+
+## Build a maintainable review record
+
+For an exercise change, record the contract decision, reference method, generated-case domain, explicit boundary cases, requested languages, and actual results. Avoid claiming all-language conformance if only a subset ran. A local build or a successful static crawl does not replace executable contract checks.
+
+Review the public page as well: code fences render, examples match the task, complexity describes the actual implementation, and practice links point to published exercises. If a deployment restricts part of a lesson, the public explanation must still describe what a first-time visitor can actually read or run.
+
+Use the [practice worksheet](/reference/interview-practice-worksheet) to make these checks concrete for one problem. A useful contribution includes a failing case, an explanation of the violated contract, a targeted correction, and verification across the affected adapters. That record helps the next maintainer understand why the case belongs in the suite.

@@ -1,0 +1,27 @@
+```go
+type Graph struct {
+	adjacencyList map[string][]string
+	undirected    bool
+}
+
+// Go has no default arguments, so pass true for an undirected graph
+func NewGraph(undirected bool) *Graph {
+	return &Graph{
+		adjacencyList: map[string][]string{},
+		undirected:    undirected,
+	}
+}
+
+func (g *Graph) AddVertex(vertex string) {
+	// Add a node to the adjacency list
+}
+
+func (g *Graph) AddEdge(source, destination string) {
+	// Connect two nodes by an edge
+	// If undirected, create a reciprocal edge
+}
+
+func (g *Graph) RemoveVertex(vertex string) {
+	// Remove a vertex and clean up the edges pointing to it
+}
+```

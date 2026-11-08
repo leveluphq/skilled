@@ -1,0 +1,7 @@
+```typescript
+function frequencyCounts(values: readonly number[]): number[] {
+  const counts = new Map<number, number>();
+  for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
+  return values.map(value => counts.get(value)!);
+}
+```

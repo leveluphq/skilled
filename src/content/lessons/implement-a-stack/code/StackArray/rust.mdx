@@ -1,0 +1,24 @@
+```rust
+struct Stack {
+    stack: Vec<i32>,
+}
+
+impl Stack {
+    fn new() -> Self {
+        Stack { stack: Vec::new() }
+    }
+
+    fn peek(&self) -> Option<i32> {
+        self.stack.last().copied()
+    }
+
+    fn push(&mut self, item: i32) -> i32 {
+        self.stack.push(item);
+        item
+    }
+
+    fn pop(&mut self) -> Option<i32> {
+        self.stack.pop()
+    }
+}
+```

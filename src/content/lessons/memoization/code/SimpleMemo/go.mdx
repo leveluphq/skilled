@@ -1,0 +1,23 @@
+```go
+var memo = map[int]int{}
+
+func countByTwo(n int) int {
+	// Check if we previously memoized the result and return early in O(1) time
+	if result, ok := memo[n]; ok {
+		return result
+	}
+
+	count := 0
+
+	for i := 0; i <= n; i++ {
+		count = count + 2
+
+		// Store the result for this value
+		// It will return instantly if countByTwo is later called with one of these values
+		memo[i] = count
+	}
+
+	// We calculated and stored this value (and all previous values) in the for loop
+	return memo[n]
+}
+```

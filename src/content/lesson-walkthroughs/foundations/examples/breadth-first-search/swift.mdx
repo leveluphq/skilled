@@ -1,0 +1,18 @@
+```swift
+func bfsOrder(_ graph: [[Int]], _ start: Int) -> [Int] {
+    if !graph.indices.contains(start) { return [] }
+    var queue = [start]
+    var visited: Set<Int> = [start]
+    var output: [Int] = []
+    var head = 0
+    while head < queue.count {
+        let node = queue[head]
+        head += 1
+        output.append(node)
+        for neighbor in graph[node] {
+            if visited.insert(neighbor).inserted { queue.append(neighbor) }
+        }
+    }
+    return output
+}
+```

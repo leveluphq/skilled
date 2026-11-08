@@ -1,0 +1,57 @@
+```java
+class DoublyNode<T> {
+    T data;
+    DoublyNode<T> next;
+    DoublyNode<T> prev;
+
+    DoublyNode(T data) {
+        this.data = data;
+        this.next = null;
+        this.prev = null;
+    }
+}
+
+class DoublyLinkedList<T> {
+    private int length;
+    private DoublyNode<T> head;
+    private DoublyNode<T> tail;
+
+    public DoublyLinkedList(T data) {
+        DoublyNode<T> initialNode = new DoublyNode<>(data);
+
+        this.length = 1;
+        this.head = initialNode;
+        this.tail = initialNode;
+    }
+
+    // O(1)
+    public DoublyNode<T> prepend(T data) {
+        DoublyNode<T> prependedNode = new DoublyNode<>(data);
+        DoublyNode<T> previousHead = this.head;
+
+        this.head = prependedNode;
+        this.head.next = previousHead;
+
+        previousHead.prev = this.head;
+
+        this.length++;
+
+        return this.head;
+    }
+
+    // O(1)
+    public DoublyNode<T> append(T data) {
+        DoublyNode<T> appendedNode = new DoublyNode<>(data);
+        DoublyNode<T> previousTail = this.tail;
+
+        this.tail = appendedNode;
+        this.tail.prev = previousTail;
+
+        previousTail.next = this.tail;
+
+        this.length++;
+
+        return appendedNode;
+    }
+}
+```

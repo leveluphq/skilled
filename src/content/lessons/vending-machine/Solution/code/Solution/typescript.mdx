@@ -1,0 +1,44 @@
+```javascript
+const minCoinsForChange = (denominations: number[], target: number): number => {
+  /*
+    Init all values to Infinity which indicates there isn't a valid coin combination for an amount (yet)
+    This is our dp / memo array that we're using to memoize the solution to subproblems
+  */
+  const minCoinsForAmount = new Array(target + 1).fill(Infinity);
+
+  // Bottom-up, start with 0 which is always 0
+  minCoinsForAmount[0] = 0;
+
+  /*
+    Begin at the smallest amount and build a running table of
+    the smallest values required to reach EVERY amount up to the target
+  */
+  for (let amount = 0; amount < minCoinsForAmount.length; amount++) {
+    // Try each denomination to reach the current amount
+    for (let coin of denominations) {
+      if (coin <= amount) {
+        // The current minimum (subproblem solution) found at this amount.
+        const existingMinCoinForAmount = minCoinsForAmount[amount];
+        /*
+          Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+          Always increment by +1 because we are trying one additional coin.
+        */
+        const minAmountWithCurrentCoin = minCoinsForAmount[amount - coin] + 1;
+
+        /*
+          Memoize the minimum coins to reach the current amount.
+          This is either a minimum we previously calculated or a new minimum we found with the current coin.
+          If there isn't a valid combination, this just remains Infinity.
+        */
+        minCoinsForAmount[amount] = Math.min(existingMinCoinForAmount, minAmountWithCurrentCoin);
+      }
+    }
+  }
+
+  /*
+    If we didn't find a combination that matched our target (target === Infinity), return -1.
+    Otherwise, the target does exist for that amount and we return it.
+  */
+  return minCoinsForAmount[target] === Infinity ? -1 : minCoinsForAmount[target];
+}
+```

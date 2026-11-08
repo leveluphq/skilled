@@ -1,0 +1,30 @@
+import Image from 'content/blocks/Image';
+import RowColumnTracker from './code/RowColumnTracker';
+import ExampleHashTables from './code/ExampleHashTables';
+
+Since we are most familiar with the standard `9 x 9` Sudoku, let's start there.
+
+Each row and each column is an independent test.
+So, we'll have 9 hash tables for the rows and 9 hash tables for the columns.
+
+To store the hash tables, we'll create arrays of hash tables where the length of each array is 9.
+There will be two arrays (for `rows` and `columns`) and each array will be a list of 9 hash tables.
+Then as we iterate through the Sudoku board,
+the coordinates we're at on the board will directly map to the corresponding hash tables in our arrays.
+We know the row and column index of any cell and use those indexes to get the matching hash table from our arrays.
+
+We can read the coordinates as (row, column). So at (0, 0), we would get the first hash table in the `rows` array and the `columns` array and add the value in the cell if it exists.
+Then at spot (8, 8) which is `length - 1`, we grab the last hash table in the `rows` and `columns` array.
+
+<RowColumnTracker />
+
+<Image src="/images/sudoku-data-structures.png" alt="Sudoku validation uses one collection per row and one per column to track previously seen values." width={1546} height={866} />
+
+Then the keys for the hash tables will be the numbers that we find in the cells.
+The value for the key will be the number of times we've encountered that number in any row, column, or sub-square.
+If the count is ever `> 1`, we know we have a duplicate and can return false.
+
+<ExampleHashTables />
+
+The mapping seems pretty straight forward for rows and columns because we just access them by matching the index.
+How can a similar process be applied to the sub-squares?

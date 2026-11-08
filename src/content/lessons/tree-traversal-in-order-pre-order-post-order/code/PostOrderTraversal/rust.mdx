@@ -1,0 +1,10 @@
+```rust
+fn post_order_traversal(node: &Option<Rc<RefCell<BinaryTreeNode>>>) {
+    if let Some(node) = node {
+        let node = node.borrow();
+        post_order_traversal(&node.left);
+        post_order_traversal(&node.right);
+        visit_node(&node);
+    }
+}
+```

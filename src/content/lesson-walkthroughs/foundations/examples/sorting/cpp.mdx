@@ -1,0 +1,10 @@
+```cpp
+#include <vector>
+#include <algorithm>
+
+std::vector<int> sortCopy(const std::vector<int>& values) {
+    auto copy = values;
+    std::sort(copy.begin(), copy.end());
+    return copy;
+}
+```

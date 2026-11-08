@@ -1,0 +1,12 @@
+```python
+def find_tail_node_recursively(node):
+    # Stopping condition when we find the tail node.
+    # We know that the `next` will be None for the tail.
+    if node.next == None:
+        return node
+
+    # Continue to call our function recursively with the `next` node.
+    return find_tail_node_recursively(node.next)
+
+tail_node = find_tail_node_recursively(head)
+```

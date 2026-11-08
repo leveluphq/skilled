@@ -1,0 +1,108 @@
+Count the connected groups of land in a rectangular grid. Land cells connect only horizontally or vertically; touching at a corner does not join two islands. The course uses `"#"` for land and `"~"` for water, so the examples below use those symbols and the course's `countIslands` entry name.
+
+A single flood fill visits one connected component. Scan the grid for land that has not been visited, increment the island count once for that new component, and exhaust its reachable land before continuing the scan. An explicit stack keeps this implementation independent of Python's recursion limit.
+
+## State the grid and mutation contract
+
+The input is a list of row lists containing only the two marker strings. Every row has the same length. An empty grid or a grid with zero columns has zero islands. The first implementation leaves the input unchanged and stores visited coordinates separately.
+
+The validation helper rejects ragged rows and unexpected cell values. That makes a malformed grid different from a valid grid with no land. Some interview statements guarantee valid input, in which case the helper can be omitted after stating that assumption. Here it also makes examples easier to test directly.
+
+```python
+def _dimensions(grid):
+    if not isinstance(grid, list) or any(not isinstance(row, list) for row in grid):
+        raise ValueError("Expected a list of row lists")
+    columns = len(grid[0]) if grid else 0
+    if any(len(row) != columns for row in grid):
+        raise ValueError("Expected a rectangular grid")
+    if any(cell not in ("#", "~") for row in grid for cell in row):
+        raise ValueError("Use # for land and ~ for water")
+    return len(grid), columns
+
+
+def countIslands(grid):
+    rows, columns = _dimensions(grid)
+    seen = set()
+    islands = 0
+    directions = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    for row in range(rows):
+        for column in range(columns):
+            if grid[row][column] != "#" or (row, column) in seen:
+                continue
+            islands += 1
+            seen.add((row, column))
+            stack = [(row, column)]
+            while stack:
+                current_row, current_column = stack.pop()
+                for dr, dc in directions:
+                    nr, nc = current_row + dr, current_column + dc
+                    if (0 <= nr < rows and 0 <= nc < columns
+                            and grid[nr][nc] == "#" and (nr, nc) not in seen):
+                        seen.add((nr, nc))
+                        stack.append((nr, nc))
+    return islands
+```
+
+A coordinate tuple of integers is hashable and records row and column together. Marking when pushing ensures a cell cannot be queued repeatedly by several adjacent land cells. The stack's contents mean discovered land whose neighbors still need inspection.
+
+## Trace a small disconnected grid
+
+For rows `"##~"`, `"~#~"`, and `"~~#"`, convert each row to a list before calling the function. The upper-left land reaches the adjacent land to its right and then the land below that cell. Those three cells form one island. The bottom-right land touches the middle land only diagonally, so it starts a second island.
+
+The scan may encounter a previously visited cell long after its component's stack has emptied. It skips that cell without increasing the count. Incrementing for every land cell would count area rather than components. Incrementing for every stack removal would have the same error.
+
+During one flood fill, every pushed neighbor is land connected by an allowed edge to an already reached cell. Conversely, any land connected to the start has a finite path of those edges; processing every reached cell's four neighbors eventually reaches that path's next cell. The fill therefore covers exactly one component. The outer scan starts a fill once for each remaining component, giving the count.
+
+## Use in-place marking only when allowed
+
+The visited set can be replaced by changing discovered land to water. That avoids the separate set but destroys the original land map. A second call on the same mutated grid then returns zero. The explicit stack can still require linear space, so in-place marking does not make this algorithm constant-space.
+
+```python
+def countIslandsInPlace(grid):
+    rows, columns = _dimensions(grid)
+    if len({id(row) for row in grid}) != rows:
+        raise ValueError("In-place marking requires independent row lists")
+    islands = 0
+    directions = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    for row in range(rows):
+        for column in range(columns):
+            if grid[row][column] != "#":
+                continue
+            islands += 1
+            grid[row][column] = "~"
+            stack = [(row, column)]
+            while stack:
+                current_row, current_column = stack.pop()
+                for dr, dc in directions:
+                    nr, nc = current_row + dr, current_column + dc
+                    if 0 <= nr < rows and 0 <= nc < columns and grid[nr][nc] == "#":
+                        grid[nr][nc] = "~"
+                        stack.append((nr, nc))
+    return islands
+```
+
+This variant marks before pushing too. Marking only when popping can let neighboring cells add the same position several times. Marking afterward may still terminate with extra checks, but it no longer supports the simple one-push-per-land-cell proof used here.
+
+To preserve an original list-of-lists grid while testing the mutating variant, copy each row: `[row[:] for row in grid]`. Copying only the outer list shares its row objects, so cell assignments still affect the original. The variant also rejects repeated row objects within one grid: changing one apparent row could otherwise erase land at a separate location before it is scanned. Create rows independently when constructing a visited matrix.
+
+## Count work over cells and neighbors
+
+For R rows and C columns with positive dimensions, validation, scanning, and traversal take expected O(R·C) time under the usual bounded-coordinate hash model. Each land cell is discovered once and checks four neighbors. The visited set uses O(R·C) entries in the worst case, and the stack can also retain O(R·C) positions.
+
+More precisely, validating the row structure adds O(R) work, including when every row is empty. O(R + R·C) describes that zero-column case too. The in-place version has the same traversal bound but replaces visited-set storage with writes to the input. Returning only a count avoids constructing a list of all island shapes or coordinates as output.
+
+Recursive DFS uses a call stack whose depth can grow with the component's path shape. A long narrow island can exceed Python's recursion limit despite having a straightforward linear traversal. Raising the limit changes an environment setting without removing that stack requirement. Use a deque for iterative BFS if a FIFO frontier is preferable; component counting itself does not require shortest-path order.
+
+## Extend the component result deliberately
+
+To return island areas, start an area counter for each new flood fill and increment it for each removed land position. Append the completed area after that component's stack empties. The same one-discovery invariant ensures every land cell contributes once. Returning all areas adds output proportional to the number of islands.
+
+Perimeter needs a different count: inspect edges leading to water or outside the grid. An already visited neighboring land cell is still land and does not create coastline. In-place replacement erases that distinction unless you preserve original land information or use a separate visited marker. Decide which later measurements need the original grid before choosing the mutation strategy.
+
+## Test connectivity and representation separately
+
+Test empty input, zero-column rows, one land cell, one water cell, all land, all water, a single row, and diagonal-only land. A checkerboard should keep diagonally touching land separate. Add a connected shape with a loop to verify that discovery prevents repeated work.
+
+Compare the result on every small binary grid with an independent component counter, such as a union-find reference connecting only adjacent land. Verify the nonmutating function leaves its input unchanged, and verify both variants agree when the mutating one receives an independent row copy. Reject a ragged grid and the marker `"1"` under this specific contract rather than silently treating them as water.
+
+Use [Count Islands](/course/count-islands) to run the matching exercise, the [graph visualizer](/tools/graph-traversal) to inspect frontier behavior, and the [Python collections reference](/reference/python-collections) to review tuple keys, queue choices, and copying. If another problem uses numeric 0/1 or eight-direction connectivity, change and retest the contract explicitly before reusing this implementation.

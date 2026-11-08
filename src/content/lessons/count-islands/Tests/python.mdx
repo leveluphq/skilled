@@ -1,0 +1,71 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty"
+        input = [[]]
+        self.actual_result = count_islands(input)
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "one land"
+        input = [['#']]
+        self.actual_result = count_islands(input)
+        self.expected_result = 1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "one water"
+        input = [['~']]
+        self.actual_result = count_islands(input)
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "two islands"
+        input = [
+                ['~', '~', '~', '~', '~', '~', '#', '#', '#', '#', '~', '~', '~', '~'],
+                ['~', '~', '~', '#', '#', '#', '#', '~', '~', '~', '~', '~', '~', '~'],
+                ['~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '#', '#', '#', '#'],
+                ['~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '#', '#', '#'],
+                ['~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '#', '#', '#'],
+                ]
+        self.actual_result = count_islands(input)
+        self.expected_result = 2
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "four islands"
+        input = [
+                ['~', '~', '~', '#', '#'],
+                ['~', '~', '~', '#', '#'],
+                ['~', '#', '~', '~', '~'],
+                ['~', '~', '#', '~', '~'],
+                ['~', '~', '~', '~', '#'],
+                ]
+        self.actual_result = count_islands(input)
+        self.expected_result = 4
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

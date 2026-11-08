@@ -1,0 +1,21 @@
+```kotlin
+// O(1) prepend
+fun prepend(head: Node, data: Int): Node {
+    // Create a new node to prepend
+    val prependedNode = Node(data)
+    // Set its next to the current node
+    prependedNode.next = head
+
+    // Return our new node
+    return prependedNode
+}
+
+var head = Node(42)
+head.next = Node(9000)
+head.next?.next = Node(10)
+head.next?.next?.next = Node(20)
+// 42 -> 9000 -> 10 -> 20
+
+head = prepend(head, 8)
+// 8 -> 42 -> 9000 -> 10 -> 20
+```

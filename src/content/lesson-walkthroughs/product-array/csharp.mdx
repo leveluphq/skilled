@@ -1,0 +1,86 @@
+Product Array creates an output where each position contains the product of every input integer except the one at that position. Division is forbidden. For `[2, 3, 4]`, the expected result is `[12, 8, 6]`.
+
+The C# starter uses `long[]`, so this implementation keeps 64-bit products throughout. It writes left-side products into the returned array, then multiplies in right-side products. The input remains unchanged, and only scalar working state is added beyond the returned array.
+
+## Assign the running prefix before including the current value
+
+A new long array is initialized to zeros. We assign each prefix directly during the first pass, rather than multiplying into those zeros. Both running products start at one, representing an empty segment's multiplicative identity.
+
+```csharp
+public class Solution {
+    public long[] BuildProductArray(long[] nums) {
+        checked {
+            var results = new long[nums.Length];
+            long prefix = 1;
+            for (int i = 0; i < nums.Length; i++) {
+                results[i] = prefix;
+                prefix *= nums[i];
+            }
+            long suffix = 1;
+            for (int i = nums.Length - 1; i >= 0; i--) {
+                results[i] *= suffix;
+                suffix *= nums[i];
+            }
+            return results;
+        }
+    }
+}
+```
+
+Each output excludes its own input value because each scalar is used before that value is included. The reverse loop uses signed int indexes, so empty input begins at minus one and skips the body. A singleton produces `[1]` under the empty-product convention.
+
+## Trace the output's intermediate meaning
+
+For `[2, 3, 4]`, the forward scan writes `[1, 2, 6]`. The first entry has no values to its left, the second has `2`, and the third has `2 * 3`. These are left-side contributions, not final answers.
+
+The backward scan starts with suffix one. The last answer remains `6`; after incorporating `4`, the middle answer becomes `2 * 4 = 8`. The suffix then incorporates `3`, and the first answer becomes `12`.
+
+If a scalar update moves before the corresponding output operation, the excluded value slips into the answer. If the suffix loop runs forward, it no longer represents the values strictly to the right. Timing and direction both follow from those segment boundaries.
+
+## Make the overflow policy visible
+
+The checked block causes an overflowing integer multiplication to throw OverflowException. It does not make long arbitrary precision. The supported inputs are those whose running prefix, suffix, and final output products all fit in the long range.
+
+The final scalar update computes a full product even though that scalar is no longer used afterward. That full product must also fit for this particular implementation. A different implementation could skip unused updates, but it should state its own bounds and be tested accordingly.
+
+Without an explicit checked context, behavior can depend on project overflow settings. The [C# checked documentation](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/checked-and-unchecked) explains the distinction. If the requirement is unlimited exact products, choose a BigInteger-based signature and revisit the numeric time and space analysis.
+
+## Handle zeros without dividing
+
+For `[2, 0, 4]`, every output except the middle one includes the zero. The result is `[0, 8, 0]`. With `[0, 3, 0]`, every output includes at least one zero, so the entire result is zero.
+
+Negative numbers work through ordinary multiplication: `[-2, 3, -4]` yields `[-12, 8, -6]`. There is no need to count negative signs separately. The directional products apply the same exclusion rule to all positions.
+
+The function returns a fresh array. Assigning `results = nums` would merely create another reference to the input, and the first pass would replace values required by the second pass. Keeping separate output storage preserves both the algorithm and the caller's data.
+
+## Compare contents rather than array references
+
+```csharp
+public static class WalkthroughExamples {
+    public static void Check() {
+        var solution = new Solution();
+        var cases = new (long[] Input, long[] Expected)[] {
+            (new long[] {}, new long[] {}),
+            (new long[] {7}, new long[] {1}),
+            (new long[] {2, 3, 4}, new long[] {12, 8, 6}),
+            (new long[] {2, 0, 4}, new long[] {0, 8, 0}),
+            (new long[] {0, 3, 0}, new long[] {0, 0, 0}),
+            (new long[] {-2, 3, -4}, new long[] {-12, 8, -6})
+        };
+        foreach (var item in cases) {
+            var before = (long[])item.Input.Clone();
+            var actual = solution.BuildProductArray(item.Input);
+            if (!System.Linq.Enumerable.SequenceEqual(actual, item.Expected)
+                || !System.Linq.Enumerable.SequenceEqual(item.Input, before)) throw new System.Exception("Incorrect products");
+        }
+    }
+}
+```
+
+Run the helper from a console entry point. Array reference equality would not compare the numeric entries, so the examples use SequenceEqual. The clone check catches accidental input mutation. Add a large result that exceeds 32-bit range while staying inside long to detect unintended narrowing.
+
+## Explain the storage allowance precisely
+
+Two scans perform `O(n)` fixed-width arithmetic operations. The result contains `O(n)` entries, and auxiliary state beyond it is constant. Checked operations preserve these bounds while making out-of-contract overflow visible.
+
+Separate prefix and suffix arrays would also take linear time but would spend additional linear storage. Before practicing, explain why each output can temporarily hold its prefix and why the zero case follows naturally from multiplying the two excluded segments.

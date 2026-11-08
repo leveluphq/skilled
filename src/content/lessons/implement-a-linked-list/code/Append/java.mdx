@@ -1,0 +1,29 @@
+```java
+// O(n) append
+static <T> Node<T> append(Node<T> head, T data) {
+    // Create a new node to append
+    Node<T> appendedNode = new Node<>(data);
+    // Start at the current node which is the head
+    Node<T> currentNode = head;
+
+    // Iterate through our list until we reach the last node
+    while (currentNode.next != null) {
+        // Step through nodes
+        currentNode = currentNode.next;
+    }
+
+    currentNode.next = appendedNode;
+
+    // Return the head of the list
+    return head;
+}
+
+Node<Integer> head = new Node<>(42);
+head.next = new Node<>(9000);
+head.next.next = new Node<>(10);
+head.next.next.next = new Node<>(20);
+// 42 -> 9000 -> 10 -> 20
+
+head = append(head, 8);
+// 42 -> 9000 -> 10 -> 20 -> 8
+```

@@ -1,0 +1,21 @@
+```swift
+func breadthFirstSearch(_ startingNode: GraphNode) {
+    var bfsQueue = [startingNode]
+    // A Set of ObjectIdentifier tracks nodes by identity, since GraphNode isn't Hashable
+    var visitedNodes = Set<ObjectIdentifier>()
+
+    visitedNodes.insert(ObjectIdentifier(startingNode))
+
+    while let node = bfsQueue.popLast() {
+        // Use node value for the question
+        visit(node)
+
+        for childNode in node.edges {
+            if !visitedNodes.contains(ObjectIdentifier(childNode)) {
+                bfsQueue.insert(childNode, at: 0)
+                visitedNodes.insert(ObjectIdentifier(childNode))
+            }
+        }
+    }
+}
+```

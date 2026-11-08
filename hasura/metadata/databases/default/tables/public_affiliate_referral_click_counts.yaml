@@ -1,0 +1,14 @@
+table:
+  name: affiliate_referral_click_counts
+  schema: public
+select_permissions:
+- permission:
+    columns:
+    - affiliateUserId
+    - count
+    - mostRecentDate
+    - referralUrl
+    filter:
+      affiliateUserId:
+        _eq: X-Hasura-User-Id
+  role: user

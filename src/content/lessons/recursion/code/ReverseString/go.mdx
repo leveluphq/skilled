@@ -1,0 +1,22 @@
+```go
+func reverseString(str string) string {
+	// Base case
+	if len(str) == 0 {
+		return ""
+	}
+
+	// Recursively add the front character to end of the remaining string
+	return reverseString(str[1:]) + str[:1]
+}
+
+reverseString("dev")
+// reverseString("dev")
+//   reverseString("ev")
+//     reverseString("v")
+//       reverseString("")
+//       return ""
+//     return "" + "v"
+//   return "v" + "e"
+// return "ve" + "d"
+// -> "ved"
+```

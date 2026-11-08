@@ -1,0 +1,41 @@
+Algorithm analysis gives you a way to compare two correct solutions and explain how they behave as the input grows. Define the input size first, then count the work the code performs and the memory it retains. A label such as O(n) is useful when you can connect it to those actions.
+
+Start with the [Big O lesson](/course/big-o-time-and-space-complexity). Use the [worked complexity guide](/guides/big-o-time-space-complexity) when you want complete loop, recursion, and memory examples. The [growth explorer](/tools/big-o) provides a visual comparison of the mathematical functions.
+
+## Separate the input quantities
+
+For one array, n can mean the number of entries. For two independent arrays, retain both lengths when both affect the work. For a graph, V vertices and E edges describe different parts of the representation. For text, clarify whether character or key length can change an operation's cost.
+
+A function that scans every entry in two arrays takes O(n + m) work under a fixed-size-value model. A function comparing every entry of one array with every entry of the other can take O(nm). Renaming both sizes n without explanation hides the difference between those workloads.
+
+Also name the case being analyzed. Best-case early return, worst-case full scan, expected hash-table behavior, and amortized array growth are different claims. Keep the qualification with the bound.
+
+## Count total work across loops
+
+Two sequential linear loops add to linear growth. A nested pair loop can do quadratic work. A nested loop that advances a shared boundary only forward may still be linear over the entire run.
+
+Trace how often each entry can cause work. A node queued once differs from a node queued repeatedly before it is marked seen. A cached state solved once differs from a state recomputed whenever its result is zero because the implementation used a truthiness check.
+
+The [sliding-window guide](/patterns/sliding-window) shows a loop whose total boundary movement is linear. The [BFS guide](/guides/bfs-vs-dfs) explains why discovery-time marking prevents duplicate queue entries.
+
+## Explain logarithmic progress
+
+The [logarithms lesson](/course/logarithms-and-time-complexity) connects repeated halving with logarithmic iteration counts. Use the size of the remaining candidate region to justify progress. Each binary-search update should preserve the answer if it exists while reducing the interval.
+
+The name of an algorithm does not determine the cost of its implementation. Copying a large slice at every recursive search step adds work beyond a constant-time interval update. Include sorting or other preparation when it is part of the solution.
+
+Compare input sizes in the explorer by doubling n. Linear work doubles, quadratic work grows by a factor of four, and cubic work grows by a factor of eight for the representative functions. The chart does not claim that those work units are actual execution times.
+
+## Account for memory you cannot see as an array
+
+An explicit map, a saved output, copied slices, and recursive call frames all retain memory. A recursive tree traversal may use O(h) active frames for tree height h. A chain-shaped tree can make that height linear.
+
+If an exercise excludes required output from auxiliary space, state that convention. An algorithm returning n values still creates output storage; the convention changes how the answer is reported, not what exists at runtime.
+
+Peak live memory also differs from total allocation over a run. Consider which temporary values remain reachable together before summing every object ever created.
+
+## Apply the analysis to a completed solution
+
+Choose [Target Two Sum](/course/target-two-sum) or [Count Islands](/course/count-islands) after studying the concepts. Explain how many times an entry or cell is processed, which collection prevents repeated work, and the maximum size of that collection.
+
+Then inspect one implementation detail that could change the claim, such as a queue operation or a repeated copy. Use the [reference table](/reference/data-structure-time-complexity) to check the assumption and revise the explanation to match the code.

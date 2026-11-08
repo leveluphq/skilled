@@ -1,0 +1,17 @@
+```python
+# Create a helper function to add visited_nodes to the signature
+def dfs(current_node, visited_nodes):
+    # Use node value for the questions
+    visit(current_node)
+
+    visited_nodes.add(current_node)
+
+    for child_node in current_node.edges:
+        if child_node not in visited_nodes:
+            dfs(child_node, visited_nodes)
+
+def recursive_depth_first_search(starting_node):
+    # Init our stack and set of visited nodes
+    visited_nodes = set()
+    dfs(starting_node, visited_nodes)
+```

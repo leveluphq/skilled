@@ -1,0 +1,11 @@
+```java
+String string = "Hello, world!";
+char[] array = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!' };
+
+// Transform an array to a string and compare it to the original string
+System.out.println(string.equals(new String(array)));
+// prints true
+
+System.out.println(Arrays.toString(string.toCharArray())); // Transform a string to an array
+// [H, e, l, l, o, ,,  , w, o, r, l, d, !]
+```

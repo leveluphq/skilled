@@ -1,0 +1,55 @@
+Use ninety days to build a repeatable problem-solving process, review weak topics, and practice explaining a solution under time pressure. The schedule assumes about five focused sessions per week, with two days available for rest or catch-up. It is designed to fit around work: most weekday sessions take forty-five minutes, with one longer weekly review when your schedule permits.
+
+Choose one programming language for implementation. Use its [preparation guide](/interview-prep) and the corresponding language walkthroughs when checking your work. Switching languages every few days can turn an algorithm review into a syntax review. A second language belongs in the plan only when an actual interview requirement makes it necessary.
+
+## Establish a baseline during days one through seven
+
+Attempt [Two Sum](/course/target-two-sum), [Reverse a Linked List](/course/reverse-a-linked-list), and [Valid Brackets](/course/valid-brackets) without opening their walkthroughs first. Record where each attempt stopped: understanding the contract, choosing a structure, writing the loop, handling a boundary, or explaining the cost. A failed attempt is useful evidence when it identifies a specific missing step.
+
+Use the [problem-solving worksheet](/reference/interview-practice-worksheet) to write a small example, a baseline method, and a test before coding. Review the [complexity reference](/reference/data-structure-time-complexity) when an operation's actual cost is uncertain. Do not use total solved count as the only baseline; a memorized solution can conceal a weak explanation.
+
+At the end of the first week, select two weaknesses to address first. Keep the rest in a review list. Trying to fix every topic in parallel makes it difficult to tell which practice helped. The [study-plan builder](/tools/study-plan-builder) can provide a shorter sequence if the baseline shows that ninety calendar days will contain fewer sessions than expected.
+
+## Build array and lookup fluency in weeks two and three
+
+Work through [Age Sort](/course/age-sort), [Catch the Hacker](/course/catch-the-hacker), [Best Time to Buy and Sell Stock](/course/best-time-to-buy-and-sell-stock), and [Product Array](/course/product-array). Explain what the stored state means after a prefix of input. Identify whether the problem relies on bounded values, unique values, or a particular output ordering.
+
+Rotate a new problem with a delayed review of an earlier one. For each review, write the invariant before the code. If you need the walkthrough, read the smallest section that resolves the gap, close it, and rebuild the solution from the contract. Copying code into the editor and seeing green tests does not establish independent recall.
+
+Use one session to compare hash maps, counters, and sorted input. Explain why a set loses duplicate counts, why an index of zero is a valid lookup result, and why sorting stock prices destroys chronological order. Those distinctions connect several problems without requiring a new technique for each title.
+
+## Practice pointers and search in weeks four and five
+
+Review linked-list reversal, then attempt [Mirror Delete](/course/mirror-delete) and [Combine Blockchains](/course/combine-blockchains). Draw pointers before mutating links. Check the returned head and define whether a solution consumes the original chains. Use the [pointer visualizer](/tools/linked-list-pointers) when a trace diverges from your implementation.
+
+For search, attempt [First Bad Version](/course/first-bad-version), [Shifted Search](/course/shifted-search), and [Sorted Matrix Search](/course/sorted-matrix-search). Write the candidate interval or rectangle before each update. Test the smallest nonempty input and an empty candidate set. Read the [binary-search pattern](/patterns/binary-search) when your bounds mix inclusive and exclusive conventions.
+
+Keep one session free for a missed day rather than pushing every missed task into tomorrow. A work schedule changes; the learning sequence can survive that change. Resume from the next uncompleted session, and preserve review intervals where possible instead of doubling the amount of new material.
+
+## Connect recursion, trees, and graphs in weeks six and seven
+
+Use [Sum Digits](/course/sum-digits) to separate recursive calls from returned values, then attempt [Generate All Permutations](/course/generate-all-permutations). Count the required output before claiming a fast algorithm. Move into [BST Validate](/course/binary-search-tree-validate), [Maximum Tree Depth](/course/binary-tree-max-depth), and [Closest Common Ancestor](/course/closest-common-ancestor-in-binary-tree).
+
+For every tree problem, specify the empty-tree convention and whether the answer is a value or an original node. A depth of zero can mean a singleton in an edge-counting contract. A fabricated node with the right value can still violate an identity-based ancestor contract.
+
+Then attempt [Count Islands](/course/count-islands) and [Pilot a Rocket](/course/pilot-a-rocket). Compare depth-first component marking with breadth-first shortest routes. The [graph tool](/tools/graph-traversal) can expose discovery order and repeated visits. Include a cycle and an unreachable destination in your tests.
+
+## Learn dynamic-programming state in weeks eight and nine
+
+Attempt [Three Moves](/course/three-moves), [Vending Machine](/course/vending-machine), [Steal Packages](/course/steal-packages), and [Robot Maze](/course/robot-maze). Define one state in a complete sentence. Identify its dependencies, its base cases, and whether it stores a count, a minimum, a maximum, or a Boolean.
+
+Use the [dynamic-programming visualizer](/tools/dynamic-programming) to compare repeated recursive work with memoized or bottom-up evaluation. Explain why false must be distinct from unknown in a maze memo, why unreachable coin amounts need a safe sentinel, and why zero positions have one empty move sequence in a counting problem.
+
+Only compress a table into rolling state after you can explain the full dependency relation. Rolling variables reduce storage but can hide an incorrect update order. Keep an independent small-input oracle or hand enumeration for cases where a plausible-looking recurrence gives the wrong answer.
+
+## Rehearse and specialize in weeks ten through twelve
+
+Use the [interview rehearsal tool](/tools/interview-rehearsal) for timed attempts and the [review rubric](/reference/mock-interview-rubric) afterward. Practice clarifying the contract aloud, proposing a baseline, explaining an improvement, and testing a boundary. Record the point where time was lost rather than treating every incomplete attempt as the same failure.
+
+For frontend interviews, add debounce, throttle, promise behavior, [autocomplete](/guides/frontend-autocomplete-design), and the [accessible component lab](/tools/accessible-components). For algorithm-heavy interviews, rotate unfamiliar input variations through the same patterns. Specialization should reflect the interview format you have confirmed, not unsupported claims about a particular employer's question list.
+
+## Use the final days for evidence and recovery
+
+Repeat the original baseline problems after enough delay that you must reason again. Compare the clarity of your contract, invariant, tests, and complexity explanation. Use [spaced review](/tools/spaced-review) for concepts that still require prompting, and keep the final sessions lighter if fatigue is making your explanations worse.
+
+The plan is a schedule for practice, not a guarantee of an offer. If a topic remains weak, identify its next concrete exercise and carry that review forward. If an interview moves earlier, use the [seven-day review](/study-plans/7-day-coding-interview-review) to prioritize consolidation instead of trying to compress every remaining new topic into a few nights.

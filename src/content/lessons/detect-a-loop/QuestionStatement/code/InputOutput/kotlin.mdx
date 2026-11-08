@@ -1,0 +1,21 @@
+```kotlin
+class ListNode(var data: Int = 0, var next: ListNode? = null)
+
+// Example 1
+// Input
+val head = ListNode(42) // ... then add more nodes
+42 -> 100 -> 4 -> 7 -> null
+
+// Output: hasLoop(head)
+false
+
+// Example 2
+// Input
+0 -> 1 -> 2 -> 3 -> 4
+          ^         |
+          |         v
+          7 <- 6 <- 5
+
+// Output: hasLoop(head)
+true
+```

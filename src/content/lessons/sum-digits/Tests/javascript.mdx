@@ -1,0 +1,36 @@
+```javascript
+const tests = [
+  {
+    input: 1,
+    expected: 1,
+    description: 'handles one number',
+  },
+  {
+    input: 0,
+    expected: 0,
+    description: 'handles 0',
+  },
+  {
+    input: 123,
+    expected: 6,
+    description: 'simple input',
+  },
+  {
+    input: 50201,
+    expected: 8,
+    description: 'handles 0s in the middle',
+  },
+  {
+    input: 200,
+    expected: 2,
+    description: 'handles trailing 0s',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = sumDigits(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

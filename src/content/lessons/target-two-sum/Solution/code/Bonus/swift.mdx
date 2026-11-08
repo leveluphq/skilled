@@ -1,0 +1,24 @@
+```swift
+class Solution {
+    func getTargetIndexes(_ array: [Int], _ target: Int) -> [[Int]] {
+        var results: [[Int]] = []
+        var arrayElementAtIndex: [Int: Int] = [:]
+
+        for (i, currentValue) in array.enumerated() {
+            let matchedValue = target - currentValue
+
+            if let matchedIndex = arrayElementAtIndex[matchedValue], matchedIndex >= 0 {
+                results.append([i, matchedIndex])
+
+                arrayElementAtIndex[currentValue] = -1
+                arrayElementAtIndex[matchedValue] = -1
+            }
+
+            // Add values after we see them
+            arrayElementAtIndex[currentValue] = i
+        }
+
+        return results
+    }
+}
+```

@@ -1,0 +1,26 @@
+```javascript
+function recursiveFlatten(array) {
+  return array.reduce((flattenedArray, item) => {
+    return Array.isArray(item)
+      ? [...flattenedArray, ...recursiveFlatten(item)]
+      : [...flattenedArray, item];
+  }, []);
+}
+
+function iterativeFlatten(array) {
+  const output = [];
+  let toBeFlattened = [array];
+
+  while(toBeFlattened.length) {
+    const current = toBeFlattened.shift();
+
+    if(Array.isArray(current)) {
+      toBeFlattened = [...current, ...toBeFlattened];
+    } else {
+      output.push(current);
+    }
+  }
+
+  return output;
+}
+```

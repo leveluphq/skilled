@@ -1,0 +1,19 @@
+```go
+func BfsOrder(graph [][]int, start int) []int {
+    if start < 0 || start >= len(graph) { return []int{} }
+    queue, output := []int{start}, []int{}
+    visited := make([]bool, len(graph))
+    visited[start] = true
+    for head := 0; head < len(queue); head++ {
+        node := queue[head]
+        output = append(output, node)
+        for _, neighbor := range graph[node] {
+            if !visited[neighbor] {
+                visited[neighbor] = true
+                queue = append(queue, neighbor)
+            }
+        }
+    }
+    return output
+}
+```

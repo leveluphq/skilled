@@ -1,0 +1,15 @@
+```cpp
+#include <string>
+
+bool asciiPalindrome(const std::string& text) {
+    std::string clean;
+    for (unsigned char value : text) {
+        if (value >= 'A' && value <= 'Z') value += 'a' - 'A';
+        if ((value >= 'a' && value <= 'z') || (value >= '0' && value <= '9')) clean.push_back(value);
+    }
+    for (int left = 0, right = static_cast<int>(clean.size()) - 1; left < right; ++left, --right) {
+        if (clean[left] != clean[right]) return false;
+    }
+    return true;
+}
+```

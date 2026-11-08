@@ -1,0 +1,64 @@
+```javascript
+const tests = [
+  {
+    input: [],
+    expected: [],
+    description: 'empty input',
+  },
+  {
+    input: ['racecar', 'acerrac', 'aaccerr', 'naa', 'aan', 'bob'],
+    expected: [['aaccerr', 'acerrac', 'racecar'], ['aan', 'naa'], ['bob']],
+    description: 'input only palindromes',
+  },
+  {
+    input: ['racecar', 'naa', 'obb'],
+    expected: [['racecar'], ['naa'], ['obb']],
+    description: 'input single item groups',
+  },
+  {
+    input: ['racecar', 'acerrac', 'aaccerr', 'naa', 'aan', 'todo', 'doto', 'code', 'bob'],
+    expected: [['aaccerr', 'acerrac', 'racecar'], ['aan', 'naa'], ['bob']],
+    description: 'input palindromes and non-palindromes',
+  },
+];
+
+const sortOutputArray = (a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0);
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = groupPermutationsOfPalindromes(input);
+
+  // An answer that isn't a list (such as a missing return) is a failed test, not a crash
+  if (!Array.isArray(userAnswer)) {
+    return { passed: false, description, expected, userAnswer };
+  }
+
+  if (userAnswer.length !== expected.length) {
+    return { passed: false, description, expected, userAnswer };
+  }
+
+  if (userAnswer.length === 0 && expected.length === 0) {
+    return { passed: true, description, expected, userAnswer };
+  }
+
+  const sortedUserAnswer = userAnswer.map(item => item.sort()).sort(sortOutputArray);
+  const sortedExpected = expected.map(item => [...item].sort()).sort(sortOutputArray);
+  let passed = true;
+
+  for (let i = 0; i < sortedUserAnswer.length; i++) {
+    const uai = sortedUserAnswer[i];
+    const eai = sortedExpected[i];
+
+    if (uai.length !== eai.length) {
+      passed = false;
+    }
+
+    for (let j = 0; j < uai.length; j++) {
+      if (uai[j] !== eai[j]) {
+        passed = false;
+      }
+    }
+  }
+
+  return { passed, description, expected, userAnswer };
+};
+```

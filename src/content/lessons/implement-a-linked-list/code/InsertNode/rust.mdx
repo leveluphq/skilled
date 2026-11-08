@@ -1,0 +1,43 @@
+```rust
+fn insert_node(mut head: Option<Box<Node>>, index: usize, value: i32) -> Option<Box<Node>> {
+    // First check if we want to add a node at the head
+    if index == 0 {
+        // Inserting at 0 is equivalent to prepending
+        return prepend(head, value);
+    }
+
+    // Create the node we want to insert
+    let mut inserted_node = Box::new(Node::new(value));
+    let mut preceding_node = head.as_deref_mut().expect("index out of range");
+
+    // Find the node that precedes the index of the node that we want to insert
+    for _ in 0..index - 1 {
+        preceding_node = preceding_node
+            .next
+            .as_deref_mut()
+            .expect("index out of range");
+    }
+
+    // Store the node that should come after the one we insert
+    let node_after_inserted = preceding_node.next.take();
+
+    // Set the inserted node's `next` pointer
+    // (before the list takes ownership of the inserted node)
+    inserted_node.next = node_after_inserted;
+
+    // Insert our new node at the desired index
+    preceding_node.next = Some(inserted_node);
+
+    head
+}
+
+// Each node owns the one after it, so we build the list from the back
+let mut head = None;
+for data in [20, 10, 9000, 42] {
+    head = Some(Box::new(Node { data, next: head }));
+}
+// 42 -> 9000 -> 10 -> 20
+
+head = insert_node(head, 2, 777);
+// 42 -> 9000 -> 777 -> 10 -> 20
+```

@@ -1,0 +1,36 @@
+```rust
+struct HashTable {
+    size: usize,
+    // A slot for each bucket. A bucket is created (Some) when a key first lands in it,
+    // and it holds the (key, value) pairs whose keys hash to its index.
+    table: Vec<Option<Vec<(String, i32)>>>,
+}
+
+impl HashTable {
+    fn new(size: usize) -> Self {
+        HashTable {
+            size,
+            table: vec![None; size],
+        }
+    }
+
+    fn get(&self, key: &str) -> Option<i32> {
+        // get a value by key
+        todo!()
+    }
+
+    fn insert(&mut self, key: &str, value: i32) {
+        // add/update a value at a key
+    }
+
+    fn remove(&mut self, key: &str) -> Option<i32> {
+        // remove a value by key
+        todo!()
+    }
+
+    fn hash(&self, key: &str) -> usize {
+        // our custom hash function
+        todo!()
+    }
+}
+```

@@ -1,0 +1,25 @@
+import Image from 'content/blocks/Image';
+import { PageRoot } from 'utils/constants/routes';
+
+After encountering an island and understanding that we need to account for all of its nodes, the next challenge is to determine how we actually visit them all.
+
+If we treat an individual island also as a matrix, it becomes very challenging to handle.
+The island could be a strange shape, it could be near other islands adjacent diagonally which we don't want to account for, and knowing the island's width and height is difficult.
+
+We can instead treat the individual islands as a graph once we find them.
+Any node in the graph can have up to four siblings which are the items that are adjacent horizontally or vertically.
+
+<Image src="/images/matrixgraph.png" alt="A land-and-water grid is translated into graph components, one connected component for each island." width={2102} height={1136} />
+
+We can then traverse through the graph either using <a href={`/${PageRoot.Course}/depth-first-search`} target="_blank">DFS</a> or <a href={`/${PageRoot.Course}/breadth-first-search`} target="_blank">BFS</a>.
+A very elegant solution is recursive DFS which we perform on the four adjacent nodes horizontally and vertically.
+
+The final challenge is to handle the stopping conditions:
+
+1. Being outside the matrix (move below the zero index or beyond the row/column length)
+2. You hit a water piece indicating the edge of an island
+
+This yields the logic for our solution.
+Let's visualize it.
+
+<Image src="/images/countislandsolution.gif" maxWidth="600px"alt="An island search explores connected land, marks visited cells, and continues past water to find the next island." width={953} height={810} />

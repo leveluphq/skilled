@@ -1,0 +1,53 @@
+```go
+type DoublyNode struct {
+	Data int
+	Next *DoublyNode
+	Prev *DoublyNode
+}
+
+type DoublyLinkedList struct {
+	length int
+	head   *DoublyNode
+	tail   *DoublyNode
+}
+
+func NewDoublyLinkedList(data int) *DoublyLinkedList {
+	initialNode := &DoublyNode{Data: data}
+
+	return &DoublyLinkedList{
+		length: 1,
+		head:   initialNode,
+		tail:   initialNode,
+	}
+}
+
+// O(1)
+func (l *DoublyLinkedList) Prepend(data int) *DoublyNode {
+	prependedNode := &DoublyNode{Data: data}
+	previousHead := l.head
+
+	l.head = prependedNode
+	l.head.Next = previousHead
+
+	previousHead.Prev = l.head
+
+	l.length++
+
+	return l.head
+}
+
+// O(1)
+func (l *DoublyLinkedList) Append(data int) *DoublyNode {
+	appendedNode := &DoublyNode{Data: data}
+	previousTail := l.tail
+
+	l.tail = appendedNode
+	l.tail.Prev = previousTail
+
+	previousTail.Next = l.tail
+
+	l.length++
+
+	return appendedNode
+}
+```

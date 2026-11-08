@@ -1,0 +1,10 @@
+import BigO from 'content/blocks/BigO';
+
+In this question, we solved a classic dynamic programming problem using recursion with memoization.
+It is dynamic programming because to calculate the number of moves for any board length,
+we need to calculate the moves required for the three spots before it.
+We recursively solve these subproblems down to our base case and build up the solution to each subproblem and memoize the results.
+
+- Recognize subproblems to create a simple top-down solution
+- Recognize that subproblems are overlapping
+- Memoize repeated work to create an <BigO.n /> solution

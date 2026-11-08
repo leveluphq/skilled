@@ -1,0 +1,28 @@
+import Image from 'content/blocks/Image';
+
+This whole problem boils down to a three-house example.
+If we solve this subproblem at each point, we can calculate the overall solution.
+
+As we iterate through, when you reach each house, you can either steal the current house's item and add it to the max profit from two houses back or just carry forward the profit we calculated as the solution from one house back, which would be the middle item in the three house case.
+If we can solve this for every item in the array, we can find the overall solution.
+
+Finding the max profit at each house are our subproblems, and the subproblems are overlapping because we use the result from previous houses multiple times in future subproblems.
+
+In the below GIF, we create a memoization array which stores the max profit at each house.
+We look backward at previous max profits stored in the array which allows us to calculate the solution to each current subproblem by using the information from prior subproblem solutions.
+
+<Image src="/images/memo-array-steal-packages.gif" alt="A memo array records the best nonadjacent-house total at each position." width={960} height={319} />
+
+Let's also just look at a still image of the decisions we made for the max profits.
+The first item's max profit is simply the house's value because we don't have a comparison yet.
+The second house's value is larger than the first, so stealing this would be a better profit.
+Then at the third house, we add its value to the max profit from the first house.
+At the fourth house, we carry forward the 15 from the third house because `15 > 11 + 2`.
+At the fifth house, we add its package value of 5 to the max profit from two houses back of 15.
+Then at the final houses, we add its package value of 20 to the max profit of 15 from two houses back to get the answer to this final subproblem.
+Then since we solved each question locally, when we reach the final house, we will have calculated the overall solution to the question because we built up the max profit at each house by making the optimal decision at each step.
+
+<Image src="/images/package-memo-array.png" alt="A house-value sequence is paired with the maximum nonadjacent sum available at each prefix." width={2576} height={864} />
+
+This mentality is a bottom-up approach.
+We start with the lowest value and use the memoization array to build up the max profit throughout the entire question up to the final house.

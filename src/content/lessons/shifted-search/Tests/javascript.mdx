@@ -1,0 +1,56 @@
+```javascript
+const tests = [
+  {
+    input: { items: [], target: 5 },
+    expected: -1,
+    description: 'empty',
+  },
+  {
+    input: { items: [5], target: 5 },
+    expected: 0,
+    description: 'one item found',
+  },
+  {
+    input: { items: [5], target: 2 },
+    expected: -1,
+    description: 'one item not found',
+  },
+  {
+    input: { items: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], target: 5 },
+    expected: 2,
+    description: 'found larger array left',
+  },
+  {
+    input: { items: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], target: 9 },
+    expected: 6,
+    description: 'found larger array after rotation',
+  },
+  {
+    input: { items: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], target: 1 },
+    expected: 8,
+    description: 'found right array 1',
+  },
+  {
+    input: { items: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], target: 10 },
+    expected: -1,
+    description: 'not found larger array',
+  },
+  {
+    input: { items: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], target: 3 },
+    expected: 0,
+    description: 'first item found',
+  },
+  {
+    input: { items: [3, 4, 5, 6, 7, 8, 9, 0, 1, 2], target: 2 },
+    expected: 9,
+    description: 'last item found',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = findTargetIndex(input.items, input.target);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

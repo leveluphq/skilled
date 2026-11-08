@@ -1,0 +1,94 @@
+```cpp
+class Solution {
+public:
+    bool isValidSudokuBoard(vector<vector<int>>& board) {
+        // Exit early if the board does not have a valid shape
+        if (!hasValidShape(board)) {
+            return false;
+        }
+
+        return hasValidCells(board);
+    }
+
+private:
+    // The function to check for a valid shape is all constant time and space O(1)
+    bool hasValidShape(vector<vector<int>>& board) {
+        // We have an empty board, it is automatically invalid
+        if (board.empty() || board[0].empty()) {
+            return false;
+        }
+
+        int rowCount = board.size();
+        int columnCount = board[0].size();
+        bool isSquare = rowCount == columnCount;
+
+        // The board is not a square, so we know it is invalid
+        if (!isSquare) {
+            return false;
+        }
+
+        // For a board to be composed of sub-squares,
+        // the square root of `k` must be a whole number
+        bool hasSubsquares = fmod(sqrt(rowCount), 1.0) == 0;
+        if (!hasSubsquares) {
+            return false;
+        }
+
+        // All conditions are met, so it is a valid shape
+        return true;
+    }
+
+    bool hasValidCells(vector<vector<int>>& board) {
+        // Get the dimensions of the board and sub-squares
+        int sizeOfBoard = board.size();
+        int sizeOfSubsquare = (int) sqrt(sizeOfBoard);
+
+        // Create our one-dimensional array of hash tables for rows and columns
+        vector<unordered_map<int, int>> rows(sizeOfBoard);
+        vector<unordered_map<int, int>> columns(sizeOfBoard);
+
+        // Create a two-dimensional array of hash tables
+        // where there is a separate hash table for each sub-square
+        vector<vector<unordered_map<int, int>>> subsquares(
+            sizeOfSubsquare, vector<unordered_map<int, int>>(sizeOfSubsquare));
+
+        for (int row = 0; row < sizeOfBoard; row++) {
+            for (int col = 0; col < sizeOfBoard; col++) {
+                int cellValue = board[row][col];
+
+                // If we have a value, we need to add it to our hash tables
+                // and return false if a value already existed.
+                if (cellValue > 0) {
+                    // Since the sub-square tracker is a 2D jxj array,
+                    // we need to normalize the coordinates by j
+                    int subsquareRow = row / sizeOfSubsquare;
+                    int subsquareCol = col / sizeOfSubsquare;
+
+                    // Increment the cell value for the corresponding row, column, sub-square
+                    // ([] starts a value we haven't seen at 0)
+                    //
+                    // rows and columns are a 1-D array where we look for the cellValue in a hash table
+                    rows[row][cellValue]++;
+                    columns[col][cellValue]++;
+                    //
+                    // subsquares is a 2-D matrix
+                    subsquares[subsquareRow][subsquareCol][cellValue]++;
+
+                    // If the value is greater than 1, we have already seen this in the hash table
+                    bool hasRowDuplicate = rows[row][cellValue] > 1;
+                    bool hasColumnDuplicate = columns[col][cellValue] > 1;
+                    bool hasSubsquareDuplicate = subsquares[subsquareRow][subsquareCol][cellValue] > 1;
+
+                    // Return if there are any duplicates
+                    if (hasRowDuplicate || hasColumnDuplicate || hasSubsquareDuplicate) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // We iterated to the end and didn't find any duplicates
+        return true;
+    }
+};
+```

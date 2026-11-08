@@ -1,0 +1,11 @@
+```kotlin
+fun binarySearch(values: List<Int>, target: Int): Int {
+    var low = 0
+    var high = values.size
+    while (low < high) {
+        val middle = low + (high - low) / 2
+        if (values[middle] < target) low = middle + 1 else high = middle
+    }
+    return if (low < values.size && values[low] == target) low else -1
+}
+```

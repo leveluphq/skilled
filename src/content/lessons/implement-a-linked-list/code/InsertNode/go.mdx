@@ -1,0 +1,38 @@
+```go
+func insertNode(head *Node, index, value int) *Node {
+	// First check if we want to add a node at the head
+	if index == 0 {
+		// Inserting at 0 is equivalent to prepending
+		return prependNode(head, value)
+	}
+
+	// Create the node we want to insert
+	insertedNode := &Node{Data: value}
+	precedingNode := head
+
+	// Find the node that precedes the index of the node that we want to insert
+	for range index - 1 {
+		precedingNode = precedingNode.Next
+	}
+
+	// Store the node that should come after the one we insert
+	nodeAfterInserted := precedingNode.Next
+
+	// Insert our new node at the desired index
+	precedingNode.Next = insertedNode
+
+	// Set the inserted node's `Next` pointer
+	insertedNode.Next = nodeAfterInserted
+
+	return head
+}
+
+head := &Node{Data: 42}
+head.Next = &Node{Data: 9000}
+head.Next.Next = &Node{Data: 10}
+head.Next.Next.Next = &Node{Data: 20}
+// 42 -> 9000 -> 10 -> 20
+
+head = insertNode(head, 2, 777)
+// 42 -> 9000 -> 777 -> 10 -> 20
+```

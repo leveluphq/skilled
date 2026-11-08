@@ -1,0 +1,10 @@
+```javascript
+// We will get a ReferenceError because x is not declared
+x + 1; // ReferenceError
+
+// It still throws a reference error if we try to do this
+x === undefined; // ReferenceError
+
+// This works with undeclared variables
+typeof x === 'undefined'; // true
+```

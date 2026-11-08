@@ -1,0 +1,16 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+fn alias_trace() -> Vec<i32> {
+    let original = Rc::new(RefCell::new(1));
+    let mut alias = Rc::clone(&original);
+    let mut trace = vec![*original.borrow()];
+    *alias.borrow_mut() = 2;
+    trace.push(*original.borrow());
+    alias = Rc::new(RefCell::new(9));
+    trace.push(*original.borrow());
+    trace.push(*alias.borrow());
+    trace
+}
+```

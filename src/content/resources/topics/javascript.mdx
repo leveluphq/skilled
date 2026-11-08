@@ -1,0 +1,41 @@
+JavaScript interview utilities turn familiar language features into explicit contracts. A debounce retains a pending call, a promise retains an eventual outcome, and an event emitter retains listener relationships. Implementing those behaviors requires more than recognizing the API name.
+
+Use [Why JavaScript Gets Its Own Topic](/course/why-does-javascript-get-its-own-topic) and [JavaScript Interview Questions](/course/javascript-interview-questions) as orientation. The [JavaScript preparation guide](/interview-prep/javascript) connects language behavior with the data structures used in algorithm problems.
+
+## Trace receivers, closures, and callbacks
+
+A closure retains access to variables from its surrounding scope. That makes it useful for timer identifiers, counters, and listener state. Decide whether each wrapper invocation should share that state or create a fresh copy.
+
+The receiver used as `this` depends on how a regular function is called. An arrow captures its surrounding receiver instead. [Fix this](/course/fix-this) provides practice distinguishing those situations instead of assuming a callback will retain the caller automatically.
+
+For an interview explanation, use one small call trace with different receivers or arguments. Show which values are retained and when they are read. A broad statement about “scope” is less useful than identifying the specific variable and invocation.
+
+## Implement debounce and throttle from observable behavior
+
+Choose the output timestamps for a short event stream before writing the wrapper. Debounce waits for a quiet interval; throttle limits update frequency during continuing input. Leading and trailing options determine which events are processed and which become pending.
+
+Read [Debounce vs. Throttle](/guides/debounce-vs-throttle) and use the [event timeline](/tools/debounce-throttle) to compare a burst, a single event, and continuous activity. Then implement the [debounce](/course/debounce) or [throttle](/course/throttle) lesson without the answer open.
+
+Include cancellation, argument forwarding, and receiver behavior in tests when the chosen contract supports them. A plausible callback count does not establish that the correct value reached the callback.
+
+## Separate promise construction from reactions
+
+[Build a JavaScript Promise](/course/build-a-javascript-promise) explores eventual state and chaining through a teaching implementation. Keep its scope distinct from the full language specification.
+
+The [event-loop guide](/guides/javascript-event-loop) traces synchronous execution, ready promise reactions, and timer callbacks. The function passed to a native promise constructor runs immediately; a fulfillment reaction runs later. Name those steps precisely when explaining output order.
+
+Then use [implementing Promise.all](/guides/implement-promise-all) to practice preserving input order, handling plain values, and deciding the rejection behavior. Aggregating promises does not automatically start tasks with a concurrency limit or cancel the remaining work after failure.
+
+## Recreate collection and event contracts carefully
+
+[Array Methods](/course/array-methods) asks you to inspect callback behavior and iteration rules. State which cases your implementation supports rather than claiming a complete native polyfill after testing one normal array.
+
+[Pub-Sub and Event-Driven Programming](/course/pub-sub-and-event-driven-programming) requires listener storage and publication rules. Ask what happens when a listener unsubscribes during a publication, when the same listener is registered twice, or when a listener throws. Each choice affects iteration and tests.
+
+Start with a small documented contract, then extend it deliberately. Behavior-specific tests keep the implementation grounded when the function name covers many library variations.
+
+## Combine language practice with algorithms
+
+Keep practicing maps, sets, queues, numeric sorting, and recursion in JavaScript. A correct algorithm can still fail because an index-zero lookup was treated as absent, or because a queue operation added unexpected repeated work.
+
+The [30-day plan](/study-plans/30-day-coding-interview-plan) includes both algorithm and utility sessions. Use the [TypeScript guide](/interview-prep/typescript) if your interview language adds checked types, and keep its runtime assumptions consistent with the JavaScript implementation beneath them.

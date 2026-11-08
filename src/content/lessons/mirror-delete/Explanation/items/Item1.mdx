@@ -1,0 +1,14 @@
+import BigO from 'content/blocks/BigO';
+
+If we knew the linked list size, we could subtract our `k` to know the distance from the beginning which would turn this into a standard scenario to delete a node.
+
+Our next thought would be to find the length of the linked list by iterating through it once at <BigO.n /> time.
+However, this would break the constraint of only going through the linked list in one pass.
+
+Let's rethink it. We want to know where the kth node from the tail is.
+So if the tail is found, we immediately know where this node is relative to it.
+The issue is that once we find the tail, we can't iterate backward.
+
+The prompt says we can only do it in one pass, but it doesn't say anything about using more than one pointer during our pass over the linked list.
+There are only two landmarks we need track, the tail node and the node that corresponds to `k` when we're at the tail.
+

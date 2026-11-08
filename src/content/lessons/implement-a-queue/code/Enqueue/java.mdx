@@ -1,0 +1,16 @@
+```java
+public Node<T> enqueue(T item) {
+    Node<T> newLastNode = new Node<>(item);
+    boolean isEmptyList = this.first == null && this.last == null;
+
+    if (isEmptyList) {
+        this.first = newLastNode;
+        this.last = newLastNode;
+    } else {
+        this.last.prev = newLastNode;
+        this.last = newLastNode;
+    }
+
+    return newLastNode;
+}
+```

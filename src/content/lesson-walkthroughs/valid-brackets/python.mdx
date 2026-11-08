@@ -1,0 +1,82 @@
+To validate brackets in Python, use a list as a stack of openers that still need a matching closer. The course accepts `()`, `[]`, and `{}`, allows other characters in the string, and ignores those other characters. The result is a Boolean, not a repaired string or a list of errors.
+
+For `([)]`, the counts look balanced but the nesting is wrong. The `)` tries to close a `(` while `[` is still open inside it. Matching the most recent opener is the rule that a list stack makes easy to enforce.
+
+## Build a closer-to-opener dictionary
+
+The matching dictionary is keyed by closing bracket. Given a closer, it tells us what must be at the top of the stack. A small set identifies the opening brackets. Together, they separate openers, closers, and text without a long chain of special cases.
+
+```python
+def has_valid_brackets(string):
+    stack = []
+    openings = {'(', '[', '{'}
+    matching = {')': '(', ']': '[', '}': '{'}
+
+    for char in string:
+        if char in openings:
+            stack.append(char)
+        elif char in matching:
+            if not stack or stack.pop() != matching[char]:
+                return False
+
+    return not stack
+```
+
+`append` adds to the right end of the list, and `pop()` without an index removes from that same end. The list always holds unmatched opening brackets in encounter order. The top entry is the most recent opener, which is the only one the current closer may consume.
+
+## Understand the short-circuit guard
+
+An empty list is false in a Boolean context, so `not stack` detects a closer with no available opener. Python evaluates `or` from left to right and stops if its first operand is true. That means `stack.pop()` is not called when the list is empty; an input such as `']'` returns false rather than raising an `IndexError`.
+
+If the list is nonempty, `pop()` removes the top opener and the comparison checks its type. On a mismatch, the function returns immediately. It does not matter that the invalid opener was removed: the function is done, and the stack is local to this call.
+
+The final `return not stack` checks for openers left behind. It is reached only if every closer seen so far had a legal match. That alone does not establish validity: `'((('` has no bad closers, but it still has three unfinished bracket pairs.
+
+## Follow one valid and one invalid trace
+
+For `'a[({b})]c'`, the letters do nothing. The `[` is appended first, followed by `(` and `{`. The `}` consumes `{`, the `)` consumes `(`, and the `]` consumes `[`. The list is empty after the final letter, so the string is valid.
+
+For `'([)]'`, the list becomes `['(', '[']` after two characters. The next character is `)`, and `matching[')']` is `(`. Popping produces `[`, which fails the comparison. The remaining `]` cannot make that earlier crossing legal, so there is no reason to scan it.
+
+A separate integer counter could track the number of unmatched brackets, but it would lose their types and order. Even three counters, one per bracket type, would incorrectly accept crossing brackets. The stack holds the specific information those counters throw away.
+
+## Use list operations that preserve the intended cost
+
+Python lists work well as stacks at the right end. `append` has amortized constant cost, and removing the final element avoids shifting the rest of the list. Using `pop(0)` would remove the oldest opener and require moving remaining elements, changing both the behavior and the cost.
+
+You could use `collections.deque` as a stack too, but it is unnecessary for this exercise. A deque becomes useful when the algorithm needs efficient operations at both ends. Python's [list-as-stack tutorial](https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks) shows the `append` and `pop` pattern used here.
+
+Keep the stack inside the function. A mutable default argument such as `stack=[]` would share that list between calls. Early returns could leave openers behind and contaminate a later result. The function accepts only the string; all working state is created afresh.
+
+## Check text, empty input, and nesting explicitly
+
+```python
+bracket_cases = [
+    ('', True),
+    ('ordinary text', True),
+    ('a + (b * [c])', True),
+    ('([]{})', True),
+    ('([)]', False),
+    (']', False),
+    ('(()', False),
+    ('(]', False),
+    ('🙂{x[y](z)}', True),
+]
+for value, expected in bracket_cases:
+    assert has_valid_brackets(value) is expected
+
+assert has_valid_brackets('()')
+assert not has_valid_brackets('(')
+assert has_valid_brackets('[]')
+assert has_valid_brackets('(' * 20000 + ')' * 20000)
+```
+
+The repeated calls check that state stays local, and the deeply nested case checks that the implementation does not depend on Python recursion depth. The algorithm stores the nesting in a list on the heap. There are no recursive calls.
+
+Python iterates a string as Unicode code points. The six delimiters are ASCII, and all other characters are ignored. This contract does not give quotes, comments, or escape sequences a parsing role. A bracket inside a quoted phrase still participates; validating actual Python source code would need a tokenizer or a richer state machine.
+
+## Explain the invariant and bounds
+
+After every successfully processed prefix, `stack` is exactly the sequence of openers that remain unmatched. An opener extends that sequence. A matching closer removes its last element. A wrong closer makes the string invalid permanently. The empty stack at the end therefore means every required match occurred in order.
+
+The function takes `O(n)` time under the conventional list-operation model. The matching containers hold a fixed six-bracket alphabet, and stack storage is `O(d)` for maximum open depth, with worst-case `O(n)` space. Try writing the function again using this invariant as your only prompt, then check both `'([)]'` and `'(()'` to exercise the two different failure paths.

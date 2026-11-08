@@ -1,0 +1,19 @@
+For every input position, return the product of all values except the value at that position. In `[2, 3, 4]`, the answer is `[12, 8, 6]`. The exclusion refers to an index, so repeated values still represent separate positions. The main solution avoids division and handles zero without a special division rule.
+
+## Build the product on each side
+
+Walk left to right with an accumulated prefix product. Write that product into the current output position before multiplying by the current input. At index 0, the prefix is the empty product, which is 1. For the example, this pass writes `[1, 2, 6]`.
+
+Then walk right to left with a suffix product. Multiply each output entry by the suffix before incorporating the current value. The final entry stays 6, the middle becomes 2 times 4, and the first becomes 1 times 12. Each output therefore contains exactly the factors before and after its index, while excluding the current factor from both accumulators.
+
+## Let zeros test the reasoning
+
+For `[0, 3, 4]`, the answer is `[12, 0, 0]`. With two zeros, every output is zero. Both cases follow from multiplication in the two passes. Dividing a total product by the current value would need separate handling for zeros. A negative value also changes signs, so use negative inputs when checking that the method follows factors rather than absolute values.
+
+The Python bonus solution now uses integer division where that alternative requires exact integer results. That correction does not make division necessary for the main algorithm. In fixed-width languages, multiplication can overflow; stay within the lesson's numeric promises or explicitly choose a wider representation.
+
+## Account for the returned storage
+
+Both passes take linear time. The output occupies linear storage, and the accumulators use constant additional space beyond that output. Keeping full prefix and suffix arrays is another valid explanation but adds storage that this version avoids.
+
+Try a one-element input, a zero at either end, two zeros, and negative factors. Read the [JavaScript implementation](/course/product-array/javascript) for the complete proof and use its language links to compare arithmetic and array allocation in the other nine languages. The [original exercise](/course/product-array) uses the same normal course progress record.

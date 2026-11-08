@@ -1,0 +1,29 @@
+```kotlin
+class Solution {
+    fun findMaxDepth(root: BinaryNode?): Int {
+        val stack = ArrayDeque<Pair<BinaryNode?, Int>>()
+        var maxDepth = -1 // Value to return if no node is given
+
+        if (root != null) {
+            // Updates to the correct root depth of 0
+            maxDepth = maxDepth + 1
+            // Add the root to the stack
+            stack.addLast(Pair(root, maxDepth))
+        }
+
+        while (stack.isNotEmpty()) {
+            // Remove top item on the stack and extract the node and its depth
+            val (node, depth) = stack.removeLast()
+
+            // If the node exists, compare it to the current max and add its children to the stack
+            if (node != null) {
+                maxDepth = maxOf(maxDepth, depth)
+                stack.addLast(Pair(node.right, depth + 1))
+                stack.addLast(Pair(node.left, depth + 1))
+            }
+        }
+
+        return maxDepth
+    }
+}
+```

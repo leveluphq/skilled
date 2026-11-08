@@ -1,0 +1,31 @@
+```python
+def merge_overlapping_intervals(intervals):
+    if len(intervals) == 0:
+        return []
+
+    # Sort by start time to get the meetings in the order they occur throughout the day
+    intervals.sort(key = lambda x: x["start"])
+
+    # The combined intervals array is initialized to the first meeting
+    merged_intervals = [intervals[0]]
+
+    for current_interval in intervals:
+        # Get the latest end-time since they overlap and set it as the end time of the combined interval
+        latest_merged_interval = merged_intervals[-1]
+        is_overlapping = current_interval["start"] <= latest_merged_interval["end"]
+
+        if is_overlapping:
+            latest_merged_interval["end"] = max(current_interval["end"], latest_merged_interval["end"])
+        else:
+            """
+            Since current_interval had the earliest start time of the remaining items,
+            no additional items can overlap the latestMergedInterval interval we compared current_interval to.
+
+            Add the current_interval as the last item to the merged interval's output since it did not overlap.
+            This will be the latest merged interval on the next iteration that we compare against.
+            """
+
+            merged_intervals.append(current_interval)
+
+    return merged_intervals
+```

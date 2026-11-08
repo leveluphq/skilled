@@ -1,0 +1,24 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+
+Excellent! We thought through our subproblems and a very simple and elegant recursive solution fell out of it.
+We have two stopping conditions: if the board length is less than 0 or exactly 0.
+The constraint in the introduction said to consider length 0 to be 1 total move which made this solution work nicely.
+
+We're not quite done yet though.
+You may have noticed that to reach any spot on the board, we calculate the total number of paths to reach prior spots multiple times.
+This means we're doing a ton of duplicate work, and not only do we have subproblems, but we have _overlapping_ subproblems.
+This causes Big O time of <BigO.bin base={3} />.
+
+If we visualize it as a recursive tree we get:
+
+<Image src="/images/three-moves-recursive-tree.png" isVisuAlgo alt="A recursive jump-count tree branches into the three smaller positions that can lead to each destination." width={2038} height={1301} />
+
+To remove these repeated operations, we can memoize the path count to reach a spot.
+After we calculate the solution to a subproblem the first time, we'll store the number of ways to reach this location in an array.
+Then when we need that subproblem solution again to calculate the answer to future subproblems, we can just read it from this data structure.
+
+The blue circles in the image above indicate that a value has already been calculated, and that we should use the memoized result.
+The red numbers indicate the total combination of unique ways to reach any subproblem board length, and we see that for five squares, the total paths is 13.
+
+With this, we can write an optimal solution.

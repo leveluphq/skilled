@@ -1,0 +1,33 @@
+```csharp
+public class Node {
+    public int data;
+    public Node next;
+
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+
+    // O(1)
+    public Node Prepend(int data) {
+        var prependedNode = new Node(data);
+        prependedNode.next = this;
+
+        return prependedNode;
+    }
+
+    // O(n)
+    public Node Append(int data) {
+        var appendedNode = new Node(data);
+        Node currentNode = this;
+
+        while (currentNode.next != null) {
+            currentNode = currentNode.next;
+        }
+
+        currentNode.next = appendedNode;
+
+        return appendedNode;
+    }
+}
+```

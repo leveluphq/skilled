@@ -1,0 +1,27 @@
+```csharp
+public class DynamicArray<T> {
+    public int length;
+    public Dictionary<int, T> data;
+
+    public DynamicArray() {
+        this.length = 0;
+        this.data = new Dictionary<int, T>();
+    }
+
+    public T Get(int index) {
+        // get an item at an index
+    }
+    public int Push(T item) {
+        // add an item to the end of the array
+    }
+    public T Pop() {
+        // remove the last item in the array
+    }
+    public Dictionary<int, T> Insert(int index, T item) {
+        // add an item at any index
+    }
+    public T Remove(int index) {
+        // remove an item at any index
+    }
+}
+```

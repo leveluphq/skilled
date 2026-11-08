@@ -1,0 +1,19 @@
+This exercise implements an array-shaped API using numeric keys in an object. The point is to expose the bookkeeping behind `get`, `push`, `pop`, `insert`, and `remove`. It is a teaching representation: a native array implementation also manages storage capacity, whereas the object in this lesson delegates its storage to the language runtime.
+
+## Keep length and occupied indexes consistent
+
+Maintain one invariant: valid entries occupy indexes from zero through length minus one. An empty instance has length zero. Pushing an item stores it at the old length, then increments length. Popping must save the final item, remove its property, and reduce length. Returning the item and returning the new length are different API decisions; follow each method's contract in the current code.
+
+For an instance containing `[4, 8, 12]`, pushing 16 writes index 3. Popping then returns 16 and restores the original state. Test repeated pushes and pops so an old property cannot survive beyond the reported length and reappear later.
+
+## Shift in the direction that preserves unread values
+
+To insert 6 at index 1, first move 12 to index 3, then 8 to index 2, then write 6. Moving from the insertion index toward the end would overwrite values before copying them. Removal has the opposite dependency: shift later values left, then delete the obsolete final property.
+
+The current Python insertion fixes the loop boundary for insertion at index zero. Include that case in a trace: the first existing value must move too. Also test insertion at length, removal of the only item, and removal at the front. Agree on behavior for invalid indexes before extending the exercise beyond its supplied contract.
+
+## Explain the cost of the teaching model
+
+Under expected constant-time object-key operations, indexed access and tail changes take constant work. Inserting or removing near the beginning shifts up to every element and takes linear time. Length itself is stored, so reading it does not require counting properties.
+
+Do not use this object-backed implementation to claim that native arrays never resize or that all hash operations have a worst-case constant bound. Review [Arrays](/watch/arrays) for the capacity model, then open the [current implementation lesson](/course/implement-an-array) and explain each mutation before running it.

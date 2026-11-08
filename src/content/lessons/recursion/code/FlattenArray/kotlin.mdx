@@ -1,0 +1,29 @@
+```kotlin
+// Each item is either an Int or a nested list
+fun recursiveFlatten(array: List<*>): List<Int> {
+    return array.fold(listOf()) { flattenedArray, item ->
+        if (item is List<*>) {
+            flattenedArray + recursiveFlatten(item)
+        } else {
+            flattenedArray + (item as Int)
+        }
+    }
+}
+
+fun iterativeFlatten(array: List<*>): List<Int> {
+    val output = mutableListOf<Int>()
+    val toBeFlattened = mutableListOf<Any?>(array)
+
+    while (toBeFlattened.isNotEmpty()) {
+        val current = toBeFlattened.removeAt(0)
+
+        if (current is List<*>) {
+            toBeFlattened.addAll(0, current)
+        } else {
+            output.add(current as Int)
+        }
+    }
+
+    return output
+}
+```

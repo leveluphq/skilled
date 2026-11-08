@@ -1,0 +1,28 @@
+```javascript
+type NestedArray = (number | NestedArray)[];
+
+function recursiveFlatten(array: NestedArray): number[] {
+  return array.reduce<number[]>((flattenedArray, item) => {
+    return Array.isArray(item)
+      ? [...flattenedArray, ...recursiveFlatten(item)]
+      : [...flattenedArray, item];
+  }, []);
+}
+
+function iterativeFlatten(array: NestedArray): number[] {
+  const output: number[] = [];
+  let toBeFlattened: NestedArray = [array];
+
+  while(toBeFlattened.length) {
+    const current = toBeFlattened.shift()!;
+
+    if(Array.isArray(current)) {
+      toBeFlattened = [...current, ...toBeFlattened];
+    } else {
+      output.push(current);
+    }
+  }
+
+  return output;
+}
+```

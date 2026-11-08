@@ -1,0 +1,69 @@
+```go
+type BinaryNode struct {
+	Data  int
+	Left  *BinaryNode
+	Right *BinaryNode
+}
+
+type BinarySearchTree struct {
+	root *BinaryNode
+}
+
+func NewBinarySearchTree() *BinarySearchTree {
+	return &BinarySearchTree{}
+}
+
+func (t *BinarySearchTree) Insert(data int) *BinarySearchTree {
+	node := &BinaryNode{Data: data}
+
+	// First insert becomes root
+	if t.root == nil {
+		t.root = node
+		return t
+	}
+
+	currentNode := t.root
+
+	for {
+		if data < currentNode.Data {
+			// Insert the node if you reach a leaf and return
+			if currentNode.Left == nil {
+				currentNode.Left = node
+				return t
+			}
+
+			// Continue by traversing left
+			currentNode = currentNode.Left
+		} else {
+			// Insert the node if you reach a leaf and return
+			if currentNode.Right == nil {
+				currentNode.Right = node
+				return t
+			}
+
+			// Continue by traversing right
+			currentNode = currentNode.Right
+		}
+	}
+}
+
+func (t *BinarySearchTree) Search(data int) *BinaryNode {
+	if t.root == nil {
+		return nil
+	}
+
+	currentNode := t.root
+
+	for currentNode != nil {
+		if data < currentNode.Data {
+			currentNode = currentNode.Left
+		} else if data > currentNode.Data {
+			currentNode = currentNode.Right
+		} else {
+			return currentNode
+		}
+	}
+
+	return nil
+}
+```

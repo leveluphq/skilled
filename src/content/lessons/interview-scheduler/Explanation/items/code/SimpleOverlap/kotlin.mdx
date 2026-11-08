@@ -1,0 +1,15 @@
+```kotlin
+// Input
+arrayOf(
+    Interval(start = 0.0, end = 4.0), // meeting 1
+    Interval(start = 3.0, end = 6.0), // meeting 2
+)
+// 0  1  2  3  4  5  6
+// |   mtg 1   |
+//          |  mtg 2 |
+
+// Combined
+arrayOf(Interval(start = 0.0, end = 6.0))
+// 0  1  2  3  4  5  6
+// |  mtg 1 + mtg 2  |
+```

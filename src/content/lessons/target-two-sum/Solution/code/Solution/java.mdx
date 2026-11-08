@@ -1,0 +1,38 @@
+```java
+class Solution {
+    public int[][] getTargetIndexes(int[] array, int target) {
+        List<int[]> results = new ArrayList<>();
+        Map<Integer, Integer> arrayElementAtIndex = new HashMap<>();
+
+        // Loop through our input array and
+        // create a hash table that stores the array value and
+        // its corresponding index.
+        for (int i = 0; i < array.length; i++) {
+            int element = array[i];
+            arrayElementAtIndex.put(element, i);
+        }
+
+        for (int i = 0; i < array.length; i++) {
+            // We find the element that would be the match current value
+            // and check if it is our hash table.
+            int currentValue = array[i];
+            int matchedValue = target - currentValue;
+            Integer matchedIndex = arrayElementAtIndex.get(matchedValue);
+
+            // Check if our matched index is a valid array index
+            // ----
+            // NOTE: get returns null if matchedValue
+            // is not in the hash table, so we check for that first.
+            if (matchedIndex != null && matchedIndex >= 0 && matchedIndex != i) {
+                results.add(new int[] { i, matchedIndex });
+
+                // Make sure we don't use these values again
+                arrayElementAtIndex.put(currentValue, -1);
+                arrayElementAtIndex.put(matchedValue, -1);
+            }
+        }
+
+        return results.toArray(new int[0][]);
+    }
+}
+```

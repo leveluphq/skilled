@@ -1,0 +1,44 @@
+```rust
+// The input is the index number, and the output will be the head node.
+fn delete_node(mut head: Option<Box<Node>>, index: usize) -> Option<Box<Node>> {
+    // If we want to delete the current head node,
+    // we just return the node after the current head.
+    if index == 0 {
+        return head.and_then(|node| node.next);
+    }
+
+    let mut preceding_node = head.as_deref_mut().expect("index out of range");
+
+    // Find the node that precedes the index of the node that we want to delete
+    for _ in 0..index - 1 {
+        preceding_node = preceding_node
+            .next
+            .as_deref_mut()
+            .expect("index out of range");
+    }
+
+    // Skip past our node to be removed
+    // Equivalent to preceding_node.next = preceding_node.next.next
+    let node_to_be_removed = preceding_node.next.take().expect("index out of range");
+    preceding_node.next = node_to_be_removed.next;
+
+    // There are now no nodes in the linked list that are pointing to node_to_be_removed.
+    // The node that was before it is now pointing to the one after it.
+    // Rust frees the removed node as soon as node_to_be_removed goes out of scope.
+
+    head
+}
+
+// Each node owns the one after it, so we build the list from the back
+let mut head = None;
+for data in [20, 10, 9000, 42] {
+    head = Some(Box::new(Node { data, next: head }));
+}
+// 42 -> 9000 -> 10 -> 20
+
+head = delete_node(head, 2);
+// 42 -> 9000 -> 20
+
+head = delete_node(head, 0);
+// 9000 -> 20
+```

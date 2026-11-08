@@ -1,0 +1,13 @@
+```java
+import java.util.*;
+
+class LifoOrderExample {
+static List<Integer> lifoOrder(List<Integer> values) {
+    Deque<Integer> stack = new ArrayDeque<>();
+    List<Integer> output = new ArrayList<>();
+    for (int value : values) stack.addLast(value);
+    while (!stack.isEmpty()) output.add(stack.removeLast());
+    return output;
+}
+}
+```

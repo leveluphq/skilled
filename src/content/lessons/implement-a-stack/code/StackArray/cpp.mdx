@@ -1,0 +1,25 @@
+```cpp
+class Stack {
+public:
+    vector<int> stack;
+
+    optional<int> peek() {
+        if (stack.empty()) {
+            return nullopt;
+        }
+        return stack.back();
+    }
+    int push(int item) {
+        stack.push_back(item);
+        return item;
+    }
+    optional<int> pop() {
+        if (stack.empty()) {
+            return nullopt;
+        }
+        int item = stack.back();
+        stack.pop_back();
+        return item;
+    }
+};
+```

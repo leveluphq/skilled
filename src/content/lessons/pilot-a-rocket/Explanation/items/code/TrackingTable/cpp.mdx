@@ -1,0 +1,12 @@
+```cpp
+unordered_map<string, string> previousNodeInPath = {
+    {"base", NO_NODE}, // NO_NODE = "" since nothing comes before the start
+    {"sat0", "base"},
+    {"sat1", "sat0"},
+    {"sat3", "sat0"}, // Ignore sat2's connection
+    {"sat4", "sat0"}, // Ignore sat2's and sat3's connection
+    {"sat2", "sat1"},
+    {"sat5", "sat4"},
+    {"ship", "sat5"},
+};
+```

@@ -1,0 +1,35 @@
+```swift
+class Greeting {
+    var hi: String
+    var isFriendly: Bool
+
+    init(hi: String, isFriendly: Bool) {
+        self.hi = hi
+        self.isFriendly = isFriendly
+    }
+}
+
+var pointer: Greeting? = Greeting(hi: "world", isFriendly: true)
+// The object { hi: "world", isFriendly: true } is created in memory
+// The pointer variable references/points to the object (classes are reference types)
+// pointer ----> { hi: "world", isFriendly: true }
+
+print(pointer!.hi)
+// pointer accesses the object from memory and requests the value stored for `hi`
+// pointer ----> { hi: "world", isFriendly: true } ----> hi
+//                                                 <---- "world"
+
+pointer!.hi = "friends"
+// pointer reassigns the value for `hi`
+// pointer ----> { hi: "world", isFriendly: true } ----> hi = "friends"
+
+pointer = nil
+// pointer changes its reference from the object to nil
+// The object is no longer referenced by the variable
+// (with no references left, Swift frees its memory right away)
+//
+// pointer           { hi: "friends", isFriendly: true }
+//       |
+//       |
+//       |--> nil
+```

@@ -1,0 +1,8 @@
+```rust
+fn fib_table(n: i32) -> Vec<i32> {
+    let mut table = vec![0];
+    if n >= 1 { table.push(1); }
+    for index in 2..=n as usize { table.push(table[index - 1] + table[index - 2]); }
+    table
+}
+```

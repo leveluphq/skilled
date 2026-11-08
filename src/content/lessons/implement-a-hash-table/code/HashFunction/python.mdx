@@ -1,0 +1,10 @@
+```python
+def hash(self, key):
+    hash = 0
+    key = str(key)
+
+    for i in range(len(key)):
+        hash = (hash + ord(key[i])) % self.size
+
+    return hash
+```

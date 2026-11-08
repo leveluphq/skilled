@@ -1,0 +1,21 @@
+import BigO from 'content/blocks/BigO';
+
+We know that our input is unsorted, so what if we sorted it inside our function?
+Sorting can be assumed to require <BigO.nlogn /> time complexity
+which is an improvement over the brute force solution.
+We find matching pairs by starting a pointer at the first and last item of the array and walk inward until they meet.
+By sorting, we would lose our original array indexing, so we would also need a way to track that.
+
+Sorting is an option to improve a brute force solution,
+but it's not the first thing we should consider.
+
+Our nested loop solution requires an <BigO.n /> lookup for all `n` items in the array.
+What if we introduced another data structure that allowed us to instead do a constant time <BigO.constant /> lookup.
+The problem statement says to prioritize run time over memory, which is often the case in most interview questions by default.
+
+To optimize a solution and introduce constant time lookups,
+the first thing you should always check is if a hash table can help.
+
+We could store the array values and indexes in a hash table and then access them as we loop through our array.
+If we do `target - current`, we'll get the complementary value that adds to the target.
+We check if this value is in our hash table, and if it is, we know the index of the second item that sums to the target with our current item.

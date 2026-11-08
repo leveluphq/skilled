@@ -1,0 +1,9 @@
+```go
+import "strings"
+
+func RepeatText(text string, count int) string {
+    var output strings.Builder
+    for index := 0; index < count; index++ { output.WriteString(text) }
+    return output.String()
+}
+```

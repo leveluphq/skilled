@@ -1,0 +1,9 @@
+```rust
+fn ascii_palindrome(text: &str) -> bool {
+    let clean: Vec<u8> = text.bytes()
+        .filter(|value| value.is_ascii_alphanumeric())
+        .map(|value| value.to_ascii_lowercase())
+        .collect();
+    clean.iter().eq(clean.iter().rev())
+}
+```

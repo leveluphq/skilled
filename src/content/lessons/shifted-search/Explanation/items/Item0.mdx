@@ -1,0 +1,10 @@
+import BigO from 'content/blocks/BigO';
+import ConceptModal from 'content/blocks/ConceptModal';
+import BinarySearch from 'content/lessons/searching-and-binary-search/BinarySearch.mdx';
+
+A brute force linear search takes <BigO.n /> time and should work in any instance.
+
+In a sorted array, we know that we can perform <BigO.logn /> <ConceptModal content={<BinarySearch />}>binary search</ConceptModal> to find an item.
+
+The input in this problem is still "sorted", but it has been shifted by an unkown number of units.
+Is there a way to still perform a binary search if we can account for that?

@@ -1,0 +1,15 @@
+```kotlin
+fun minimumCoins(coins: List<Int>, amount: Int): Int {
+    val impossible = amount + 1
+    val best = IntArray(amount + 1) { impossible }
+    best[0] = 0
+    for (value in 1..amount) {
+        for (coin in coins) {
+            if (coin <= value && best[value - coin] != impossible) {
+                best[value] = minOf(best[value], 1 + best[value - coin])
+            }
+        }
+    }
+    return if (best[amount] == impossible) -1 else best[amount]
+}
+```

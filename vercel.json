@@ -1,0 +1,8 @@
+{
+  "installCommand": "npm ci",
+  "functions": {
+    "src/pages/api/v1/lessons/*/submissions/code.ts": {
+      "maxDuration": 60
+    }
+  }
+}

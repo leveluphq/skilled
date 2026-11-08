@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import UnsortedIntervals from './code/UnsortedIntervals';
+import SortedIntervals from './code/SortedIntervals';
+import SortedIntervalsSolution from './code/SortedIntervalsSolution';
+
+These examples were contrived though.
+What if our array of meeting times looked like the following?
+
+<UnsortedIntervals />
+
+These items are no longer ordered in a manner that makes it possible to follow the simple algorithm.
+One option is that we could do a brute force comparison.
+We could take each meeting time and compare it against all the other items in a double-nested loop which would take <BigO.n2 /> time.
+
+We noted that the order was important and was how we could make the comparisons, and to get an array in the correct order, we can sort it.
+We also know that sorting takes <BigO.nlogn /> time which is faster than our brute force approach and will improve on that.
+So before we're able to compare the meeting times, we need to sort them correctly.
+
+What do we sort by?
+When we look at a new meeting to compare, we are using its start time,
+so the important new piece of information at each step is _knowing when a meeting begins_.
+A meeting (or block of meets) must start before it can end, so the end time only matters after we've combined them into a new block to create a combined interval.
+
+This means we can sort by all the meetings' start times to know when they occur throughout the day.
+This adds an additional <BigO.nlogn /> time.
+
+Sorting by start time with our example yields the following:
+
+<SortedIntervals />
+
+Then if we combine them, we get the following answer:
+
+<SortedIntervalsSolution />

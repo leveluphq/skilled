@@ -1,0 +1,14 @@
+```python
+def enqueue(self, item):
+    new_last_node = Node(item)
+    is_empty_list = not self.first and not self.last
+
+    if is_empty_list:
+        self.first = new_last_node
+        self.last = new_last_node
+    else:
+        self.last.prev = new_last_node
+        self.last = new_last_node
+
+    return new_last_node
+```

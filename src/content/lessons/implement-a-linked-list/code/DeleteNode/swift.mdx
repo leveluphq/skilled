@@ -1,0 +1,39 @@
+```swift
+// The input is the index number, and the output will be the head node.
+func deleteNode(_ head: Node?, _ index: Int) -> Node? {
+    // If we want to delete the current head node,
+    // we just return the node after the current head.
+    if index == 0 {
+        return head?.next
+    }
+
+    var precedingNode = head
+
+    // Find the node that precedes the index of the node that we want to delete
+    for _ in 0..<(index - 1) {
+        precedingNode = precedingNode?.next
+    }
+
+    // Skip past our node to be removed
+    // Equivalent to precedingNode.next = precedingNode.next.next
+    let nodeToBeRemoved = precedingNode?.next
+    precedingNode?.next = nodeToBeRemoved?.next
+
+    // There are now no nodes in the linked list that are pointing to nodeToBeRemoved.
+    // The node that was before it is now pointing to the one after it.
+
+    return head
+}
+
+var head: Node? = Node(42)
+head?.next = Node(9000)
+head?.next?.next = Node(10)
+head?.next?.next?.next = Node(20)
+// 42 -> 9000 -> 10 -> 20
+
+head = deleteNode(head, 2)
+// 42 -> 9000 -> 20
+
+head = deleteNode(head, 0)
+// 9000 -> 20
+```

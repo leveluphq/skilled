@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+This question is a special case for sorting.
+Typically with questions that require sorting, the input data can be arrays containing arbitrary numerical values or string values.
+
+However, here we have a well-defined range of values for the input that we know beforehand.
+Using this information, we can bucket the items based on this value to count their total number of occurrences.
+
+Once we have the count of all the ages for each bucket, we start at the lowest age and add it to the output array based on its count.
+After doing this for all 101 valid ages, we will have a completely sorted solution.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space.
+</p>
+
+We add an additional data structure of <BigO.n /> for the solution array.
+Our array where we keep the count of scores is actually <BigO.constant /> since the max size it can be is 100 items, but the solution array causes us to have <BigO.n /> space since it must hold all the items.
+
+It requires <BigO.n /> time to build this array of counts and <BigO.n /> time to create the output array.
+Since these are sequential loops, our time complexity is just <BigO.n />.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

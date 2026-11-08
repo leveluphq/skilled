@@ -1,0 +1,16 @@
+import Null from 'content/blocks/Null';
+
+**All recursive problems need a base case**.
+In a typical tree traversal, we walk down the path until we hit a <Null />.
+For this problem, if we hit a <Null />, that is a base case that indicates we _failed_ to find a child.
+If we hit a target child node, this is another base case which indicates a _success_.
+
+So this question has two base cases:
+
+1. Returning <Null /> means we did not find a target node on a path.
+2. If we find a target child, we return this node which indicates a successful discovery.
+
+If a target child is found, each recursive call above it will continue to return this child node as the result.
+Once we reach the node where the recursive call from both the `left` and `right` path are not <Null /> (a child node returned from each),
+we know we have found the closest common ancestor.
+We now return this node, and it will recursively move its way up since it isn't <Null /> and will be the solution in the end once the entire call stack unwinds.

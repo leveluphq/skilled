@@ -1,0 +1,18 @@
+import Null from 'content/blocks/Null';
+import QuestionPrompt from 'content/blocks/QuestionPrompt';
+import { CodingLanguage } from 'utils/constants/lesson';
+import SampleInputOutput from './SampleInputOutput.mdx';
+import InlineCode from './inlineCode';
+
+You became a developer because you want to change the world, and you think you found a way to do it.
+
+You discovered two blockchains (SkilledChain and DevCoin) that by being combined, would create a new unified blockchain that will transform every industry.
+It would enable the infrastructure for a decentralized internet and its cryptocurrency would remove the need for banks and financial institutions.
+
+To validate your hypothesis, you need to create a combined blockchain ordered by when the blocks were created.
+Each node in a blockchain has a `data` property, which is the <a href="https://en.wikipedia.org/wiki/Unix_time" target="_blank" rel="noopener noreferrer">unix timestamp</a> of when the node was added.
+If there are duplicate timestamps, then either node can come first.
+
+**Given the head nodes of two blockchains (represented as linked lists) sorted by timestamp (the `data` property), write a function <InlineCode /> that returns the head node of a merged linked list that is sorted by timestamp in ascending order.**
+
+<SampleInputOutput />

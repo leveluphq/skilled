@@ -1,0 +1,60 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A linked list stores a sequence through nodes that refer to other nodes. A singly linked node points to its successor; a doubly linked node also points to its predecessor. The recording compares those links with array indexes. For interview problems, the first question is often what references the function receives: only a head, a head and tail, or a complete wrapper object.
+
+## Separate reaching a node from changing its links
+
+If you already have a predecessor, inserting after it needs a small number of reference changes. Finding the predecessor by position may require a linear walk from the head. Describing insertion as constant time without naming the available reference hides that search cost.
+
+Appending has the same distinction. A singly linked list with only its head must walk to the end. A wrapper that retains a tail can append directly, provided it also updates the empty-list case. Removing the tail from a singly linked list still needs its predecessor unless that reference is available separately.
+
+## Preserve the rest of the chain
+
+When changing a next reference, keep access to any nodes you still need. Reversal is a useful example: save the old successor before pointing the current node backward. Otherwise, the remaining chain may become unreachable from the function's local references.
+
+A function that prepends, removes the head, or reverses the list may return a different head. Callers must use that returned reference. Matching node values is also different from matching node identity; two nodes may contain equal data while occupying different positions in the chain.
+
+## Test structural boundaries
+
+Use an empty list, one node, and two nodes before testing a long example. Check that the last next reference is empty and that any wrapper's length agrees with a full traversal. For a doubly linked list, walking backward should recover the same nodes in reverse order. Accidental cycles can make a simple traversal run forever.
+
+The blockchain comparison in the recording is an analogy for backward links; it does not imply that ordinary blocks form a doubly linked list. Continue with [Pointers](/watch/pointers) for reference identity, [Implement a Linked List](/watch/implement-a-linked-list) for mutations, and the [pointer visualizer](/tools/linked-list-pointers) for a step-by-step reversal trace.
+
+## Choose the second middle for an even-length list
+
+The example builds a singly linked list from the supplied values and advances two runners. Slow moves one link per iteration; fast moves two. With `[10, 20, 30, 40]`, the result is 30, the second of the two middle values. With three values it is the ordinary middle. An empty input returns an explicit absent result.
+
+The loop continues only while fast and its next link both exist. This guard makes the two-link step safe. Since the lists constructed here are acyclic, fast eventually reaches the end. Applying the same loop to a cyclic external list would need a different contract or cycle handling.
+
+## Separate construction from traversal
+
+Building n nodes takes O(n) time and storage. Traversing them to find the middle takes O(n) time and only a constant number of runner references. The entire function therefore allocates O(n); calling the whole example constant-space would omit its construction step.
+
+Check lengths zero through four before trying larger inputs. These small cases establish the selected middle convention and the empty-list behavior. Values can repeat, because the runners follow node identity and links rather than comparing payload values. Native ownership choices differ: some versions use garbage-collected references, while others use owning nodes and borrowed traversal references. Those choices must preserve the same traversal without introducing an ownership cycle. For deletion or reversal practice, keep track of the link you still need before replacing it.
+
+## Kotlin example and implementation choices
+
+The nullable node type and safe calls express missing links explicitly. The loop checks fast and its next node before advancing two links; slow advances one. The return is Int?, preserving a distinct empty result. Building nodes from reversed indices leaves values unchanged. A List implementation with slow indexed access would add construction costs beyond those of an ArrayList input.
+
+### Worked example
+
+```kotlin
+fun middleValue(values: List<Int>): Int? {
+    class ListNode(val value: Int, val next: ListNode?)
+    var head: ListNode? = null
+    for (index in values.indices.reversed()) head = ListNode(values[index], head)
+    var slow = head
+    var fast = head
+    while (fast != null && fast.next != null) {
+        slow = slow?.next
+        fast = fast.next.next
+    }
+    return slow?.value
+}
+```
+
+## Continue in Kotlin
+
+[Open Linked Lists](/course/linked-lists) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Kotlin example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Kotlin interview preparation guide](/interview-prep/kotlin) connects these language choices with further practice and the cross-language operation reference.

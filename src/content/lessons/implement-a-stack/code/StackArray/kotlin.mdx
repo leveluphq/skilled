@@ -1,0 +1,16 @@
+```kotlin
+class Stack {
+    private val stack = mutableListOf<Int>()
+
+    fun peek(): Int? {
+        return stack.lastOrNull()
+    }
+    fun push(item: Int): Int {
+        stack.add(item)
+        return item
+    }
+    fun pop(): Int? {
+        return stack.removeLastOrNull()
+    }
+}
+```

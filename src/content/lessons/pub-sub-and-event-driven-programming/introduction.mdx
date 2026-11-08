@@ -1,0 +1,49 @@
+import { Section } from 'style/elements/lesson';
+import Image from 'content/blocks/Image';
+import PubSubShell from './code/PubSubShell';
+import PubSubExample from './code/PubSubExample';
+
+<Section>
+
+Event-driven programming is incredibly important in software engineering,
+and it's the foundation of JavaScript (both in the browser and Node.js).
+Events are emitted on interaction either by a user or triggered from within the program,
+and there are listeners that execute a callback when they recognize a specific event.
+
+You can see instances of event-driven programming in:
+
+- Browser events (`onclick`, `onload`, `onkeyup`, etc.)
+- Node.js server events
+- Sockets
+- Messaging
+- Redux and other state management libraries
+- RxJS and other event libraries
+- GraphQL subscriptions
+
+There are different names for the various event design patterns,
+but the core concept is the same.
+In this lesson, we will build a Pub-Sub, but the intuition will be transferable.
+Other similar concepts are:
+
+- Observer pattern
+- Event bus
+- Message queue
+- Event-driven architecture
+
+There are subtle differences between the different pattern implementations,
+but the important learning outcomes are all the same.
+In this question, you will build a Pub-Sub (publish-subscribe pattern) where publishers emit actions and subscribers listen for a specific action and execute a callback accordingly.
+
+We will implement the Pub-Sub as a class with `subscribe`, `publish`, `unsubscribe` methods.
+They will communicate through an `eventName` channel which is just a string.
+It should be built so that many `subscribers` can listen for the same event.
+
+<Image src="/images/pub-sub.png" alt="Publishers send events through a channel that distributes them to subscribed listeners." width={2088} height={1200} />
+
+<PubSubShell />
+
+Then to use it, we do the following:
+
+<PubSubExample />
+
+</Section>

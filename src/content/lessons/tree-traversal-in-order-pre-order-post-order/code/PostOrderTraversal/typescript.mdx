@@ -1,0 +1,9 @@
+```javascript
+function postOrderTraversal(node: BinaryTreeNode | null): void {
+  if (node !== null) {
+    postOrderTraversal(node.left);
+    postOrderTraversal(node.right);
+    visitNode(node);
+  }
+}
+```

@@ -1,0 +1,43 @@
+An edge-case test should expose a specific way an implementation could be wrong. Another random array can increase the test count without challenging a new assumption. This practice tool asks you to choose an input or assertion that distinguishes the intended contract from a plausible bug.
+
+The eight prompts cover zero-valued indexes, zeros in products, global tree constraints, negative values in windows, graph cycles, binary-search sentinels, Unicode units, and input mutation. Check an answer, read the reasoning, and follow the related lesson. You can also open the complete prompt-and-answer list without finishing the interactive round.
+
+## Name the assumption that could fail
+
+Begin with a statement precise enough to contradict. A map lookup might confuse a present index zero with a missing entry. A BST validator might inspect only a node's children. A search might assume its target exists. Each assumption suggests a smaller and more informative test than “try a large input.”
+
+For Two Sum, store a matching value at position zero. If the implementation checks the retrieved index with a truthiness condition, it misses that pair. The useful property is the index, not a particular choice of large or unusual values.
+
+Write the expected result before running the implementation. If you decide what “correct” means only after seeing its output, the test can quietly adopt the same mistaken assumption. When output order is flexible, normalize that order while preserving the required multiplicity and original-index meaning.
+
+## Distinguish local checks from global rules
+
+A strict BST requires every value in a node's left subtree to be smaller, and every value in its right subtree to be larger. Checking only immediate children misses an invalid descendant that crosses an older ancestor's boundary.
+
+Build a root of 10 with a left child 5 and a right child 12 beneath that 5. The child 12 is locally greater than 5, but it still belongs to the left subtree of 10. This test points directly to the missing inherited upper bound.
+
+The same pattern appears in other tasks. A bracket sequence can have matching total counts while nesting incorrectly. A route can use valid individual edges while repeating a node indefinitely. Test the property that spans the whole structure rather than only the easiest nearby relationships.
+
+## Test boundaries that change the control flow
+
+Empty input, a singleton, a missing answer, and a target at the first or last valid position often send execution through different branches. They are useful because of those branches, not because every function needs the same ritual checklist.
+
+An all-false first-true predicate tests the not-found sentinel. A self-loop tests discovery marking in graph traversal. Two zeros test whether a product implementation relies on division. A single bracket tests the unfinished-stack rule. State the branch or invariant each case checks.
+
+Inputs outside the stated contract need a separate policy. A routine promised only nonnegative values may reject negatives, or document them as unsupported. Adding an unsupported input to a test suite and expecting arbitrary behavior does not improve contract coverage. Change the contract deliberately when broader handling is useful.
+
+## Include language representation in the test model
+
+JavaScript string length counts UTF-16 code units. A supplementary emoji occupies two such units but one Unicode code point. A displayed character can also contain several code points, as with a combining sequence. “Character count” needs an explicit unit before the expected answer can be established.
+
+Fixed-width subtraction, multiplication, and comparison helpers can fail at numeric boundaries even when ordinary examples pass. Mutable slices and arrays can share storage in ways a copied-looking expression hides. A language-specific test should exercise the documented representation rather than borrow expectations from a different runtime.
+
+The [language preparation guides](/interview-prep) explain those concerns in each supported language. Use them to select a focused boundary case and explain why it matters to the implementation you actually wrote.
+
+## Check side effects as well as return values
+
+A helper can return an acceptable answer and still mutate input it promised to preserve. Save an input copy, call the function, then compare the caller's original collection with that copy. Separately validate the returned answer.
+
+For linked structures, checking only displayed values can miss identity or reachability errors. A newly allocated node with the same value may violate a task that requires a node from the original tree. For a queue, an undefined stored payload must remain distinguishable from an empty queue if both are supported.
+
+Use the [practice worksheet](/reference/interview-practice-worksheet) to record the contract, a baseline, and three assumption-driven cases. Then write the smallest failing input you can explain. After fixing the bug, keep that case as a regression test and add an independent reference for small generated inputs where practical. A quiz answer is a starting point; applying the test to your own implementation is the skill being practiced.

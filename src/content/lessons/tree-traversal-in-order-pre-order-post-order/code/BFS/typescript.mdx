@@ -1,0 +1,27 @@
+```javascript
+// Using a dynamic array as a queue
+// unshift == enqueue
+// pop == dequeue
+function breadthFirstSearch(root: BinaryTreeNode | null): void {
+  if (root === null) {
+    return;
+  }
+
+  let currentNode = root;
+  let queue = [currentNode];
+
+  while(queue.length > 0){
+    currentNode = queue.pop()!;
+
+    visitNode(currentNode)
+
+    if(currentNode.left !== null) {
+      queue.unshift(currentNode.left);
+    }
+
+    if(currentNode.right !== null) {
+      queue.unshift(currentNode.right);
+    }
+  }
+}
+```

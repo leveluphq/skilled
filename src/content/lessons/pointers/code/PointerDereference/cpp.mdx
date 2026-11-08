@@ -1,0 +1,17 @@
+```cpp
+parent->c1 = nullptr;
+cout << parent->c1 << ", " << child1->mood << endl; // 0, stoked (a null pointer prints as 0)
+
+parent->c1 = child1;
+
+child1 = new Child{8, "curious"}; // child1 now points to a different object
+cout << parent->c1->mood << ", " << child1->mood << endl; // stoked, curious
+
+// C++ doesn't free memory for us, so we delete an object
+// before we remove the last pointer to it
+delete parent->c1;
+parent->c1 = nullptr;
+delete child1;
+child1 = nullptr;
+cout << parent->c1 << ", " << child1 << endl; // 0, 0
+```

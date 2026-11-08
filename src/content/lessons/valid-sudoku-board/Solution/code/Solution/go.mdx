@@ -1,0 +1,108 @@
+```go
+import "math"
+
+func isValidSudokuBoard(board [][]int) bool {
+	// Exit early if the board does not have a valid shape
+	if !hasValidShape(board) {
+		return false
+	}
+
+	return hasValidCells(board)
+}
+
+// The function to check for a valid shape is all constant time and space O(1)
+func hasValidShape(board [][]int) bool {
+	// We have an empty board, it is automatically invalid
+	if len(board) == 0 || len(board[0]) == 0 {
+		return false
+	}
+
+	rowCount := len(board)
+	columnCount := len(board[0])
+	isSquare := rowCount == columnCount
+
+	// The board is not a square, so we know it is invalid
+	if !isSquare {
+		return false
+	}
+
+	// For a board to be composed of sub-squares,
+	// the square root of k must be a whole number
+	hasSubsquares := math.Mod(math.Sqrt(float64(rowCount)), 1) == 0
+	if !hasSubsquares {
+		return false
+	}
+
+	// All conditions are met, so it is a valid shape
+	return true
+}
+
+// Helper functions to init our slices of hash tables
+func sliceOfMaps(size int) []map[int]int {
+	tables := make([]map[int]int, size)
+	for i := range tables {
+		tables[i] = map[int]int{}
+	}
+	return tables
+}
+
+func nestedSliceOfMaps(size int) [][]map[int]int {
+	tables := make([][]map[int]int, size)
+	for i := range tables {
+		tables[i] = sliceOfMaps(size)
+	}
+	return tables
+}
+
+func hasValidCells(board [][]int) bool {
+	// Get the dimensions of the board and sub-squares
+	sizeOfBoard := len(board)
+	sizeOfSubsquare := int(math.Sqrt(float64(sizeOfBoard)))
+
+	// Create our one-dimensional slices of hash tables for rows and columns
+	rows := sliceOfMaps(sizeOfBoard)
+	columns := sliceOfMaps(sizeOfBoard)
+
+	// Create a two-dimensional slice of hash tables
+	// where there is a separate hash table for each sub-square
+	subsquares := nestedSliceOfMaps(sizeOfSubsquare)
+
+	for row := 0; row < sizeOfBoard; row++ {
+		for col := 0; col < sizeOfBoard; col++ {
+			cellValue := board[row][col]
+
+			// If we have a value, we need to add it to our hash tables
+			// and return false if a value already existed.
+			if cellValue > 0 {
+				// Since the sub-square tracker is a 2D jxj slice,
+				// we need to normalize the coordinates by j
+				subsquareRow := row / sizeOfSubsquare
+				subsquareCol := col / sizeOfSubsquare
+
+				// Increment the count of the cell value for the corresponding row, column, sub-square.
+				// A value we haven't seen yet starts from the map's zero value, 0.
+				//
+				// rows and columns are a 1-D slice where we look for the cellValue in a hash table
+				rows[row][cellValue]++
+				columns[col][cellValue]++
+				//
+				// subsquares is a 2-D matrix
+				subsquares[subsquareRow][subsquareCol][cellValue]++
+
+				// If the value is greater than 1, we have already seen this in the hash table
+				hasRowDuplicate := rows[row][cellValue] > 1
+				hasColumnDuplicate := columns[col][cellValue] > 1
+				hasSubsquareDuplicate := subsquares[subsquareRow][subsquareCol][cellValue] > 1
+
+				// Return if there are any duplicates
+				if hasRowDuplicate || hasColumnDuplicate || hasSubsquareDuplicate {
+					return false
+				}
+			}
+		}
+	}
+
+	// We iterated to the end and didn't find any duplicates
+	return true
+}
+```

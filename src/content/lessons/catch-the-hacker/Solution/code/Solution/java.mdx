@@ -1,0 +1,30 @@
+```java
+class Solution {
+    public String findHackerEmail(String[] emails) {
+        Map<String, Integer> emailCountTable = new HashMap<>();
+        int maxCount = 0;
+        String hackerEmail = "";
+
+        // Create a hash table that tracks the count of each email
+        // This is an O(n) operation
+        for (String email : emails) {
+            // If we haven't seen the email yet, it starts at 1;
+            // otherwise increment the count for the email
+            emailCountTable.merge(email, 1, Integer::sum);
+        }
+
+        // Iterate the hash table to find the email that appears the most
+        // This is an O(n) operation
+        for (Map.Entry<String, Integer> entry : emailCountTable.entrySet()) {
+            int count = entry.getValue();
+
+            if (count > maxCount) {
+                maxCount = count;
+                hackerEmail = entry.getKey();
+            }
+        }
+
+        return hackerEmail;
+    }
+}
+```

@@ -1,0 +1,50 @@
+```kotlin
+class DoublyNode(var data: Int) {
+    var next: DoublyNode? = null
+    var prev: DoublyNode? = null
+}
+
+class DoublyLinkedList(data: Int) {
+    var length: Int
+    var head: DoublyNode
+    var tail: DoublyNode
+
+    init {
+        val initialNode = DoublyNode(data)
+
+        length = 1
+        head = initialNode
+        tail = initialNode
+    }
+
+    // O(1)
+    fun prepend(data: Int): DoublyNode {
+        val prependedNode = DoublyNode(data)
+        val previousHead = head
+
+        head = prependedNode
+        head.next = previousHead
+
+        previousHead.prev = head
+
+        length++
+
+        return head
+    }
+
+    // O(1)
+    fun append(data: Int): DoublyNode {
+        val appendedNode = DoublyNode(data)
+        val previousTail = tail
+
+        tail = appendedNode
+        tail.prev = previousTail
+
+        previousTail.next = tail
+
+        length++
+
+        return appendedNode
+    }
+}
+```

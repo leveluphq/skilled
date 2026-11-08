@@ -1,0 +1,15 @@
+```go
+func hanoi(disc int, src, aux, dest string) {
+	// Base case (stop moving discs)
+	if disc == 0 {
+		return
+	}
+
+	// Recursively rotate discs
+	hanoi(disc-1, src, dest, aux)
+	fmt.Printf("Move disc %d from %s to %s\n", disc, src, dest)
+	hanoi(disc-1, aux, src, dest)
+}
+
+hanoi(4, "left peg", "middle peg", "right peg")
+```

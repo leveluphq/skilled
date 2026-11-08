@@ -1,0 +1,22 @@
+```javascript
+function reverseString(str: string): string {
+  // Base case
+  if (str.length === 0) {
+    return '';
+  }
+
+  // Recursively add the front character to end of the remaining string
+  return reverseString(str.slice(1)) + str[0];
+}
+
+reverseString('dev');
+// reverseString('dev')
+//   reverseString('ev')
+//     reverseString('v')
+//       reverseString('')
+//       return ''
+//     return '' + 'v'
+//   return 'v' + 'e'
+// return 've' + 'd'
+// -> 'ved'
+```

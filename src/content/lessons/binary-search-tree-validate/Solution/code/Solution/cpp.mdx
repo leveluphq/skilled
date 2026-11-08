@@ -1,0 +1,33 @@
+```cpp
+class Solution {
+    bool recursiveValidate(BinaryNode* root, long long lowerBound, long long upperBound) {
+        // Base case 1 (reached leaf, valid)
+        if (root == nullptr) {
+            return true;
+        }
+
+        // Base case 2 (invalid)
+        if (root->data <= lowerBound || root->data >= upperBound) {
+            return false;
+        }
+
+        // When we traverse left, the current node's value must be the newest upper bound
+        // This ensures it's always strictly decreasing from the current node
+        bool isValidLeft = recursiveValidate(root->left, lowerBound, root->data);
+
+        // When we traverse right, the current node's value must be the newest lower bound
+        // This ensures it's always strictly increasing from the current node
+        bool isValidRight = recursiveValidate(root->right, root->data, upperBound);
+
+        // Both must be true for this to return true
+        return isValidLeft && isValidRight;
+    }
+
+public:
+    bool isBST(BinaryNode* root) {
+        // The long long limits are beyond every int, like -Infinity and Infinity
+        bool isValid = recursiveValidate(root, LLONG_MIN, LLONG_MAX);
+        return isValid;
+    }
+};
+```

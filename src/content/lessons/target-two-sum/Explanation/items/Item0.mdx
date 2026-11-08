@@ -1,0 +1,20 @@
+First let's make sure we understand what the question is asking.
+We are given an `array` and a `target` value.
+We want to find all the items in the array that add up to the target and return their index pairs.
+So when we do find a match, we return the indexes for where these numbers are stored.
+
+The integers in our input array are **unique** and **unsorted**.
+Since the items are unique, we know that we won't have to ever worry about seeing any given input number more than once.
+It also means we don't have to worry about a single item having multiple matches.
+For example, let's say we have a `target = 9`, and we find a 5 in the input.
+We know that its only match could be a 4, and we would only see the 5 or 4 at most one time each.
+So we should only see an index in the `results` either 0 or 1 time.
+
+Since the items are unsorted, we can't use their position in the array to gain any information about where we could possibly find the matching item that would sum to the `target`.
+
+The output asks for an array of arrays.
+Each subarray in the output is going to contain two items where each is an index of the input array.
+Based on the constraints, we also should not include a pair of indexes more than once, and we don't have to worry about the order.
+So if we had the input `[9,2]` and a target `11`, we would just return `[[0,1]]` or `[[1,0]]`.
+
+Now that we're comfortable with the question, how do we actually find the values that add up to the target?

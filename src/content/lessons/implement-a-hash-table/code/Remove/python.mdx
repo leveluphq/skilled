@@ -1,0 +1,16 @@
+```python
+def remove(self, key):
+    index = self.hash(key)
+    bucket = self.table[index]
+
+    # Find the key in the bucket, delete the key-value pair, and return its value
+    for i in range(len(bucket)):
+        if bucket[i]["key"] == key:
+            value = bucket[i]["value"]
+            bucket.pop(i)
+
+            return value
+
+    # Return None if the key didn't exist
+    return None
+```

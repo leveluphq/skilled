@@ -1,0 +1,22 @@
+```rust
+impl Solution {
+    pub fn steal_packages(package_values: Vec<i32>) -> i32 {
+        let mut max_at_two_houses_before = 0;
+        let mut max_profit = 0;
+
+        for current_value in package_values {
+            // Temp variable to remember the max before reaching this house
+            let max_before_reaching_current_house = max_profit;
+
+            // Find the max between the previous house or the current house + the house two spots back
+            max_profit = (max_at_two_houses_before + current_value).max(max_profit);
+
+            // The max of the house before this one becomes the max of the house two spots back
+            // when entering the next iteration of the loop
+            max_at_two_houses_before = max_before_reaching_current_house;
+        }
+
+        max_profit
+    }
+}
+```

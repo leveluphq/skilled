@@ -1,0 +1,16 @@
+```java
+static <T> void runner(Node<T> head) {
+    // We initialize our fast and slow to the head
+    Node<T> fast = head;
+    Node<T> slow = head;
+
+    // We iterate through until fast reaches the end
+    while (fast != null && fast.next != null) {
+        // We skip to every second node with the fast runner
+        fast = fast.next.next;
+        slow = slow.next;
+    }
+
+    // ... do something with this information
+}
+```

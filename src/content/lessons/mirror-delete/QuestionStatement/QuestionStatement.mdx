@@ -1,0 +1,24 @@
+import Null from 'content/blocks/Null';
+import QuestionPrompt from 'content/blocks/QuestionPrompt';
+import { CodingLanguage } from 'utils/constants/lesson';
+import SampleInputOutput from './SampleInputOutput.mdx';
+import InlineCode from './inlineCode';
+
+You are given the head `ListNode` of a singly linked list and are told you need to remove an element in the list.
+However, instead of being given the index relative to the head for the element you want to delete, you are told you want to remove an item `k` nodes back from the tail.
+
+Constraints:
+
+1. Iterate through the linked list in one pass.
+2. You don't know the size of the linked list.
+3. `k >= 0`
+4. The tail node is considered the `k = 0` element.
+5. If there is no node that can be removed, return the same list.
+
+> The definition of one pass is up for debate.
+> In this problem, we'll define it as:
+> once your pointer reaches the tail, you can't then start another pointer at the head again.
+
+**Given a linked list head node and an integer `k`, write a function <InlineCode /> that removes the kth element back from the tail node in one pass.**
+
+<SampleInputOutput />

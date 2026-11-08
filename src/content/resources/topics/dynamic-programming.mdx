@@ -1,0 +1,41 @@
+Dynamic programming starts with a definition of a subproblem. A cache helps only when the same complete state has the same answer, and a table helps only when its evaluation order respects the dependencies between states.
+
+Follow [Subproblems and Overlapping Subproblems](/course/subproblems-and-overlapping-subproblems), [Memoization](/course/memoization), and [Bottom-Up vs. Top-Down](/course/bottom-up-vs-top-down). The [worked dynamic-programming guide](/patterns/dynamic-programming) develops one recurrence through a direct choice model, a cache, a table, and reduced working storage.
+
+## Define what one result answers
+
+A state can describe a suffix, a prefix, a remaining capacity, a pair of indices, or another set of unresolved choices. Its meaning should be complete enough that two calls with the same state have the same future options.
+
+An index alone is not sufficient when the answer also depends on a remaining budget or a previous decision. Adding a cache to an incomplete key makes the incorrect result faster to reuse.
+
+Write a sentence for the state before writing the transition. Then identify the smaller states needed to answer it and the base cases where no more choices remain. Keep the empty-selection or impossible-result convention explicit.
+
+## Distinguish overlap from branching
+
+A recursive function can branch without solving the same state twice. Permutation generation, for example, may need to produce a large set of distinct outputs. Caching does not remove the work required to output all of them.
+
+Overlap means different paths reach an equivalent unresolved problem. Drawing the calls on a small input can reveal repeated states. Check that the supposed equivalent states also share every constraint that affects their answer.
+
+The [recursion topic](/topics/recursion) is a prerequisite if call contracts and state restoration still feel unclear. A cache is easier to verify after the uncached recurrence is understandable.
+
+## Compare taking and skipping with a counterexample
+
+[Steal Packages](/course/steal-packages) supports a non-adjacent-choice recurrence. Taking the current entry skips the next; skipping it leaves the next entry available. A local largest-value rule fails on `[4, 5, 4]`, where taking the two outer entries beats taking the middle one.
+
+Use that example to justify considering both choices. Then compare recursive memoization and bottom-up evaluation under the same base case. If an empty selection is allowed, all-negative values can have an answer of zero. A cache presence check must preserve that valid zero result.
+
+Storage reduction follows the dependencies: if only two neighboring states are needed for the next total, two variables may suffice. Returning the actual chosen indices can require retaining more information.
+
+## Practice other transition structures
+
+[Vending Machine](/course/vending-machine) and [Three Moves](/course/three-moves) provide additional settings for choosing states and transitions. Read each contract before deciding whether the goal is counting possibilities, testing reachability, or optimizing a value.
+
+Those objectives use different combinations. Counting adds contributions; an optimization may take a maximum or minimum; reachability may combine boolean possibilities. The state shape can look similar while the meaning of the transition differs.
+
+Test impossible cases and the smallest solvable inputs. Use a slow exhaustive solver on small inputs when possible, so the reference expresses the problem independently of the optimized recurrence.
+
+## Analyze states and transitions separately
+
+Estimate how many distinct states exist, then how much work each uncached state performs. Two-dimensional state can produce O(nm) possibilities. A loop across candidate transitions, a copied slice, or an expensive cache key adds work per state.
+
+Memoization still uses recursive frames. Tabulation removes that stack but may fill states the recursive version never reaches. Choose between them based on the state graph and implementation constraints. The [Big O guide](/guides/big-o-time-space-complexity) explains how to include both retained results and active calls in the analysis.

@@ -1,0 +1,12 @@
+```java
+public int firstBadVersionBruteForce(int totalVersions) {
+    for (int currentVersion = 1; currentVersion <= totalVersions; currentVersion++) {
+        if (isBadVersion(currentVersion)) {
+            return currentVersion;
+        }
+    }
+
+    // Not reached, since there is always a bad version
+    return -1;
+}
+```

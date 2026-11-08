@@ -1,0 +1,31 @@
+```csharp
+public class Solution {
+    public bool HasValidBrackets(string s) {
+        var matchingBrackets = new Dictionary<char, char> {
+            ['('] = ')',
+            ['['] = ']',
+            ['{'] = '}',
+        };
+        // The keys are the opening brackets
+        var openingBrackets = matchingBrackets.Keys;
+        // The values are the closing brackets
+        var closingBrackets = matchingBrackets.Values;
+        var bracketStack = new Stack<char>();
+
+        foreach (char character in s) {
+            if (openingBrackets.Contains(character)) {
+                bracketStack.Push(character);
+            } else if (closingBrackets.Contains(character)) {
+                // TryPop is false when the stack is empty: there's no bracket to close
+                if (!bracketStack.TryPop(out char latestBracket) ||
+                    character != matchingBrackets[latestBracket]) {
+                    return false;
+                }
+            }
+        }
+
+        // check if we opened/closed all brackets which creates an empty stack.
+        return bracketStack.Count == 0;
+    }
+}
+```

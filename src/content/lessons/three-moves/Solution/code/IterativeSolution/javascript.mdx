@@ -1,0 +1,21 @@
+```javascript
+function countTotalMoves(boardLength) {
+  if (boardLength < 0) return 0;
+
+	let threeSpotBack = 0;
+  let twoSpotsBack = 0;
+  let oneSpotBack = 1;
+
+  for (let i = 0; i < boardLength; i++) {
+    let finalSpot = oneSpotBack + twoSpotsBack + threeSpotBack;
+
+    threeSpotBack = twoSpotsBack;
+    twoSpotsBack = oneSpotBack;
+    oneSpotBack = finalSpot;
+  }
+
+  // We return oneSpotBack because it was actually updated to the finalSpot
+  // during the last iteration of the loop when we moved values forward
+  return oneSpotBack;
+}
+```

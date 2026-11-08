@@ -1,0 +1,59 @@
+import Link from 'next/link';
+import BigO from 'content/blocks/BigO';
+import { PageRoot } from 'utils/constants/routes';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import BigOChart from 'content/lessons/logarithms-and-time-complexity/BigOChart';
+import BinarySearchIterative from './code/BinarySearchIterative';
+import BinarySearchRecursive from './code/BinarySearchRecursive';
+
+<SubsectionHeader>Binary Search</SubsectionHeader>
+
+Binary search is basically searching with superpowers and gives us <BigO.logn /> time.
+
+The most important constraint for binary search to work: **the data must be sorted**.
+
+Since our items are ordered from smallest to largest, this additional information allows us to be intelligent about how we look for items.
+Let's imagine a sorted array.
+If we picked any random item from the list, let's say the middle item, and we compare it to the target we're looking for.
+If the target is smaller than the random item we pick, we know it must be to the left since the array is sorted.
+If the target is larger than the random item we pick, we know it must be to the right.
+
+<Image src="/images/binary-search-order.png" alt="A sorted array has smaller values to the left of its midpoint and larger values to the right." width={1500} height={356} />
+
+This is the foundation of binary search.
+We take our input and check the middle item.
+We can eliminate half of the array if our target is larger or smaller.
+Then with the remaining items, we repeat this process.
+We take the middle item of this group and compare it with our target and can eliminate half of the remaining items again.
+This process is repeated until the target is found.
+
+With every step, we eliminate half of the items in the array.
+This means we are dividing the amount of data that we need to search by 2 at each step.
+This is how we get <BigO.logn /> time with binary search.
+
+<Image src="/images/binary-search.gif" alt="Binary search repeatedly discards the sorted half that cannot contain the target." width={960} height={269} />
+
+In the above visual, we are able to find our target in 3 moves even though the input size is 8.
+
+If we increase the input size to 16, it would only take 5 moves for binary search to find the last item, but a linear search would need to visit all `n` items.
+
+<Image src="/images/visual-log-time.gif" alt="Binary search finds 16 by repeatedly halving the candidate range rather than checking every element." width={1920} height={454} />
+
+When we compared the time complexity of binary search to linear search in the <Link href={`/${PageRoot.Course}/logarithms-and-time-complexity`} passHref><a>logarithms article</a></Link>, we saw that operations required for binary search still stays very small for large inputs.
+For example, at an array of length of 1,048,576 it still only takes 20 operations to find a target in the worst case.
+Linear search would touch all 1,048,576 items in the worst case.
+
+<BigOChart />
+
+Below is the code to implement a binary search iteratively.
+We track a start and end index for the bounds, which is initially the first and last item to account for the entire array.
+Then when we determine which half that our target must be in, we either move the lower bound up or the upper bound down to the midpoint which eliminates half the items.
+
+We can implement it iteratively as follows:
+
+<BinarySearchIterative />
+
+Binary search also has a nice recursive solution:
+
+<BinarySearchRecursive />

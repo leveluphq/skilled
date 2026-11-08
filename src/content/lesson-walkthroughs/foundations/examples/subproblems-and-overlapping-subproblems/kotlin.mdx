@@ -1,0 +1,11 @@
+```kotlin
+fun fibCalls(n: Int): List<Int> {
+    var calls = 0
+    fun fib(value: Int): Int {
+        calls++
+        return if (value < 2) value else fib(value - 1) + fib(value - 2)
+    }
+    val answer = fib(n)
+    return listOf(answer, calls)
+}
+```

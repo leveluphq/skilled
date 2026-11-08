@@ -1,0 +1,20 @@
+```javascript
+// var can be reassigned
+var hello = 'world';
+hello = 'Skilled.dev';
+console.log(hello) // Skilled.dev
+
+// var variable is only accessible inside the function that declared it
+function test() {
+  var funcScoped = 123;
+  console.log(funcScoped); // 123
+}
+console.log(funcScoped); // ReferenceError
+
+// var is accessible outside blocks (if statements, for loops, etc.)
+if (true) {
+  var worksOutsideBlocks = ':)';
+  console.log(worksOutsideBlocks); // :)
+}
+console.log(worksOutsideBlocks) // :)
+```

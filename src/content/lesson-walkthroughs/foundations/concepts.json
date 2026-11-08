@@ -1,0 +1,169 @@
+[
+  {
+    "lesson": "arrays",
+    "function": "arraysInsert",
+    "arguments": [
+      "ints",
+      "int",
+      "int"
+    ]
+  },
+  {
+    "lesson": "big-o-time-and-space-complexity",
+    "function": "suffixCopies",
+    "arguments": [
+      "ints"
+    ]
+  },
+  {
+    "lesson": "hash-tables",
+    "function": "frequencyCounts",
+    "arguments": [
+      "ints"
+    ]
+  },
+  {
+    "lesson": "strings",
+    "function": "repeatText",
+    "arguments": [
+      "string",
+      "int"
+    ]
+  },
+  {
+    "lesson": "palindromes-permutataions-anagrams",
+    "function": "asciiPalindrome",
+    "arguments": [
+      "string"
+    ]
+  },
+  {
+    "lesson": "recursion",
+    "function": "factorial",
+    "arguments": [
+      "int"
+    ]
+  },
+  {
+    "lesson": "logarithms-and-time-complexity",
+    "function": "halvingSteps",
+    "arguments": [
+      "int"
+    ]
+  },
+  {
+    "lesson": "searching-and-binary-search",
+    "function": "binarySearch",
+    "arguments": [
+      "ints",
+      "int"
+    ]
+  },
+  {
+    "lesson": "sorting",
+    "function": "sortCopy",
+    "arguments": [
+      "ints"
+    ]
+  },
+  {
+    "lesson": "linked-lists",
+    "function": "middleValue",
+    "arguments": [
+      "ints"
+    ]
+  },
+  {
+    "lesson": "pointers",
+    "function": "aliasTrace",
+    "arguments": []
+  },
+  {
+    "lesson": "queues",
+    "function": "fifoOrder",
+    "arguments": [
+      "ints"
+    ]
+  },
+  {
+    "lesson": "stacks",
+    "function": "lifoOrder",
+    "arguments": [
+      "ints"
+    ]
+  },
+  {
+    "lesson": "trees",
+    "function": "maxDepth",
+    "arguments": [
+      "tree"
+    ]
+  },
+  {
+    "lesson": "tree-traversal-in-order-pre-order-post-order",
+    "function": "inOrder",
+    "arguments": [
+      "tree"
+    ]
+  },
+  {
+    "lesson": "binary-search-trees",
+    "function": "containsBST",
+    "arguments": [
+      "tree",
+      "int"
+    ]
+  },
+  {
+    "lesson": "graphs",
+    "function": "outDegrees",
+    "arguments": [
+      "graph"
+    ]
+  },
+  {
+    "lesson": "depth-first-search",
+    "function": "dfsOrder",
+    "arguments": [
+      "graph",
+      "int"
+    ]
+  },
+  {
+    "lesson": "breadth-first-search",
+    "function": "bfsOrder",
+    "arguments": [
+      "graph",
+      "int"
+    ]
+  },
+  {
+    "lesson": "subproblems-and-overlapping-subproblems",
+    "function": "fibCalls",
+    "arguments": [
+      "int"
+    ]
+  },
+  {
+    "lesson": "memoization",
+    "function": "fibMemoStats",
+    "arguments": [
+      "int"
+    ]
+  },
+  {
+    "lesson": "bottom-up-vs-top-down",
+    "function": "fibTable",
+    "arguments": [
+      "int"
+    ]
+  },
+  {
+    "lesson": "dynamic-programming",
+    "function": "minimumCoins",
+    "arguments": [
+      "ints",
+      "int"
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+```go
+func InOrder(values []*int) []int {
+    output := []int{}
+    var walk func(int)
+    walk = func(index int) {
+        if index >= len(values) || values[index] == nil { return }
+        walk(2*index+1)
+        output = append(output, *values[index])
+        walk(2*index+2)
+    }
+    walk(0)
+    return output
+}
+```

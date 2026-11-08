@@ -1,0 +1,28 @@
+```python
+def search_matrix(matrix, target):
+    # Start from the bottom-left item
+    row = len(matrix) - 1
+    col = 0
+
+    # Continue to iterate until you reach an edge of the matrix
+    # and run out of moves in that direction
+    while (row >= 0) and (col < len(matrix[0])):
+        current_item = matrix[row][col]
+
+        # Return the target if we found it
+        if current_item == target:
+            return [row, col]
+
+        # One of the following cases must be true
+        #
+        # 1. Move up if the current item is larger than target
+        if current_item > target:
+            row = row - 1
+
+        # 2. Move right if the current item is smaller than target
+        elif current_item < target:
+            col = col + 1
+
+    # Value not found
+    return [-1, -1]
+```

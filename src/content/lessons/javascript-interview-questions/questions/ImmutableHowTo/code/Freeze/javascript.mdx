@@ -1,0 +1,13 @@
+```javascript
+var obj = {
+  hello: 'world',
+};
+
+Object.freeze(obj);
+
+obj.test = 123;
+obj.hello = 'Skilled.dev';
+delete obj.hello;
+
+console.log(obj); // { hello: 'world' }
+```

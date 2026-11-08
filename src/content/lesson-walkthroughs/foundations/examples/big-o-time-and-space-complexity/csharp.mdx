@@ -1,0 +1,14 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class SuffixCopiesExample {
+public static List<List<int>> SuffixCopies(List<int> values) {
+    var suffixes = new List<List<int>>();
+    for (int index = 0; index < values.Count; index++) {
+        suffixes.Add(values.GetRange(index, values.Count - index));
+    }
+    return suffixes;
+}
+}
+```

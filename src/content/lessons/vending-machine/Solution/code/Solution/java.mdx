@@ -1,0 +1,51 @@
+```java
+class Solution {
+    // Java ints have no Infinity, so the largest int stands in for it
+    private static final int INFINITY = Integer.MAX_VALUE;
+
+    public int minCoinsForChange(int[] denominations, int target) {
+        /*
+          Init all values to Infinity which indicates there isn't a valid coin combination for an amount (yet)
+          This is our dp / memo array that we're using to memoize the solution to subproblems
+        */
+        int[] minCoinsForAmount = new int[target + 1];
+        Arrays.fill(minCoinsForAmount, INFINITY);
+
+        // Bottom-up, start with 0 which is always 0
+        minCoinsForAmount[0] = 0;
+
+        /*
+          Begin at the smallest amount and build a running table of
+          the smallest values required to reach EVERY amount up to the target
+        */
+        for (int amount = 0; amount < minCoinsForAmount.length; amount++) {
+            // Try each denomination to reach the current amount
+            for (int coin : denominations) {
+                // Only build on an amount we can reach: Infinity + 1 is still Infinity, but INFINITY + 1 would overflow
+                if (coin <= amount && minCoinsForAmount[amount - coin] != INFINITY) {
+                    // The current minimum (subproblem solution) found at this amount.
+                    int existingMinCoinForAmount = minCoinsForAmount[amount];
+                    /*
+                      Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                      Always increment by +1 because we are trying one additional coin.
+                    */
+                    int minAmountWithCurrentCoin = minCoinsForAmount[amount - coin] + 1;
+
+                    /*
+                      Memoize the minimum coins to reach the current amount.
+                      This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                      If there isn't a valid combination, this just remains INFINITY.
+                    */
+                    minCoinsForAmount[amount] = Math.min(existingMinCoinForAmount, minAmountWithCurrentCoin);
+                }
+            }
+        }
+
+        /*
+          If we didn't find a combination that matched our target (target == INFINITY), return -1.
+          Otherwise, the target does exist for that amount and we return it.
+        */
+        return minCoinsForAmount[target] == INFINITY ? -1 : minCoinsForAmount[target];
+    }
+}
+```

@@ -1,0 +1,19 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class MiddleValueExample {
+private sealed class ListNode {
+    public int Value;
+    public ListNode Next;
+    public ListNode(int value, ListNode next) { Value = value; Next = next; }
+}
+public static int? MiddleValue(List<int> values) {
+    ListNode head = null;
+    for (int index = values.Count - 1; index >= 0; index--) head = new ListNode(values[index], head);
+    ListNode slow = head, fast = head;
+    while (fast != null && fast.Next != null) { slow = slow.Next; fast = fast.Next.Next; }
+    return slow == null ? null : slow.Value;
+}
+}
+```

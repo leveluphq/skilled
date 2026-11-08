@@ -1,0 +1,85 @@
+Memoization reuses a function result for a repeated call under a declared key policy. The key must include every input that can affect the result. Arguments alone are insufficient for a method whose result depends on its receiver, and a cached result can become stale if a referenced object changes. The implementation is small only after those choices are explicit.
+
+This synchronous memoizer keys calls by receiver identity and the complete ordered argument list. A trie of Maps avoids serializing arbitrary values into text. It caches falsy results and undefined, leaves synchronous exceptions uncached, and exposes a clear method. Object arguments are compared by identity, not by deep equality or a snapshot of their fields.
+
+## Use one map edge per argument
+
+The trie starts at a root node. The first edge represents the receiver, and each subsequent edge represents an argument in order. The terminal node stores whether a result exists and the result itself. Calls with `[1, 2]` and `[2, 1]` follow different paths, and calls with one argument and two arguments stop at different nodes.
+
+```javascript
+function memoize(fn) {
+  if (typeof fn !== 'function') throw new TypeError('Expected a function');
+  const node = () => ({ children: new Map(), hasValue: false, value: undefined });
+  let root = node();
+  function memoized(...args) {
+    let current = root;
+    for (const key of [this, ...args]) {
+      if (!current.children.has(key)) current.children.set(key, node());
+      current = current.children.get(key);
+    }
+    if (current.hasValue) return current.value;
+    const result = fn.apply(this, args);
+    current.value = result;
+    current.hasValue = true;
+    return result;
+  }
+  memoized.clear = () => { root = node(); };
+  return memoized;
+}
+```
+
+## Separate presence from a truthy value
+
+A function can legitimately return zero, false, an empty string, null, or undefined. Looking up a cached result with a truthiness test would run the function again for all those values. The explicit `hasValue` flag records successful completion independently of what value was returned.
+
+The flag is set only after the original function returns. A synchronous throw therefore leaves the terminal node without a result, and a later identical call tries again. A partially created trie path can remain, but it does not count as a cached result. Clearing replaces the root so the whole previous trie can become collectible when no other references retain it.
+
+For a function that increments a counter and returns undefined, two identical calls should increment the counter only once. After clear, the next call should increment it again. That test establishes both the presence rule and the invalidation behavior without relying on an expensive sample function.
+
+## Explain Map equality and object identity
+
+Map uses SameValueZero key equality. NaN matches NaN, and positive and negative zero share a key. If the function distinguishes those zeros with Object.is or reciprocal arithmetic, this cache policy is too coarse. A key-normalization rule can represent negative zero with a dedicated sentinel when the application needs that distinction.
+
+Two separately allocated objects with equal fields are different keys. The same object is the same key even after one of its fields changes. A pure-looking function such as `record => record.score * 2` can therefore return a stale result after record.score changes. Use immutable objects, include a version value, invalidate explicitly, or choose a different cache boundary.
+
+JSON serialization does not solve arbitrary argument identity. It can lose distinctions, reject cycles, invoke serialization hooks, and equate separate objects with similar encodings. A textual key is appropriate when the application's input is deliberately a canonical serializable value. It should be a chosen contract, not an accidental shortcut.
+
+## Include receiver-dependent state
+
+If a method reads this.factor, calls with two different receivers may produce different results for the same explicit arguments. This trie includes the receiver as its first key. Calling a detached function and calling it as a property can therefore occupy separate cache entries.
+
+The receiver itself may be mutable. Including its identity does not notice changes to this.factor. As with mutable object arguments, the caller must make a purity or invalidation promise. Binding the function can stabilize its receiver identity, but binding does not freeze the receiver's state or make an impure function safe to cache forever.
+
+## Treat promise caching as a separate policy
+
+The synchronous memoizer can store a promise object as an ordinary result. That deduplicates repeated calls while the promise is pending, but it also keeps a rejected promise indefinitely. Whether failure should be cached is an application decision. A temporary network failure usually needs different treatment from a stable negative lookup.
+
+A focused asynchronous memoizer below supports one argument and keys it by identity. It shares a pending call and removes a rejection so a later call can retry. It deliberately does not include a dynamic receiver; use it with a function whose result depends only on that argument and stable external configuration.
+
+```javascript
+function memoizeAsyncOne(fn) {
+  if (typeof fn !== 'function') throw new TypeError('Expected a function');
+  const cache = new Map();
+  function memoized(key) {
+    if (cache.has(key)) return cache.get(key);
+    const pending = Promise.resolve().then(() => fn(key));
+    cache.set(key, pending);
+    pending.catch(() => {
+      if (cache.get(key) === pending) cache.delete(key);
+    });
+    return pending;
+  }
+  memoized.clear = () => cache.clear();
+  return memoized;
+}
+```
+
+The identity check before deletion prevents an older rejected call from deleting a newer entry created after clear. The scheduled call also converts a synchronous throw into a promise rejection. It does not abort active work when clearing; it removes only the cache's references and future lookup behavior.
+
+## Bound retention and test invalidation
+
+Maps retain their keys and values. An unbounded cache over many distinct object arguments can retain large graphs. A WeakMap can help with object-key lifetimes, but primitive keys, eviction order, and mixed argument tries need additional design. A maximum-size cache or time-to-live policy is often easier to operate, provided its semantics are explicit.
+
+A cache hit with a arguments still traverses a + 1 trie edges, including the receiver. Lookup is therefore O(a) expected Map operations, rather than a universal O(1) call. The cache stores argument prefixes shared by previously observed calls and their completed results. Expiration needs a clock policy: expiring from request start, settlement, or last access gives different lifetimes for slow promises. When adding eviction, preserve the pending-promise identity check so an older completion cannot change the state of a newer entry.
+
+Test argument order, arity, object identity, receiver identity, falsy results, undefined, NaN, and the stated zero policy. Confirm that synchronous exceptions are retried. For the asynchronous version, assert that concurrent identical calls return the same promise, a rejection is evicted, and an old rejected promise cannot remove a newer cached one. Use the [retry guide](/guides/javascript-retry-backoff) when repeated failures need a budget rather than an implicit loop around a cached rejection.

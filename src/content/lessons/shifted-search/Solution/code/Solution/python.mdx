@@ -1,0 +1,44 @@
+```python
+import math
+
+def find_target_index(items, target):
+    # Initialize the upper and lower bound to the binary search
+    start_index = 0
+    end_index = len(items) - 1
+
+    # Loop until our bounds converge
+    while start_index <= end_index:
+        # Number of items between the lower and upper bound
+        items_between_start_end = math.floor((end_index - start_index) / 2)
+        mid_index = start_index + items_between_start_end
+
+        # Item found, return mid index as solution
+        if items[mid_index] == target:
+            return mid_index
+
+        is_left_correctly_ordered = items[mid_index] >= items[start_index]
+
+        # The left half, start to midpoint, is sorted normally
+        # (rotation in right half or has been eliminated)
+
+        if is_left_correctly_ordered:
+            target_in_left_half = target >= items[start_index] and target < items[mid_index]
+
+            if target_in_left_half:
+                end_index = mid_index - 1
+            else:
+                start_index = mid_index + 1
+
+            # The right half, midpoint to the end, is sorted normally
+            # (rotation in left half)
+        else:
+            target_in_right_half = target <= items[end_index] and target > items[mid_index]
+
+            if target_in_right_half:
+                start_index = mid_index + 1
+            else:
+                end_index = mid_index - 1
+
+    # Target not found in the input
+    return -1
+```

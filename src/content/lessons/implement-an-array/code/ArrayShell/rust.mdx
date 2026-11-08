@@ -1,0 +1,42 @@
+```rust
+use std::collections::HashMap;
+
+struct DynamicArray {
+    length: usize,
+    data: HashMap<usize, i32>,
+}
+
+impl DynamicArray {
+    fn new() -> Self {
+        DynamicArray {
+            length: 0,
+            data: HashMap::new(),
+        }
+    }
+
+    fn get(&self, index: usize) -> Option<i32> {
+        // get an item at an index
+        todo!()
+    }
+
+    fn push(&mut self, item: i32) -> usize {
+        // add an item to the end of the array
+        todo!()
+    }
+
+    fn pop(&mut self) -> Option<i32> {
+        // remove the last item in the array
+        todo!()
+    }
+
+    fn insert(&mut self, index: usize, item: i32) -> Option<&HashMap<usize, i32>> {
+        // add an item at any index
+        todo!()
+    }
+
+    fn remove(&mut self, index: usize) -> Option<i32> {
+        // remove an item at any index
+        todo!()
+    }
+}
+```

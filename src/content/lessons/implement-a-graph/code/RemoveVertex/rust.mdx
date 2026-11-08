@@ -1,0 +1,10 @@
+```rust
+fn remove_vertex(&mut self, vertex: char) {
+    self.adjacency_list.remove(&vertex);
+
+    // Keep only the edges that don't point to the removed vertex
+    for edges in self.adjacency_list.values_mut() {
+        edges.retain(|&v| v != vertex);
+    }
+}
+```

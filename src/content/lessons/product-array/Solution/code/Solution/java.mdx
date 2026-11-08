@@ -1,0 +1,30 @@
+```java
+class Solution {
+    public long[] buildProductArray(long[] nums) {
+        long[] results = new long[nums.length];
+        Arrays.fill(results, 1);
+        long leftRunningProduct = 1;
+
+        // First use our results array as the running right product array.
+        // We fill from the right side.
+        for (int i = 1; i < nums.length; i++) {
+            int endIdx = nums.length - 1 - i;
+            results[endIdx] = results[endIdx + 1] * nums[endIdx + 1];
+        }
+
+        // Refill the results with the product at each point
+        for (int i = 0; i < nums.length; i++) {
+            long productExceptSelf = leftRunningProduct * results[i];
+
+            // We use results[i] above so now it can be replaced
+            results[i] = productExceptSelf;
+
+            // Now that we have used our left product,
+            // we update it to include the current element.
+            leftRunningProduct = leftRunningProduct * nums[i];
+        }
+
+        return results;
+    }
+}
+```

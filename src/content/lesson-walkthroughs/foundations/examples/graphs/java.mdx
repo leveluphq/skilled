@@ -1,0 +1,11 @@
+```java
+import java.util.*;
+
+class OutDegreesExample {
+static List<Integer> outDegrees(List<List<Integer>> graph) {
+    List<Integer> degrees = new ArrayList<>();
+    for (List<Integer> neighbors : graph) degrees.add(neighbors.size());
+    return degrees;
+}
+}
+```

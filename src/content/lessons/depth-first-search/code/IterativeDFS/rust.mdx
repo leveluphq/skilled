@@ -1,0 +1,28 @@
+```rust
+use std::collections::HashSet;
+
+fn iterative_depth_first_search(starting_node: &Rc<RefCell<GraphNode>>) {
+    // Init our stack and set of visited nodes
+    // (each node's data is unique, so we track the visited nodes by their data)
+    let mut dfs_stack = vec![Rc::clone(starting_node)];
+    let mut visited_nodes = HashSet::new();
+
+    while let Some(node) = dfs_stack.pop() {
+        let node = node.borrow();
+
+        // A node can be added to the stack more than once, so skip it if we already visited it
+        if visited_nodes.contains(&node.data) {
+            continue;
+        }
+
+        visit(&node);
+        visited_nodes.insert(node.data);
+
+        for child_node in &node.edges {
+            if !visited_nodes.contains(&child_node.borrow().data) {
+                dfs_stack.push(Rc::clone(child_node));
+            }
+        }
+    }
+}
+```

@@ -1,0 +1,23 @@
+```python
+# @param {map<str,List[str]>} satellites
+# @return {List[str]}
+def pilot_rocket(satellites):
+    # Your solution here
+    pass
+
+# HELPER
+# You can use this Queue class if needed
+class Queue:
+    def __init__(self):
+        self.queue = []
+
+    # Assume this actually operates in O(1) time as an optimized queue should
+    def enqueue(self, item):
+        self.queue.insert(0, item)
+    
+    def dequeue(self):
+        return self.queue.pop()
+
+    def size(self):
+        return len(self.queue)
+```

@@ -1,0 +1,36 @@
+```rust
+struct Message {
+    hi: &'static str,
+    is: bool,
+}
+
+let mut pointer = Box::new(Message {
+    hi: "world",
+    is: true,
+});
+// The struct { hi: "world", is: true } is created in memory
+// The pointer variable references/points to the struct
+// pointer ----> { hi: "world", is: true }
+
+println!("{}", pointer.hi);
+// pointer accesses the struct from memory and requests the value stored for `hi`
+// pointer ----> { hi: "world", is: true } ----> hi
+//                                         <---- "world"
+
+pointer.hi = "friends";
+// pointer reassigns the value for `hi`
+// pointer ----> { hi: "world", is: true } ----> hi = "friends"
+
+pointer = Box::new(Message {
+    hi: "there",
+    is: false,
+});
+// pointer changes its reference from the struct to a new one
+// The old struct is no longer referenced by any variable,
+// so Rust frees its memory right away (there is no garbage collector)
+//
+// pointer           { hi: "friends", is: true } (freed)
+//       |
+//       |
+//       |--> { hi: "there", is: false }
+```

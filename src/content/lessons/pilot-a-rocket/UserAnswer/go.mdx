@@ -1,0 +1,29 @@
+```go
+// pilotRocket returns the satellite IDs on the shortest path from "base" to
+// "ship", in order, or nil if the ship can't be reached.
+func pilotRocket(satellites map[string][]string) []string {
+	// Your solution here
+	return nil
+}
+
+// HELPER
+// You can use this Queue if needed
+type Queue struct {
+	queue []string
+}
+
+// Adding to the back and taking from the front are both O(1)
+func (q *Queue) Enqueue(item string) {
+	q.queue = append(q.queue, item)
+}
+
+func (q *Queue) Dequeue() string {
+	item := q.queue[0]
+	q.queue = q.queue[1:]
+	return item
+}
+
+func (q *Queue) Size() int {
+	return len(q.queue)
+}
+```

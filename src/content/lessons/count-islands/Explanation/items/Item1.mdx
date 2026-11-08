@@ -1,0 +1,17 @@
+So this question is really broken into two parts:
+
+1. Find an island
+2. Account for all the connected pieces of land for the island
+
+To find the islands, you must visit each node in the matrix.
+This means the only option is to linearly scan all `m x n` rows and columns in nested loops and look for land pieces `#`.
+This solves the first step.
+
+Once you find a land piece `#`, you need to account for all of the connected nodes that belong to this island.
+When you find **one** node of an island, you have technically found **all** the nodes of an island.
+We need to track the land pieces for an island we've encountered to indicate that we've used this land and should not count them again in our linear scan.
+
+So what is the easiest way to make sure that we don't double count land from the same island?
+The only time we perform an action in the matrix is when we find a land piece `#`, but with water pieces `~`, we simply ignore them.
+The simplest way to prevent double counting is after we find an island, change all of its `#` pieces to `~`.
+Then we resume our scan, and we will simply pass over those items when we reach their location again because we now recognize it as water.

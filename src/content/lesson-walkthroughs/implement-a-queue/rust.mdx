@@ -1,0 +1,117 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The queue in this lesson keeps references to its first and last nodes. New items join at the last node, while removals happen at the first. The node's link is named `prev`, but in this representation it points toward the next item to leave after the current one. Follow the actual arrows rather than relying on the property name alone.
+
+## Maintain both endpoints
+
+An empty queue has no first or last node. Enqueuing its first item must set both references to the new node. For a nonempty queue, connect the old last node to the new node, then update last. The first reference stays unchanged because an older item remains at the front.
+
+For A followed by B and C, first reaches A and last reaches C. The link from A reaches B, and B reaches C. Peeking should inspect the front without moving either endpoint. The exact returned shape follows the current implementation, so distinguish returning a node from returning only its data when writing a compatible wrapper.
+
+## Reset the tail when the final item leaves
+
+Dequeuing saves the front node and advances first along its link. If that was the only node, last must also become empty. Leaving a stale last reference can cause the next enqueue to attach to a node that is no longer in the queue.
+
+Test this operation sequence explicitly: enqueue A, dequeue A, enqueue B, then dequeue B. Also enqueue several values, remove some, add more, and confirm the original FIFO order across the mixed sequence. Repeated operations often expose endpoint mistakes that a single enqueue and dequeue miss.
+
+## Compare representations under the same contract
+
+With retained endpoints, these linked operations use constant link changes. Traversing the whole list to find the back on every enqueue would lose that property. An array-backed circular buffer can also provide efficient queue operations; the lesson chooses links to expose the endpoint mechanics, not because arrays are incapable of FIFO behavior.
+
+Use the [current implementation lesson](/course/implement-a-queue) to inspect its empty-result contract. Then revisit [Queues](/watch/queues) and apply the representation to [Breadth-First Search](/watch/breadth-first-search). Check both the graph traversal's result and the queue operations behind its claimed running time.
+
+## Trace the final removal and the next insertion
+
+Enqueue 4 and 9. First points to 4, last points to 9, and the first node's link reaches 9. Dequeue returns 4 and advances first. Dequeue again returns 9 and must clear both endpoints. A new enqueue of 6 should then create a valid singleton queue with first and last referring to that same node.
+
+The code calls the link toward a newer item `prev`. Follow its actual direction when reading the snippet: dequeue advances from the oldest entry toward the next oldest. Renaming the field in a sketch is harmless only if every update still follows the same representation.
+
+## Check absence independently of payload values
+
+Peek and dequeue return an absent result for an empty queue. Most versions expose nodes; the Rust version returns the stored integer. The reading examples explain that return-type difference. A payload of zero is valid and cannot be used as an empty sentinel.
+
+Enqueue, peek, and dequeue perform O(1) structural work. Retained queue storage is O(n). An exposed removed node can still refer to later nodes in some versions, so holding it may retain more of the chain; a production API might return only a value or detach that link. Check empty reads, FIFO order, repeated values, and several empty/refill cycles. Endpoint invariants are as important as the sequence returned by one short run.
+
+## Rust example and implementation choices
+
+The endpoints share `Rc<RefCell<Node>>` ownership, and ptr_eq identifies the singleton allocation. Dequeue takes the first owner and detaches its successor with take before returning a copied i32. Copying the payload into a local also ends the RefCell borrow before the removed owner is dropped. `Option<i32>` distinguishes empty from zero without exposing node ownership to the caller.
+
+### Complete implementation
+
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+struct Node {
+    data: i32,
+    prev: Option<Rc<RefCell<Node>>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, prev: None }
+    }
+}
+
+// `first` and `last` point to the same node when there is one item,
+// so the nodes are shared with Rc<RefCell<...>>
+struct Queue {
+    first: Option<Rc<RefCell<Node>>>,
+    last: Option<Rc<RefCell<Node>>>,
+}
+
+impl Queue {
+    fn new() -> Self {
+        Queue {
+            first: None,
+            last: None,
+        }
+    }
+
+    // Get the first item
+    fn peek(&self) -> Option<i32> {
+        self.first.as_ref().map(|first| first.borrow().data)
+    }
+
+    // Add a new last item
+    fn enqueue(&mut self, item: i32) {
+        let new_last_node = Rc::new(RefCell::new(Node::new(item)));
+
+        match &self.last {
+            // The queue is empty, so the new node is both the first and last item
+            None => self.first = Some(Rc::clone(&new_last_node)),
+            // The current last node references the new node behind it
+            Some(last) => last.borrow_mut().prev = Some(Rc::clone(&new_last_node)),
+        }
+
+        self.last = Some(new_last_node);
+    }
+
+    // Remove the first item
+    fn dequeue(&mut self) -> Option<i32> {
+        let Some(removed_item) = self.first.take() else {
+            return None;
+        };
+
+        // `first` and `last` were the same node, so the queue is now empty
+        if self
+            .last
+            .as_ref()
+            .is_some_and(|last| Rc::ptr_eq(last, &removed_item))
+        {
+            self.last = None;
+        }
+
+        self.first = removed_item.borrow_mut().prev.take();
+
+        let value = removed_item.borrow().data;
+        Some(value)
+    }
+}
+```
+
+## Continue in Rust
+
+[Open Implement a Queue](/course/implement-a-queue) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Rust example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Rust interview preparation guide](/interview-prep/rust) connects these language choices with further practice and the cross-language operation reference.

@@ -1,0 +1,16 @@
+```go
+func AsciiPalindrome(text string) bool {
+    clean := make([]byte, 0, len(text))
+    for index := 0; index < len(text); index++ {
+        value := text[index]
+        if value >= 'A' && value <= 'Z' { value += 'a' - 'A' }
+        if (value >= 'a' && value <= 'z') || (value >= '0' && value <= '9') {
+            clean = append(clean, value)
+        }
+    }
+    for left, right := 0, len(clean)-1; left < right; left, right = left+1, right-1 {
+        if clean[left] != clean[right] { return false }
+    }
+    return true
+}
+```

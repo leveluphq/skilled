@@ -1,0 +1,37 @@
+import { MarginContainer } from 'content/blocks/styles';
+import Image from 'content/blocks/Image';
+
+import { ImageColumns } from './styles';
+
+We know we can say for certain that any value up and left must be smaller and any value down and right must be larger.
+That leaves us two zones that we need to traverse to gain the information we need.
+
+Let's start in the bottom-left corner to iterate and search for a target of 5.
+By starting at the bottom-left, we've already fully eliminated a quadrant of "unknown".
+
+<Image src="/images/starting-point-matrix-search.png" maxWidth="400px" alt="Starting at the lower-left matrix cell makes a move up decrease values and a move right increase them." width={1516} height={1318} />
+
+We compare the current item 17 to the target 5, and we see that the target 5 is smaller, so the only direction we can move is up since all items to the right must be larger.
+The target 5 must be in the direction of the smaller items, and we know it can't be in the direction where all the items are larger.
+
+<Image src="/images/move-up-matrix-search.png" maxWidth="400px" alt="When the lower-left matrix value is larger than the target, move up and eliminate its row." width={1516} height={1318} />
+
+We compare the current item to the target and see that 5 > 3. Since all items in the up direction are smaller than 3 and all items to the right are larger than 3, we move right since this is the only direction the target of 5 can exist.
+
+Notice that on each move we make, we remove an **entire row or column**.
+This is drastically reducing our search space each step.
+We're able to remove the rows if the target is smaller than the current item — the target is also smaller for ALL the items to the right.
+If the target is larger than the current item, we can remove an entire column since all the items up are smaller — the target is also larger than ALL the items up.
+
+<Image src="/images/move-right-matrix-search.png" maxWidth="400px" alt="When the lower-left matrix value is smaller than the target, move right and eliminate its column." width={1516} height={1318} />
+
+We compare the target to the current item, and 5 < 7 so we move up to 4. Then we compare the target to the current item again, and 5 > 4 so we move right to 9.
+
+<MarginContainer>
+<ImageColumns>
+<img src="/images/move-up2-matrix-search.png" alt="A later upward step discards another matrix row whose remaining values are too large." width={1516} height={1318} />
+<img src="/images/move-right2-matrix-search.png" alt="A later rightward step discards another matrix column whose remaining values are too small." width={1516} height={1318} />
+</ImageColumns>
+</MarginContainer>
+
+Then finally, we do one last comparison and see that 5 < 9. We move up and land on our target and return those coodrinates.

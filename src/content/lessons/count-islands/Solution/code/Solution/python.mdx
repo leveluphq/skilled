@@ -1,0 +1,45 @@
+```python
+LAND = '#'
+WATER = '~'
+
+def count_islands(map):
+    if (not map) or (not map[0]) or (not map[0][0]):
+        return 0
+
+    num_rows = len(map)
+    num_cols = len(map[0])
+    island_count = 0
+
+    for row in range(num_rows):
+        for col in range(num_cols):
+            # We found another uncounted island
+            if map[row][col] == LAND:
+                island_count += 1
+                # Mark all the pieces of land for the island as viewed
+                mark_land_as_viewed_dfs(map, row, col)
+
+    return island_count
+
+def mark_land_as_viewed_dfs(map, row, col):
+    num_rows = len(map)
+    num_cols = len(map[0])
+
+    # Stopping condition:
+    # 1. Outside of the map
+    # 2. Reached an adjacent water node
+    is_outside_map = row < 0 or col < 0 or row >= num_rows or col >= num_cols
+    if is_outside_map or map[row][col] == WATER:
+        return
+
+    # Recursive case:
+    # 1. Mark the node as viewed by flipping it to water
+    # 2. Check the nodes adjacent to the current
+
+    map[row][col] = WATER
+    mark_land_as_viewed_dfs(map, row - 1, col)
+    mark_land_as_viewed_dfs(map, row + 1, col)
+    mark_land_as_viewed_dfs(map, row, col - 1)
+    mark_land_as_viewed_dfs(map, row, col + 1)
+
+    return
+```

@@ -1,0 +1,31 @@
+```swift
+class Solution {
+    /// - Parameter satellites: each satellite's id, mapped to the ids it links to
+    /// - Returns: the ids on the shortest path from "base" to "ship", or nil when there is no path
+    func pilotRocket(_ satellites: [String: [String]]) -> [String]? {
+        // Your solution here
+        return nil
+    }
+}
+
+// HELPER
+// You can use this Queue if needed. Swift's arrays remove from the front in
+// O(n) time, so it keeps the index of its front item instead, which makes
+// enqueue and dequeue both O(1).
+struct Queue<Element> {
+    private var items: [Element] = []
+    private var front = 0
+
+    var count: Int { return items.count - front }
+
+    mutating func enqueue(_ item: Element) {
+        items.append(item)
+    }
+
+    mutating func dequeue() -> Element? {
+        guard front < items.count else { return nil }
+        front += 1
+        return items[front - 1]
+    }
+}
+```

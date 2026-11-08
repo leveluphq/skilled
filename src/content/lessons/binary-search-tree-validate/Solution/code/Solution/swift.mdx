@@ -1,0 +1,32 @@
+```swift
+class Solution {
+    func isBST(_ root: BinaryNode?) -> Bool {
+        // Int.min and Int.max stand in for -infinity and infinity: no node is outside them
+        let isValid = recursiveValidate(root, Int.min, Int.max)
+        return isValid
+    }
+
+    private func recursiveValidate(_ root: BinaryNode?, _ lowerBound: Int, _ upperBound: Int) -> Bool {
+        // Base case 1 (reached leaf, valid)
+        guard let root else {
+            return true
+        }
+
+        // Base case 2 (invalid)
+        if root.data <= lowerBound || root.data >= upperBound {
+            return false
+        }
+
+        // When we traverse left, the current node's value must be the newest upper bound
+        // This ensures it's always strictly decreasing from the current node
+        let isValidLeft = recursiveValidate(root.left, lowerBound, root.data)
+
+        // When we traverse right, the current node's value must be the newest lower bound
+        // This ensures it's always strictly increasing from the current node
+        let isValidRight = recursiveValidate(root.right, root.data, upperBound)
+
+        // Both must be true for this to return true
+        return isValidLeft && isValidRight
+    }
+}
+```

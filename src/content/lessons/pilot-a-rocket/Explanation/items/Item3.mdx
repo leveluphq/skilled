@@ -1,0 +1,21 @@
+import Null from 'content/blocks/Null';
+
+Let's think through some final considerations.
+
+When we reach the last node, we work our way **backward** to reconstruct the path that got us there.
+We arrive at the final node and then trace the route in reverse from the `ship` to the `base` by gathering the nodes we stored in the shortest path hash table.
+
+We build the solution by walking through the path from the end-to-start by beginning at the `ship` and returning to the `base`.
+So once we build this path, we need to reverse it so that it is in the correct order with the first item as the `base` and last item as the `ship`.
+
+An essential part of graph traversal is tracking nodes we've seen.
+Graphs can have cycles (loops), and if we're not careful, we can get caught in one and execute infinitely.
+
+In this question, we're already tracking the preceding node at any point to determine the shortest path to the current node.
+This is a perfect way to also track the cycles because it indicates we've already visited an item.
+Having a value in the hash table must mean we have already reached a node and should not visit it again.
+
+Finally, we aren't guaranteed to reach the end.
+The prompt indicates we should return <Null /> if there isn't a valid path.
+If we iterate through all the nodes and never find the `ship`, we just return <Null />.
+If we do find the `ship`, we can immediately reconstruct the path and return that as the solution.

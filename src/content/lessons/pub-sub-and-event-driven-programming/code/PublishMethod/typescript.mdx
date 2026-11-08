@@ -1,0 +1,14 @@
+```javascript
+publish(eventName: string, data: any): void {
+  // Return if no callbacks have been subscribed to an event
+  if (!Array.isArray(this.subscribers[eventName])) {
+    return;
+  }
+
+  // Execute all the callbacks subscribed to an event
+  // Pass the callback the data from the event
+  this.subscribers[eventName].forEach((callback) => {
+    callback(data);
+  });
+}
+```

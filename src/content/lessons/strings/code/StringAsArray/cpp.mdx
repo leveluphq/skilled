@@ -1,0 +1,11 @@
+```cpp
+string str = "Hello, world!";
+vector<char> array = {'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!'};
+
+// Transform an array to a string and compare it to the original string
+cout << boolalpha << (str == string(array.begin(), array.end())) << endl;
+// prints true
+
+vector<char> characters(str.begin(), str.end()); // Transform a string to an array
+// {'H','e','l','l','o',',',' ','w','o','r','l','d','!'}
+```

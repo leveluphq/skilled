@@ -1,0 +1,17 @@
+```cpp
+struct ListNode {
+    int data;
+    ListNode* next;
+    ListNode(int x) : data(x), next(nullptr) {}
+};
+
+// Input
+ListNode* head = new ListNode(42); // ... then add more nodes
+// k = 5     4     3    2    1    0
+       42 -> 52 -> 4 -> 6 -> 1 -> 9000
+
+
+// Output: mirrorDelete(head, 2)
+// Remove k = 2 which is the 6
+42 -> 52 -> 4 -> 1 -> 9000
+```

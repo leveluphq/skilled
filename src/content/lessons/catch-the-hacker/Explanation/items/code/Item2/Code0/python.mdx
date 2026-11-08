@@ -1,0 +1,20 @@
+```python
+def brute_force_find_email(emails):
+    max_count = 0
+    email = ''
+
+    # Nested for loops - immediately think O(n^2)
+    for i in range(len(emails)):
+        current_email = emails[i]
+        current_count = 0
+
+        for j in range(len(emails)):
+            if emails[j] == current_email:
+                current_count += 1
+
+        is_new_max = current_count > max_count
+        max_count = current_count if is_new_max else max_count
+        email = current_email if is_new_max else email
+
+    return email
+```

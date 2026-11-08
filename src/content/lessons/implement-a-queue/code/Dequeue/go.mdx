@@ -1,0 +1,17 @@
+```go
+func (q *Queue) Dequeue() *Node {
+	removedItem := q.first
+
+	if removedItem == nil {
+		return nil
+	}
+
+	if q.first == q.last {
+		q.last = nil
+	}
+
+	q.first = removedItem.Prev
+
+	return removedItem
+}
+```

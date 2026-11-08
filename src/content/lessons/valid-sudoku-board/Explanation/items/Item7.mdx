@@ -1,0 +1,12 @@
+Now we have our logic. First we check if our board is a valid shape.
+Then we check if any row, column, or sub-square has a duplicate number.
+
+With our `9 x 9` board, we create two one-dimensional arrays of 9 hash tables to track our rows and columns.
+To track the sub-squares, we create a `3 x 3` two-dimensional array to track our sub-squares.
+
+We start at `board[0][0]` and iterate all 81 cells up to `board[8][8]` where `8 = length - 1`.
+If a number exists in a cell, we check if it already exists in a hash table.
+If it does, we return false.
+If we reach the end without ever seeing the same number more than once, we return true.
+
+To get the complete solution, we can generalize this logic to any `k x k` board with `n` total cells.

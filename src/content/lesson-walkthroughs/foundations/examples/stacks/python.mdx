@@ -1,0 +1,10 @@
+```python
+def lifo_order(values: list[int]) -> list[int]:
+    stack = []
+    output = []
+    for value in values:
+        stack.append(value)
+    while stack:
+        output.append(stack.pop())
+    return output
+```

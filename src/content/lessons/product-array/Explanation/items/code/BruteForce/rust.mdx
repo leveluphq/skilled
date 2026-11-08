@@ -1,0 +1,19 @@
+```rust
+fn brute_force_answer(input: &[i64]) -> Vec<i64> {
+    let mut results = vec![0; input.len()];
+
+    for i in 0..input.len() {
+        let mut product = 1;
+
+        for j in 0..input.len() {
+            if i != j {
+                product *= input[j];
+            }
+        }
+
+        results[i] = product;
+    }
+
+    results
+}
+```

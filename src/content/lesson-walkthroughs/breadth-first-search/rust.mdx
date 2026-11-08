@@ -1,0 +1,67 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Breadth-first search explores an unweighted graph in layers from a starting vertex. A FIFO queue expands vertices discovered earlier before vertices discovered later. The recording traces this behavior and its queue implementation. The layer order supports shortest paths measured in edges when the graph's edges all have equal cost.
+
+## Mark when you enqueue
+
+Begin with the start in the queue and visited set. When expanding a vertex, enqueue each neighbor that has not already been discovered and mark it immediately. Marking at enqueue time prevents several vertices from adding the same neighbor before its first queued copy is processed.
+
+For a diamond A to B and C, with both B and C leading to D, D should enter the queue once. Its first discovery has the smallest possible edge distance because all shallower queued layers are processed first. A predecessor map can remember which vertex discovered D and later reconstruct the route back to A.
+
+## Use queue and set operations that support the bound
+
+The current Python lesson uses a set for visited membership. Checking a growing list for each neighbor would add a linear search to repeated edge processing. Queue representation matters too: repeatedly shifting the front of a dynamic array can add work that the graph-level analysis does not include. A deque or an advancing head index avoids that particular repeated shift.
+
+With adjacency lists, a traversal that expands each reachable vertex once examines its outgoing edges once, giving O(V + E) work under bounded membership and queue-operation assumptions. The queue, visited set, and predecessor map can each retain linear state. Returning a route adds storage for the route itself.
+
+## Keep the objective within the guarantee
+
+A weighted edge may make a two-edge route cheaper than a one-edge route. Ordinary FIFO BFS minimizes edge count, so weighted shortest paths need a different method unless all weights are equal. Starting from one vertex also does not visit disconnected components automatically.
+
+Test a cycle, a converging diamond, an unreachable target, and a start that is already the target. Continue with [Pilot a Rocket](/watch/pilot-a-rocket) to reconstruct a route including both endpoints. Use the [graph traversal tool](/tools/graph-traversal) to compare BFS with DFS on a graph where the first DFS route is longer.
+
+## Trace discovery by layers
+
+For `[[1, 2], [3], [3], []]` and start 0, the example returns `[0, 1, 2, 3]`. It marks a neighbor visited when enqueueing it. When vertex 2 also sees vertex 3, that mark prevents a second enqueue, even though 3 has not necessarily been processed yet.
+
+The queue holds vertices discovered earlier ahead of vertices discovered later. Starting from one vertex in an unweighted graph, this processes reachable vertices in nondecreasing edge distance. If you need actual distances or paths, store a distance or parent at that first discovery; the returned order alone is not a path to every vertex.
+
+## Test queue order and discovery timing
+
+An invalid start returns an empty result. The graph otherwise assumes valid neighbor identifiers. Include an isolated vertex, a cycle, a shared descendant, self-loops, and disconnected components. Repeated adjacency entries should not repeat a vertex in the output.
+
+Traversal with an on-demand visited set takes O(Vr + Er) time over the reachable subgraph, assuming efficient queue operations. Versions initializing a visited array for every vertex add O(V) time and storage up front. The queue, visited state, and returned order use O(Vr) space. Some versions advance a cursor over a growable array; others use a deque. Repeatedly shifting the front of a contiguous array would add avoidable movement. Replacing this queue with a stack would also change discovery order and remove the shortest-layer argument.
+
+## Rust example and implementation choices
+
+VecDeque provides pop_front and push_back, and the visited vector marks neighbors before enqueueing. The Boolean vector covers all graph vertices, adding O(V) initialization and storage even for a small reachable component. Option from pop_front handles an empty queue naturally. Valid neighbor IDs are assumed before signed-to-usize conversion; malformed edges need a separate external-input validation step.
+
+### Worked example
+
+```rust
+use std::collections::VecDeque;
+
+fn bfs_order(graph: &[Vec<i32>], start: i32) -> Vec<i32> {
+    if start < 0 || start as usize >= graph.len() { return Vec::new(); }
+    let mut queue = VecDeque::from([start]);
+    let mut visited = vec![false; graph.len()];
+    let mut output = Vec::new();
+    visited[start as usize] = true;
+    while let Some(node) = queue.pop_front() {
+        output.push(node);
+        for &neighbor in &graph[node as usize] {
+            if !visited[neighbor as usize] {
+                visited[neighbor as usize] = true;
+                queue.push_back(neighbor);
+            }
+        }
+    }
+    output
+}
+```
+
+## Continue in Rust
+
+[Open Breadth-First Search](/course/breadth-first-search) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Rust example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Rust interview preparation guide](/interview-prep/rust) connects these language choices with further practice and the cross-language operation reference.

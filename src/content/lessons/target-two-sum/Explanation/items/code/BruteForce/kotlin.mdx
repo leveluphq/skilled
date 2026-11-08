@@ -1,0 +1,18 @@
+```kotlin
+fun bruteForceGetTargetIndexes(array: IntArray, target: Int): List<List<Int>> {
+    val results = mutableListOf<List<Int>>()
+
+    // Iterate through array to check each value against every other value
+    for (i in array.indices) {
+        // We start j at i + 1 to make sure we don't compare the same index pairs more than once
+        for (j in i + 1 until array.size) {
+            // If the sum of the values equals the target, we add the pair to our results
+            if (array[i] + array[j] == target) {
+                results.add(listOf(i, j))
+            }
+        }
+    }
+
+    return results
+}
+```

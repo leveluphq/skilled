@@ -1,0 +1,22 @@
+```kotlin
+// Using Kotlin's ArrayDeque as a queue
+// addLast == enqueue
+// removeFirst == dequeue
+fun breadthFirstSearch(root: BinaryTreeNode?) {
+    if (root == null) {
+        return
+    }
+
+    val queue = ArrayDeque<BinaryTreeNode>()
+    queue.addLast(root)
+
+    while (queue.isNotEmpty()) {
+        val currentNode = queue.removeFirst()
+
+        visitNode(currentNode)
+
+        currentNode.left?.let { queue.addLast(it) }
+        currentNode.right?.let { queue.addLast(it) }
+    }
+}
+```

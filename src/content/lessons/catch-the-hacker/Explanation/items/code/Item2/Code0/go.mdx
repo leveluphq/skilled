@@ -1,0 +1,26 @@
+```go
+func bruteForceFindEmail(emails []string) string {
+	maxCount := 0
+	email := ""
+
+	// Nested for loops - immediately think O(n^2)
+	for i := range emails {
+		currentEmail := emails[i]
+		currentCount := 0
+
+		for j := range emails {
+			if emails[j] == currentEmail {
+				currentCount++
+			}
+		}
+
+		isNewMax := currentCount > maxCount
+		if isNewMax {
+			maxCount = currentCount
+			email = currentEmail
+		}
+	}
+
+	return email
+}
+```

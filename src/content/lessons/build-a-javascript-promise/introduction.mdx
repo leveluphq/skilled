@@ -1,0 +1,26 @@
+import { Section } from 'style/elements/lesson';
+import InputOutput from './code/InputOutput';
+
+<Section>
+
+Building a JavaScript `Promise` implementation has become an increasingly popular interview question.
+It tests your understanding of asynchronous JS and promises at a fundamental level.
+It also shows you can effectively build objects and implement powerful patterns like chaining.
+
+Asynchronous programming is a core concept in JavaScript and is a feature that gives JavaScript a lot of speed compared to other scripted programming languages.
+JavaScript is single-threaded which means it executes programs line-by-line.
+It is also asynchronous which means that if our program execution reaches a block of code that must wait on a result, it will continue on past this block of code that is waiting so the program doesn't freeze execution, and once that async task finishes, our code will handle the result it was waiting for by using a promise or a callback.
+
+Since the release of ES2015, the most common way to handle the result of an async function call is through a `Promise`, but before that callbacks were used. Recently, the `async`/`await` syntax was added to JavaScript, but this is just an abstraction on top of promises, and we'll see how they compare at the end of the article.
+
+In this lesson, you will learn JavaScript promises by building a JavaScript promise implementation from scratch.
+Your promise will be declared exactly like they are in native JavaScript `new Promise(...)`, and it will be able to chain `.then()` and `.catch()` statements to handle the result of async code.
+
+> If the below problem prompt is confusing and seems too complex, don't worry because it will all make sense as you follow the solution.
+
+**Create a `class` named `PromiseSimple` that allows you to create an object to handle asynchronous actions using the `then` and `catch` keywords which should also be chainable.**
+**Your constructor will take a function as an argument that will `resolve` or `reject` the async function request `new PromiseSimple((resolve, reject) => {})` which triggers the promise chain.**
+
+<InputOutput />
+
+</Section>

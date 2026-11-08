@@ -1,0 +1,81 @@
+```csharp
+using System.Collections.Generic;
+
+public class HashTable<TValue> {
+    // A key-value pair stored in a bucket
+    private class Entry {
+        public string key;
+        public TValue value;
+    }
+
+    private readonly int size;
+    private readonly List<Entry>[] table;
+
+    public HashTable(int size) {
+        this.size = size;
+        this.table = new List<Entry>[size];
+    }
+
+    public TValue Get(string key) {
+        int index = Hash(key);
+        List<Entry> bucket = table[index];
+
+        if (bucket != null) {
+            for (int i = 0; i < bucket.Count; i++) {
+                if (bucket[i].key == key) {
+                    return bucket[i].value;
+                }
+            }
+        }
+
+        return default;
+    }
+
+    public void Insert(string key, TValue value) {
+        int index = Hash(key);
+
+        if (table[index] == null) {
+            table[index] = new List<Entry>();
+        }
+
+        List<Entry> bucket = table[index];
+
+        for (int i = 0; i < bucket.Count; i++) {
+            if (bucket[i].key == key) {
+                bucket[i].value = value;
+                return;
+            }
+        }
+
+        bucket.Add(new Entry { key = key, value = value });
+    }
+
+    public TValue Remove(string key) {
+        int index = Hash(key);
+        List<Entry> bucket = table[index];
+
+        if (bucket != null) {
+            for (int i = 0; i < bucket.Count; i++) {
+                if (bucket[i].key == key) {
+                    TValue value = bucket[i].value;
+                    bucket.RemoveAt(i);
+
+                    return value;
+                }
+            }
+        }
+
+        return default;
+    }
+
+    private int Hash(string key) {
+        int hash = 0;
+
+        for (int i = 0; i < key.Length; i++) {
+            hash = (hash + (int)key[i]) % size;
+        }
+
+        return hash;
+    }
+}
+```

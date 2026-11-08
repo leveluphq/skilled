@@ -1,0 +1,92 @@
+Valid Brackets checks whether parentheses, square brackets, and braces are correctly nested. Other characters are ignored. An empty string and a string with no brackets are valid; `([)]` is invalid even though each bracket type has matching counts.
+
+A C++ vector can serve as a stack of unfinished opening brackets. We read the input through a const reference to avoid an unnecessary string copy. This is compatible with calling the exercise method with an ordinary string; the algorithm itself needs no writable access to that string.
+
+## Keep unfinished openers in a vector
+
+The vector's last element is the most recent opener. An incoming closer must match that element. Use `push_back` for opening brackets and `pop_back` after checking a closer. Accessing the back of an empty vector is invalid, so the emptiness check belongs before the access.
+
+```cpp
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
+
+class Solution {
+public:
+    bool hasValidBrackets(const std::string& s) {
+        std::vector<char> stack;
+        for (char c : s) {
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push_back(c);
+                continue;
+            }
+            char expected = '\0';
+            if (c == ')') expected = '(';
+            else if (c == ']') expected = '[';
+            else if (c == '}') expected = '{';
+
+            if (expected != '\0') {
+                if (stack.empty() || stack.back() != expected) return false;
+                stack.pop_back();
+            }
+        }
+        return stack.empty();
+    }
+};
+```
+
+The zero character is only a local marker meaning “not a recognized closer.” It is never pushed as an opener. Ordinary text therefore makes no stack change, including a literal zero byte inside a string with an explicit length.
+
+## Guard back and pop_back together
+
+Unlike an optional-returning stack interface, `vector::back` does not produce a safe missing-value object on empty input. A program must establish that an element exists. The left side of `||` is evaluated first, and a true empty check prevents the invalid `back` call.
+
+Only a successful match reaches `pop_back`. We never need to search deeper in the vector: doing so would let a closer skip an unfinished inner opener and accept crossing brackets. The [vector element-access specification](https://eel.is/c++draft/container.requirements) defines the relevant access operations and their preconditions.
+
+A `std::stack<char>` adapter is also suitable, but it would express the same three operations through `push`, `top`, and `pop`. Using a vector here keeps the storage and last-element operations visible without requiring access to the middle of the container.
+
+## Trace the point where a string becomes invalid
+
+For `a[({b})]c`, letters are ignored while `[`, `(`, and `{` are pushed in that order. The `}` removes `{`, the `)` removes `(`, and the `]` removes `[`. No opener remains when the scan finishes.
+
+For `([)]`, the vector contains `(` followed by `[` when `)` arrives. The required opener is `(`, but the actual back element is `[`. Returning false immediately is safe: no later character can change which opener was unfinished at that earlier position.
+
+Returning true early would be unsafe. For `(()`, every closer seen during the loop matches correctly, but one opener remains at the end. The final empty check distinguishes that unfinished string from a valid one.
+
+## Treat UTF-8 text according to the actual task
+
+`std::string` is a sequence of bytes. Iterating with `char` does not decode Unicode code points, and the signedness of `char` varies by implementation. Neither detail changes ASCII delimiter detection: UTF-8 non-ASCII bytes do not equal one of the six ASCII bracket values.
+
+The method only returns a Boolean. If it had to report a user-visible character position, byte offsets and Unicode characters would require a separate design. Similarly, ignoring bracket-like symbols from other writing systems would require an explicitly expanded delimiter set.
+
+Quotes and comments have no parsing role in this exercise. A bracket inside quote marks still participates. A source-code validator that skips literals would need lexical states or a tokenizer; quietly adding that behavior would change this function's contract.
+
+## Exercise empty input, text, and repeated calls
+
+```cpp
+void checkExamples() {
+    Solution solution;
+    const std::vector<std::pair<std::string, bool>> cases{
+        {"", true}, {"ordinary text", true}, {"a + (b * [c])", true},
+        {"([]{})", true}, {"([)]", false}, {"]", false}, {"(()", false},
+        {"🙂{x[y](z)}", true}
+    };
+    for (const auto& item : cases) {
+        if (solution.hasValidBrackets(item.first) != item.second) {
+            throw std::runtime_error("Incorrect bracket result");
+        }
+    }
+    if (!solution.hasValidBrackets(std::string(20000, '(') + std::string(20000, ')'))) {
+        throw std::runtime_error("Deep nesting failed");
+    }
+}
+```
+
+Use the examples from a local test program's `main`. Reusing the same Solution instance verifies that the method's local vector does not retain unfinished openers between calls. The deep case also verifies that nesting is stored in a container rather than consuming one call frame per opener.
+
+## Bound the actual working storage
+
+The scan takes `O(n)` time with amortized vector appends. Working storage is `O(d)`, where `d` is maximum unfinished nesting depth, and worst-case `O(n)`. The const-reference parameter avoids adding another complete string allocation to that bound.
+
+The invariant is the exact ordered sequence of openers still waiting for a closer. Explain that sequence and the guarded last-element access before implementing the exercise. Balanced counts alone do not preserve enough information to solve it.

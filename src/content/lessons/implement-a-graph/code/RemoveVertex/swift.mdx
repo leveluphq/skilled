@@ -1,0 +1,9 @@
+```swift
+func removeVertex(_ vertex: String) {
+    adjacencyList.removeValue(forKey: vertex)
+
+    for node in adjacencyList.keys {
+        adjacencyList[node]?.removeAll { $0 == vertex }
+    }
+}
+```

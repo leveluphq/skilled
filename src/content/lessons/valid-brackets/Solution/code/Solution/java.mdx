@@ -1,0 +1,32 @@
+```java
+class Solution {
+    public boolean hasValidBrackets(String s) {
+        Map<Character, Character> matchingBrackets = Map.of(
+            '(', ')',
+            '[', ']',
+            '{', '}'
+        );
+        // The keys are the opening brackets
+        Set<Character> openingBrackets = matchingBrackets.keySet();
+        // The values are the closing brackets
+        Collection<Character> closingBrackets = matchingBrackets.values();
+        Deque<Character> bracketStack = new ArrayDeque<>();
+
+        for (char character : s.toCharArray()) {
+            if (openingBrackets.contains(character)) {
+                bracketStack.push(character);
+            } else if (closingBrackets.contains(character)) {
+                // poll returns null on an empty stack, where pop would throw
+                Character latestBracket = bracketStack.poll();
+
+                if (latestBracket == null || character != matchingBrackets.get(latestBracket)) {
+                    return false;
+                }
+            }
+        }
+
+        // check if we opened/closed all brackets which creates an empty stack.
+        return bracketStack.isEmpty();
+    }
+}
+```

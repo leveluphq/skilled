@@ -1,0 +1,18 @@
+```rust
+impl Solution {
+    pub fn count_total_moves(board_length: i32) -> i32 {
+        if board_length < 0 {
+            // Base case 1: Invalid board length
+            0
+        } else if board_length == 0 {
+            // Base case 2: Introduction says length 0 is still 1 step
+            1
+        } else {
+            // Recursive case
+            Self::count_total_moves(board_length - 1)
+                + Self::count_total_moves(board_length - 2)
+                + Self::count_total_moves(board_length - 3)
+        }
+    }
+}
+```

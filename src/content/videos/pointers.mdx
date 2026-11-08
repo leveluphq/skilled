@@ -1,0 +1,19 @@
+The recording uses object references to explain how several variables can reach the same object. In JavaScript, this does not involve exposing a raw memory address or performing pointer arithmetic. It describes the identity relationship that matters when you connect nodes, pass an object to a function, or mutate a shared record.
+
+## Draw objects separately from variable names
+
+Suppose `child` holds an object, and a parent object's child property is assigned that same reference. There is still one child object. Mutating a field through either reference changes the object seen through the other. Creating a second object with equal fields would instead produce a distinct identity.
+
+Assignment changes which value a variable or property holds. Reassigning the local variable `child` to a different object does not rewrite the parent's property. Deleting the parent's property removes that route to the original object, but another variable may still reach it. Trace arrows after each operation rather than assuming that a change to one name changes every reference.
+
+## Follow the value passed into a function
+
+JavaScript passes values as arguments. When a value is an object reference, the function receives that reference value and can use it to mutate the shared object. Reassigning the parameter itself changes only the local binding. This distinction explains why a function may successfully change a node's data but still need to return a new head after replacing the first node.
+
+A shallow copy also preserves references to nested objects. Changing a top-level field on the copy is separate from changing a field inside one of those shared nested objects. The [deep-clone guide](/guides/javascript-deep-clone) shows why copying an object graph requires an explicit contract for cycles, aliases, descriptors, and supported types.
+
+## Relate references to ownership and lifetime
+
+A garbage-collected runtime can reclaim objects that are no longer reachable under its memory model; removing one reference does not establish that all references are gone or that collection happens immediately. Other languages use ownership, reference counting, or explicit allocation APIs. Keep those mechanisms separate when translating an explanation between languages.
+
+Practice by drawing a three-node chain, saving a reference to its middle node, and then changing the head. Identify which nodes each remaining name can reach. Continue with [Linked Lists](/watch/linked-lists), where those identity relationships determine whether a mutation preserves or loses the remaining chain.

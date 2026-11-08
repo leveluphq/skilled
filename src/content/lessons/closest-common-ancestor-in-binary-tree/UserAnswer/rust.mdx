@@ -1,0 +1,28 @@
+```rust
+// The test runner provides BinaryNode:
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct BinaryNode {
+//     pub data: i32,
+//     pub left: Option<Rc<RefCell<BinaryNode>>>,
+//     pub right: Option<Rc<RefCell<BinaryNode>>>,
+// }
+//
+// impl BinaryNode {
+//     pub fn new(data: i32) -> Self { ... }
+// }
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    /// Returns the closest common ancestor of the nodes holding the two values
+    pub fn find_closest_ancestor(
+        root: Option<Rc<RefCell<BinaryNode>>>,
+        first_child_value: i32,
+        second_child_value: i32,
+    ) -> Option<Rc<RefCell<BinaryNode>>> {
+        // Your solution here
+        None
+    }
+}
+```

@@ -1,0 +1,63 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Dynamic programming reuses answers to well-defined subproblems. A complete solution needs a state definition, base cases, a recurrence, and an evaluation order. The recording brings those pieces together using Fibonacci. The later course problems vary the recurrence so you can practice the reasoning beyond that first example.
+
+## Say what one stored answer means
+
+For a count problem, an entry might store the number of valid ways to reach a position. For a minimum problem, it might store the least cost for an amount. For a boolean problem, it may store whether a destination is reachable. These meanings determine the combination rule: summing counts, taking a minimum, and testing whether any branch succeeds are different operations.
+
+A state must contain enough information to determine the future. If the remaining choices depend on a previously selected item, include that restriction in the state or prove that a smaller summary captures it. Two histories can share a cached answer only when they represent the same remaining question.
+
+## Derive the recurrence from legal choices
+
+In [Three Moves](/watch/three-moves), the last move can have length one, two, or three, so the count combines those predecessor counts. Zero length contributes one empty sequence. In [Steal Packages](/watch/steal-packages), selecting a house excludes its neighbor, so the recurrence compares taking the current value with skipping it. The values stored in the two problems have different meanings despite similar-looking tables.
+
+In [Vending Machine](/watch/vending-machine), an unreachable amount needs a distinct representation. Adding one to an unchecked maximum sentinel can overflow in fixed-width arithmetic. Guard impossible states before combining them, and keep zero as a legitimate answer for a zero target.
+
+## Prove order and estimate the actual work
+
+Top-down memoization evaluates requested dependencies and stores results. Bottom-up evaluation visits states in an order where dependencies are complete. Count distinct states and transitions per state to estimate time. Include cache storage, recursion depth, and any returned reconstruction in the space analysis.
+
+Test tiny cases against a deliberately simple exhaustive solution. Small generated inputs can catch a plausible recurrence that accidentally counts unordered combinations, skips a legal choice, or treats false as an uncached state. Use the [dynamic programming tool](/tools/dynamic-programming) to explain each stored value aloud before moving to a larger example.
+
+## Solve minimum coin count as a state recurrence
+
+The example accepts positive integer denominations and a nonnegative target amount. Coins may be used repeatedly. With `[1, 3, 4]` and amount 6, it returns 2 by using two threes. A greedy choice of four followed by two ones would use three coins and miss the optimum.
+
+State dp[a] is the minimum number of coins that make amount a. The base state dp[0] is zero. For every usable coin c, a candidate for dp[a] is dp[a − c] + 1, provided that preceding amount is reachable. Filling amounts upward makes each required smaller state available.
+
+## Represent unreachable amounts explicitly
+
+The table uses amount + 1 as an unreachable sentinel. Positive integer coins imply that any reachable answer needs at most amount coins, so this sentinel lies above the valid result range. The function returns −1 when the target remains unreachable. An empty denomination list still makes amount zero with zero coins.
+
+For target A and k denominations, the implementation takes O(Ak) time and O(A) table space. Duplicate denominations repeat work but do not change the answer. Zero or negative denominations are outside the contract and should be rejected by a wrapper accepting untrusted data. Check `[2]` with target 3, the greedy counterexample, zero target, and no coins. To reconstruct the selected coins, retain a predecessor choice alongside each improved state.
+
+## Swift example and implementation choices
+
+Array(repeating:count:) initializes every state as unreachable, and the explicit zero base case starts the recurrence. The while loop safely handles amount zero without forming a descending closed range. Int arithmetic and allocation require practical bounded inputs. Each positive denomination refers to an earlier table entry, and the final comparison converts only the unreachable sentinel into −1.
+
+### Worked example
+
+```swift
+func minimumCoins(_ coins: [Int], _ amount: Int) -> Int {
+    let impossible = amount + 1
+    var best = Array(repeating: impossible, count: amount + 1)
+    best[0] = 0
+    var value = 1
+    while value <= amount {
+        for coin in coins {
+            if coin <= value && best[value - coin] != impossible {
+                best[value] = min(best[value], 1 + best[value - coin])
+            }
+        }
+        value += 1
+    }
+    return best[amount] == impossible ? -1 : best[amount]
+}
+```
+
+## Continue in Swift
+
+[Open Dynamic Programming](/course/dynamic-programming) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Swift example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Swift interview preparation guide](/interview-prep/swift) connects these language choices with further practice and the cross-language operation reference.

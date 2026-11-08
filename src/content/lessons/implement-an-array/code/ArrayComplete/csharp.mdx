@@ -1,0 +1,73 @@
+```csharp
+using System.Collections.Generic;
+
+public class DynamicArray<T> {
+    public int length;
+    public Dictionary<int, T> data;
+
+    public DynamicArray() {
+        this.length = 0;
+        this.data = new Dictionary<int, T>();
+    }
+
+    public T Get(int index) {
+        return this.data[index];
+    }
+
+    public int Push(T item) {
+        this.data[this.length] = item;
+        this.length++;
+
+        return this.length;
+    }
+
+    public T Pop() {
+        if (this.length == 0) {
+            return default;
+        }
+
+        T poppedItem = this.data[this.length - 1];
+        this.data.Remove(this.length - 1);
+        this.length--;
+
+        return poppedItem;
+    }
+
+    public Dictionary<int, T> Insert(int index, T item) {
+        if (index > this.length - 1 || index < 0) {
+            return null;
+        }
+
+        this.length++;
+
+        for (int i = this.length - 1; i > index; i--) {
+            this.data[i] = this.data[i - 1];
+        }
+
+        this.data[index] = item;
+
+        return this.data;
+    }
+
+    public T Remove(int index) {
+        if (this.length == 0) {
+            return default;
+        }
+
+        if (index > this.length - 1 || index < 0) {
+            return default;
+        }
+
+        T itemToBeRemoved = this.data[index];
+
+        for (int i = index; i < this.length - 1; i++) {
+            this.data[i] = this.data[i + 1];
+        }
+
+        this.data.Remove(this.length - 1);
+        this.length--;
+
+        return itemToBeRemoved;
+    }
+}
+```

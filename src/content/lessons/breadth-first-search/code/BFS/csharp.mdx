@@ -1,0 +1,23 @@
+```csharp
+void BreadthFirstSearch(GraphNode startingNode) {
+    var bfsQueue = new Queue<GraphNode>();
+    var visitedNodes = new HashSet<GraphNode>();
+
+    bfsQueue.Enqueue(startingNode);
+    visitedNodes.Add(startingNode);
+
+    while (bfsQueue.Count > 0) {
+        GraphNode node = bfsQueue.Dequeue();
+
+        // Use node value for the question
+        Visit(node);
+
+        foreach (GraphNode childNode in node.edges) {
+            if (!visitedNodes.Contains(childNode)) {
+                bfsQueue.Enqueue(childNode);
+                visitedNodes.Add(childNode);
+            }
+        }
+    }
+}
+```

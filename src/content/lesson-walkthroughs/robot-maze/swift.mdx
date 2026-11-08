@@ -1,0 +1,112 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Determine whether a robot can reach any exit from the upper-left cell of a rectangular room. Open cells contain 0, blocked cells contain 1, and exits contain 2. The robot can move only down or right. It does not move up or left, so this is a directed reachability problem rather than a general four-direction maze search.
+
+## Define the state as a cell
+
+Let the answer for `(row, column)` mean whether an exit is reachable starting there. A position outside the room is false, an exit is true, and a blocked cell is false. An open cell succeeds if either the cell below it or the cell to its right succeeds.
+
+The same cell can be reached by several paths. Without memoization, the recursion repeatedly solves identical suffix regions and can grow exponentially. Store each completed Boolean answer in a memo table. Its entries need three states: unknown, known false, and known true. Treating false as unknown would repeat all unsuccessful searches.
+
+## Trace a shared dead end
+
+Consider `[[0, 0, 1], [0, 0, 1], [1, 0, 2]]`. From the start, moving down or right can eventually reach the center cell. From there the downward route reaches the bottom-middle cell and then the exit. The right neighbor is blocked. Memoizing the center's true result lets a later path reuse it immediately.
+
+Now replace the bottom-middle cell with a wall. The center becomes false. Caching that false is just as useful as caching a success: both incoming paths can stop without exploring the same blocked suffix again. The memo describes reachability from a cell, independent of the path used to arrive there.
+
+## Explain why no visiting marker is needed
+
+Every recursive move increases row or column. A path can never return to an earlier cell, so the dependency graph has no cycle. Each state depends only on states farther down or right, and completed answers can be reused safely. General four-direction movement would require a cycle-aware visited policy instead of this argument.
+
+The recurrence checks exactly the legal next moves. If either next state reaches an exit, prefixing the current open cell gives a valid path. If both fail, every legal continuation fails. The out-of-bounds, blocked, and exit base cases complete the correctness argument.
+
+## Read the table's absence representation
+
+Java can use boxed `Boolean` entries so null means unknown. Other languages use optional Booleans, a numeric sentinel, or a map that distinguishes an absent key from a stored false value. The distinction must survive lookup and comparison. A truthiness check alone often collapses unknown and false.
+
+Each of r × c cells has its result computed at most once, with constant work per transition. Time and memo storage are O(r × c). Recursive depth is O(r + c) because a path advances only down and right. The room itself need not be modified. A bottom-up table can remove recursion by processing dependencies from the bottom-right toward the top-left.
+
+## Test the movement rule
+
+Use an exit at the start, a blocked start, no exit, a single row, a single column, and a room with several routes to one suffix. Include an arrangement whose only geometric route would require moving left or up; it must fail under this contract. An empty room has no starting cell and returns false.
+
+For an independent oracle, propagate reachable open cells forward from the start and report whether any reachable cell is an exit. This evaluates the directed graph in the opposite direction from the recursive suffix question. A follow-up can count paths, which changes Boolean OR into addition and requires a numeric overflow policy for large rooms.
+
+## Swift implementation
+
+The optional memo stores three states. The helper changes that table through its mutation interface while reading room values.
+
+The course uses the class shown here and supplies any declared node classes. Swift arrays have value semantics with copy-on-write storage, while class instances such as linked nodes retain reference identity. Optional values require an explicit absence case. Keep the starter's argument labels when calling the method. Swift integer overflow traps, so expanded constraints require a checked arithmetic policy.
+
+```swift
+class Solution {
+    private let openSpot = 0
+    private let blockedSpot = 1
+    private let exitSpot = 2
+
+    func hasExitPath(_ roomMatrix: [[Int]]) -> Bool {
+        // Return false if the matrix is invalid
+        if roomMatrix.isEmpty || roomMatrix[0].isEmpty {
+            return false
+        }
+
+        // Init our memoize matrix, where nil means we don't know yet if a spot is on a valid path
+        var memoizedPathValidity = [[Bool?]](
+            repeating: [Bool?](repeating: nil, count: roomMatrix[0].count),
+            count: roomMatrix.count
+        )
+
+        // Recursively walk through the room to check if there is a valid path
+        let isValidPath = walkThroughRoom(roomMatrix, 0, 0, &memoizedPathValidity)
+
+        return isValidPath
+    }
+
+    // Recursive helper function
+    private func walkThroughRoom(_ roomMatrix: [[Int]], _ row: Int, _ col: Int, _ memo: inout [[Bool?]]) -> Bool {
+        // Base case 1: Outside of room, so there can't be a path through this
+        let isOutsideRoom = row > roomMatrix.count - 1 || col > roomMatrix[0].count - 1
+        if isOutsideRoom {
+            return false
+        }
+
+        // Base case 2: A path successfully reached the end, so propagate this upward
+        let isOnValidPath = memo[row][col] == true
+        let isExitNode = roomMatrix[row][col] == exitSpot
+        if isOnValidPath || isExitNode {
+            // Set the current node as true as well
+            memo[row][col] = true
+            return true
+        }
+
+        // Base case 3: We reached a blocking node
+        let isOnInvalidPath = memo[row][col] == false
+        let isBlockingNode = roomMatrix[row][col] == blockedSpot
+        if isOnInvalidPath || isBlockingNode {
+            memo[row][col] = false
+            return false
+        }
+
+        // Recursive case: move down and right
+        let downResult = walkThroughRoom(roomMatrix, row + 1, col, &memo)
+        let rightResult = walkThroughRoom(roomMatrix, row, col + 1, &memo)
+
+        if !downResult && !rightResult {
+            // If both this node's right and down are false, we memoize this to false
+            memo[row][col] = false
+        } else {
+            // If either of the paths are true, we set this node as true since at least one can reach the exit
+            memo[row][col] = true
+        }
+
+        // Returns true if either is successful
+        return downResult || rightResult
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Robot Maze](/course/robot-maze) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Swift conventions and practice problems, use the [Swift interview guide](/interview-prep/swift).

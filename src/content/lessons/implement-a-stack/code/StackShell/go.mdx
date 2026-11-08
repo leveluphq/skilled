@@ -1,0 +1,26 @@
+```go
+type Node struct {
+	Data int
+	Prev *Node
+}
+
+type Stack struct {
+	last *Node
+}
+
+func NewStack() *Stack {
+	return &Stack{last: nil}
+}
+
+func (s *Stack) Peek() *Node {
+	// get the last item of the list
+}
+
+func (s *Stack) Push(item int) *Node {
+	// add an item to the end of the list
+}
+
+func (s *Stack) Pop() *Node {
+	// remove the last item of the list
+}
+```

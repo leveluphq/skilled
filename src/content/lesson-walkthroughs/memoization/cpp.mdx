@@ -1,0 +1,67 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Memoization reuses a function result when the same relevant inputs appear again. The recording applies this idea to Fibonacci, turning repeated recursive branches into lookups. The cache must describe the function's actual state and must distinguish a missing entry from a stored answer, including answers such as zero or false.
+
+## Cache the answer to a defined question
+
+For a fixed Fibonacci definition, the integer n identifies the subproblem. After computing its answer, store that value under n. A later call can return it without expanding its children again. During one evaluation up to n, only a linear number of distinct nonnegative states need computation under the usual recurrence.
+
+The base cases still matter. A cached recurrence that calls itself forever never produces a value to store. For recurrences that can revisit an active state, such as some graph problems, a completed-result cache alone is not enough to resolve a cycle. Define progress or retain additional active-state information when the problem needs it.
+
+## Treat zero and false as real results
+
+A truthiness check loses valid stored answers. A path-existence calculation may correctly cache false, and a minimum-cost or count calculation may correctly cache zero. Use membership or a distinct missing marker. The cache's key must also include all relevant inputs; an amount solved with one coin set is not automatically reusable with another.
+
+In a general JavaScript memoizer, object arguments introduce identity choices. Two separately allocated but equal-looking objects are distinct identity keys. Serializing inputs chooses another equivalence relation and can fail on cycles or discard distinctions. The [JavaScript memoization guide](/guides/javascript-memoization) provides a concrete receiver-and-argument identity contract, including promise rejection behavior.
+
+## Count states, transitions, and retained memory
+
+Memoized Fibonacci uses linear stored state and linear recursion depth for its top-down form. Arithmetic cost grows with integer size if the result is not treated as bounded-width. A rolling bottom-up implementation can retain only the previous two values, but that is an additional storage optimization based on the recurrence's dependencies.
+
+Continue with [Bottom-Up vs. Top-Down](/watch/bottom-up-vs-top-down), then study [Vending Machine](/watch/vending-machine). Before adding a cache, write a sentence explaining the answer stored at each key and show a case in which two branches request that exact same state.
+
+## Count distinct solved states
+
+The example returns the Fibonacci value and the number of states actually computed. For input 4, it returns `[3, 5]`: states 0 through 4 are each computed once. For input 0 or 1, only the requested base state is computed, so the state count is one.
+
+A cache lookup must distinguish “not stored” from a stored value of zero. F(0) is zero and is a perfectly valid cached answer. A truthiness check would treat it as missing in some languages. The examples use presence checks or explicit optional results instead.
+
+## Keep the cache lifetime visible
+
+A new cache is created for each top-level call. Calling the function twice therefore repeats its O(n) preparation, rather than sharing process-wide state. A global cache would need a different lifetime, memory, and concurrency discussion.
+
+For n at least two, the function solves n + 1 distinct states. With fixed-width arithmetic, the total work and retained cache are O(n), and the recursive stack is O(n). Memoization removes duplicate subtrees but does not remove stack depth. A large n can still overflow the host stack or numeric range.
+
+Test the base states and a small value with overlapping branches. Compare the state count with the naive call count to show what was saved. A correct final Fibonacci number alone cannot prove that memoization is effective; an implementation that recomputes every state might return the same value.
+
+## C++ example and implementation choices
+
+A `vector<optional<int>>` represents cached states directly. Testing an optional asks whether it contains a value, so a stored zero is still a hit. The separate computed counter increases only when a previously absent state is filled. Allocating n + 1 optional slots costs O(n) before recursion, even if a particular tiny input touches just one state.
+
+### Worked example
+
+```cpp
+#include <vector>
+#include <optional>
+#include <functional>
+
+std::vector<int> fibMemoStats(int n) {
+    std::vector<std::optional<int>> memo(n + 1);
+    int computed = 0;
+    std::function<int(int)> fib = [&](int value) -> int {
+        if (memo[value]) return *memo[value];
+        const int answer = value < 2 ? value : fib(value - 1) + fib(value - 2);
+        memo[value] = answer;
+        ++computed;
+        return answer;
+    };
+    const int answer = fib(n);
+    return {answer, computed};
+}
+```
+
+## Continue in C++
+
+[Open Memoization](/course/memoization) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the C++ example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [C++ interview preparation guide](/interview-prep/cpp) connects these language choices with further practice and the cross-language operation reference.

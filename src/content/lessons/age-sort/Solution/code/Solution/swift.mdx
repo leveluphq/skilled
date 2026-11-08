@@ -1,0 +1,25 @@
+```swift
+class Solution {
+    private let minAge = 0
+    private let maxAge = 100
+
+    func sortByAge(_ ageList: [Int]) -> [Int] {
+        var sortedAgeList: [Int] = []
+        var ageCount = [Int](repeating: 0, count: maxAge + 1)
+
+        for age in ageList {
+            ageCount[age] += 1
+        }
+
+        for age in minAge...maxAge {
+            let count = ageCount[age]
+
+            for _ in 0..<count {
+                sortedAgeList.append(age)
+            }
+        }
+
+        return sortedAgeList
+    }
+}
+```

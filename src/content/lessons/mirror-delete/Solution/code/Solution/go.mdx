@@ -1,0 +1,44 @@
+```go
+func mirrorDelete(head *ListNode, k int) *ListNode {
+	// Create 2 pointers (follow and lead) that start at the head
+	follow := head
+	lead := head
+
+	// Since we want to delete the k node,
+	// we set our follow pointer to be one spot beyond the deleted node.
+	//
+	// So instead of iterating 0 to i < k as with most problems,
+	// we iterate 0 to i < k + 1 to account for that extra spot.
+	for i := 0; i < k+1; i++ {
+		// If we hit a nil, k is larger than our linked list,
+		// so we return the head without deleting an item.
+		if lead == nil {
+			return head
+		}
+
+		lead = lead.Next
+	}
+
+	// Our lead pointer will end exactly at the terminating nil
+	// when the head node should be removed (k == length - 1).
+	//
+	// Since we iterate to k + 1, our lead pointer is 1 item past
+	// the end of the linked list, which is the terminating nil.
+	if lead == nil {
+		return head.Next
+	}
+
+	// Increment until lead reaches the tail.
+	// Once here, we know the node we want to delete is at k, and our follow is at k + 1.
+	for lead.Next != nil {
+		follow = follow.Next
+		lead = lead.Next
+	}
+
+	// Delete the kth node (skip past it in our linked list)
+	follow.Next = follow.Next.Next
+
+	// The head will be the same, but the list will not contain the node we deleted
+	return head
+}
+```

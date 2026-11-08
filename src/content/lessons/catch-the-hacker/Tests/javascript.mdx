@@ -1,0 +1,85 @@
+```javascript
+const tests = [
+  {
+    input: [
+      'hey@skilled.dev',
+      'a@b.test',
+      'hey@skilled.dev',
+      'hey@skilled.dev',
+      'a@b.test',
+      'c@d.test',
+      'c@d.test',
+    ],
+    expected: 'hey@skilled.dev',
+    description: 'handles valid input',
+  },
+  {
+    input: [
+      'a@b.test',
+      'c@d.test',
+      'c@d.test',
+      'hey@skilled.dev',
+      'hey@skilled.dev',
+      'hey@skilled.dev',
+    ],
+    expected: 'hey@skilled.dev',
+    description: 'the hacker is the last email in the list',
+  },
+  {
+    input: [
+      'solo@skilled.dev',
+    ],
+    expected: 'solo@skilled.dev',
+    description: 'only one email',
+  },
+  {
+    input: [
+      'hey@skilled.dev',
+      'a@b.test',
+      'hey@skilled.dev',
+      'c@d.test',
+      'a@b.test',
+      'hey@skilled.dev',
+      'c@d.test',
+    ],
+    expected: 'hey@skilled.dev',
+    description: 'the hacker is first and their copies are spread out',
+  },
+  {
+    input: [
+      'a@b.test',
+      'hey@skilled.dev',
+      'c@d.test',
+      'a@b.test',
+      'hey@skilled.dev',
+      'c@d.test',
+      'a@b.test',
+      'hey@skilled.dev',
+      'c@d.test',
+      'hey@skilled.dev',
+    ],
+    expected: 'hey@skilled.dev',
+    description: 'the hacker has only one more copy than the others',
+  },
+  {
+    input: [
+      'a@b.test',
+      'a@b.test',
+      'hey@skilled.dev',
+      'c@d.test',
+      'hey@skilled.dev',
+      'c@d.test',
+      'hey@skilled.dev',
+    ],
+    expected: 'hey@skilled.dev',
+    description: 'another email\'s copies are next to each other',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = findHackerEmail(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

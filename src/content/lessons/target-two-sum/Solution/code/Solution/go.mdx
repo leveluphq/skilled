@@ -1,0 +1,34 @@
+```go
+func getTargetIndexes(array []int, target int) [][]int {
+	results := [][]int{}
+	arrayElementAtIndex := map[int]int{}
+
+	// Loop through our input slice and
+	// create a hash table that stores each value and
+	// its corresponding index.
+	for i, element := range array {
+		arrayElementAtIndex[element] = i
+	}
+
+	for i, currentValue := range array {
+		// We find the element that would be the match current value
+		// and check if it is in our hash table.
+		matchedValue := target - currentValue
+		matchedIndex, found := arrayElementAtIndex[matchedValue]
+
+		// Check if our matched index is a valid index
+		// ----
+		// NOTE: found is false if the value does not exist in the hash table,
+		// and we mark values we have used with -1.
+		if found && matchedIndex >= 0 && matchedIndex != i {
+			results = append(results, []int{i, matchedIndex})
+
+			// Make sure we don't use these values again
+			arrayElementAtIndex[currentValue] = -1
+			arrayElementAtIndex[matchedValue] = -1
+		}
+	}
+
+	return results
+}
+```

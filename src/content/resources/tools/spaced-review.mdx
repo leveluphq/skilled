@@ -1,0 +1,43 @@
+Use these review cards to recall an algorithmic approach before reading its explanation. Each card presents a constraint-based problem from the pattern quiz. Say which data structure you would use, state the invariant, estimate its cost, and name a failure case. Then reveal the explanation and judge what you remembered.
+
+The deck contains twelve reviewed prompts. The schedule stays in this browser, with no account or notification permission. A card marked recalled returns after one, three, seven, fourteen, and then thirty days as its review level increases. A card marked for more study returns in ten minutes and resets its level.
+
+## Attempt recall before revealing the answer
+
+Recognizing an explanation after reading it can feel easier than reconstructing it from a blank page. Use the hidden answer to create a small retrieval task. Write a few lines, speak aloud, or trace one input before pressing Reveal explanation.
+
+For a prefix-sum prompt, naming “hash map” is incomplete. Explain which prefix differences identify valid starts, why the map stores frequencies, and when the current prefix is inserted. For a binary-search prompt, describe the half-open interval and the returned sentinel when no true value exists.
+
+The follow-up below each revealed explanation changes the example or asks for the invariant. Use it as a second check. If you remembered a label but could not explain its consequence, study the linked guide and choose the shorter repeat interval.
+
+## Use the schedule as a practice aid
+
+The intervals are a simple deterministic schedule, not a model of your memory or a claim about the best schedule for every learner. They create room between successful recalls and bring a difficult prompt back sooner.
+
+Due cards include both unseen prompts and cards whose stored review time has passed. Once all currently due cards have been graded, the page reports that no cards are due. Practice all cards remains available for an optional round without waiting for the schedule.
+
+Time comes from your device's clock. A large clock change can affect which cards appear due. Review progress is separate from course completion and is not synchronized to an account. Clearing browser storage, using another browser profile, or moving to a different device creates a separate schedule.
+
+## Grade the explanation you produced
+
+Choose Recalled it when your attempted explanation covered the stated constraints. A solution that works only after removing a required space bound does not satisfy the same prompt. Neither does a sliding-window argument that assumes nonnegative values when negatives are allowed.
+
+Choose Study again when the invariant was missing, a counterexample broke the approach, or you needed the answer before making a meaningful attempt. The point is to choose the next practice time, so an inflated self-grade only makes the schedule less useful.
+
+After revealing an answer, follow its guide and implement the key operation in your preferred language. For a queue-based BFS, that includes marking at discovery and retaining the required parent or distance information. For a heap prompt, state the heap orientation and the interpretation of its root before adding an element.
+
+## Mix recognition with implementation
+
+A flashcard deck cannot verify that you can write and debug the code. Alternate review sessions with blank-editor attempts, tests, and explanation practice. A remembered pattern name is useful only when you can connect it to the actual contract.
+
+The [pattern quiz](/tools/pattern-quiz) gives multiple-choice recognition practice and explains alternatives. The [edge-case practice](/tools/edge-case-practice) challenges assumptions in plausible implementations. The [interview rehearsal](/tools/interview-rehearsal) combines clarification, coding, tests, and self-review under an explicit time budget.
+
+Use a card's linked guide to revisit a weak point, then add a personal follow-up in your own notes. For example, compare an unweighted shortest-path problem with a weighted version, or explain why deletion changes a union-find task. Those variations check whether you understand when an approach stops applying.
+
+## Understand what is saved
+
+The browser stores only each card's identifier, review level, and next due timestamp. It does not store a transcript of your explanation, code, quiz choices, or a profile of your ability. If local storage is unavailable, the page reports that the current session will not persist.
+
+The schedule details let you inspect next-review dates and clear the stored records. Clearing returns the deck to its initial state and does not change course progress. There is no hidden notification service or background reminder; return to this page when you want another session.
+
+The complete card deck is also available in an expandable section. Its questions, explanations, and follow-ups are part of the public page, so a reader can use the material without maintaining a schedule. For a broader sequence, use the [study-plan builder](/tools/study-plan-builder) and reserve some sessions for revisiting earlier work. Keep one concrete next action for a missed card, such as tracing a failing example or rewriting the boundary loop, so review leads back to practice.

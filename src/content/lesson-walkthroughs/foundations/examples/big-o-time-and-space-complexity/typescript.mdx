@@ -1,0 +1,9 @@
+```typescript
+function suffixCopies(values: readonly number[]): number[][] {
+  const suffixes: number[][] = [];
+  for (let index = 0; index < values.length; index++) {
+    suffixes.push(values.slice(index));
+  }
+  return suffixes;
+}
+```

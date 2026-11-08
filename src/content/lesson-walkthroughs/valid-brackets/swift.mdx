@@ -1,0 +1,82 @@
+This Swift bracket validator checks ASCII parentheses, square brackets, and braces while ignoring other text. Empty input is valid. `([)]` is invalid because its pairs cross, even though the bracket counts balance.
+
+Swift strings offer several iteration views. This task needs to recognize each ASCII delimiter independently, so we iterate Unicode scalars rather than extended grapheme-cluster Characters. That choice avoids accidentally treating a bracket combined with a following accent as an entirely different, ignored Character.
+
+## Use Unicode scalars and a last-in, first-out array
+
+The matching dictionary maps each closer to its required opener. The stack stores unfinished opening scalars. Ordinary text changes neither the stack nor the matching table.
+
+```swift
+class Solution {
+    func hasValidBrackets(_ s: String) -> Bool {
+        var stack: [Unicode.Scalar] = []
+        let matching: [Unicode.Scalar: Unicode.Scalar] = [")": "(", "]": "[", "}": "{"]
+
+        for c in s.unicodeScalars {
+            if c == "(" || c == "[" || c == "{" {
+                stack.append(c)
+            } else if let expected = matching[c] {
+                guard let opening = stack.popLast(), opening == expected else {
+                    return false
+                }
+            }
+        }
+        return stack.isEmpty
+    }
+}
+```
+
+`popLast()` returns an optional. On an empty stack, the guard fails without an invalid indexed access. On a nonempty stack, its opener must match the expected scalar. Both absence and a wrong type give the required false result.
+
+## Choose the string view from the actual alphabet
+
+A Swift Character can include several Unicode scalars combined into one displayed unit. For example, a combining mark after an opening parenthesis may become part of the same Character. This exercise still treats the ASCII parenthesis as a delimiter and ignores the mark, so scalar iteration matches that contract more precisely.
+
+UTF-8 byte iteration would also be suitable for this fixed ASCII alphabet. Scalar iteration keeps the code expressed with readable delimiter literals and explicitly separates scalar recognition from displayed-character segmentation. Swift's [Strings and Characters guide](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/stringsandcharacters/) describes the available views.
+
+The function returns only a Boolean. A future error-position API would need to specify whether positions refer to bytes, scalars, or displayed characters. Returning a guessed integer offset without defining that model would make Unicode inputs ambiguous.
+
+## Trace the unfinished nesting
+
+On `a[({b})]c`, the letters are ignored and the stack receives `[`, `(`, and `{`. The closer `}` consumes `{`, the `)` consumes `(`, and the `]` consumes `[`. The final empty stack gives true.
+
+For `([)]`, the stack's last entry is `[` when `)` arrives. The dictionary requires `(`, so the guard fails. Searching deeper for that opener would permit crossing brackets by skipping an unfinished inner pair.
+
+For `(()`, the loop handles the encountered closer correctly but leaves one opener behind. The final empty check therefore matters independently of the guard. A valid return must wait until the entire input and this last check have been processed.
+
+## Keep the stack local and avoid forced unwrapping
+
+The stack is created inside the method, so a failing call cannot leave state for a later call on the same Solution instance. `guard let` expresses the available value directly, without a forced unwrap or an assumption that a previous length check still applies elsewhere.
+
+Using `removeLast()` would require proving the stack is nonempty first. Using `popLast()` encodes that absence possibility in the result type. Both can implement the algorithm, but the optional-returning method fits the two failure conditions concisely here.
+
+Quotes, comments, and escapes have no parser role in the exercise. A bracket inside a quoted phrase still counts. Validating actual Swift source while skipping string interpolation and comments requires a separate lexical design.
+
+## Include a combining-mark regression case
+
+```swift
+func checkExamples() {
+    let solution = Solution()
+    let cases: [(String, Bool)] = [
+        ("", true), ("ordinary text", true), ("a + (b * [c])", true),
+        ("([]{})", true), ("([)]", false), ("]", false), ("(()", false),
+        ("🙂{x[y](z)}", true), ("(\u{0301})", true)
+    ]
+    for (text, expected) in cases {
+        precondition(solution.hasValidBrackets(text) == expected)
+    }
+    precondition(!solution.hasValidBrackets("("))
+    precondition(solution.hasValidBrackets("[]"))
+    precondition(solution.hasValidBrackets(String(repeating: "(", count: 20000) + String(repeating: ")", count: 20000)))
+}
+```
+
+Run the helper from a standalone Swift program. The accent case checks the string-view choice directly, and the deep case verifies heap-backed nesting storage without recursive calls. Both are useful language-specific additions to ordinary balanced and crossing examples.
+
+The complementary input consisting of an opener and a combining accent without a closer must fail. Testing both directions prevents a string-view bug from hiding behind an accidentally balanced example.
+
+## Explain the bounds
+
+The scan is linear in the number of input scalars, with amortized array append/pop operations. Working storage is `O(d)` for the maximum number of unfinished openers, and worst-case linear space. The fixed matching dictionary has constant size.
+
+Before practicing, state the exact delimiter alphabet and why scalars fit it. Then reconstruct the method from the rule that the next closer may consume only the last unfinished opener.

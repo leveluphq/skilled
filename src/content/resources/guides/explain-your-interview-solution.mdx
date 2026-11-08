@@ -1,0 +1,92 @@
+A correct function is easier to evaluate when the interviewer can follow why it works. Explain the problem contract, the state you maintain, and the reason each update preserves the result. You do not need to narrate every keystroke. You need to make your decisions inspectable.
+
+Two Sum is a useful rehearsal because the baseline is simple and the optimization has a clear tradeoff. Given an array of numbers and a target, return the indices of two different entries whose values add to the target. The exact return shape, duplicate rules, and no-solution behavior should be agreed before coding.
+
+## Clarify only the questions that affect your solution
+
+Ask whether the input is sorted, whether a solution is guaranteed, and whether the caller needs indices or values. Confirm that one array entry cannot be used twice. If several pairs are valid, determine whether any pair is acceptable. Ask whether you may mutate the input if you are considering sorting.
+
+Those questions affect implementation. Asking for every conceivable constraint can consume the time needed to solve the problem. Start with a reasonable explicit contract when details are unavailable: “I will return any valid pair of distinct indices, and return null when no pair exists.”
+
+Choose small examples that exercise the contract. `[2, 7, 11, 15]` with target 9 has a familiar answer. `[3, 3]` with target 6 checks whether equal values at different indices are allowed. `[3]` with target 6 checks the distinct-index rule. An empty array checks the no-solution path.
+
+## Give a baseline that you can justify
+
+The direct approach tries every pair of distinct indices. Start the second index after the first so you do not compare an entry with itself or enumerate each pair twice.
+
+```javascript
+function twoSumPairs(values, target) {
+  for (let left = 0; left < values.length; left += 1) {
+    for (let right = left + 1; right < values.length; right += 1) {
+      if (values[left] + values[right] === target) return [left, right];
+    }
+  }
+  return null;
+}
+```
+
+Explain its coverage: every possible pair appears in the nested loops once, so if a valid pair exists, one comparison finds it. The worst-case pair count grows quadratically. The function uses a fixed number of counters and returns one pair, so additional working storage is constant.
+
+A baseline gives you a reference for testing and a place to identify repeated work. It also provides a complete fallback if the optimization takes longer than expected. Whether you code it or describe it depends on the time and the interviewer's direction.
+
+## Find the repeated question
+
+For each current value x, the baseline searches for a partner equal to `target - x`. The repeated question is whether that complement has already appeared. A map can answer it while retaining the earlier index.
+
+```javascript
+function twoSum(values, target) {
+  const previous = new Map();
+  for (let index = 0; index < values.length; index += 1) {
+    const complement = target - values[index];
+    if (previous.has(complement)) {
+      return [previous.get(complement), index];
+    }
+    previous.set(values[index], index);
+  }
+  return null;
+}
+```
+
+Use `has` rather than testing the truthiness of `get`. Index zero is a valid result and is falsy. Check for the complement before inserting the current entry; otherwise a single 3 could match itself for target 6.
+
+The map stores one earlier index per value. A later duplicate can replace an earlier index without losing the ability to return any valid pair under this contract. If the problem asks for every pair, pair counts, or a specific ordering, the required state may change.
+
+## State the invariant in ordinary language
+
+Before processing index i, the map contains indices from the prefix before i. If the complement is present, its stored index is therefore different from i. The returned values add to the target by the complement calculation.
+
+If no complement is present, storing the current value prepares the map for future entries. When a valid pair has earlier index j and later index i, processing i can find the value stored from j, or another earlier occurrence with the same required value. That establishes why the optimization does not skip a possible answer.
+
+You can explain that argument without using the word invariant. What matters is identifying what the map means before and after an iteration. “The map makes it faster” is an observation; defining its contents explains correctness.
+
+## Trace the awkward cases
+
+Walk through `[3, 3]`, target 6. At index zero, the map is empty, so the first 3 is inserted. At index one, the complement 3 is present at zero, producing `[0, 1]`. Equal values are allowed because their indices differ.
+
+Then walk through `[3]`, target 6. The complement check happens before insertion, so the function returns null after the single iteration. A no-solution case such as `[1, 2]`, target 10 also reaches null.
+
+Negative values and zero fit the same arithmetic under a finite, safely representable integer contract. If the input can contain nonfinite numbers or values beyond JavaScript's exact integer range, clarify the numeric model before claiming ordinary number arithmetic handles every case.
+
+Test the function against the baseline on small generated arrays. When multiple pairs are allowed, compare validity rather than demanding identical pair indices. An optimized function can return a different valid answer and still satisfy the contract.
+
+## Explain the tradeoff with qualifications
+
+The optimized function makes one pass and performs a bounded number of map operations per entry. Under expected constant-time hash operations, it takes O(n) time. The map can retain O(n) distinct values, so it uses O(n) additional storage.
+
+A sorting-and-two-pointers solution is another option. If you sort values directly, you lose their original positions. Retaining value/index pairs preserves that information but adds storage. Sorting may mutate the array unless you copy it. Discuss those costs if the interviewer asks for an alternative.
+
+Use the [two-pointers guide](/patterns/two-pointers) to practice the sorted-input version. Its correctness argument relies on order, while the map version relies on what has already been seen.
+
+## Handle a stalled attempt productively
+
+If an optimization is unclear, state the part you know and the question you are trying to resolve. For example: “The quadratic solution is correct. I am trying to replace the repeated complement scan with a lookup while preserving original indices.” That gives the interviewer something specific to respond to.
+
+When a test fails, use the first point where the execution violates your intended state. If an output reuses an index, inspect insertion order. If a pair involving index zero is missed, inspect the lookup condition. Avoid changing several lines before you can explain the failure.
+
+A hint is useful information. Incorporate it into the solution and explain what changed in your reasoning. The goal is to continue making the implementation and its behavior understandable.
+
+## Rehearse with a review rubric
+
+After solving [Target Two Sum](/course/target-two-sum), review the recording or your written notes. Could a listener identify the input contract? Did you explain why the map contains only earlier indices? Did your tests include duplicates and a missing answer? Did the complexity statement name its assumptions?
+
+For the next rehearsal, choose a problem from another topic and use the same process: contract, example, baseline, maintained state, correctness, tests, and cost. The [30-day plan](/study-plans/30-day-coding-interview-plan) includes review days so you can practice that explanation after the code is no longer fresh in memory.

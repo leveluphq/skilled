@@ -1,0 +1,117 @@
+import { Section } from 'style/elements/lesson';
+import { Container } from 'style/elements';
+import Image from 'content/blocks/Image';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import BigO from 'content/blocks/BigO';
+import BigOTable from 'content/blocks/BigOTable';
+import { MarginContainerCenter } from 'content/blocks/styles';
+import bigO from './bigO';
+import IterateString from './code/IterateString';
+import EncodingCharacters from './code/EncodingCharacters';
+import StringAsArray from './code/StringAsArray';
+import ImmutableString from './code/ImmutableString';
+import FasterImmutable from './code/FasterImmutable';
+
+<Section>
+
+Strings are an interesting case because we often think of them as a primitive data type like numbers or booleans, but they also have characteristics of a data structure.
+We can iterate through a string where the time complexity is based on its length `n`.
+
+<IterateString />
+
+Iterating is <BigO.n /> time, and in most languages accessing a character by index is <BigO.constant /> time.
+(Swift and Rust store strings as UTF-8 and walk from the start to find the nth character, so they don't offer constant-time indexing.)
+
+We think of strings as primitive types because individual characters are actually represented as integers because they are mapped to a value using an encoding standard such as ASCII or Unicode.
+You can see this by printing the numeric code behind each character of a string:
+
+<EncodingCharacters />
+
+Strings are often learned directly alongside arrays, and you'll understand why as you work through this lesson.
+However, in this course we learn strings separately because they have unique characteristics, and one of the most important is that they convey meaning to us as humans.
+String interview questions often make use of the fact that we combine characters to form words and can rearrange them or extract substrings.
+
+There are a few important reasons strings should be learned separately:
+
+- Strings provide meaning to us, so they are tested differently than arrays in interviews
+- Strings may be mutable or immutable in a given language
+- Strings implementations vary by language
+- String methods may be entirely different than array methods
+
+The most common string interview questions include:
+
+- Palindromes, permutations, and anagrams
+- Counting or transforming strings based on repeated characters, unique characters, or sequences
+- Finding or grouping substrings of a string
+
+<Section>
+
+</Section>
+
+<SubsectionHeader>Strings and Arrays</SubsectionHeader>
+
+In memory, strings are actually stored as an array of integers where the integer maps to the value of an encoding standard.
+From our example above, the string `Dev` would actually be stored in memory as:
+
+<p>
+
+```javascript
+| 68 | 101 | 118 |
+```
+
+</p>
+
+Your programming language will know exactly how to map the integer representation to a string on your screen based on the encoding.
+
+Even at a higher level though, strings are just a list of characters.
+You can transform a string to an array, typically with a single function.
+
+<StringAsArray />
+
+This means we can treat any string problem as an array question if needed.
+We just pay an <BigO.n /> cost to transform it in either direction.
+
+Strings are often taught alongside arrays because strings themselves are just arrays at a fundamental level.
+Underneath the hood, strings are stored as an array of characters.
+More specifically, since characters are actually mapped to encoding tables like ASCII or Unicode,
+strings are represented as arrays of integers where the integer maps to their encoded character.
+
+The Big O complexity of strings is nearly identical to arrays.
+The primary difference is that if strings are immutable,
+when you modify a string (`push`, `pop`, `set`), it becomes an <BigO.n /> operation even though it is <BigO.constant /> for an array because it must copy all the characters to a new string.
+
+<MarginContainerCenter>
+<BigOTable {...bigO} />
+</MarginContainerCenter>
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Impact of Immutability</SubsectionHeader>
+
+Immutability means that a variable can't be changed after it is declared.
+So if we want to update something that is immutable,
+what actually happens is a new variable is created that contains the changes we wanted.
+
+**In immutable string languages, trying to mutate a string requires <BigO.n /> time for any change because it creates a new copy of the string for every update.**
+
+In JavaScript, Golang, C#, and Python, strings are immutable.
+In Java/Kotlin, strings are immutable unless you use `StringBuilder`.
+In C++ strings are mutable.
+
+For immutable strings, anytime we append values, an <BigO.n /> operation occurs because we copy all the characters and create a new string with the additional character(s) at the end.
+
+<ImmutableString />
+
+<Image src="/images/string-copy.png" alt="Changing an immutable string creates a new value at another memory address instead of editing the original text." width={1600} height={1259} />
+
+If you need to do a lot of appending to a string (many <BigO.n /> operations),
+you are actually better off to split it into an array and push the new characters to the end.
+Then you can join it back into a string once you are finished.
+
+The split and join will be <BigO.n />, but all the array push operations will be constant time <BigO.constant />.
+
+<FasterImmutable />
+
+</Section>

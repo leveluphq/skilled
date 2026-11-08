@@ -1,0 +1,21 @@
+```cpp
+// Create a helper function to add visitedNodes to the signature
+void dfs(GraphNode* currentNode, unordered_set<GraphNode*>& visitedNodes) {
+    // Use node value for the question
+    visit(currentNode);
+
+    visitedNodes.insert(currentNode);
+
+    for (GraphNode* childNode : currentNode->edges) {
+        if (!visitedNodes.contains(childNode)) {
+            dfs(childNode, visitedNodes);
+        }
+    }
+}
+
+void recursiveDepthFirstSearch(GraphNode* startingNode) {
+    // Init our stack and set of visited nodes
+    unordered_set<GraphNode*> visitedNodes;
+    dfs(startingNode, visitedNodes);
+}
+```

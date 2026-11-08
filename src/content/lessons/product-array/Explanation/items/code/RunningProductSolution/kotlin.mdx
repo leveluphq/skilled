@@ -1,0 +1,31 @@
+```kotlin
+fun runningProductSolution(input: LongArray): LongArray {
+    val results = mutableListOf<Long>()
+    val len = input.size
+    // Initialize our lookup arrays and fill them with 1's
+    val leftRunningProduct = LongArray(len) { 1L }
+    val rightRunningProduct = LongArray(len) { 1L }
+
+    // Begin creating the product arrays 1 element inward at i = 1
+    // since the first product in each array is supposed to be 1.
+    for (i in 1 until len) {
+        leftRunningProduct[i] = leftRunningProduct[i - 1] * input[i - 1]
+
+        // We will fill our right product array from the end
+        val endIdx = len - 1 - i
+        rightRunningProduct[endIdx] = rightRunningProduct[endIdx + 1] * input[endIdx + 1]
+    }
+
+    // We can now find the product of all the items other than the current index
+    // by multiplying the product of the elements to its left and right together.
+    for (i in 0 until len) {
+        val leftProduct = leftRunningProduct[i]
+        val rightProduct = rightRunningProduct[i]
+        val productExceptSelf = leftProduct * rightProduct
+
+        results.add(productExceptSelf)
+    }
+
+    return results.toLongArray()
+}
+```

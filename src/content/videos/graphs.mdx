@@ -1,0 +1,19 @@
+A graph represents entities as vertices and relationships as edges. Unlike a simple rooted tree, it can contain cycles, disconnected components, and several paths to the same vertex. The recording introduces these properties through examples and compares storage forms. The representation should preserve the relationships that your algorithm needs to answer its question.
+
+## Define what an edge means
+
+In a directed graph, an edge from A to B does not imply an edge from B to A. An undirected relationship is traversable in both directions. A weighted edge also carries a cost. Minimizing the number of edges and minimizing the sum of weights are different objectives, so ordinary breadth-first search does not solve every shortest-path problem.
+
+Connectivity also depends on direction. A route from A to B does not establish that B can reach A. Before choosing a traversal, specify the start, the target or completion condition, and whether an isolated vertex counts as part of the input. Those decisions determine what a complete answer means.
+
+## Choose the representation's costs
+
+An adjacency list stores neighbors for each vertex and is useful for iterating outgoing connections. A matrix stores a slot for each pair of vertices, making edge checks direct at a quadratic storage cost. An edge list records relationships explicitly and may require scanning to find all neighbors unless an index is added.
+
+Graph nodes can also contain direct references to neighboring objects. In that form, identity matters: two nodes with equal labels may still be distinct vertices unless uniqueness is guaranteed. A grid can be an implicit graph, where allowed neighboring cells define edges without allocating a separate object for every relationship.
+
+## Make repeated reachability explicit
+
+A visited set prevents a cycle from making a traversal repeat forever. Starting from one vertex visits only its reachable component. To cover a disconnected graph, choose another unvisited start until every required vertex has been handled. Each traversal's work should be charged against the vertices and edges it examines.
+
+Continue with [Depth-First Search](/watch/depth-first-search), [Breadth-First Search](/watch/breadth-first-search), and [Implement a Graph](/watch/implement-a-graph). The [graph traversal tool](/tools/graph-traversal) lets you compare worklist order on the same graph, including the difference between finding a route and proving it has the fewest edges.

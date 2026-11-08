@@ -1,0 +1,31 @@
+```javascript
+const buildProductArrayWithDivision = (input: number[]): number[] => {
+  // Zeroes are now an edge case because we can't divide by them
+  let numZeros = 0;
+  // Init product to 1
+  let product = 1;
+
+  input.forEach(element => {
+    if (element === 0) {
+      numZeros++;
+    } else {
+      product = product * element;
+    }
+  });
+
+  for (let i = 0; i < input.length; i++) {
+    // If no zeroes, don't worry about edge cases
+    if (numZeros === 0) {
+      input[i] = product / input[i];
+    } else if (numZeros === 1 && input[i] === 0) {
+      // Handle the 1 zero where it will have the only non-zero product
+      input[i] = product;
+    } else {
+      // If we have more than one 0, they're all 0
+      input[i] = 0;
+    }
+  }
+
+  return input;
+};
+```

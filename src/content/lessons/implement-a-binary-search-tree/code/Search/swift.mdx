@@ -1,0 +1,21 @@
+```swift
+func search(_ data: Int) -> BinaryNode? {
+    if root == nil {
+        return nil
+    }
+
+    var currentNode = root
+
+    while let node = currentNode {
+        if data < node.data {
+            currentNode = node.left
+        } else if data > node.data {
+            currentNode = node.right
+        } else if node.data == data {
+            return node
+        }
+    }
+
+    return nil
+}
+```

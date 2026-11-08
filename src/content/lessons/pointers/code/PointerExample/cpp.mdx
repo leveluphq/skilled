@@ -1,0 +1,19 @@
+```cpp
+struct Child {
+    int age;
+    string mood;
+};
+
+struct Parent {
+    int age;
+    Child* c1;
+    Child* c2;
+};
+
+Parent* parent = new Parent{45, nullptr, nullptr};
+Child* child1 = new Child{10, "happy"};
+Child* child2 = new Child{12, "bored"};
+
+parent->c1 = child1;
+parent->c2 = child2;
+```

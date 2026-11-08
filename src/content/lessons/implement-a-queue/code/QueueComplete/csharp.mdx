@@ -1,0 +1,59 @@
+```csharp
+public class Node {
+    public int data;
+    public Node prev;
+
+    public Node(int data) {
+        this.data = data;
+        this.prev = null;
+    }
+}
+
+public class Queue {
+    public Node first;
+    public Node last;
+
+    public Queue() {
+        this.first = null;
+        this.last = null;
+    }
+
+    // Get the first item
+    public Node Peek() {
+        return this.first;
+    }
+
+    // Add a new last item
+    public Node Enqueue(int item) {
+        var newLastNode = new Node(item);
+        bool isEmptyList = this.first == null && this.last == null;
+
+        if (isEmptyList) {
+            this.first = newLastNode;
+            this.last = newLastNode;
+        } else {
+            this.last.prev = newLastNode;
+            this.last = newLastNode;
+        }
+
+        return newLastNode;
+    }
+
+    // Remove the first item
+    public Node Dequeue() {
+        Node removedItem = this.first;
+
+        if (removedItem == null) {
+            return null;
+        }
+
+        if (this.first == this.last) {
+            this.last = null;
+        }
+
+        this.first = removedItem.prev;
+
+        return removedItem;
+    }
+}
+```

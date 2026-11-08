@@ -1,0 +1,31 @@
+Count connected islands in a rectangular grid where `#` is land and `~` is water. Land cells connect only through shared sides, not diagonally. The selected solution changes visited land to water in its working map. Reference-based versions consume the caller's map; a version that explicitly copies it preserves the original. For `[['#', '~'], ['~', '#']]`, return two, because the two land cells touch only at a corner.
+
+## Start one flood fill per unseen island
+
+Scan every cell in row order. Water needs no action. When the scan finds land, increment the island count and flood-fill all land connected to that cell. The flood fill changes each reached land cell to water, preventing a later scan position from counting the same island again.
+
+The fill recursively explores the four side neighbors. It stops when coordinates leave the grid or the current cell is water. Mark the current cell before exploring neighbors. Otherwise two adjacent land cells can recurse into each other indefinitely, since neither has yet recorded that it was visited.
+
+## Trace a connected shape
+
+Consider `[['#', '#', '~'], ['~', '#', '~'], ['#', '~', '#']]`. The scan starts an island at the upper-left cell. Its flood fill reaches the upper-middle and center cells, marking all three as water. Later visits to those positions do nothing. The lower-left cell starts a second island, and the lower-right cell starts a third.
+
+A diagonal move from the center to the lower-left or lower-right would incorrectly join those islands. The neighborhood definition is part of the problem, not a traversal detail. A map using eight-way connectivity requires a different neighbor list and would produce a different result on this example.
+
+## Prove that each component is counted once
+
+When a scan encounters remaining land, that land belongs to a component no earlier flood fill has reached. Incrementing the count therefore adds a previously uncounted island. The flood fill follows every path of side-adjacent land in that component, marking it all before the outer scan continues.
+
+No cell in that component can trigger a later increment because all of it is now water. Conversely, any island has a first cell reached by the scan, and that cell triggers its count unless an earlier cell in the same island already did. Thus every connected component contributes exactly one increment.
+
+## Include mutation and recursive storage
+
+Each cell is examined by the scan, and each land cell initiates at most four recursive neighbor calls before becoming water. Total time is O(r × c). Recursive depth can also reach O(r × c) on a long connected shape. Calling the algorithm constant-space because it has no visited array ignores those call frames.
+
+Python and other runtimes can exhaust the call stack on a large connected island. An explicit stack avoids recursive frames but still needs storage for pending cells. To preserve the input, copy every row before flooding or keep a separate visited structure. Copying only the outer collection can leave inner rows shared in reference-based languages.
+
+## Test both count and side effects
+
+Use all water, all land, one cell, one row, one column, a ring around a water hole, and diagonally separated cells. A long narrow island checks traversal depth. All land in the working map should be water afterward. Where the caller's map is changed, running the function again on that same map should return zero. A copied-input version should return the original count again.
+
+For an independent count oracle, treat each land cell as a vertex and join only right and down land neighbors with a disjoint-set structure. The number of resulting components should equal the flood-fill count. A follow-up can ask for the largest island area: the fill must then accumulate the number of cells it marks rather than only recording that a component exists.

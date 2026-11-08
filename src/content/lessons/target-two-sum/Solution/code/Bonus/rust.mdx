@@ -1,0 +1,29 @@
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn get_target_indexes(array: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut results = Vec::new();
+        let mut array_element_at_index: HashMap<i32, i32> = HashMap::new();
+
+        for (i, &current_value) in array.iter().enumerate() {
+            let i = i as i32;
+            let matched_value = target - current_value;
+
+            if let Some(&matched_index) = array_element_at_index.get(&matched_value)
+                && matched_index >= 0
+            {
+                results.push(vec![i, matched_index]);
+
+                array_element_at_index.insert(current_value, -1);
+                array_element_at_index.insert(matched_value, -1);
+            }
+
+            // Add values after we see them
+            array_element_at_index.insert(current_value, i);
+        }
+
+        results
+    }
+}
+```

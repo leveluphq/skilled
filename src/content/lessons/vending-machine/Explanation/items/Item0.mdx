@@ -1,0 +1,22 @@
+import ChangeSimple from './code/ChangeSimple';
+
+This is one of those questions where candidates may not be sure where to start if they've never seen something similar before.
+In a case like that, let's start with a simple example to get our intuition.
+
+Let's say we have a `target = 8` and `denominations = [2, 3]`.
+
+<ChangeSimple />
+
+There are two ways to approach this, either summing up to the target (bottom-up) or starting with the target and working backward (top-down).
+We'll walk through the bottom-up method first.
+
+So if you were to solve this by hand, how would you approach it?
+
+We mentally start trying different combinations to reach different values below our target to eventually reach an amount that leads to our target.
+For example you may have thought, "3 + 3 = 6 and then 6 + 2 = 8, so 3 coins is the minimum needed".
+Or you may have looked about it top-down where, "8 - 2 = 6, and then 6 - 3 - 3 = 0 which gives us the minimum number of coins."
+
+> Try a larger example yourself to see how you think through one that is more complex.
+
+What we're doing when we create these intermediate steps is actually solving subproblems in our head,
+and this is exactly how we will approach the question in our solution algorithm.

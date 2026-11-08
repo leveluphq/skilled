@@ -1,0 +1,1652 @@
+[
+  {
+    "section": "guides",
+    "slug": "debounce-vs-throttle",
+    "title": "Debounce vs. throttle in JavaScript",
+    "description": "Build both functions, compare leading and trailing calls, and test timing behavior with an interactive event timeline.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "debounce",
+      "throttle"
+    ],
+    "related": [
+      "tools/debounce-throttle",
+      "guides/javascript-event-loop",
+      "interview-prep/javascript"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "implement-promise-all",
+    "title": "Implement Promise.all in JavaScript",
+    "description": "Write a Promise.all implementation that preserves input order, handles empty iterables, and rejects correctly.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "guides/javascript-event-loop",
+      "interview-prep/typescript",
+      "guides/debounce-vs-throttle"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-event-loop",
+    "title": "The JavaScript event loop, explained with execution traces",
+    "description": "Trace synchronous code, promise microtasks, timers, and async functions. Work through examples before checking their output.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "build-a-javascript-promise",
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/implement-promise-all",
+      "guides/debounce-vs-throttle",
+      "interview-prep/javascript",
+      "tools/javascript-output-quiz"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "bfs-vs-dfs",
+    "title": "BFS vs. DFS: choosing a graph traversal",
+    "description": "Compare queues, stacks, shortest paths, visited sets, and memory costs with worked graph and grid examples.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "breadth-first-search",
+      "depth-first-search",
+      "count-islands",
+      "pilot-a-rocket"
+    ],
+    "related": [
+      "tools/graph-traversal",
+      "topics/graphs",
+      "reference/data-structure-time-complexity"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "big-o-time-space-complexity",
+    "title": "Big O time and space complexity with worked examples",
+    "description": "Analyze loops, nested work, recursion, and auxiliary memory. Learn to state assumptions and distinguish worst-case from amortized cost.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "big-o-time-and-space-complexity",
+      "logarithms-and-time-complexity"
+    ],
+    "related": [
+      "tools/big-o",
+      "reference/data-structure-time-complexity",
+      "patterns/two-pointers"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "explain-your-interview-solution",
+    "title": "How to explain a coding interview solution",
+    "description": "A worked Two Sum interview: clarify the contract, develop a baseline, justify a hash map, test edge cases, and explain complexity.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum"
+    ],
+    "related": [
+      "study-plans/30-day-coding-interview-plan",
+      "patterns/two-pointers",
+      "interview-prep/python"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "sliding-window",
+    "title": "Sliding window: fixed and variable windows",
+    "description": "Derive a window invariant, update state in constant time, and recognize when negative values or a different condition break the approach.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "strings",
+      "arrays"
+    ],
+    "related": [
+      "patterns/two-pointers",
+      "topics/arrays",
+      "guides/big-o-time-space-complexity",
+      "patterns/prefix-sums",
+      "tools/pattern-quiz",
+      "guides/go-unicode-sliding-window"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "two-pointers",
+    "title": "Two pointers: sorted pairs, partitions, and in-place work",
+    "description": "Understand why moving a pointer is safe. Work through sorted Two Sum, palindrome checks, and duplicate removal.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "reverse-a-linked-list",
+      "strings"
+    ],
+    "related": [
+      "patterns/sliding-window",
+      "topics/arrays",
+      "guides/explain-your-interview-solution",
+      "patterns/binary-search",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "dynamic-programming",
+    "title": "Dynamic programming: states, transitions, and evaluation order",
+    "description": "Build a recurrence from choices, define a complete state, and compare memoization with tabulation through a worked non-adjacent-sum problem.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "memoization",
+      "bottom-up-vs-top-down",
+      "steal-packages",
+      "dynamic-programming"
+    ],
+    "related": [
+      "topics/dynamic-programming",
+      "topics/recursion",
+      "guides/big-o-time-space-complexity",
+      "patterns/backtracking",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "javascript",
+    "title": "JavaScript coding interview preparation",
+    "description": "Practice the data structures, language behavior, asynchronous utilities, and testing habits that support clear JavaScript interview solutions.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions",
+      "target-two-sum",
+      "debounce",
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "guides/debounce-vs-throttle",
+      "guides/javascript-event-loop",
+      "study-plans/30-day-coding-interview-plan",
+      "guides/javascript-queue",
+      "tools/javascript-output-quiz"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "interview-prep",
+    "slug": "typescript",
+    "title": "TypeScript coding interview preparation",
+    "description": "Use precise types for maps, trees, unions, and asynchronous functions while keeping your interview implementation readable and testable.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "implement-a-binary-search-tree",
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "interview-prep/javascript",
+      "guides/implement-promise-all",
+      "reference/data-structure-time-complexity",
+      "guides/typescript-collections"
+    ],
+    "language": "typescript"
+  },
+  {
+    "section": "interview-prep",
+    "slug": "python",
+    "title": "Python coding interview preparation",
+    "description": "Choose lists, dictionaries, sets, deque, and heaps deliberately. Practice readable Python solutions with clear time and memory analysis.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "count-islands",
+      "reverse-a-linked-list",
+      "steal-packages"
+    ],
+    "related": [
+      "guides/bfs-vs-dfs",
+      "patterns/dynamic-programming",
+      "study-plans/30-day-coding-interview-plan",
+      "reference/python-collections",
+      "guides/count-islands-python"
+    ],
+    "language": "python"
+  },
+  {
+    "section": "study-plans",
+    "slug": "7-day-coding-interview-review",
+    "title": "A seven-day coding interview review plan",
+    "description": "A focused review for developers who already know the basics: daily objectives, selected exercises, timed rehearsals, and a final preparation checklist.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets",
+      "count-islands",
+      "reverse-a-linked-list"
+    ],
+    "related": [
+      "study-plans/30-day-coding-interview-plan",
+      "guides/explain-your-interview-solution",
+      "tools/graph-traversal",
+      "tools/study-plan-builder",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "study-plans",
+    "slug": "30-day-coding-interview-plan",
+    "title": "A 30-day coding interview study plan",
+    "description": "A day-by-day sequence through data structures, algorithms, language practice, review sessions, and mock interviews using the existing course.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "arrays",
+      "hash-tables",
+      "trees",
+      "graphs",
+      "dynamic-programming"
+    ],
+    "related": [
+      "interview-prep/javascript",
+      "interview-prep/python",
+      "guides/explain-your-interview-solution",
+      "tools/study-plan-builder",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "reference",
+    "slug": "data-structure-time-complexity",
+    "title": "Data structure time complexity reference",
+    "description": "Compare arrays, hash maps, linked lists, stacks, queues, trees, and heaps with worst-case, expected, and amortized costs explained.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "arrays",
+      "hash-tables",
+      "linked-lists",
+      "stacks",
+      "queues",
+      "binary-search-trees"
+    ],
+    "related": [
+      "tools/big-o",
+      "guides/big-o-time-space-complexity",
+      "guides/bfs-vs-dfs"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "debounce-throttle",
+    "title": "Debounce and throttle visualizer",
+    "description": "Send events and compare immediate, debounced, and throttled callbacks. Adjust the wait and leading/trailing options and inspect exact timelines.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "debounce",
+      "throttle"
+    ],
+    "related": [
+      "guides/debounce-vs-throttle",
+      "guides/javascript-event-loop",
+      "interview-prep/javascript"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "tools",
+    "slug": "big-o",
+    "title": "Big O complexity explorer",
+    "description": "Compare growth functions across input sizes with a logarithmic chart, exact operation estimates where representable, and worked algorithm examples.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "big-o-time-and-space-complexity",
+      "logarithms-and-time-complexity"
+    ],
+    "related": [
+      "guides/big-o-time-space-complexity",
+      "reference/data-structure-time-complexity",
+      "patterns/sliding-window"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "graph-traversal",
+    "title": "BFS and DFS graph traversal visualizer",
+    "description": "Edit an adjacency list and step through breadth-first or depth-first traversal. Inspect the frontier, visited nodes, parents, and reachable paths.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "breadth-first-search",
+      "depth-first-search",
+      "pilot-a-rocket",
+      "count-islands"
+    ],
+    "related": [
+      "guides/bfs-vs-dfs",
+      "topics/graphs",
+      "tools/tree-traversal"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "tree-traversal",
+    "title": "Binary tree traversal visualizer",
+    "description": "Build a binary tree from level-order values and step through preorder, inorder, postorder, and breadth-first traversal.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "tree-traversal-in-order-pre-order-post-order",
+      "binary-search-trees",
+      "binary-tree-max-depth"
+    ],
+    "related": [
+      "topics/trees",
+      "tools/graph-traversal",
+      "guides/bfs-vs-dfs"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "arrays",
+    "title": "Arrays and matrix interview practice",
+    "description": "Learn array invariants, in-place work, prefix/suffix products, and matrix traversal through a curated sequence of lessons and exercises.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "arrays",
+      "implement-an-array",
+      "walk-a-matrix",
+      "product-array",
+      "valid-sudoku-board",
+      "best-time-to-buy-and-sell-stock"
+    ],
+    "related": [
+      "patterns/two-pointers",
+      "patterns/sliding-window",
+      "patterns/prefix-sums"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "essential-concepts",
+    "title": "Big O and algorithm analysis",
+    "description": "Practice reasoning about input size, loops, recursion, and auxiliary memory before comparing the efficiency of interview solutions.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "big-o-time-and-space-complexity"
+    ],
+    "related": [
+      "tools/big-o",
+      "guides/big-o-time-space-complexity"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "hashtables",
+    "title": "Hash tables and frequency counting",
+    "description": "Use hash maps and sets to count frequencies, track previously seen values, and trade additional memory for faster lookups.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "hash-tables",
+      "implement-a-hash-table",
+      "catch-the-hacker",
+      "target-two-sum"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "study-plans/30-day-coding-interview-plan",
+      "reference/python-collections",
+      "guides/typescript-collections"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "strings",
+    "title": "Strings and text interview problems",
+    "description": "Practice text traversal, character counts, palindromes, and anagrams while making the character model and input constraints explicit.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "strings",
+      "palindromes-permutataions-anagrams",
+      "group-permutations-of-palindromes"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "study-plans/30-day-coding-interview-plan",
+      "patterns/tries"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "recursion",
+    "title": "Recursion and recursive problem solving",
+    "description": "Define base cases, trace recursive calls, and understand return values and shared state through progressively harder exercises.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "recursion",
+      "sum-digits",
+      "generate-all-permutations"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "study-plans/30-day-coding-interview-plan",
+      "patterns/backtracking"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "searching-and-sorting",
+    "title": "Searching and sorting interview practice",
+    "description": "Learn binary-search invariants, sorted-input reasoning, and sorting tradeoffs with targeted interview problems.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "logarithms-and-time-complexity",
+      "searching-and-binary-search",
+      "sorting",
+      "interview-scheduler",
+      "shifted-search",
+      "sorted-matrix-search",
+      "age-sort",
+      "first-bad-version"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "study-plans/30-day-coding-interview-plan",
+      "patterns/binary-search",
+      "patterns/greedy-algorithms"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "linked-lists",
+    "title": "Linked lists and pointer techniques",
+    "description": "Trace pointer updates, preserve reachability, and practice reversing lists and joining chains without losing nodes.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "linked-lists",
+      "pointers",
+      "implement-a-linked-list",
+      "combine-blockchains",
+      "reverse-a-linked-list",
+      "mirror-delete"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "study-plans/30-day-coding-interview-plan"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "stacks-and-queues",
+    "title": "Stacks and queues for coding interviews",
+    "description": "Choose last-in-first-out or first-in-first-out processing for bracket matching, traversal, and state tracking.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "queues",
+      "stacks",
+      "implement-a-queue",
+      "implement-a-stack",
+      "max-min-stack",
+      "valid-brackets"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "study-plans/30-day-coding-interview-plan",
+      "patterns/monotonic-stack",
+      "guides/javascript-queue",
+      "reference/python-collections"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "trees",
+    "title": "Trees and binary search trees",
+    "description": "Practice recursive contracts, traversal order, binary-search-tree bounds, and ancestor relationships with a structured learning path.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "trees",
+      "tree-traversal-in-order-pre-order-post-order",
+      "binary-search-trees",
+      "implement-a-binary-search-tree",
+      "binary-tree-max-depth",
+      "binary-search-tree-validate",
+      "closest-common-ancestor-in-binary-tree"
+    ],
+    "related": [
+      "tools/tree-traversal",
+      "guides/bfs-vs-dfs",
+      "patterns/heaps-and-priority-queues",
+      "patterns/tries"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "graphs",
+    "title": "Graphs, traversal, and shortest paths",
+    "description": "Represent relationships, track visited nodes, choose BFS or DFS, and solve graph and grid interview problems.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "graphs",
+      "depth-first-search",
+      "breadth-first-search",
+      "implement-a-graph",
+      "pilot-a-rocket",
+      "count-islands",
+      "robot-maze"
+    ],
+    "related": [
+      "guides/bfs-vs-dfs",
+      "tools/graph-traversal",
+      "interview-prep/python",
+      "guides/count-islands-python",
+      "guides/javascript-queue",
+      "guides/rust-graph-traversal",
+      "patterns/union-find"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "dynamic-programming",
+    "title": "Dynamic programming interview practice",
+    "description": "Connect subproblems, memoization, tabulation, and state design with worked interview exercises.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "subproblems-and-overlapping-subproblems",
+      "memoization",
+      "bottom-up-vs-top-down",
+      "dynamic-programming",
+      "vending-machine",
+      "three-moves",
+      "steal-packages"
+    ],
+    "related": [
+      "patterns/dynamic-programming",
+      "topics/recursion",
+      "patterns/greedy-algorithms"
+    ]
+  },
+  {
+    "section": "topics",
+    "slug": "javascript",
+    "title": "JavaScript interview utilities and concepts",
+    "description": "Practice promises, closures, array methods, event emitters, debounce, and throttle with guides and coding lessons.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "why-does-javascript-get-its-own-topic",
+      "javascript-interview-questions",
+      "fix-this",
+      "array-methods",
+      "build-a-javascript-promise",
+      "pub-sub-and-event-driven-programming",
+      "debounce",
+      "throttle"
+    ],
+    "related": [
+      "interview-prep/javascript",
+      "guides/debounce-vs-throttle",
+      "tools/debounce-throttle",
+      "tools/javascript-output-quiz"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "patterns",
+    "slug": "prefix-sums",
+    "title": "Prefix sums: range queries and signed subarray counts",
+    "description": "Build prefix arrays and frequency maps, count target-sum subarrays with negative values, and test boundary and numeric assumptions.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "product-array",
+      "target-two-sum"
+    ],
+    "related": [
+      "patterns/sliding-window",
+      "topics/arrays",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "binary-search",
+    "title": "Binary search: lower bounds, upper bounds, and first true",
+    "description": "Use a half-open boundary invariant to handle duplicates, missing answers, monotone predicates, and binary-search edge cases.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "searching-and-binary-search",
+      "first-bad-version",
+      "shifted-search"
+    ],
+    "related": [
+      "topics/searching-and-sorting",
+      "patterns/two-pointers",
+      "tools/pattern-quiz",
+      "guides/cpp-search-boundaries"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "backtracking",
+    "title": "Backtracking: subsets, permutations, and pruning",
+    "description": "Model a decision tree, restore shared state, copy independent results, and justify pruning with worked subset and permutation code.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "recursion",
+      "generate-all-permutations"
+    ],
+    "related": [
+      "topics/recursion",
+      "patterns/dynamic-programming",
+      "tools/pattern-quiz",
+      "patterns/tries"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "monotonic-stack",
+    "title": "Monotonic stacks: next greater values and stock spans",
+    "description": "Trace unresolved indexes, choose strict or non-strict comparisons, and prove linear total work with tested next-greater and span implementations.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "stacks",
+      "implement-a-stack",
+      "max-min-stack"
+    ],
+    "related": [
+      "topics/stacks-and-queues",
+      "patterns/sliding-window",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "heaps-and-priority-queues",
+    "title": "Heaps and priority queues: keep the K largest stream values",
+    "description": "Implement a numeric min-heap, choose the right top-K orientation, and separate heap order, sorted output, and update costs.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "trees",
+      "binary-search-trees"
+    ],
+    "related": [
+      "topics/trees",
+      "patterns/binary-search",
+      "tools/pattern-quiz",
+      "guides/java-priority-queue"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "study-plan-builder",
+    "title": "Coding interview study-plan builder",
+    "description": "Build a time-budgeted learning schedule with course links, rotating review, local completion marks, and a downloadable Markdown checklist.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "big-o-time-and-space-complexity",
+      "target-two-sum"
+    ],
+    "related": [
+      "study-plans/7-day-coding-interview-review",
+      "study-plans/30-day-coding-interview-plan",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "pattern-quiz",
+    "title": "Coding interview pattern quiz with answer explanations",
+    "description": "Practice choosing algorithms from constraints in 12 questions, compare alternatives, retry missed prompts, and study worked pattern guides.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "first-bad-version",
+      "breadth-first-search",
+      "generate-all-permutations"
+    ],
+    "related": [
+      "patterns/prefix-sums",
+      "patterns/binary-search",
+      "tools/study-plan-builder",
+      "patterns/greedy-algorithms",
+      "patterns/union-find",
+      "patterns/tries"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "java",
+    "title": "Java coding interview preparation: collections, numbers, and traversal",
+    "description": "Prepare with HashMap, ArrayDeque, safe comparators, UTF-16 text, and tested Java implementations of Two Sum and graph traversal.",
+    "language": "java",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets",
+      "breadth-first-search"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "patterns/heaps-and-priority-queues",
+      "guides/explain-your-interview-solution",
+      "guides/java-priority-queue"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "cpp",
+    "title": "C++ coding interview preparation: STL, ownership, and boundaries",
+    "description": "Use vectors, hash maps, queues, and priority queues while handling iterator invalidation, integer overflow, and safe index boundaries.",
+    "language": "cpp",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "first-bad-version",
+      "count-islands"
+    ],
+    "related": [
+      "patterns/binary-search",
+      "patterns/heaps-and-priority-queues",
+      "reference/data-structure-time-complexity",
+      "guides/cpp-search-boundaries"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "go",
+    "title": "Go coding interview preparation: slices, maps, and text",
+    "description": "Practice Go slice ownership, map presence checks, byte and rune boundaries, and queue-based graph traversal with worked code.",
+    "language": "go",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "breadth-first-search",
+      "reverse-a-linked-list"
+    ],
+    "related": [
+      "topics/graphs",
+      "patterns/backtracking",
+      "reference/data-structure-time-complexity",
+      "guides/go-unicode-sliding-window"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "rust",
+    "title": "Rust coding interview preparation: borrowing and collections",
+    "description": "Write interview algorithms with borrowed slices, explicit Option results, HashMap entries, VecDeque, and min-heap priority through Reverse.",
+    "language": "rust",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "breadth-first-search",
+      "generate-all-permutations"
+    ],
+    "related": [
+      "patterns/backtracking",
+      "patterns/heaps-and-priority-queues",
+      "guides/explain-your-interview-solution",
+      "guides/rust-graph-traversal"
+    ]
+  },
+  {
+    "section": "reference",
+    "slug": "python-collections",
+    "title": "Python collections for interviews: dict, Counter, deque, and heapq",
+    "description": "Choose Python collections by operation, write counts and adjacency lists, and test queue, heap, missing-key, and copying behavior.",
+    "language": "python",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "breadth-first-search",
+      "valid-brackets"
+    ],
+    "related": [
+      "interview-prep/python",
+      "guides/count-islands-python",
+      "reference/data-structure-time-complexity"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-queue",
+    "title": "Implement a JavaScript queue for BFS without repeated shift calls",
+    "description": "Build a FIFO queue with bounded compaction, distinguish empty results from undefined values, and use it in a cyclic graph traversal.",
+    "language": "javascript",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "implement-a-queue",
+      "breadth-first-search"
+    ],
+    "related": [
+      "interview-prep/javascript",
+      "guides/bfs-vs-dfs",
+      "tools/graph-traversal"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "typescript-collections",
+    "title": "TypeScript collections: missing values, keys, and readonly contracts",
+    "description": "Model lookup presence explicitly, handle unchecked indexes, preserve zero and undefined, and write a typed frequency counter and graph BFS.",
+    "language": "typescript",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "breadth-first-search",
+      "array-methods"
+    ],
+    "related": [
+      "interview-prep/typescript",
+      "guides/javascript-queue",
+      "reference/data-structure-time-complexity"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "count-islands-python",
+    "title": "Count islands in Python with iterative flood fill",
+    "description": "Solve a four-neighbor binary-grid problem with an explicit stack, visited-set and in-place variants, complexity analysis, and boundary tests.",
+    "language": "python",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "count-islands",
+      "depth-first-search",
+      "breadth-first-search"
+    ],
+    "related": [
+      "interview-prep/python",
+      "reference/python-collections",
+      "guides/bfs-vs-dfs",
+      "tools/graph-traversal",
+      "patterns/union-find"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "csharp",
+    "title": "C# coding interview preparation: collections, tuples, and traversal",
+    "description": "Practice C# dictionary presence, nullable tuple results, widened arithmetic, queue traversal, priority ordering, and UTF-16 text contracts.",
+    "language": "csharp",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets",
+      "breadth-first-search"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "patterns/heaps-and-priority-queues",
+      "guides/explain-your-interview-solution"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "kotlin",
+    "title": "Kotlin coding interview preparation: arrays, nullability, and JVM collections",
+    "description": "Use primitive arrays, nullable results, map presence, JVM queues, safe comparisons, and explicit collection-sharing assumptions in Kotlin.",
+    "language": "kotlin",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "breadth-first-search",
+      "generate-all-permutations"
+    ],
+    "related": [
+      "patterns/backtracking",
+      "patterns/binary-search",
+      "reference/data-structure-time-complexity"
+    ]
+  },
+  {
+    "section": "interview-prep",
+    "slug": "swift",
+    "title": "Swift coding interview preparation: value semantics, optionals, and text",
+    "description": "Prepare Swift algorithms with optional results, checked arithmetic, collection value semantics, FIFO traversal, and Unicode-aware text choices.",
+    "language": "swift",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "breadth-first-search",
+      "binary-tree-max-depth"
+    ],
+    "related": [
+      "topics/trees",
+      "guides/bfs-vs-dfs",
+      "guides/explain-your-interview-solution"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "java-priority-queue",
+    "title": "Java PriorityQueue: top-K values, comparators, and stable ties",
+    "description": "Retain top-K stream values, process jobs with explicit tie order, and test Java heap ranking separately from iteration and sorted output.",
+    "language": "java",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "trees",
+      "target-two-sum"
+    ],
+    "related": [
+      "interview-prep/java",
+      "patterns/heaps-and-priority-queues",
+      "tools/pattern-quiz"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "cpp-search-boundaries",
+    "title": "C++ lower_bound and upper_bound: counts, neighbors, and record ranges",
+    "description": "Use C++ search boundaries for duplicate counts, strict predecessors and successors, and custom record keys without invalid iterator operations.",
+    "language": "cpp",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "searching-and-binary-search",
+      "first-bad-version",
+      "interview-scheduler"
+    ],
+    "related": [
+      "interview-prep/cpp",
+      "patterns/binary-search",
+      "topics/searching-and-sorting"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "go-unicode-sliding-window",
+    "title": "Longest unique substring in Go: bytes, runes, and Unicode",
+    "description": "Implement rune and ASCII sliding windows, reject invalid input, preserve forward-only boundaries, and test Unicode length assumptions.",
+    "language": "go",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "strings",
+      "palindromes-permutataions-anagrams"
+    ],
+    "related": [
+      "interview-prep/go",
+      "patterns/sliding-window",
+      "topics/strings"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "rust-graph-traversal",
+    "title": "Rust BFS shortest paths with borrowed graph labels",
+    "description": "Return a shortest unweighted route using borrowed string labels, a FIFO frontier, explicit parents, and a lifetime that matches the source graph.",
+    "language": "rust",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "breadth-first-search",
+      "implement-a-graph",
+      "pilot-a-rocket"
+    ],
+    "related": [
+      "interview-prep/rust",
+      "guides/bfs-vs-dfs",
+      "tools/graph-traversal"
+    ]
+  },
+  {
+    "section": "patterns",
+    "slug": "tries",
+    "title": "Tries for prefix search: insert, count, and delete words",
+    "description": "Build an iterative Unicode-aware trie with prefix counts, duplicate handling, safe deletion, explicit text contracts, and operation-cost analysis.",
+    "lessons": [
+      "strings",
+      "trees",
+      "implement-a-binary-search-tree"
+    ],
+    "related": [
+      "topics/strings",
+      "topics/trees",
+      "patterns/backtracking"
+    ],
+    "published": "2026-10-22",
+    "updated": "2026-10-22"
+  },
+  {
+    "section": "patterns",
+    "slug": "union-find",
+    "title": "Union-find: weighted components, path halving, and connectivity",
+    "description": "Implement disjoint sets with weighted unions, trace component counts, explain amortized costs, and distinguish connectivity from paths and deletions.",
+    "lessons": [
+      "graphs",
+      "implement-a-graph",
+      "count-islands"
+    ],
+    "related": [
+      "topics/graphs",
+      "guides/count-islands-python",
+      "patterns/greedy-algorithms"
+    ],
+    "published": "2026-10-22",
+    "updated": "2026-10-22"
+  },
+  {
+    "section": "patterns",
+    "slug": "greedy-algorithms",
+    "title": "Greedy algorithms: interval scheduling, exchange proofs, and counterexamples",
+    "description": "Prove earliest-finish interval scheduling, implement a nonmutating selector, reject tempting rules with counterexamples, and test against exhaustive subsets.",
+    "lessons": [
+      "sorting",
+      "interview-scheduler",
+      "dynamic-programming"
+    ],
+    "related": [
+      "topics/searching-and-sorting",
+      "patterns/binary-search",
+      "patterns/dynamic-programming",
+      "patterns/union-find"
+    ],
+    "published": "2026-10-22",
+    "updated": "2026-10-22"
+  },
+  {
+    "section": "tools",
+    "slug": "javascript-output-quiz",
+    "title": "JavaScript output quiz: 12 snippets with explained answers",
+    "description": "Predict JavaScript output for closures, this, copies, Map keys, defaults, sorting, and promises. Compare explanations and retry missed snippets.",
+    "language": "javascript",
+    "lessons": [
+      "javascript-interview-questions",
+      "fix-this",
+      "array-methods",
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "interview-prep/javascript",
+      "guides/javascript-event-loop",
+      "guides/typescript-collections",
+      "tools/study-plan-builder"
+    ],
+    "published": "2026-10-22",
+    "updated": "2026-10-22"
+  },
+  {
+    "section": "tools",
+    "slug": "linked-list-pointers",
+    "title": "Linked-list pointer visualizer: reverse, insert, delete, and detect cycles",
+    "description": "Trace fixed node identities, next links, saved pointers, head insertion and deletion, and Floyd cycle detection on empty and nonempty lists.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "reverse-a-linked-list",
+      "mirror-delete",
+      "linked-lists"
+    ],
+    "related": [
+      "topics/linked-lists",
+      "tools/edge-case-practice"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "sorting-comparison",
+    "title": "Sorting comparison visualizer with operation counts",
+    "description": "Compare insertion, selection, and bubble sort on identical inputs, inspecting value comparisons, array writes, early exits, and intermediate state.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "sorting",
+      "age-sort"
+    ],
+    "related": [
+      "topics/searching-and-sorting",
+      "tools/complexity-practice"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "recursion-call-stack",
+    "title": "Recursion call-stack visualizer: calls, frames, and returns",
+    "description": "Step through a stair-counting recurrence and inspect active frames, returned values, repeated calls, and the difference between stack depth and total work.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "recursion",
+      "sum-digits",
+      "three-moves"
+    ],
+    "related": [
+      "topics/recursion",
+      "tools/dynamic-programming"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "dynamic-programming",
+    "title": "Dynamic programming visualizer: recursion, memoization, and tabulation",
+    "description": "Compare the same stair recurrence with plain recursion, cached answers, and bottom-up tables. Inspect stored states, cache hits, calls, and dependency order.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "memoization",
+      "bottom-up-vs-top-down",
+      "three-moves",
+      "vending-machine",
+      "steal-packages"
+    ],
+    "related": [
+      "patterns/dynamic-programming",
+      "tools/recursion-call-stack"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "edge-case-practice",
+    "title": "Edge-case practice: find tests that expose algorithm bugs",
+    "description": "Practice choosing counterexamples for missing index zero, invalid BST descendants, cyclic graphs, Unicode assumptions, mutation, and boundary searches.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets",
+      "binary-search-tree-validate"
+    ],
+    "related": [
+      "reference/interview-practice-worksheet",
+      "tools/complexity-practice"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "complexity-practice",
+    "title": "Time and space complexity practice with explained answers",
+    "description": "Derive bounds for loops, queues, graphs, recursion, memoization, and generated output through eight questions with concrete cost models and explanations.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "big-o-time-and-space-complexity",
+      "logarithms-and-time-complexity"
+    ],
+    "related": [
+      "tools/big-o",
+      "reference/data-structure-time-complexity"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "spaced-review",
+    "title": "Algorithm flashcards with browser-local spaced review",
+    "description": "Recall algorithm invariants and constraints across twelve review cards, reveal worked explanations, and keep a simple review schedule in your browser.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "first-bad-version",
+      "breadth-first-search"
+    ],
+    "related": [
+      "tools/pattern-quiz",
+      "tools/study-plan-builder",
+      "tools/interview-rehearsal"
+    ]
+  },
+  {
+    "section": "tools",
+    "slug": "interview-rehearsal",
+    "title": "Coding interview rehearsal timer, prompts, notes, and rubric",
+    "description": "Rehearse clarification, implementation, tests, and explanation with public problem contracts, a pausable timer, self-review, and downloadable notes.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets",
+      "product-array"
+    ],
+    "related": [
+      "reference/mock-interview-rubric",
+      "reference/interview-practice-worksheet",
+      "guides/explain-your-interview-solution"
+    ]
+  },
+  {
+    "section": "reference",
+    "slug": "interview-practice-worksheet",
+    "title": "Coding interview practice worksheet: contract, invariant, tests, and review",
+    "description": "Use a printable problem-solving worksheet to clarify a contract, compare approaches, trace an invariant, select edge cases, and plan a concrete follow-up.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "first-bad-version"
+    ],
+    "related": [
+      "tools/interview-rehearsal",
+      "tools/edge-case-practice",
+      "reference/mock-interview-rubric"
+    ]
+  },
+  {
+    "section": "reference",
+    "slug": "mock-interview-rubric",
+    "title": "Mock coding interview rubric with observable review criteria",
+    "description": "Review clarification, correctness, reasoning, testing, complexity, and communication using observable evidence and specific follow-ups, without a fabricated hiring score.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets"
+    ],
+    "related": [
+      "tools/interview-rehearsal",
+      "guides/explain-your-interview-solution",
+      "reference/interview-practice-worksheet"
+    ]
+  },
+  {
+    "section": "reference",
+    "slug": "choosing-data-structures",
+    "title": "How to choose a data structure for an interview problem",
+    "description": "Choose arrays, maps, sets, deques, heaps, trees, tries, and disjoint sets by required operations, order, identity, mutation, and cost assumptions.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "arrays",
+      "hash-tables",
+      "queues",
+      "trees",
+      "graphs"
+    ],
+    "related": [
+      "reference/data-structure-time-complexity",
+      "tools/pattern-quiz",
+      "patterns/heaps-and-priority-queues"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-closures-and-this",
+    "title": "JavaScript closures and this: state, receivers, and callback lifetimes",
+    "description": "Explain closure bindings, independent instances, receiver loss, arrow functions, listener cleanup, and callback lifetime through tested JavaScript examples.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "fix-this",
+      "debounce",
+      "pub-sub-and-event-driven-programming"
+    ],
+    "related": [
+      "guides/javascript-event-loop",
+      "guides/debounce-vs-throttle",
+      "tools/javascript-output-quiz"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "frontend-autocomplete-design",
+    "title": "Design an accessible autocomplete: state, stale requests, and keyboard behavior",
+    "description": "Work through query state, cancellation, stale-response guards, keyboard focus, combobox semantics, caching, and test cases for a frontend autocomplete.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "debounce",
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "guides/debounce-vs-throttle",
+      "guides/javascript-event-loop",
+      "guides/frontend-event-delegation"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "frontend-event-delegation",
+    "title": "DOM event delegation: boundaries, nested targets, and cleanup",
+    "description": "Build a delegated button handler with explicit container boundaries, nested targets, disabled controls, keyboard activation, and listener cleanup.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "pub-sub-and-event-driven-programming",
+      "fix-this"
+    ],
+    "related": [
+      "guides/javascript-closures-and-this",
+      "guides/frontend-autocomplete-design",
+      "topics/javascript"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "multilingual-code-runner",
+    "title": "How a multilingual coding exercise runner works",
+    "description": "Follow a language-neutral problem spec through source generation, execution, authenticated result parsing, server-side comparison, and conformance checks.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "reverse-a-linked-list"
+    ],
+    "related": [
+      "guides/testing-coding-exercises",
+      "reference/choosing-data-structures"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "testing-coding-exercises",
+    "title": "How to test a coding exercise across programming languages",
+    "description": "Design a language-neutral contract, independent reference checks, comparison rules, starter controls, edge cases, and conformance tests for a multilingual lesson.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "first-bad-version",
+      "product-array",
+      "valid-brackets"
+    ],
+    "related": [
+      "guides/multilingual-code-runner",
+      "tools/edge-case-practice",
+      "reference/interview-practice-worksheet"
+    ]
+  },
+  {
+    "section": "reference",
+    "slug": "programming-language-operations",
+    "title": "Interview collection operations across ten programming languages",
+    "description": "Compare map presence, queues, copying, numeric boundaries, and text units across JavaScript, TypeScript, Python, Java, C++, C#, Go, Kotlin, Swift, and Rust.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "valid-brackets",
+      "breadth-first-search"
+    ],
+    "related": [
+      "reference/choosing-data-structures",
+      "reference/data-structure-time-complexity",
+      "tools/edge-case-practice"
+    ],
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-retry-backoff",
+    "title": "Retry with exponential backoff in JavaScript",
+    "description": "Build a bounded retry loop with full jitter, cancellation, explicit retry policy, and deterministic timing tests.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "guides/javascript-concurrency-limit",
+      "guides/javascript-event-loop"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-concurrency-limit",
+    "title": "Limit promise concurrency in JavaScript",
+    "description": "Run lazy task factories in an ordered worker pool, stop new work after failure, and drain active tasks before settling.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "build-a-javascript-promise"
+    ],
+    "related": [
+      "guides/implement-promise-all",
+      "guides/javascript-retry-backoff"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-deep-clone",
+    "title": "Deep clone JavaScript data: cycles, aliases, and property contracts",
+    "description": "Copy a supported object graph without losing cycles, shared references, sparse holes, or property flags, and compare with structuredClone.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-flatten-arrays",
+      "guides/javascript-memoization"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-flatten-arrays",
+    "title": "Flatten nested JavaScript arrays with an explicit stack",
+    "description": "Preserve left-to-right order, distinguish holes from undefined, reject cycles, and expand repeated references correctly.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-deep-clone",
+      "patterns/backtracking"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-currying",
+    "title": "Implement currying in JavaScript with an explicit arity",
+    "description": "Collect grouped arguments, reuse partial applications safely, and define receiver, excess-argument, and exception behavior.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-closures-and-this",
+      "guides/javascript-memoization"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-memoization",
+    "title": "JavaScript memoization: keys, invalidation, and rejected promises",
+    "description": "Build receiver-aware argument caching and pending-promise deduplication with explicit identity, retention, and failure rules.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-currying",
+      "guides/javascript-retry-backoff"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-event-emitter",
+    "title": "Build a JavaScript event emitter with reliable cleanup",
+    "description": "Implement duplicate subscriptions, recursive once listeners, dispatch mutation rules, and idempotent unsubscription.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-closures-and-this",
+      "guides/frontend-event-delegation"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "tools",
+    "slug": "accessible-components",
+    "title": "Accessible tabs, modal focus, and React state lab",
+    "description": "Practice tab keyboard navigation, native modal focus, and queued React state updates in three working browser examples.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/frontend-event-delegation",
+      "guides/javascript-closures-and-this"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "study-plans",
+    "slug": "90-day-coding-interview-plan",
+    "title": "A 90-day coding interview plan for studying around work",
+    "description": "Build a twelve-week practice rhythm with diagnostics, delayed review, all ten programming-language paths, and focused interview rehearsals.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum",
+      "vending-machine"
+    ],
+    "related": [
+      "study-plans/30-day-coding-interview-plan",
+      "tools/study-plan-builder"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-prototypes",
+    "title": "JavaScript prototypes: lookup, ownership, and method receivers",
+    "description": "Trace inherited properties, shadowing, accessors, constructor prototypes, and dictionary ownership with executable examples.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-closures-and-this",
+      "guides/javascript-deep-clone"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "javascript-equality",
+    "title": "JavaScript equality, coercion, and object identity",
+    "description": "Compare strict equality, Object.is, Map keys, falsy values, and object identity through tested cases and practical API contracts.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/javascript-prototypes",
+      "guides/javascript-memoization"
+    ],
+    "language": "javascript"
+  },
+  {
+    "section": "guides",
+    "slug": "url-shortener-system-design",
+    "title": "URL shortener system design: IDs, caching, and failure tradeoffs",
+    "description": "Work through a hypothetical short-link service, from durable key allocation to redirects, cache invalidation, analytics, and regional visibility.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "hash-tables",
+      "graphs"
+    ],
+    "related": [
+      "guides/explain-your-interview-solution",
+      "topics/hashtables"
+    ],
+    "images": [
+      "/images/algorithms/url-shortener-architecture.svg"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "choose-interview-practice-platform",
+    "title": "Choose a coding interview practice platform with a repeatable trial",
+    "description": "Evaluate guided courses, problem banks, language tracks, and frontend practice using one task, delayed recall, feedback, and verified access.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "target-two-sum"
+    ],
+    "related": [
+      "study-plans/90-day-coding-interview-plan",
+      "tools/study-plan-builder"
+    ]
+  },
+  {
+    "section": "guides",
+    "slug": "technical-project-interview",
+    "title": "Explain a technical project in interviews and on your resume",
+    "description": "Prepare an accurate project story with your contribution, tradeoffs, failure recovery, measured evidence, and recruiter-screen follow-ups.",
+    "published": "2026-10-22",
+    "updated": "2026-10-22",
+    "lessons": [
+      "javascript-interview-questions"
+    ],
+    "related": [
+      "guides/explain-your-interview-solution",
+      "tools/interview-rehearsal"
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+```kotlin
+fun lifoOrder(values: List<Int>): List<Int> {
+    val stack = mutableListOf<Int>()
+    val output = mutableListOf<Int>()
+    for (value in values) stack.add(value)
+    while (stack.isNotEmpty()) output.add(stack.removeAt(stack.lastIndex))
+    return output
+}
+```

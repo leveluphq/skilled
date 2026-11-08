@@ -1,0 +1,20 @@
+```typescript
+function bfsOrder(graph: readonly (readonly number[])[], start: number): number[] {
+  if (start < 0 || start >= graph.length) return [];
+  const queue = [start];
+  const visited = new Set<number>([start]);
+  const output: number[] = [];
+  let head = 0;
+  while (head < queue.length) {
+    const node = queue[head++];
+    output.push(node);
+    for (const neighbor of graph[node]) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+  return output;
+}
+```

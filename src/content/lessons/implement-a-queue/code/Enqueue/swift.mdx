@@ -1,0 +1,16 @@
+```swift
+func enqueue(_ item: Int) -> Node {
+    let newLastNode = Node(item)
+    let isEmptyList = first == nil && last == nil
+
+    if isEmptyList {
+        first = newLastNode
+        last = newLastNode
+    } else {
+        last?.prev = newLastNode
+        last = newLastNode
+    }
+
+    return newLastNode
+}
+```

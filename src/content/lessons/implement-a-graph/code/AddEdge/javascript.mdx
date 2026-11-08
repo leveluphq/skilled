@@ -1,0 +1,9 @@
+```javascript
+addEdge(source, destination) {
+  this.adjacencyList[source].push(destination);
+
+  if (this.undirected) {
+    this.adjacencyList[destination].push(source);
+  }
+}
+```

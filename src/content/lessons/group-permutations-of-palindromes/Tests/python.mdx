@@ -1,0 +1,58 @@
+```python
+import unittest
+test_results = []
+
+def sort_output_array(arrays):
+  
+    for array in arrays:
+	    array.sort()
+  
+    return sorted(arrays, key = lambda x: x[0])
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty input"
+        input = []
+        self.actual_result = group_permutations_of_palindromes(input)
+        self.expected_result = []
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "input only palindromes"
+        input = ['racecar', 'acerrac', 'aaccerr', 'naa', 'aan', 'bob']
+        self.actual_result = sort_output_array(group_permutations_of_palindromes(input))
+        self.expected_result =  sort_output_array([['aaccerr', 'acerrac', 'racecar'], ['aan', 'naa'], ['bob']])
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "input single item groups"
+        input = ['racecar', 'naa', 'obb']
+        self.actual_result = sort_output_array(group_permutations_of_palindromes(input))
+        self.expected_result = sort_output_array([['racecar'], ['naa'], ['obb']])
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "input palindromes and non-palindromes"
+        input = ['racecar', 'acerrac', 'aaccerr', 'naa', 'aan', 'todo', 'doto', 'code', 'bob']
+        self.actual_result = sort_output_array(group_permutations_of_palindromes(input))
+        self.expected_result = sort_output_array([['aaccerr', 'acerrac', 'racecar'], ['aan', 'naa'], ['bob']])
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+def runtests():
+    unittest.main(exit=False)
+```

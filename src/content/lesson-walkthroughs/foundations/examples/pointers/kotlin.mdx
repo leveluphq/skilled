@@ -1,0 +1,14 @@
+```kotlin
+fun aliasTrace(): List<Int> {
+    class Box(var value: Int)
+    val original = Box(1)
+    var alias = original
+    val trace = mutableListOf(original.value)
+    alias.value = 2
+    trace.add(original.value)
+    alias = Box(9)
+    trace.add(original.value)
+    trace.add(alias.value)
+    return trace
+}
+```

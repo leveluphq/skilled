@@ -1,0 +1,12 @@
+```go
+func AliasTrace() []int {
+    type box struct { value int }
+    original := &box{1}
+    alias := original
+    trace := []int{original.value}
+    alias.value = 2
+    trace = append(trace, original.value)
+    alias = &box{9}
+    return append(trace, original.value, alias.value)
+}
+```

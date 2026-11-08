@@ -1,0 +1,14 @@
+```javascript
+parent.c1 = null;
+console.log(parent.c1, child1.mood); // null, stoked
+
+parent.c1 = child1;
+
+// child1 now points to a different object, but parent.c1 still points to the original
+child1 = { age: 10, mood: 'a different object' };
+console.log(parent.c1.mood, child1.mood); // stoked, a different object
+
+parent.c1 = null;
+child1 = null;
+console.log(parent.c1, child1); // null, null
+```

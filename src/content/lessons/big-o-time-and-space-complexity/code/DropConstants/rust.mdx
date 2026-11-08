@@ -1,0 +1,29 @@
+```rust
+fn case_1(input: &[i32]) {
+    for i in 0..input.len() {
+        println!("{}", i * 2); // O(n)
+    }
+    for i in 0..input.len() {
+        println!("{}", i * 10); // O(n)
+    }
+    for i in 0..input.len() {
+        println!("{}", i * 42); // O(n)
+    }
+}
+
+fn case_2(input: &[i32]) {
+    for i in 0..input.len() {
+        println!("{}", i * 2); // O(n)
+        println!("{}", i * 10); // O(n)
+        println!("{}", i * 42); // O(n)
+    }
+}
+
+fn case_3(input: &[i32]) {
+    for i in 0..input.len() {
+        for j in 0..input.len() {
+            println!("{i} {j}");
+        }
+    }
+}
+```

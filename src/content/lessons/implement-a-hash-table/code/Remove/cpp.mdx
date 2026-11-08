@@ -1,0 +1,19 @@
+```cpp
+optional<int> remove(const string& key) {
+    int index = hash(key);
+    auto& bucket = table[index];
+
+    // Find the key in the bucket, delete the key-value pair, and return its value
+    for (size_t i = 0; i < bucket.size(); i++) {
+        if (bucket[i].first == key) {
+            int value = bucket[i].second;
+            bucket.erase(bucket.begin() + i);
+
+            return value;
+        }
+    }
+
+    // Return nullopt if the key didn't exist
+    return nullopt;
+}
+```

@@ -1,0 +1,33 @@
+```java
+class Node<T> {
+    T data;
+    Node<T> next;
+
+    Node(T data) {
+        this.data = data;
+        this.next = null;
+    }
+
+    // O(1)
+    Node<T> prepend(T data) {
+        Node<T> prependedNode = new Node<>(data);
+        prependedNode.next = this;
+
+        return prependedNode;
+    }
+
+    // O(n)
+    Node<T> append(T data) {
+        Node<T> appendedNode = new Node<>(data);
+        Node<T> currentNode = this;
+
+        while (currentNode.next != null) {
+            currentNode = currentNode.next;
+        }
+
+        currentNode.next = appendedNode;
+
+        return appendedNode;
+    }
+}
+```

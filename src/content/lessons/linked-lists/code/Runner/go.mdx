@@ -1,0 +1,16 @@
+```go
+func runner(head *Node) {
+	// We initialize our fast and slow to the head
+	fast := head
+	slow := head
+
+	// We iterate through until fast reaches the end
+	for fast != nil && fast.Next != nil {
+		// We skip to every second node with the fast runner
+		fast = fast.Next.Next
+		slow = slow.Next
+	}
+
+	// ... do something with this information
+}
+```

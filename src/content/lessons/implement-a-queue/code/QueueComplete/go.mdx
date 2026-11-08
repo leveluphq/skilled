@@ -1,0 +1,53 @@
+```go
+type Node struct {
+	Data int
+	Prev *Node
+}
+
+type Queue struct {
+	first *Node
+	last  *Node
+}
+
+func NewQueue() *Queue {
+	return &Queue{first: nil, last: nil}
+}
+
+// Get the first item
+func (q *Queue) Peek() *Node {
+	return q.first
+}
+
+// Add a new last item
+func (q *Queue) Enqueue(item int) *Node {
+	newLastNode := &Node{Data: item}
+	isEmptyList := q.first == nil && q.last == nil
+
+	if isEmptyList {
+		q.first = newLastNode
+		q.last = newLastNode
+	} else {
+		q.last.Prev = newLastNode
+		q.last = newLastNode
+	}
+
+	return newLastNode
+}
+
+// Remove the first item
+func (q *Queue) Dequeue() *Node {
+	removedItem := q.first
+
+	if removedItem == nil {
+		return nil
+	}
+
+	if q.first == q.last {
+		q.last = nil
+	}
+
+	q.first = removedItem.Prev
+
+	return removedItem
+}
+```

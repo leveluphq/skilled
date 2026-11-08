@@ -1,0 +1,76 @@
+```javascript
+const START_NODE = 'base';
+const END_NODE = 'ship';
+
+function pilotRocket(satellites) {
+  // Queue to handle BFS
+  const bfsNodeQueue = new Queue();
+  bfsNodeQueue.enqueue(START_NODE);
+
+  // Use a hash table to track the node that came
+  // prior to the current in our BFS to track the path
+  const previousNodeInPath = {};
+  previousNodeInPath[START_NODE] = null;
+
+  // Perform our BFS
+  while (bfsNodeQueue.size() > 0) {
+    const node = bfsNodeQueue.dequeue();
+
+    // We've successfully reached the end, and now we should build the path to get here
+    if (node === END_NODE) {
+      return getShortestPathToShip(previousNodeInPath);
+    }
+
+    for (let connectedNode of satellites[node]) {
+      // Check if we have visited this node yet
+      if (previousNodeInPath[connectedNode] === undefined) {
+
+        // Add the node to the queue for our BFS
+        bfsNodeQueue.enqueue(connectedNode);
+
+        // Set the current node as the one that came before each of its siblings
+        previousNodeInPath[connectedNode] = node;
+      }
+    }
+  }
+
+  // We iterated through all the nodes, and no paths lead to the ship
+  return null;
+}
+
+function getShortestPathToShip(previousNodeInPath) {
+  const pathToShip = [];
+
+  // We start at the final node and work our way backward to the start
+  let node = END_NODE;
+
+  while (node !== null) {
+    pathToShip.push(node);
+
+    // Doing a look up on the hash table for each node
+    // will yield the previous node in the path
+    node = previousNodeInPath[node];
+  }
+
+  // Since we worked our way backward,
+  // we must reverse the path to be in the correct order base -> ship
+  return pathToShip.reverse();
+}
+
+class Queue {
+  constructor() {
+    this.queue = [];
+    this.head = 0;
+  }
+  // Append at the back and advance a head index without shifting the array
+  enqueue(item) {
+    this.queue.push(item);
+  }
+  dequeue() {
+    return this.queue[this.head++];
+  }
+  size() {
+    return this.queue.length - this.head;
+  }
+}
+```

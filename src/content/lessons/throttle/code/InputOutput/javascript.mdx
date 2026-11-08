@@ -1,0 +1,19 @@
+```javascript
+const WAIT_TIME = 5000; // 5 seconds
+const throttledEventListiner = throttle(() => console.log('I executed'), WAIT_TIME);
+
+// time = 0
+throttledEventListiner();
+// wait 2 seconds (time = 2)
+throttledEventListiner();
+// wait 2 seconds (time = 4)
+throttledEventListiner();
+// wait 2 seconds (time = 6)
+throttledEventListiner();
+// wait 2 seconds (time = 8)
+throttledEventListiner();
+
+// Executes every 5 seconds even though it's been called more times
+executes callback at     |     |     |
+time                     0     5     10
+```

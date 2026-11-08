@@ -1,0 +1,16 @@
+```go
+func (q *Queue) Enqueue(item int) *Node {
+	newLastNode := &Node{Data: item}
+	isEmptyList := q.first == nil && q.last == nil
+
+	if isEmptyList {
+		q.first = newLastNode
+		q.last = newLastNode
+	} else {
+		q.last.Prev = newLastNode
+		q.last = newLastNode
+	}
+
+	return newLastNode
+}
+```

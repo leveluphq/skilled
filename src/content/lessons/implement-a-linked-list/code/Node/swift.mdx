@@ -1,0 +1,32 @@
+```swift
+class Node {
+    var data: Int
+    var next: Node?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+
+    // O(1)
+    func prepend(_ data: Int) -> Node {
+        let prependedNode = Node(data)
+        prependedNode.next = self
+
+        return prependedNode
+    }
+
+    // O(n)
+    func append(_ data: Int) -> Node {
+        let appendedNode = Node(data)
+        var currentNode = self
+
+        while let nextNode = currentNode.next {
+            currentNode = nextNode
+        }
+
+        currentNode.next = appendedNode
+
+        return appendedNode
+    }
+}
+```

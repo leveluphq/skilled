@@ -1,0 +1,10 @@
+import Image from 'content/blocks/Image';
+
+Our input data has a well-defined range.
+We can assume the age associated with an order is between 0 and 100 which gives a total of 101 possible ages.
+
+So even when processing millions of orders, we know that we can bucket them together inside a very limited range.
+This range is constant and known to us before we start processing the input.
+To visualize it, we can convert an array of ages to grouped values.
+
+<Image src="/images/age-buckets.png" alt="A frequency chart groups repeated ages into buckets before reconstructing the sorted array." width={1500} height={794} />

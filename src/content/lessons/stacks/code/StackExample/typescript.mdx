@@ -1,0 +1,31 @@
+```javascript
+class Item {
+  price: number;
+
+  constructor(id: string) {
+    // ...
+  }
+}
+
+function run(id: string): number {
+  return calculatePrice(new Item(id));
+}
+
+function calculatePrice(item: Item): number {
+  return item.price + calculateTax(item.price);
+}
+
+function calculateTax(price: number): number {
+  return price * 0.1;
+}
+
+run('id1');
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run('id1')                            |
+------------------------------------------
+   Call Stack
+```

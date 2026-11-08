@@ -1,0 +1,46 @@
+```cpp
+// A C++ vector holds a single type, so like LeetCode, each item is a NestedInteger
+// that holds either an integer or a nested array of NestedIntegers:
+// class NestedInteger {
+// public:
+//     bool isInteger() const;                        // true if it holds an integer
+//     int getInteger() const;                        // the integer it holds
+//     const vector<NestedInteger>& getList() const;  // the nested array it holds
+// };
+
+vector<int> recursiveFlatten(const vector<NestedInteger>& array) {
+    vector<int> flattenedArray;
+
+    for (const NestedInteger& item : array) {
+        if (item.isInteger()) {
+            flattenedArray.push_back(item.getInteger());
+        } else {
+            // If the item is an array, flatten it with a recursive call
+            vector<int> flattenedItem = recursiveFlatten(item.getList());
+            flattenedArray.insert(flattenedArray.end(), flattenedItem.begin(), flattenedItem.end());
+        }
+    }
+
+    return flattenedArray;
+}
+
+vector<int> iterativeFlatten(const vector<NestedInteger>& array) {
+    vector<int> output;
+    deque<NestedInteger> toBeFlattened(array.begin(), array.end());
+
+    while (!toBeFlattened.empty()) {
+        NestedInteger current = toBeFlattened.front();
+        toBeFlattened.pop_front();
+
+        if (current.isInteger()) {
+            output.push_back(current.getInteger());
+        } else {
+            // Put the nested items back at the front, in order
+            const vector<NestedInteger>& items = current.getList();
+            toBeFlattened.insert(toBeFlattened.begin(), items.begin(), items.end());
+        }
+    }
+
+    return output;
+}
+```

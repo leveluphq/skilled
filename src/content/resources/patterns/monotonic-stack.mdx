@@ -1,0 +1,89 @@
+A monotonic stack keeps candidates in a consistent value order while scanning an array. When a new value makes earlier candidates resolvable or irrelevant, pop those candidates. Each index enters the stack once and leaves at most once, so a nested popping loop can still do linear total work.
+
+Use this pattern for questions about the next greater or smaller value, waiting distances, spans, and some boundary calculations. Begin with the meaning of an unresolved entry. The words “increasing stack” are incomplete unless you say whether equal values stay, which end is the top, and what event removes an entry.
+
+## Find the next strictly greater value
+
+For each index, return the distance to the first later index with a strictly greater value. Return zero when no such index exists. For temperatures, this is the number of positions until a warmer day. The input here is an array of finite numbers, and the output has the same length.
+
+```javascript
+function nextGreaterDistances(values) {
+  const distances = Array(values.length).fill(0);
+  const unresolved = [];
+
+  for (let index = 0; index < values.length; index += 1) {
+    while (unresolved.length > 0 &&
+           values[unresolved[unresolved.length - 1]] < values[index]) {
+      const previous = unresolved.pop();
+      distances[previous] = index - previous;
+    }
+    unresolved.push(index);
+  }
+  return distances;
+}
+```
+
+The stack stores indexes, which preserve both the values to compare and the positions needed for distances. From bottom to top, associated values are nonincreasing. Each entry is still waiting for its first greater value among the positions not yet scanned.
+
+When a new value exceeds the top value, that top index has found its answer. No earlier scanned position was greater, or it would already have resolved the entry. The current position is therefore the first valid one. Continue popping until the top no longer needs this value, then add the current index as a new unresolved candidate.
+
+## Trace equal values and a late answer
+
+For `[73, 73, 71, 74]`, the two 73s remain unresolved together. Equality does not count as warmer. The 71 also waits. When 74 arrives, it resolves 71 at distance one, the second 73 at distance two, and the first 73 at distance three. The result is `[3, 2, 1, 0]`.
+
+Changing `<` to `<=` changes the problem to the next greater-or-equal value. On `[70, 70, 71]`, strict comparison returns `[2, 1, 0]`; greater-or-equal comparison would return `[1, 1, 0]`. An equality symbol encodes part of the output contract, so choose it before tracing the algorithm.
+
+At the end of the scan, remaining entries have no later greater value. Leaving their initialized distances at zero is the intended result. Zero does not mean the current position answers itself; all real matches have a strictly positive distance.
+
+## Prove the total work
+
+Every input index is pushed exactly once. A popped index never returns to the stack because its first greater position has already been fixed. There are at most n pops across the complete execution, even though one arrival may pop many entries.
+
+The outer loop performs n iterations. Successful while-loop iterations account for at most n pops; failed condition checks contribute only constant extra work per outer iteration. Total time is O(n). The output uses O(n) space, and the unresolved stack uses O(n) auxiliary space in the worst case.
+
+A strictly decreasing array, or an all-equal array under strict comparison, can leave every index unresolved. The stack does not have a logarithmic height guarantee. This is an amortized count of operations across the scan, rather than a claim that each individual arrival performs constant work.
+
+Compare this argument with the forward-moving pointers in a [sliding window](/patterns/sliding-window). Both analyses count how often each input position can be processed. The correctness invariants and conditions for removing a candidate are different.
+
+## Compute spans with the opposite equality rule
+
+A stock span at index i counts consecutive values ending at i that are at most the current value. The nearest earlier value strictly greater than the current one blocks the span. This variant deliberately removes equal values because they belong inside the span.
+
+```javascript
+function stockSpans(values) {
+  const spans = [];
+  const greater = [];
+  for (let index = 0; index < values.length; index += 1) {
+    while (greater.length > 0 &&
+           values[greater[greater.length - 1]] <= values[index]) {
+      greater.pop();
+    }
+    const previousGreater = greater.length > 0
+      ? greater[greater.length - 1]
+      : -1;
+    spans.push(index - previousGreater);
+    greater.push(index);
+  }
+  return spans;
+}
+```
+
+For `[100, 80, 60, 70, 60, 75, 85]`, the spans are `[1, 1, 1, 2, 1, 4, 6]`. When 75 arrives, the earlier 60 and 70 no longer block it. The remaining 80 is the nearest greater boundary. Subtract its index from the current index to get a span of four.
+
+This stack keeps strictly decreasing values from bottom to top after each iteration. Its entries are possible greater boundaries for future positions. Contrast that meaning with the first implementation's unresolved answers. Similar code can maintain different facts; explain the one your result depends on.
+
+## Choose a stack or a deque from the lifetime rule
+
+A monotonic stack removes entries only from its top. A sliding-window maximum also needs to expire old indexes from the front when they fall outside a fixed-width window. That task usually uses a monotonic deque, with removals at both ends. Replacing the deque with an ordinary stack loses the age-based expiration operation.
+
+A heap can retain prioritized values, but it answers a different access question and usually adds logarithmic operations. For first-next-greater relationships, scanning order supplies the positional information that makes the stack sufficient. For repeated minimum extraction across changing candidates, study [heaps and priority queues](/patterns/heaps-and-priority-queues).
+
+Histogram area problems need further boundary reasoning. If you extend this pattern to them, define how equal heights are assigned to left and right boundaries so area candidates are neither lost nor inconsistently counted. Knowing a next-greater template does not by itself establish that area formula.
+
+## Practice the comparison rule
+
+Compare each implementation with a direct reference on short inputs. For next-greater distances, scan later positions until finding the first strictly greater value. For spans, scan backward while values are at most the current value. These slower versions provide independent checks of positional and equality rules.
+
+Include empty input, one value, increasing values, decreasing values, repeated equal values, and negative values. Negative numbers are fine because these algorithms depend on ordering, not on a sum growing monotonically. Check that the input is unchanged and that a returned positive distance lands on a genuinely greater value with no earlier valid position between them.
+
+Write the invariant before changing `<` to `<=`, reverse the scan direction for a previous-boundary exercise, and predict how the result changes. The [stacks and queues topic](/topics/stacks-and-queues) covers basic operations; the [pattern quiz](/tools/pattern-quiz) tests the reason a next-warmer question fits this stack.

@@ -1,0 +1,12 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class ArraysInsertExample {
+public static List<int> ArraysInsert(List<int> values, int index, int item) {
+    var copy = new List<int>(values);
+    copy.Insert(index, item);
+    return copy;
+}
+}
+```

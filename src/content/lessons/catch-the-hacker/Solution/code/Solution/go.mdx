@@ -1,0 +1,26 @@
+```go
+func findHackerEmail(emails []string) string {
+	emailCountTable := map[string]int{}
+	maxCount := 0
+	hackerEmail := ""
+
+	// Create a hash table that tracks the count of each email
+	// This is an O(n) operation
+	for _, email := range emails {
+		// Increment the count for the email. An email we haven't seen yet
+		// starts from the map's zero value, 0.
+		emailCountTable[email]++
+	}
+
+	// Iterate the map to find the email that appears the most
+	// This is an O(n) operation
+	for email, count := range emailCountTable {
+		if count > maxCount {
+			maxCount = count
+			hackerEmail = email
+		}
+	}
+
+	return hackerEmail
+}
+```

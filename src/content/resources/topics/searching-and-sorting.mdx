@@ -1,0 +1,41 @@
+Searching and sorting both use order, but they solve different parts of a problem. Sorting may prepare data for later searches or make a greedy comparison possible. Binary search narrows a candidate interval when a consistent order or monotonic condition tells you which side can still contain the answer.
+
+Begin with [Logarithms and Time Complexity](/course/logarithms-and-time-complexity), then [Searching and Binary Search](/course/searching-and-binary-search). Study [Sorting](/course/sorting) before treating sorting as a free preprocessing step in another solution.
+
+## Choose a binary-search interval convention
+
+An inclusive interval and a half-open interval can both work. Mixing their loop conditions and boundary updates is a common source of missing answers or nontermination. Write down what the endpoints mean before writing the loop.
+
+After every update, the remaining interval should still contain the answer if it exists. It should also be smaller unless the algorithm has returned. Test an empty interval, one candidate, two candidates, an answer at either endpoint, and an absent answer between values.
+
+The midpoint calculation must fit the numeric model. In languages with fixed-width arithmetic, adding endpoints directly can overflow. In JavaScript, bitwise shortcuts introduce 32-bit coercions that may not match large array-index assumptions. Use arithmetic that fits the actual environment and explain it.
+
+## Search for a boundary, not only a matching value
+
+[First Bad Version](/course/first-bad-version) asks for a transition in a monotonic predicate. A matching “bad” answer is not necessarily the first one, so an implementation must retain the possibility of an earlier boundary.
+
+[Interview Scheduler](/course/interview-scheduler) offers another setting for reasoning from ordered information. Identify which condition splits the remaining candidates and whether that condition remains monotonic under the problem's rules.
+
+A binary-search-shaped loop does not justify logarithmic time if evaluating the predicate scans a large input or copies a subarray. Multiply the number of iterations by the actual predicate work.
+
+## Adapt the proof to rotated arrays and matrices
+
+[Shifted Search](/course/shifted-search) uses the structure of a rotated sorted array. Determine which region is ordered, then check whether the target can fall within its bounds. Clarify duplicate handling because repeated values can make some comparisons less informative.
+
+[Sorted Matrix Search](/course/sorted-matrix-search) relies on the matrix's particular ordering guarantees. Rows sorted independently are not the same contract as one globally ordered flattened sequence. An efficient strategy for one can be invalid for the other.
+
+Draw the remaining candidate region after each move. The discarded region should be excluded by a specific comparison, rather than by the visual direction of a pointer alone.
+
+## Include sorting's costs and side effects
+
+A comparison sort often provides an O(n log n) model for preparation, but exact guarantees depend on the algorithm and implementation. Include extra storage, copying, or mutation in the analysis. JavaScript numeric sorting also needs a suitable comparator; see the [JavaScript guide](/interview-prep/javascript).
+
+[Age Sort](/course/age-sort) explores the effect of a bounded value range. Counting-based work depends on both the number of entries and the size of that range. It is not a universal replacement for comparison sorting over arbitrary values.
+
+If a task asks for original indices, preserve them through sorting or choose an approach that does not reorder the input. If it asks for stable ordering among equal keys, make that requirement explicit.
+
+## Practice the invariant under a small input
+
+For each search exercise, list the candidate interval before and after one comparison. For each sorting-based solution, explain what new property the sorted order supplies and which later step uses it.
+
+Then compare the full solution with a direct scan. Preprocessing can be worthwhile for many queries but unnecessary for a single query. The [Big O guide](/guides/big-o-time-space-complexity) helps keep one-time work, repeated work, and output costs in the same comparison.

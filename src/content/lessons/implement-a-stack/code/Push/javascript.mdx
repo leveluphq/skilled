@@ -1,0 +1,10 @@
+```javascript
+push(item) {
+  const previousLastItem = this.last;
+
+  this.last = new Node(item);
+  this.last.prev = previousLastItem;
+
+  return this.last;
+}
+```

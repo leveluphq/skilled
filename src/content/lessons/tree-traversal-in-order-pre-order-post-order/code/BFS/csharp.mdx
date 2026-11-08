@@ -1,0 +1,28 @@
+```csharp
+// Using C#'s Queue<T>
+// Enqueue adds to the back of the queue
+// Dequeue removes from the front of the queue
+void BreadthFirstSearch(BinaryTreeNode root) {
+    if (root == null) {
+        return;
+    }
+
+    BinaryTreeNode currentNode = root;
+    var queue = new Queue<BinaryTreeNode>();
+    queue.Enqueue(currentNode);
+
+    while (queue.Count > 0) {
+        currentNode = queue.Dequeue();
+
+        VisitNode(currentNode);
+
+        if (currentNode.left != null) {
+            queue.Enqueue(currentNode.left);
+        }
+
+        if (currentNode.right != null) {
+            queue.Enqueue(currentNode.right);
+        }
+    }
+}
+```

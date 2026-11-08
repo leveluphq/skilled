@@ -1,0 +1,21 @@
+A teaching promise implementation exposes the state that native promises normally hide: pending, fulfilled, or rejected, along with the settled value and waiting callbacks. The executor receives resolve and reject functions, and settlement determines which registered handlers should eventually run.
+
+## Separate settlement from callback execution
+
+Settlement is a state transition. Once a promise has settled, a later attempt to resolve or reject it should not replace its result. Callback scheduling is a different concern. A handler registered before settlement must run afterward, and a handler registered after settlement must still observe the stored result.
+
+The current lesson fixes an earlier scheduling issue by dispatching handlers with `setTimeout`. This permits handlers to run when the executor resolves or rejects immediately. It is a teaching simplification: native promise reactions use microtasks, while a timeout schedules a timer task. Those mechanisms can produce different ordering relative to other promises and timers.
+
+For an ordering exercise, register a handler, log a synchronous message, and then observe when the handler logs. Repeat with settlement inside a timer. State both the settlement time and the callback execution time; treating them as the same event hides the behavior being tested.
+
+## Know the boundary of the exercise
+
+A small promise class is not a complete replacement for the ECMAScript Promise implementation. Full promise resolution includes thenable adoption, chaining, exception propagation, and rules that prevent a promise from resolving to itself. Adding a `.then` method alone does not establish compliance with those semantics.
+
+Use native promises in application code. The exercise is useful for explaining state, retained callbacks, and asynchronous observation. If extending it, write a behavior table first: immediate fulfillment, delayed fulfillment, rejection, handlers added after settlement, repeated settlement attempts, and a handler that throws.
+
+## Practice adjacent promise behavior
+
+The [Promise.all guide](/guides/implement-promise-all) works with native promises and explains input order, empty iterables, synchronous iteration errors, and rejection. The [event-loop guide](/guides/javascript-event-loop) distinguishes synchronous execution, microtasks, and timers with execution traces.
+
+Open the current lesson to compare its updated code with the recording. When a test appears to disagree with a familiar promise example, check which scheduling mechanism and promise contract each example is using before changing the expected output.

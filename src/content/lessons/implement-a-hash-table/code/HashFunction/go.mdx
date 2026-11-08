@@ -1,0 +1,11 @@
+```go
+func (ht *HashTable) Hash(key string) int {
+	hash := 0
+
+	for _, char := range key {
+		hash = (hash + int(char)) % ht.size
+	}
+
+	return hash
+}
+```

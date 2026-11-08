@@ -1,0 +1,60 @@
+```kotlin
+const val START_NODE = "base"
+const val END_NODE = "ship"
+
+class Solution {
+    fun pilotRocket(satellites: Map<String, Array<String>>): List<String>? {
+        // Queue to handle BFS: addLast to enqueue and removeFirst to dequeue, both O(1)
+        val bfsNodeQueue = ArrayDeque<String>()
+        bfsNodeQueue.addLast(START_NODE)
+
+        // Use a hash table to track the node that came
+        // prior to the current in our BFS to track the path
+        val previousNodeInPath = mutableMapOf<String, String?>()
+        previousNodeInPath[START_NODE] = null
+
+        // Perform our BFS
+        while (bfsNodeQueue.isNotEmpty()) {
+            val node = bfsNodeQueue.removeFirst()
+
+            // We've successfully reached the end, and now we should build the path to get here
+            if (node == END_NODE) {
+                return getShortestPathToShip(previousNodeInPath)
+            }
+
+            for (connectedNode in satellites[node].orEmpty()) {
+                // Check if we have visited this node yet
+                if (connectedNode !in previousNodeInPath) {
+                    // Add the node to the queue for our BFS
+                    bfsNodeQueue.addLast(connectedNode)
+
+                    // Set the current node as the one that came before each of its siblings
+                    previousNodeInPath[connectedNode] = node
+                }
+            }
+        }
+
+        // We iterated through all the nodes, and no paths lead to the ship
+        return null
+    }
+
+    private fun getShortestPathToShip(previousNodeInPath: Map<String, String?>): List<String> {
+        val pathToShip = mutableListOf<String>()
+
+        // We start at the final node and work our way backward to the start
+        var node: String? = END_NODE
+
+        while (node != null) {
+            pathToShip.add(node)
+
+            // Doing a look up on the hash table for each node
+            // will yield the previous node in the path
+            node = previousNodeInPath[node]
+        }
+
+        // Since we worked our way backward,
+        // we must reverse the path to be in the correct order base -> ship
+        return pathToShip.reversed()
+    }
+}
+```

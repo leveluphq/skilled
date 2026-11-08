@@ -1,0 +1,12 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class OutDegreesExample {
+public static List<int> OutDegrees(List<List<int>> graph) {
+    var degrees = new List<int>();
+    foreach (var neighbors in graph) degrees.Add(neighbors.Count);
+    return degrees;
+}
+}
+```

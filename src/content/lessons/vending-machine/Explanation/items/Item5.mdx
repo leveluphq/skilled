@@ -1,0 +1,32 @@
+import { Container } from 'style/elements';
+import Image from 'content/blocks/Image';
+import LanguageMaxValue from 'content/blocks/LanguageMaxValue';
+import MinFunction from './inlineCode/MinFunction.tsx';
+
+### Top-Down Summary
+
+Up to this point, we've walked through the entire bottom-up solution.
+Let's briefly look at the top-down algorithm to see how we follow the same process of solving similar subproblems.
+With the bottom-up approach, we summed all the coins from `0` to our `target`.
+
+With the top-down approach, we subtract all the coins from the `target` and have found a successful path when we reach `0`.
+Top-down is the inverse of bottom-up, so instead of going `0` to `target`, we go from `target` to `0`.
+
+We'll consider `target = 11` and `denominations = [2, 3, 7]`.
+We start at 11 and then subtract each of the denominations (-2, -3, -7) from it, which creates 3 paths.
+
+<Image src="/images/vending-machine-top-down.png" isVisuAlgo alt="A top-down coin-change recursion tree branches by subtracting each available denomination." width={2008} height={1324} />
+
+These are our subproblems.
+We do the exact same operation again and subtract all 3 coins from each of the resulting amounts.
+
+We recursively subtract coins until we reach the base cases.
+Then from the base case, we start to unwind and add 1 coin for each level since the subtraction indicated we were trying 1 new coin each recursive call.
+Then whichever denomination led to the smallest number of coins at a subproblem, we memoize that value.
+Once we return to the original function call, if we had a valid coin combination, we increment one final time for that subproblem and then return this result as the solution.
+
+The shortest path (the one where we increment the fewest numbers of times) is the answer and the minimum number of coins that can reach our solution.
+
+What we'll notice is that when we work this top-down, we reach the same values multiple times.
+These are our overlapping subproblems.
+We memoize them so we don't repeat the same recursive calculations and just use the minimum coins already found to reach that value.

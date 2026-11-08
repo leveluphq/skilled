@@ -1,0 +1,94 @@
+A retry wrapper calls an operation again after a failure. The hard part is deciding which failures may be retried and what another attempt can change. A disconnected read request and an uncertain payment submission need different policies. Before adding a loop, establish whether repeating the operation is safe, how many attempts are allowed, and how cancellation reaches both the request and the waiting timer.
+
+This implementation accepts an operation factory, a retry budget, a capped exponential delay, full jitter, and an optional abort signal. Three retries mean at most four operation calls. It returns the first successful result and otherwise rejects with the final operation error. It never converts an error into an apparent successful value.
+
+## Pass a factory rather than a running promise
+
+A promise describes an operation that has already started. Awaiting the same rejected promise again observes the same failure; it does not send another request. Pass a function that starts fresh work for each attempt. That function receives the zero-based attempt number and the shared signal.
+
+Use the attempt number for logging or a request header only when the receiving service expects it. An attempt identifier is not an idempotency key. An idempotency key normally stays consistent across retries of the same intended operation so a server can recognize duplicates. The wrapper cannot infer or enforce that application-level guarantee.
+
+```javascript
+function abortReason(signal) {
+  return signal.reason === undefined ? new Error('Operation aborted') : signal.reason;
+}
+
+function sleepFor(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) { reject(abortReason(signal)); return; }
+    let timer;
+    const cleanup = () => signal?.removeEventListener('abort', onAbort);
+    const onAbort = () => {
+      clearTimeout(timer);
+      cleanup();
+      reject(abortReason(signal));
+    };
+    timer = setTimeout(() => { cleanup(); resolve(); }, ms);
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+async function retry(operation, {
+  retries = 3, baseDelayMs = 100, maxDelayMs = 5000,
+  shouldRetry = () => true, random = Math.random, signal,
+} = {}) {
+  if (typeof operation !== 'function' || typeof shouldRetry !== 'function' || typeof random !== 'function')
+    throw new TypeError('Expected operation, policy, and random functions');
+  if (!Number.isSafeInteger(retries) || retries < 0)
+    throw new RangeError('retries must be a nonnegative safe integer');
+  if (![baseDelayMs, maxDelayMs].every((n) => Number.isFinite(n) && n >= 0 && n <= 2147483647))
+    throw new RangeError('Delays must fit the timer range');
+  let cap = Math.min(baseDelayMs, maxDelayMs);
+  for (let attempt = 0; ; attempt++) {
+    if (signal?.aborted) throw abortReason(signal);
+    try {
+      return await operation({ attempt, signal });
+    } catch (error) {
+      if (signal?.aborted) throw abortReason(signal);
+      if (attempt === retries) throw error;
+      const decision = await shouldRetry(error, attempt);
+      if (typeof decision !== 'boolean') throw new TypeError('shouldRetry must return a Boolean');
+      if (!decision) throw error;
+      const sample = random();
+      if (!Number.isFinite(sample) || sample < 0 || sample >= 1)
+        throw new RangeError('random must return a number in [0, 1)');
+      await sleepFor(Math.floor(sample * cap), signal);
+      cap = Math.min(maxDelayMs, cap * 2);
+    }
+  }
+}
+```
+
+## Trace the budget and delay separately
+
+With a base delay of 100 milliseconds and a maximum of 250, the retry delay caps are 100, 200, 250, 250, and so on. A random sample of 0.5 chooses waits of 50, 100, 125, and 125 milliseconds. The first call has no initial delay. A success stops the loop immediately, even if the budget permits more attempts.
+
+The code doubles the previous capped value instead of computing a huge power on every iteration. This also handles a zero base delay without producing the undefined arithmetic combination of zero multiplied by an overflowing exponential. A zero wait still schedules a timer; it does not make the retry recursively synchronous.
+
+Full jitter spreads retries across a range rather than making every client wake at the same deadline. It does not create server capacity. Keep a finite attempt budget and an overall application deadline. A library default is not evidence that a remote service permits repeated requests at that rate.
+
+For four attempts that each take 200 milliseconds, the three example waits add 275 milliseconds to 800 milliseconds of operation time. The total is at least 1,075 milliseconds before additional scheduling overhead. A retry count alone therefore does not establish a latency budget. An application deadline must account for active operation time as well as sleep time, and an abort-aware operation must observe that deadline. The wrapper retains constant bookkeeping and one timer at a time; its total operation work grows with the number of attempts actually made. It does not keep a list of every intermediate error or result.
+
+## Define a retry policy
+
+The policy receives the operation error and failed attempt number. It can return a Boolean decision directly or resolve to one asynchronously; the wrapper awaits the decision and rejects other result types. A thrown policy error or rejected policy promise propagates rather than becoming another operation retry. An asynchronous policy is part of the overall latency budget too.
+
+For HTTP work, fetch normally fulfills for an HTTP error response. The operation must inspect the response and throw an error that its policy understands. Decide how to handle status codes, response bodies, and any server retry guidance in that layer. Retrying every exception can repeatedly submit invalid input or conceal an authorization failure.
+
+The default policy retries every operation rejection, which is useful for a small exercise. Application code should usually provide a narrower policy. A failure after a server accepted a write can leave its outcome uncertain. Repeating that write requires a server-supported idempotency mechanism or another reconciliation design, not merely a longer delay.
+
+## Cancel waiting and cooperate with active work
+
+The signal is checked before every attempt and after an operation fails. During backoff, an abort clears the timer, removes the listener, and rejects the wait. Successful timer completion also removes the listener, so repeated attempts do not accumulate listeners on one signal.
+
+The wrapper passes the signal into the operation so that operation can forward it to fetch or another abort-aware API. It cannot force a function that ignores the signal to stop. If such a function eventually fulfills after an abort, this version returns that fulfillment; it does not pretend cancellation rolled back completed work. That success policy is explicit and can be changed only with corresponding tests.
+
+The browser's [AbortSignal documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) describes the signal and reason mechanism. An abort reason may be a falsy value, so the helper checks for undefined instead of replacing every falsy reason with a new error.
+
+## Test the state changes with a controlled clock
+
+Use fake timers and a deterministic random function. Make the operation reject twice and then fulfill; check call numbers, selected delays, and the final result. Set retries to zero and confirm exactly one call. Return a nonretryable policy decision and confirm the original error object is preserved without creating a timer.
+
+Abort before the first call, during backoff, and during a cooperative operation. Check that no later attempt starts. Include an operation that throws synchronously, a rejection with a falsy value, zero delays, and delays that reach the cap. Invalid options should reject before the operation has any side effects.
+
+For a batch of work, combine retry policy with a [concurrency limit](/guides/javascript-concurrency-limit). Retries should still count as active work according to the batch's resource policy. The [event-loop guide](/guides/javascript-event-loop) explains why advancing a timer and flushing promise reactions are separate steps in a deterministic asynchronous test.

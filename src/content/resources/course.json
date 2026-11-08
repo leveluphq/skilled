@@ -1,0 +1,762 @@
+{
+  "categories": [
+    {
+      "id": "d0b26d44-d19e-4dd9-84f5-3ae72005b589",
+      "slug": "arrays",
+      "title": "Arrays",
+      "position": 0,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "2eebdcbb-a56c-4d13-95f4-a0cebb4d3c75",
+      "slug": "essential-concepts",
+      "title": "Essential Concepts",
+      "position": 1,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "f6888991-5ebc-4592-bca3-539984f44b9b",
+      "slug": "hashtables",
+      "title": "Hash Tables",
+      "position": 2,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "126692e4-4986-47b3-a31d-430224025d6c",
+      "slug": "strings",
+      "title": "Strings",
+      "position": 3,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "d2694136-8922-4135-9c19-3a4449023910",
+      "slug": "recursion",
+      "title": "Recursion",
+      "position": 4,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "4c32a846-e2a9-46b7-badb-953cf27f3363",
+      "slug": "searching-and-sorting",
+      "title": "Searching and Sorting",
+      "position": 5,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "a56b74f7-dec2-48f2-b5de-0a54bc2bc6b0",
+      "slug": "linked-lists",
+      "title": "Linked Lists",
+      "position": 6,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "5006aead-821e-41ec-9b6a-c0d29847e88f",
+      "slug": "stacks-and-queues",
+      "title": "Stacks and Queues",
+      "position": 7,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "2a637481-2814-4bc3-ac69-2e35ad32b073",
+      "slug": "trees",
+      "title": "Trees",
+      "position": 8,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "05adf2c2-d10b-46a8-9281-f4ff222df558",
+      "slug": "graphs",
+      "title": "Graphs",
+      "position": 9,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "d696015b-df2d-4acc-90d7-c219ded3a0ae",
+      "slug": "dynamic-programming",
+      "title": "Dynamic Programming",
+      "position": 10,
+      "description": "",
+      "previewVideo": ""
+    },
+    {
+      "id": "7650c89f-a374-4a97-aaf4-7b7889b1a83f",
+      "slug": "javascript",
+      "title": "JavaScript",
+      "position": 12,
+      "description": "",
+      "previewVideo": ""
+    }
+  ],
+  "lessons": [
+    {
+      "id": "c406e88a-bc9b-46f4-8049-1f309734a44d",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "arrays",
+      "title": "Arrays",
+      "category": "arrays",
+      "type": "INSTRUCTIONAL",
+      "position": 100,
+      "description": "Understand array indexing, insertion, iteration, and resizing, then practice the invariants used in array and matrix interview problems."
+    },
+    {
+      "id": "b369b5c1-3219-4eaa-8647-b711b5307936",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-an-array",
+      "title": "Implement an Array",
+      "category": "arrays",
+      "type": "QUESTION",
+      "position": 101,
+      "description": "Build an array abstraction and reason about indexed access, insertion, removal, capacity, and the costs of moving existing elements."
+    },
+    {
+      "id": "daa7d7ac-f39f-4a33-ab77-07002ea8ab58",
+      "accessLevel": "FREE",
+      "slug": "walk-a-matrix",
+      "title": "Walk a Matrix",
+      "category": "arrays",
+      "type": "QUESTION",
+      "position": 102,
+      "description": "Practice traversing a two-dimensional matrix while tracking row and column boundaries and handling small or empty inputs."
+    },
+    {
+      "id": "9061a7ce-557b-40e4-8cf4-a08d611dd808",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "product-array",
+      "title": "Product Array",
+      "category": "arrays",
+      "type": "QUESTION",
+      "position": 103,
+      "description": "Compute each array position from the product of the other values without division. Work through prefix/suffix state and zero-value cases."
+    },
+    {
+      "id": "cb49aea2-d520-4fa6-b365-2cb0e6522d40",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "valid-sudoku-board",
+      "title": "Valid Sudoku Board",
+      "category": "arrays",
+      "type": "QUESTION",
+      "position": 104,
+      "description": "Check Sudoku rows, columns, and subgrids for duplicate values. Practice mapping board positions to the constraints they must satisfy."
+    },
+    {
+      "id": "3ba18d58-130c-46ce-ac54-13c77f2c57e0",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "best-time-to-buy-and-sell-stock",
+      "title": "Best Time to Buy and Sell Stock",
+      "category": "arrays",
+      "type": "QUESTION",
+      "position": 105,
+      "description": "Find the best single buy-and-sell opportunity by tracking an earlier minimum. Practice ordering constraints and decreasing-price inputs."
+    },
+    {
+      "id": "e84e5b82-f8ec-45d5-9315-7ed606bac6f3",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "big-o-time-and-space-complexity",
+      "title": "Big O Notation Time and Space Complexity",
+      "category": "essential-concepts",
+      "type": "INSTRUCTIONAL",
+      "position": 107,
+      "description": "Analyze how interview solutions grow with input size. Compare loops, recursion, auxiliary memory, and common complexity classes."
+    },
+    {
+      "id": "7870b03f-fddc-44b1-b2b7-7d60f18c6788",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "hash-tables",
+      "title": "Hash Tables",
+      "category": "hashtables",
+      "type": "INSTRUCTIONAL",
+      "position": 200,
+      "description": "Learn how hashing maps keys to storage, why collisions matter, and how maps and sets support common interview optimizations."
+    },
+    {
+      "id": "d135211d-100c-4e49-934d-6ebd12e1ab8c",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-a-hash-table",
+      "title": "Implement a Hash Table",
+      "category": "hashtables",
+      "type": "QUESTION",
+      "position": 201,
+      "description": "Build a hash-table implementation, store and retrieve key/value pairs, and examine how collisions affect correctness and performance."
+    },
+    {
+      "id": "ee98bff3-ad03-4f61-b8cc-fe06224e47f7",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "catch-the-hacker",
+      "title": "Catch the Hacker",
+      "category": "hashtables",
+      "type": "QUESTION",
+      "position": 202,
+      "description": "Identify a repeatedly duplicated email by counting frequencies. Compare repeated scans with a map-based pass through the input."
+    },
+    {
+      "id": "14451990-39f6-43e8-9f74-83a05fcb4632",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "target-two-sum",
+      "title": "Target Two Sum",
+      "category": "hashtables",
+      "type": "QUESTION",
+      "position": 203,
+      "description": "Find two distinct indices whose values reach a target. Compare pair enumeration with a hash-map solution and test duplicate values."
+    },
+    {
+      "id": "d2df3b8b-128f-44a3-be06-b17df029bcc2",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "strings",
+      "title": "Strings",
+      "category": "strings",
+      "type": "INSTRUCTIONAL",
+      "position": 300,
+      "description": "Study string traversal, character representation, immutability, and construction costs before practicing text interview problems."
+    },
+    {
+      "id": "13d29960-7e2b-4ac0-832b-a09a25599250",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "palindromes-permutataions-anagrams",
+      "title": "Palindromes, Permutations, Anagrams",
+      "category": "strings",
+      "type": "INSTRUCTIONAL",
+      "position": 301,
+      "description": "Distinguish palindrome order, permutation arrangements, and anagram frequency counts, then choose the state each text problem needs."
+    },
+    {
+      "id": "b34f6598-4f69-4b0d-b323-abef8b6c7186",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "group-permutations-of-palindromes",
+      "title": "Group Permutations of Palindromes",
+      "category": "strings",
+      "type": "QUESTION",
+      "position": 302,
+      "description": "Practice grouping strings by character relationships and reasoning about which arrangements can form a palindrome."
+    },
+    {
+      "id": "41e7f8e1-27f5-44d4-b492-c6c79a2a4a93",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "recursion",
+      "title": "Recursion",
+      "category": "recursion",
+      "type": "INSTRUCTIONAL",
+      "position": 400,
+      "description": "Trace recursive execution, define a smaller subproblem, and connect base cases and return values to a clear correctness argument."
+    },
+    {
+      "id": "d748e3af-4dc3-452c-ab9c-f6cb21a2041b",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "sum-digits",
+      "title": "Sum Digits",
+      "category": "recursion",
+      "type": "QUESTION",
+      "position": 401,
+      "description": "Compute a number’s digit sum using arithmetic. Practice recursive decomposition, termination, and tests for single-digit inputs."
+    },
+    {
+      "id": "1f7c749a-7ac6-453e-8a19-7c9c2947562d",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "generate-all-permutations",
+      "title": "Generate All Permutations",
+      "category": "recursion",
+      "type": "QUESTION",
+      "position": 402,
+      "description": "Enumerate input arrangements while managing choices and restoring state. Analyze the output size and test small permutation examples."
+    },
+    {
+      "id": "a14d1184-1d0d-4181-ae1d-ffb7dda23bac",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "logarithms-and-time-complexity",
+      "title": "Logarithms and Time Complexity",
+      "category": "searching-and-sorting",
+      "type": "INSTRUCTIONAL",
+      "position": 500,
+      "description": "Understand why repeated halving produces logarithmic work and apply that reasoning to search intervals and recursive algorithms."
+    },
+    {
+      "id": "04aaade9-261e-4302-a58d-1a1158428b15",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "searching-and-binary-search",
+      "title": "Searching and Binary Search",
+      "category": "searching-and-sorting",
+      "type": "INSTRUCTIONAL",
+      "position": 501,
+      "description": "Search sorted data by narrowing a candidate interval. Practice boundaries, midpoint updates, and the conditions that guarantee progress."
+    },
+    {
+      "id": "1312f73f-2525-4c0c-895a-c09d536a5001",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "sorting",
+      "title": "Sorting",
+      "category": "searching-and-sorting",
+      "type": "INSTRUCTIONAL",
+      "position": 502,
+      "description": "Compare sorting approaches, runtime assumptions, and the ways sorted order changes an interview problem’s available solutions."
+    },
+    {
+      "id": "4ee1fea4-f61f-4d89-9ea7-e61a5f8030b6",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "interview-scheduler",
+      "title": "Interview Scheduler",
+      "category": "searching-and-sorting",
+      "type": "QUESTION",
+      "position": 503,
+      "description": "Work through an interview scheduling problem and practice using ordered information to reduce the search for a valid answer."
+    },
+    {
+      "id": "81676b97-6a68-4ac5-889e-0d81b4cf0221",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "shifted-search",
+      "title": "Shifted Search",
+      "category": "searching-and-sorting",
+      "type": "QUESTION",
+      "position": 504,
+      "description": "Find a target in a shifted sorted array by reasoning about ordered intervals and choosing which half can still contain the answer."
+    },
+    {
+      "id": "3183a737-66ba-432e-8abd-6486d1db83f0",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "sorted-matrix-search",
+      "title": "Sorted Matrix Search",
+      "category": "searching-and-sorting",
+      "type": "QUESTION",
+      "position": 505,
+      "description": "Use a matrix’s ordering constraints to reduce the search space. Track boundaries and test targets at edges or outside the data."
+    },
+    {
+      "id": "9432a402-85bd-4df1-a84e-b0286781fcea",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "age-sort",
+      "title": "Age Sort",
+      "category": "searching-and-sorting",
+      "type": "QUESTION",
+      "position": 506,
+      "description": "Explore how a restricted value range can change a sorting problem. Compare counting-based work with general comparison sorting."
+    },
+    {
+      "id": "df4d1fa9-7e0a-4c9d-bc70-3ea9c9c1515b",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "first-bad-version",
+      "title": "First Bad Version",
+      "category": "searching-and-sorting",
+      "type": "QUESTION",
+      "position": 507,
+      "description": "Find a transition in an ordered sequence using a predicate. Practice binary-search interval definitions and edge-boundary cases."
+    },
+    {
+      "id": "7d4a58cc-4b57-476e-b1a5-8bf54117e91a",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "linked-lists",
+      "title": "Linked Lists",
+      "category": "linked-lists",
+      "type": "INSTRUCTIONAL",
+      "position": 600,
+      "description": "Understand linked-list structure, traversal costs, and the pointer relationships behind insertion, deletion, and reversal."
+    },
+    {
+      "id": "11ec0ab2-9987-4321-8248-0b0d16c00808",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "pointers",
+      "title": "Pointers",
+      "category": "linked-lists",
+      "type": "INSTRUCTIONAL",
+      "position": 601,
+      "description": "Reason about references, node identity, and reachability so pointer updates do not lose the remainder of a list or tree."
+    },
+    {
+      "id": "bddd3fa3-1756-4c75-a1e0-29dd023ef8d9",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-a-linked-list",
+      "title": "Implement a Linked List",
+      "category": "linked-lists",
+      "type": "QUESTION",
+      "position": 602,
+      "description": "Build linked nodes and list operations, maintain head and tail relationships, and test empty and single-node structures."
+    },
+    {
+      "id": "65e9180c-7275-4d6f-8ca9-408a84a5f76d",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "combine-blockchains",
+      "title": "Combine Blockchains",
+      "category": "linked-lists",
+      "type": "QUESTION",
+      "position": 603,
+      "description": "Practice combining linked chains while preserving their nodes and maintaining the relationships needed to traverse the result."
+    },
+    {
+      "id": "c180f3d9-13f9-4729-854d-a0f26cf34e54",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "reverse-a-linked-list",
+      "title": "Reverse a Linked List",
+      "category": "linked-lists",
+      "type": "QUESTION",
+      "position": 604,
+      "description": "Reverse a list by tracking the previous, current, and next nodes. Explain the invariant and handle empty and single-node inputs."
+    },
+    {
+      "id": "899ee33c-d7d9-42c0-81a7-82535054dee1",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "mirror-delete",
+      "title": "Mirror Delete",
+      "category": "linked-lists",
+      "type": "QUESTION",
+      "position": 605,
+      "description": "Work through a linked-list deletion exercise with careful reference updates, boundary checks, and tests that preserve reachable nodes."
+    },
+    {
+      "id": "bdd4a9e7-1436-4c53-893a-5409f9183685",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "queues",
+      "title": "Queues",
+      "category": "stacks-and-queues",
+      "type": "INSTRUCTIONAL",
+      "position": 700,
+      "description": "Learn queue operations, implementation choices, and the role of first-in-first-out order in breadth-first traversal and scheduling."
+    },
+    {
+      "id": "25a8a7c9-6cb9-47fd-866a-fb17bb42cde4",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "stacks",
+      "title": "Stacks",
+      "category": "stacks-and-queues",
+      "type": "INSTRUCTIONAL",
+      "position": 701,
+      "description": "Learn stack operations and use last-in-first-out state for nested structures, traversal, and interview problem solving."
+    },
+    {
+      "id": "b1a7f943-b383-4786-a232-8ebe5c0db39a",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-a-queue",
+      "title": "Implement a Queue",
+      "category": "stacks-and-queues",
+      "type": "QUESTION",
+      "position": 702,
+      "description": "Implement enqueue and dequeue behavior while maintaining first-in-first-out order and handling empty-queue transitions."
+    },
+    {
+      "id": "7fca06a5-b9b3-4759-9bcd-5ab2d4805111",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-a-stack",
+      "title": "Implement a Stack",
+      "category": "stacks-and-queues",
+      "type": "QUESTION",
+      "position": 703,
+      "description": "Implement push, pop, and peek, maintain the top of the stack, and reason about operation costs and empty-state behavior."
+    },
+    {
+      "id": "e8fee173-a74e-4b96-907d-87a0a8d10007",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "max-min-stack",
+      "title": "Max Min Stack",
+      "category": "stacks-and-queues",
+      "type": "QUESTION",
+      "position": 704,
+      "description": "Support stack operations while tracking minimum and maximum values. Practice duplicate values and restoring earlier aggregate state."
+    },
+    {
+      "id": "3a5f951c-2505-4187-b854-317a26db74ba",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "valid-brackets",
+      "title": "Valid Brackets",
+      "category": "stacks-and-queues",
+      "type": "QUESTION",
+      "position": 705,
+      "description": "Validate bracket ordering with a stack of unmatched openings. Test mismatched types, unfinished openings, and closing-first inputs."
+    },
+    {
+      "id": "49a2a617-8a0c-4b11-8dd3-bcada4d32d8f",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "trees",
+      "title": "Trees",
+      "category": "trees",
+      "type": "INSTRUCTIONAL",
+      "position": 800,
+      "description": "Learn tree terminology and recursive structure, then prepare for traversal, depth, ancestor, and binary-search-tree exercises."
+    },
+    {
+      "id": "6a69d4ff-5de6-4ebd-b9e6-93db833224d7",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "tree-traversal-in-order-pre-order-post-order",
+      "title": "Tree Traversal: In-Order, Pre-Order, Post-Order",
+      "category": "trees",
+      "type": "INSTRUCTIONAL",
+      "position": 801,
+      "description": "Compare traversal orders by changing when each node is processed. Trace recursive calls and distinguish traversal from search-tree ordering."
+    },
+    {
+      "id": "4af5f95e-fa5a-4133-878f-114ee9d6774a",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "binary-search-trees",
+      "title": "Binary Search Trees",
+      "category": "trees",
+      "type": "INSTRUCTIONAL",
+      "position": 802,
+      "description": "Understand the ordering rules that guide binary-search-tree operations and how tree height affects search performance."
+    },
+    {
+      "id": "3d178d15-54c0-4806-b897-af7802523e5d",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-a-binary-search-tree",
+      "title": "Implement a Binary Search Tree",
+      "category": "trees",
+      "type": "QUESTION",
+      "position": 803,
+      "description": "Build a binary search tree, preserve its ordering contract during updates, and test search paths and empty-tree behavior."
+    },
+    {
+      "id": "4d848e78-928d-410e-92df-195f5028009d",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "binary-tree-max-depth",
+      "title": "Binary Tree Max Depth",
+      "category": "trees",
+      "type": "QUESTION",
+      "position": 804,
+      "description": "Compute a tree’s depth from its subtrees. State the empty-tree convention and compare balanced and chain-shaped inputs."
+    },
+    {
+      "id": "a1ce35e1-825e-4304-9d22-485a281f2059",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "binary-search-tree-validate",
+      "title": "BST Validate",
+      "category": "trees",
+      "type": "QUESTION",
+      "position": 805,
+      "description": "Check the complete binary-search-tree ordering rule, including ancestor constraints that a parent-only comparison can miss."
+    },
+    {
+      "id": "fc982534-19a2-4639-9aec-59340610fed7",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "closest-common-ancestor-in-binary-tree",
+      "title": "Closest Common Ancestor in Binary Tree",
+      "category": "trees",
+      "type": "QUESTION",
+      "position": 806,
+      "description": "Find the shared ancestor of two nodes by reasoning about subtree results and the relationship between node identity and ancestry."
+    },
+    {
+      "id": "5a1bdf10-d4e8-4612-81fb-85d9f8899878",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "graphs",
+      "title": "Graphs",
+      "category": "graphs",
+      "type": "INSTRUCTIONAL",
+      "position": 900,
+      "description": "Model relationships with graph nodes and edges, compare representations, and prepare for reachability and traversal exercises."
+    },
+    {
+      "id": "082ef0b0-460f-405d-b6b3-e99389c2cc06",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "depth-first-search",
+      "title": "Depth-First Search",
+      "category": "graphs",
+      "type": "INSTRUCTIONAL",
+      "position": 901,
+      "description": "Traverse a graph by following branches, track visited nodes to handle cycles, and reason about recursive or explicit stack state."
+    },
+    {
+      "id": "06c3401d-f3f4-423d-a0cb-128576471b30",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "breadth-first-search",
+      "title": "Breadth-First Search",
+      "category": "graphs",
+      "type": "INSTRUCTIONAL",
+      "position": 902,
+      "description": "Traverse by distance with a queue, avoid duplicate discoveries, and reconstruct shortest paths when edges have equal cost."
+    },
+    {
+      "id": "455e4e93-4ae0-441e-b3d8-8842dabefdab",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "implement-a-graph",
+      "title": "Implement a Graph",
+      "category": "graphs",
+      "type": "QUESTION",
+      "position": 903,
+      "description": "Represent vertices and edges, maintain neighbor relationships, and prepare a graph structure for traversal and reachability queries."
+    },
+    {
+      "id": "f21c4fe5-e79c-4396-96f4-de3e71b76358",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "pilot-a-rocket",
+      "title": "Pilot a Rocket",
+      "category": "graphs",
+      "type": "QUESTION",
+      "position": 904,
+      "description": "Find a route through a satellite network. Practice BFS discovery order, parent tracking, cycles, and an unreachable destination."
+    },
+    {
+      "id": "e873ec86-16cb-429e-97e6-6a722ca67489",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "count-islands",
+      "title": "Count Islands",
+      "category": "graphs",
+      "type": "QUESTION",
+      "position": 905,
+      "description": "Count connected land regions in a matrix. Compare DFS and BFS, mark visited cells, and test disconnected and diagonal land."
+    },
+    {
+      "id": "22874dd7-5a24-4e25-8d7a-f93b8fa0a271",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "robot-maze",
+      "title": "Robot Maze",
+      "category": "graphs",
+      "type": "QUESTION",
+      "position": 906,
+      "description": "Determine whether a robot can reach an exit under the allowed movement rules. Practice grid bounds, blocked cells, and path choices."
+    },
+    {
+      "id": "bd32c8e6-18f0-4f41-9098-58ac2ceabead",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "subproblems-and-overlapping-subproblems",
+      "title": "Subproblems and Overlapping Subproblems",
+      "category": "dynamic-programming",
+      "type": "INSTRUCTIONAL",
+      "position": 1000,
+      "description": "Identify repeated smaller decisions and define state precisely before using caching or a dynamic-programming table."
+    },
+    {
+      "id": "7fb5c701-9cf4-4470-bea8-dca1ec94571b",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "memoization",
+      "title": "Memoization",
+      "category": "dynamic-programming",
+      "type": "INSTRUCTIONAL",
+      "position": 1001,
+      "description": "Turn repeated recursive work into reusable results. Choose complete cache keys and distinguish missing results from valid zero values."
+    },
+    {
+      "id": "1ab39c63-7317-4a7d-83a6-e4f3298541e4",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "bottom-up-vs-top-down",
+      "title": "Bottom-Up vs. Top-Down",
+      "category": "dynamic-programming",
+      "type": "INSTRUCTIONAL",
+      "position": 1002,
+      "description": "Compare memoized recursion with tabulation, choose a valid evaluation order, and reason about stack and table storage."
+    },
+    {
+      "id": "2cf5509f-ab34-41c2-8db7-0fa917c4654b",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "dynamic-programming",
+      "title": "Dynamic Programming",
+      "category": "dynamic-programming",
+      "type": "INSTRUCTIONAL",
+      "position": 1003,
+      "description": "Develop a recurrence, identify repeated states, and connect memoization and tabulation to interview problem-solving strategies."
+    },
+    {
+      "id": "0193e203-48a7-49d8-b6c4-0b4df81aacb6",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "vending-machine",
+      "title": "Vending Machine",
+      "category": "dynamic-programming",
+      "type": "QUESTION",
+      "position": 1005,
+      "description": "Work through a vending-machine interview problem by identifying choices, smaller subproblems, and the state needed to reuse results."
+    },
+    {
+      "id": "3d4b6bbf-f8c0-4888-8313-c10be7a14ad1",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "three-moves",
+      "title": "Three Moves",
+      "category": "dynamic-programming",
+      "type": "QUESTION",
+      "position": 1006,
+      "description": "Define transitions for a constrained-movement problem and practice solving repeated subproblems without recomputing each path."
+    },
+    {
+      "id": "6535c68f-168d-4605-8278-2d70ca4be149",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "steal-packages",
+      "title": "Steal Packages",
+      "category": "dynamic-programming",
+      "type": "QUESTION",
+      "position": 1007,
+      "description": "Maximize a total without taking adjacent entries. Derive skip/take decisions and compare recursive, memoized, and iterative approaches."
+    },
+    {
+      "id": "aa6cbd0f-1fb2-4257-9982-4afe7af27599",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "why-does-javascript-get-its-own-topic",
+      "title": "Why does JavaScript Get its Own Topic",
+      "category": "javascript",
+      "type": "INSTRUCTIONAL",
+      "position": 1200,
+      "description": "Connect general algorithm skills with JavaScript-specific behavior, browser programming, and practical utility implementations."
+    },
+    {
+      "id": "bc309bff-7757-4970-88c6-4b0078c4ee60",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "javascript-interview-questions",
+      "title": "JavaScript Interview Questions",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1202,
+      "description": "Practice explaining JavaScript behavior and implementation choices alongside algorithm exercises and practical coding questions."
+    },
+    {
+      "id": "ebd5d988-5408-4160-be3f-17949cc73a34",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "fix-this",
+      "title": "Fix 'this'",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1204,
+      "description": "Trace JavaScript receivers and callback invocation so you can explain and repair unexpected this values in interview code."
+    },
+    {
+      "id": "78ddade3-3687-474f-922a-45f500d9a383",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "array-methods",
+      "title": "Array Methods",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1205,
+      "description": "Practice array-method behavior, callback arguments, iteration, and edge cases by implementing familiar JavaScript operations."
+    },
+    {
+      "id": "f14537d2-cdbf-4673-af84-7328389b2b61",
+      "accessLevel": "FREE",
+      "slug": "build-a-javascript-promise",
+      "title": "Build a JavaScript Promise",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1206,
+      "description": "Explore asynchronous state, fulfillment, rejection, and chaining by building a teaching implementation of promise behavior."
+    },
+    {
+      "id": "b403273b-82b1-4509-91c1-5d07da8e5cae",
+      "accessLevel": "SUBSCRIPTION",
+      "slug": "pub-sub-and-event-driven-programming",
+      "title": "Pub-Sub and Event-Driven Programming",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1207,
+      "description": "Implement event subscription and publication, track listeners, and connect the pattern to event-driven JavaScript applications."
+    },
+    {
+      "id": "02d70f54-d833-477a-a2b9-b78407a16fdd",
+      "accessLevel": "FREE",
+      "slug": "debounce",
+      "title": "Debounce",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1208,
+      "description": "Implement a debounce that waits for activity to settle. Trace timers, preserve arguments and this, and compare it with throttling."
+    },
+    {
+      "id": "1a9b8533-6db0-46dd-898e-ff0681492f77",
+      "accessLevel": "FREE",
+      "slug": "throttle",
+      "title": "Throttle",
+      "category": "javascript",
+      "type": "QUESTION",
+      "position": 1209,
+      "description": "Limit callback frequency during repeated events. Explain cooldown windows, trailing updates, and how throttling differs from debounce."
+    }
+  ]
+}

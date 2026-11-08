@@ -1,0 +1,33 @@
+```csharp
+using System.Collections.Generic;
+
+public class Graph {
+    public Dictionary<string, List<string>> adjacencyList;
+    public bool undirected;
+
+    public Graph(bool undirected = true) {
+        this.adjacencyList = new Dictionary<string, List<string>>();
+        this.undirected = undirected;
+    }
+
+    public void AddVertex(string vertex) {
+        this.adjacencyList[vertex] = new List<string>();
+    }
+
+    public void AddEdge(string source, string destination) {
+        this.adjacencyList[source].Add(destination);
+
+        if (this.undirected) {
+            this.adjacencyList[destination].Add(source);
+        }
+    }
+
+    public void RemoveVertex(string vertex) {
+        this.adjacencyList.Remove(vertex);
+
+        foreach (List<string> edges in this.adjacencyList.Values) {
+            edges.RemoveAll(v => v == vertex);
+        }
+    }
+}
+```

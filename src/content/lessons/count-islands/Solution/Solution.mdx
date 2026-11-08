@@ -1,0 +1,37 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+This question represents a graph of connected items inside a matrix.
+Each node has an undirected connection to each neighbor up / down / left / right.
+
+To solve the problem:
+
+1. We begin by linearly iterating through the matrix.
+2. If encounter a land character `#`, we increment our island count.
+3. To mark the land as counted, we recursively depth-first search and change all the connected land items `#` to water `~` so that they will be ignored when we reach these spots again during the linear scan.
+   The stopping conditions are reaching the water that surrounds an island or hitting the edge of the matrix.
+4. Once we reach the last item of the matrix and finish the linear scan, we will know the island count.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="m x n" /> time and <BigO.n letter="m x n" /> space.
+</p>
+
+`m` is the number of rows and `n` is the number of columns.
+
+Our time is <BigO.n letter="m x n" /> because we have nested `for` loops based on the rows and columns.
+In the worst case, if the entire map is land `#` and we depth-first search every item, this would be another `m x n` operation which is ~<BigO.n letter=" 2(m x n) " /> when combined with our initial nested `for` loop iteration,
+but then we drop the constant.
+
+Our space is <BigO.n letter="m x n" /> because in the worst case we will recursively traverse every item which creates a call stack of all `m x n` nodes.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

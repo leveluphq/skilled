@@ -1,0 +1,75 @@
+```typescript
+class BinaryNode {
+  data: number;
+  left: BinaryNode | null;
+  right: BinaryNode | null;
+
+  constructor(data: number) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinarySearchTree {
+  root: BinaryNode | null;
+
+  constructor() {
+    this.root = null;
+  }
+
+  insert(data: number): BinarySearchTree {
+    const node = new BinaryNode(data);
+
+    // First insert becomes root
+    if (this.root === null) {
+      this.root = node;
+      return this;
+    }
+
+    let currentNode = this.root;
+
+    while(true) {
+      if(data < currentNode.data) {
+        // Insert the node if you reach a leaf and return
+        if(currentNode.left === null) {
+          currentNode.left = node;
+          return this;
+        }
+
+        // Continue by traversing left
+        currentNode = currentNode.left;
+      } else {
+        // Insert the node if you reach a leaf and return
+        if(currentNode.right === null) {
+          currentNode.right = node;
+          return this;
+        }
+
+        // Continue by traversing right
+        currentNode = currentNode.right;
+      }
+    }
+  }
+
+  search(data: number): BinaryNode | null {
+    if (!this.root) {
+      return null;
+    }
+
+    let currentNode: BinaryNode | null = this.root;
+
+    while(currentNode) {
+      if(data < currentNode.data) {
+        currentNode = currentNode.left;
+      } else if(data > currentNode.data) {
+        currentNode = currentNode.right;
+      } else if (currentNode.data === data) {
+        return currentNode;
+      }
+    }
+
+    return null;
+  }
+}
+```

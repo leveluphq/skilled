@@ -1,0 +1,31 @@
+```javascript
+const throttle = (callback, delay) => {
+  let throttleTimeout = null;
+  let storedEvent = null;
+  let hasStoredEvent = false;
+
+  const throttledEventHandler = (event) => {
+    storedEvent = event;
+    hasStoredEvent = true;
+
+    const shouldHandleEvent = !throttleTimeout;
+
+    if (shouldHandleEvent) {
+      callback(storedEvent);
+
+      storedEvent = null;
+      hasStoredEvent = false;
+
+      throttleTimeout = setTimeout(() => {
+        throttleTimeout = null;
+
+        if (hasStoredEvent) {
+          throttledEventHandler(storedEvent);
+        }
+      }, delay);
+    }
+  };
+
+  return throttledEventHandler;
+};
+```

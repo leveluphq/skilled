@@ -1,0 +1,28 @@
+```swift
+class ListNode {
+    var data: Int
+    var next: ListNode?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+// Example 1
+// Input
+let head = ListNode(42) // ... then add more nodes
+42 -> 100 -> 4 -> 7 -> nil
+
+// Output: hasLoop(head)
+false
+
+// Example 2
+// Input
+0 -> 1 -> 2 -> 3 -> 4
+          ^         |
+          |         v
+          7 <- 6 <- 5
+
+// Output: hasLoop(head)
+true
+```

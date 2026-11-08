@@ -1,0 +1,32 @@
+```kotlin
+class Solution {
+    private fun recursiveValidate(root: BinaryNode?, lowerBound: Long, upperBound: Long): Boolean {
+        // Base case 1 (reached leaf, valid)
+        if (root == null) {
+            return true
+        }
+
+        // Base case 2 (invalid)
+        if (root.data <= lowerBound || root.data >= upperBound) {
+            return false
+        }
+
+        // When we traverse left, the current node's value must be the newest upper bound
+        // This ensures it's always strictly decreasing from the current node
+        val isValidLeft = recursiveValidate(root.left, lowerBound, root.data.toLong())
+
+        // When we traverse right, the current node's value must be the newest lower bound
+        // This ensures it's always strictly increasing from the current node
+        val isValidRight = recursiveValidate(root.right, root.data.toLong(), upperBound)
+
+        // Both must be true for this to return true
+        return isValidLeft && isValidRight
+    }
+
+    fun isBST(root: BinaryNode?): Boolean {
+        // Long bounds lie beyond every Int, like -Infinity and Infinity
+        val isValid = recursiveValidate(root, Long.MIN_VALUE, Long.MAX_VALUE)
+        return isValid
+    }
+}
+```

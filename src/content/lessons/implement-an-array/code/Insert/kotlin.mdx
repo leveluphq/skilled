@@ -1,0 +1,23 @@
+```kotlin
+fun insert(index: Int, item: Int): HashMap<Int, Int>? {
+    // Ensure we're inserting inside a valid array length
+    if (index > length - 1 || index < 0) {
+        return null
+    }
+
+    // Create our new length
+    length++
+
+    // Shift items up one spot from the insertion index to the new final spot in the array.
+    // We iterate from the back since this is our new empty item
+    for (i in length - 1 downTo index + 1) {
+        data[i] = data.getValue(i - 1)
+    }
+
+    // Add the new item
+    data[index] = item
+
+    // Return the array
+    return data
+}
+```

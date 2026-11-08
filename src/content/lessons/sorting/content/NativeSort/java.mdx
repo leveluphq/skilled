@@ -1,0 +1,21 @@
+```java
+// Arrays.sort sorts an array in place (it returns void)
+int[] numbers = { 1, 50, 10000, 510, 5050, 60 };
+Arrays.sort(numbers); // [1, 50, 60, 510, 5050, 10000]
+
+// Possibly unintuitive
+// A primitive int[] can't take a Comparator, so use a List<Integer> (or Integer[]) to sort in descending order
+List<Integer> numberList = new ArrayList<>(List.of(1, 50, 10000, 510, 5050, 60));
+numberList.sort(Comparator.reverseOrder()); // [10000, 5050, 510, 60, 50, 1]
+
+// Strings sort as expected
+List<String> months = new ArrayList<>(List.of("March", "Jan", "Feb", "Dec"));
+Collections.sort(months); // [Dec, Feb, Jan, March]
+
+// Use a Comparator to sort objects by a field
+record Player(int score) {}
+
+List<Player> players = new ArrayList<>(List.of(new Player(20), new Player(100), new Player(5)));
+players.sort(Comparator.comparingInt(Player::score));
+// => [Player[score=5], Player[score=20], Player[score=100]]
+```

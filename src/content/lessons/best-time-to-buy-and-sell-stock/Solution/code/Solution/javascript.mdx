@@ -1,0 +1,14 @@
+```javascript
+const getMaxProfit = (prices) => {
+  let maxProfit = 0;
+  let minPrice = prices[0];
+
+  for (let price of prices) {
+    const profitAtCurrentDay = price - minPrice;
+    maxProfit = Math.max(maxProfit, profitAtCurrentDay);
+    minPrice = Math.min(price, minPrice);
+  }
+
+  return maxProfit;
+}
+```

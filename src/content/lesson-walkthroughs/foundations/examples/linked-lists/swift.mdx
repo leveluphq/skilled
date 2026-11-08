@@ -1,0 +1,18 @@
+```swift
+func middleValue(_ values: [Int]) -> Int? {
+    class ListNode {
+        let value: Int
+        let next: ListNode?
+        init(_ value: Int, _ next: ListNode?) { self.value = value; self.next = next }
+    }
+    var head: ListNode?
+    for value in values.reversed() { head = ListNode(value, head) }
+    var slow = head
+    var fast = head
+    while let node = fast, let next = node.next {
+        slow = slow?.next
+        fast = next.next
+    }
+    return slow?.value
+}
+```

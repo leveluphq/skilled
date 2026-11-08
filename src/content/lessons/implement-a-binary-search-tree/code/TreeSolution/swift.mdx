@@ -1,0 +1,72 @@
+```swift
+class BinaryNode {
+    var data: Int
+    var left: BinaryNode?
+    var right: BinaryNode?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+class BinarySearchTree {
+    var root: BinaryNode?
+
+    init() {
+        root = nil
+    }
+
+    @discardableResult
+    func insert(_ data: Int) -> BinarySearchTree {
+        let node = BinaryNode(data)
+
+        // First insert becomes root
+        guard var currentNode = root else {
+            root = node
+            return self
+        }
+
+        while true {
+            if data < currentNode.data {
+                // Insert the node if you reach a leaf and return
+                guard let left = currentNode.left else {
+                    currentNode.left = node
+                    return self
+                }
+
+                // Continue by traversing left
+                currentNode = left
+            } else {
+                // Insert the node if you reach a leaf and return
+                guard let right = currentNode.right else {
+                    currentNode.right = node
+                    return self
+                }
+
+                // Continue by traversing right
+                currentNode = right
+            }
+        }
+    }
+
+    func search(_ data: Int) -> BinaryNode? {
+        if root == nil {
+            return nil
+        }
+
+        var currentNode = root
+
+        while let node = currentNode {
+            if data < node.data {
+                currentNode = node.left
+            } else if data > node.data {
+                currentNode = node.right
+            } else if node.data == data {
+                return node
+            }
+        }
+
+        return nil
+    }
+}
+```

@@ -1,0 +1,42 @@
+```swift
+class Node {
+    var data: Int
+    var prev: Node?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+class Stack {
+    var last: Node?
+
+    init() {
+        last = nil
+    }
+
+    func peek() -> Node? {
+        return last
+    }
+
+    func push(_ item: Int) -> Node? {
+        let previousLastItem = last
+
+        last = Node(item)
+        last?.prev = previousLastItem
+
+        return last
+    }
+
+    func pop() -> Node? {
+        let removedItem = last
+
+        // Update `last` as long as we have items left in the stack
+        if let removedItem {
+            last = removedItem.prev
+        }
+
+        return removedItem
+    }
+}
+```

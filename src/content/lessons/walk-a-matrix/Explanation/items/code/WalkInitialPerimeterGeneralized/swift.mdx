@@ -1,0 +1,36 @@
+```swift
+let rowCount = matrix.count
+let columnCount = matrix[0].count
+var startRow = 0
+var endRow = rowCount - 1
+var startColumn = 0
+var endColumn = columnCount - 1
+
+// Walk right (top row)
+for column in stride(from: startColumn, through: endColumn, by: 1) {
+    let nodeInFirstRow = matrix[startRow][column]
+}
+// We have walked across the entirety of the starting row, so increment the index.
+startRow += 1
+
+// Walk down (right column)
+for row in stride(from: startRow, through: endRow, by: 1) {
+    let nodeInLastColumn = matrix[row][endColumn]
+}
+// We have walked across end column, so we decrement the index.
+endColumn -= 1
+
+// Walk left (bottom row)
+for column in stride(from: endColumn, through: startColumn, by: -1) {
+    let nodeInLastRow = matrix[endRow][column]
+}
+// We have walked across end row, so we decrement the index.
+endRow -= 1
+
+// Walk up (left column)
+for row in stride(from: endRow, through: startRow, by: -1) {
+    let nodeInFirstColumn = matrix[row][startColumn]
+}
+// We have walked across the starting column, so we increment the index
+startColumn += 1
+```

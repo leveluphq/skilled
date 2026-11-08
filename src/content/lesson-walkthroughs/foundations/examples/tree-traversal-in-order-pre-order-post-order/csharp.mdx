@@ -1,0 +1,18 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class InOrderExample {
+public static List<int> InOrder(List<int?> values) {
+    var output = new List<int>();
+    void Walk(int index) {
+        if (index >= values.Count || values[index] == null) return;
+        Walk(2 * index + 1);
+        output.Add(values[index].Value);
+        Walk(2 * index + 2);
+    }
+    Walk(0);
+    return output;
+}
+}
+```

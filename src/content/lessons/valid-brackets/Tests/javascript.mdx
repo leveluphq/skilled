@@ -1,0 +1,66 @@
+```javascript
+const tests = [
+  {
+    input: '',
+    expected: true,
+    description: 'empty input',
+  },
+  {
+    input: '()',
+    expected: true,
+    description: 'simple brackets',
+  },
+  {
+    input: '}{',
+    expected: false,
+    description: 'close before open',
+  },
+  {
+    input: '{}[]()',
+    expected: true,
+    description: 'sequence of brackets',
+  },
+  {
+    input: '{[{[([])]}][{}]()}',
+    expected: true,
+    description: 'complex valid series',
+  },
+  {
+    input: '([)]',
+    expected: false,
+    description: 'overlapping brackets',
+  },
+  {
+    input: '([]',
+    expected: false,
+    description: 'missing closing bracket',
+  },
+  {
+    input: '([{',
+    expected: false,
+    description: 'no closing brackets',
+  },
+  {
+    input: '(abc123[321]{1}42)',
+    expected: true,
+    description: 'ignore non-bracket characters',
+  },
+  {
+    input: ')',
+    expected: false,
+    description: 'only a closing bracket',
+  },
+  {
+    input: '())',
+    expected: false,
+    description: 'extra closing bracket',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = hasValidBrackets(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

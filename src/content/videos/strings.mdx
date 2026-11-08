@@ -1,0 +1,19 @@
+A string is an ordered sequence of text units, but the unit depends on the language and operation. Interview solutions often reason about characters as if every visible symbol occupies one index. That assumption works for a stated ASCII contract and can fail for general Unicode. The recording introduces string operations; these notes keep their costs and text assumptions explicit.
+
+## Decide what an index means
+
+JavaScript string indexes address UTF-16 code units. Iterating a JavaScript string with `for...of` yields code points, which still do not always correspond to a complete visible symbol. A base character followed by a combining mark is one example. Other languages expose different indexing and iteration APIs, so translating a loop character for character can change behavior.
+
+Before solving a text problem, clarify the allowed input and normalization rules. Case folding, removing punctuation, and treating accented spellings as equivalent are requirements to agree on. Applying them without permission can change an identifier or make two distinct inputs compare equal. A palindrome exercise and an exact-key lookup can need different policies.
+
+## Track the cost of building the answer
+
+Strings are immutable in languages such as JavaScript and Python. Creating a new substring or appending into a repeatedly rebuilt string can copy existing content. A loop with an apparent single assignment may therefore do increasing work. Collecting pieces and joining once can avoid repeated reconstruction under the language's usual representation model.
+
+Reversing text also requires a choice of unit. Reversing UTF-16 units can split a surrogate pair. Reversing code points still moves combining marks independently. State a limited alphabet when that is what the exercise promises, and choose segmentation deliberately when the requirement is visible-character reversal.
+
+## Practice frequency and order separately
+
+An anagram comparison ignores arrangement while retaining character counts. A palindrome comparison depends on symmetry in order. A permutation generator changes arrangement while retaining the original positions' contents. These are related uses of strings with different invariants.
+
+Continue with [Palindromes, Permutations, Anagrams](/watch/palindromes-permutataions-anagrams) for examples. The [JavaScript preparation guide](/interview-prep/javascript) connects language behavior with interview practice. When testing a solution, include an empty input, repeated letters, and the exact text-unit boundary your stated contract supports.

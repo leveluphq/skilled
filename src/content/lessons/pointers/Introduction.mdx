@@ -1,0 +1,14 @@
+import PointerVisual from './code/PointerVisual';
+import PointerExample from './code/PointerExample';
+import PointerModify from './code/PointerModify';
+import PointerDereference from './code/PointerDereference';
+
+A pointer is a reference to a location in memory, and we can assign this pointer to a variable.
+
+As an analogy, think of a book's table of contents. When you look up a topic, it points to the page that actually contains the content.
+
+With computers, it is easiest to picture a pointer and the object it references in memory as 2 separate entities.
+When we assign the object to a variable, the variable becomes a pointer to this object's location in memory.
+We can read or update values on the object through the pointer, and we can set the variable to a new value and it will simply no longer reference the underlying object.
+
+<PointerVisual />

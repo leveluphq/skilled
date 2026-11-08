@@ -1,0 +1,25 @@
+```cpp
+// The test runner provides isBadVersion:
+// bool isBadVersion(int version);
+
+class Solution {
+public:
+    int firstBadVersion(int n) {
+        int lowerBound = 1; // Starts at v1
+        int upperBound = n;
+
+        while (lowerBound < upperBound) {
+            // Not (lowerBound + upperBound) / 2, which overflows an int with billions of versions
+            int midpoint = lowerBound + (upperBound - lowerBound) / 2;
+
+            if (isBadVersion(midpoint)) {
+                upperBound = midpoint;
+            } else {
+                lowerBound = midpoint + 1;
+            }
+        }
+
+        return lowerBound;
+    }
+};
+```

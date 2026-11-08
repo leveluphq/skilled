@@ -1,0 +1,28 @@
+```cpp
+class Solution {
+public:
+    vector<vector<int>> getTargetIndexes(vector<int>& array, int target) {
+        vector<vector<int>> results;
+        unordered_map<int, int> arrayElementAtIndex;
+
+        for (int i = 0; i < (int) array.size(); i++) {
+            int currentValue = array[i];
+            int matchedValue = target - currentValue;
+            auto match = arrayElementAtIndex.find(matchedValue);
+            int matchedIndex = match == arrayElementAtIndex.end() ? -1 : match->second;
+
+            if (matchedIndex >= 0) {
+                results.push_back({i, matchedIndex});
+
+                arrayElementAtIndex[currentValue] = -1;
+                arrayElementAtIndex[matchedValue] = -1;
+            }
+
+            // Add values after we see them
+            arrayElementAtIndex[currentValue] = i;
+        }
+
+        return results;
+    }
+};
+```

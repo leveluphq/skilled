@@ -1,0 +1,50 @@
+import { Container } from 'style/elements';
+import MinFunction from './inlineCode/MinFunction.tsx';
+import LanguageMaxValue from 'content/blocks/LanguageMaxValue';
+import LanguageMaxValueIncrement from 'content/blocks/LanguageMaxValue/Increment';
+import MemoName from './inlineCode/MemoName.tsx';
+import SimpleMinimum from './code/SimpleMinimum';
+import MinimumOfMaxValue from './code/MinimumOfMaxValue';
+
+The method seems reasonable, and now the only thing left is to determine the implementation details.
+
+The biggest remaining questions:
+
+1. What if there isn't a previous minimum value when we subtract a coin to reach an amount (ie. no combination of coins can sum to the value)?
+2. How do we know if we didn't have a combination of coins that is able to sum to our target?
+
+In the case when we do have a valid combination that reaches an `amount`, if we call <MinFunction /> on any number and compare it to <LanguageMaxValue />, it will always return this smaller number.
+This means <LanguageMaxValue /> will always be replaced when there is a valid coin combination.
+
+<SimpleMinimum />
+
+If the current denomination is unable to form a valid combination that reaches the current `amount`,
+then when we do `amount - coin` and look up a previous value in the memoization array, the minimum coins at this previous `amount` will be <LanguageMaxValue />.
+When we increment `+1`, it will be <LanguageMaxValueIncrement />.
+In JavaScript and Python, where the max value is infinity, that's still infinity.
+In languages with fixed-size integers, adding to the largest value would overflow, so their solutions make sure it can't: they skip a prior amount that's still <LanguageMaxValue />, or add without going past it.
+Then we call <MinFunction /> and if there was a minimum already found for this `amount` it will be less than <LanguageMaxValue /> and not be replaced.
+If there wasn't a previous minimum for this `amount`, it will remain <LanguageMaxValue /> which means we still have not found a valid combination that reaches this `amount`.
+
+<MinimumOfMaxValue />
+
+So <LanguageMaxValue /> indicates there isn't a valid combination of coins, and our logic ensures it will always be replaced anytime if there is a valid solution to a subproblem.
+
+If we reach the end and `memo[target]` is <LanguageMaxValue />, we know there wasn't a valid combination to reach the `target`, and it returns `-1` as the solution.
+
+An example of when we could not reach the `target` would be `denominations = [3, 6, 11]` and `target = 13`.
+We would get the following table of minimum coins:
+
+<Container>
+
+```javascript
+amount    =  0   1    2   3   4    5   6   7    8   9  10   11  12   13
+min coins = [0, Inf, Inf, 1, Inf, Inf, 1, Inf, Inf, 2, Inf,  1,  2, Inf]
+// Output -1
+```
+
+</Container>
+
+When we finish trying to use all the `denominations` for each `amount`,
+our solution to the question should be the result in the final array index since this is the `target`.
+If this value is <LanguageMaxValue />, then we return `-1` because there isn't a valid combination of coins that can reach this amount.

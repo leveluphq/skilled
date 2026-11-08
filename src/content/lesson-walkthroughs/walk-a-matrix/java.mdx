@@ -1,0 +1,105 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Return every value of a rectangular matrix in clockwise spiral order, starting at its top-left corner. For `[[1, 2, 3], [4, 5, 6], [7, 8, 9]]`, the order is `[1, 2, 3, 6, 9, 8, 7, 4, 5]`. Reading values in this order does not require rotating the matrix or marking its cells.
+
+## Maintain four unvisited boundaries
+
+Keep the first and last unvisited row and the first and last unvisited column. Initially those bounds describe the full matrix. Each pass walks the top edge left to right, the right edge top to bottom, the bottom edge right to left, and the left edge bottom to top. Move the corresponding boundary inward after walking an edge.
+
+Moving the top boundary before walking the right edge prevents the top-right corner from being visited twice. Moving the right boundary before the bottom edge does the same for the bottom-right corner. The sequence of updates is part of the algorithm; treating all four edges as independent full-length walks repeats corners.
+
+## Trace the shrinking rectangle
+
+In the three-by-three example, the top walk emits 1, 2, 3 and moves the top boundary to row 1. The right walk emits 6, 9 and moves the right boundary to column 1. The bottom walk emits 8, 7 and moves the bottom boundary to row 1. The left walk emits 4 and moves the left boundary to column 1.
+
+The remaining rectangle contains only 5. The next top walk emits it, and the updated bounds cross. The outer loop then stops. The output length is nine, matching the cell count. The same boundary representation also handles a non-square rectangle without changing direction logic.
+
+## Guard the last row and column
+
+After the top and right walks, there may be no bottom row left to visit. Check the row bounds before walking backward along it. Likewise, check the column bounds before walking upward along the left edge. A one-row input otherwise gets emitted forward and backward, and a one-column input can repeat its interior cells.
+
+For `[[1, 2, 3, 4]]`, the top walk finishes all useful work. For `[[1], [2], [3]]`, the top walk emits 1 and the right walk emits 2 and 3. The remaining guards prevent a duplicate return trip. These narrow shapes expose mistakes that a square example can hide.
+
+## Prove complete, unique visitation
+
+Before a pass, the bounds contain exactly the cells not yet emitted. Each edge walk consumes an exposed edge of that rectangle, and its boundary update removes precisely those cells. Corner handling and the final-edge guards ensure those consumed regions do not overlap. Any remaining interior cells form the next smaller rectangle.
+
+The process ends when no rows or columns remain. Every original cell has then been consumed exactly once. Total time is O(r × c), and boundary tracking uses O(1) auxiliary space. The returned sequence needs O(r × c) storage. There is no separate visited matrix, and the input cells are not changed.
+
+## Check dimensions and adapt deliberately
+
+The lesson assumes a rectangular matrix. Empty rows yield no values; an empty outer array must be checked before accessing its first row in languages that reject that access. Test both forms explicitly when supporting them. Ragged rows need a different contract because four rectangular bounds cannot describe their shape.
+
+Test one cell, one row, one column, two-by-three, three-by-two, and an odd-sized square with a central cell. Use distinct cell values so repeated visits are visible. Compare output length with the cell count and use a direction-and-visited-set simulator as an independent oracle. A counterclockwise variant changes the edge order and start directions; it should preserve the same unvisited-region invariant.
+
+## Java implementation
+
+The result array has exactly row-count times column-count slots. The write index must advance once per emitted cell and never revisit an edge.
+
+The course runner supplies standard `java.util` imports and calls the public methods on the class shown here. Keep helper methods inside that class. Java arrays and node objects are references, so changing an element or field can change the caller's data. The `int` arithmetic in the implementation is bounded; widen intermediate expressions when adapting it beyond the lesson constraints.
+
+```java
+class Solution {
+    public int[] walkMatrix(int[][] matrix) {
+        if (matrix.length == 0) return new int[0];
+
+        // Initialize the upper and lower bounds indexes
+        int rowCount = matrix.length;
+        int columnCount = matrix[0].length;
+        int startRow = 0;
+        int endRow = rowCount - 1;
+        int startColumn = 0;
+        int endColumn = columnCount - 1;
+
+        // The walk visits every item once, so we know the result's size up front
+        int[] result = new int[rowCount * columnCount];
+        int resultIndex = 0;
+
+        // We will keep walking as long as rows or columns remain.
+        // That happens as long as the end is greater or equal to the start.
+        while (endRow >= startRow && endColumn >= startColumn) {
+            // Walk across the top starting row for each column from beginning to end
+            // This is left-right across the top
+            for (int column = startColumn; column <= endColumn; column++) {
+                // Add the item to result in order
+                result[resultIndex++] = matrix[startRow][column];
+            }
+
+            // Increment our start row since we visited each value
+            startRow++;
+
+            // Walk top-bottom for the end column
+            for (int row = startRow; row <= endRow; row++) {
+                result[resultIndex++] = matrix[row][endColumn];
+            }
+            endColumn--;
+
+            // Since we increment startRow, we need to make sure we are still in bounds
+            if (endRow >= startRow) {
+                // Walk right-left on the bottom row
+                for (int column = endColumn; column >= startColumn; column--) {
+                    result[resultIndex++] = matrix[endRow][column];
+                }
+            }
+            endRow--;
+
+            // Since we decrement endColumn, we need to make sure we are still in bounds
+            if (endColumn >= startColumn) {
+                // Walk bottom-top for the start column
+                for (int row = endRow; row >= startRow; row--) {
+                    result[resultIndex++] = matrix[row][startColumn];
+                }
+            }
+            startColumn++;
+        }
+
+        return result;
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Walk a Matrix](/course/walk-a-matrix) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Java conventions and practice problems, use the [Java interview guide](/interview-prep/java).

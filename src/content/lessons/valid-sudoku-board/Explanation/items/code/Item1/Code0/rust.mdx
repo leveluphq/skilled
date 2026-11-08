@@ -1,0 +1,20 @@
+```rust
+fn has_valid_shape(board: &[Vec<i32>]) -> bool {
+    // If we don't have any rows or columns, it must be false
+    if board.is_empty() || board[0].is_empty() {
+        return false;
+    }
+
+    // # of rows and columns must be equal to be a square
+    let row_count = board.len();
+    let column_count = board[0].len();
+    let is_square = row_count == column_count;
+
+    if !is_square {
+        return false;
+    }
+
+    // Next, we check the sub-squares
+    todo!()
+}
+```

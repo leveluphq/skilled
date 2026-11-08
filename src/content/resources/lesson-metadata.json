@@ -1,0 +1,266 @@
+{
+  "arrays": {
+    "title": "Arrays: operations, storage, and interview patterns",
+    "description": "Understand array indexing, insertion, iteration, and resizing, then practice the invariants used in array and matrix interview problems."
+  },
+  "implement-an-array": {
+    "title": "Implement an array data structure",
+    "description": "Build an array abstraction and reason about indexed access, insertion, removal, capacity, and the costs of moving existing elements."
+  },
+  "walk-a-matrix": {
+    "title": "Walk a matrix: two-dimensional array traversal",
+    "description": "Practice traversing a two-dimensional matrix while tracking row and column boundaries and handling small or empty inputs."
+  },
+  "product-array": {
+    "title": "Product of Array Except Self: prefix and suffix products",
+    "description": "Compute each array position from the product of the other values without division. Work through prefix/suffix state and zero-value cases."
+  },
+  "valid-sudoku-board": {
+    "title": "Validate a Sudoku board with sets",
+    "description": "Check Sudoku rows, columns, and subgrids for duplicate values. Practice mapping board positions to the constraints they must satisfy."
+  },
+  "best-time-to-buy-and-sell-stock": {
+    "title": "Best Time to Buy and Sell Stock: one-pass reasoning",
+    "description": "Find the best single buy-and-sell opportunity by tracking an earlier minimum. Practice ordering constraints and decreasing-price inputs."
+  },
+  "big-o-time-and-space-complexity": {
+    "title": "Big O notation: time and space complexity",
+    "description": "Analyze how interview solutions grow with input size. Compare loops, recursion, auxiliary memory, and common complexity classes."
+  },
+  "hash-tables": {
+    "title": "Hash tables: lookups, collisions, and frequency counts",
+    "description": "Learn how hashing maps keys to storage, why collisions matter, and how maps and sets support common interview optimizations."
+  },
+  "implement-a-hash-table": {
+    "title": "Implement a hash table and handle collisions",
+    "description": "Build a hash-table implementation, store and retrieve key/value pairs, and examine how collisions affect correctness and performance."
+  },
+  "catch-the-hacker": {
+    "title": "Find the most frequent value with a hash map",
+    "description": "Identify a repeatedly duplicated email by counting frequencies. Compare repeated scans with a map-based pass through the input."
+  },
+  "target-two-sum": {
+    "title": "Two Sum: complement lookup and distinct indices",
+    "description": "Find two distinct indices whose values reach a target. Compare pair enumeration with a hash-map solution and test duplicate values."
+  },
+  "strings": {
+    "title": "Strings for interviews: representation and operations",
+    "description": "Study string traversal, character representation, immutability, and construction costs before practicing text interview problems."
+  },
+  "palindromes-permutataions-anagrams": {
+    "title": "Palindromes, permutations, and anagrams explained",
+    "description": "Distinguish palindrome order, permutation arrangements, and anagram frequency counts, then choose the state each text problem needs."
+  },
+  "group-permutations-of-palindromes": {
+    "title": "Group permutations of palindromes",
+    "description": "Practice grouping strings by character relationships and reasoning about which arrangements can form a palindrome."
+  },
+  "recursion": {
+    "title": "Recursion: base cases, call stacks, and return values",
+    "description": "Trace recursive execution, define a smaller subproblem, and connect base cases and return values to a clear correctness argument."
+  },
+  "sum-digits": {
+    "title": "Sum the digits of a number without converting to a string",
+    "description": "Compute a number’s digit sum using arithmetic. Practice recursive decomposition, termination, and tests for single-digit inputs."
+  },
+  "generate-all-permutations": {
+    "title": "Generate all permutations with backtracking",
+    "description": "Enumerate input arrangements while managing choices and restoring state. Analyze the output size and test small permutation examples."
+  },
+  "logarithms-and-time-complexity": {
+    "title": "Logarithms and logarithmic time complexity",
+    "description": "Understand why repeated halving produces logarithmic work and apply that reasoning to search intervals and recursive algorithms."
+  },
+  "searching-and-binary-search": {
+    "title": "Binary search: sorted input and interval invariants",
+    "description": "Search sorted data by narrowing a candidate interval. Practice boundaries, midpoint updates, and the conditions that guarantee progress."
+  },
+  "sorting": {
+    "title": "Sorting algorithms and interview tradeoffs",
+    "description": "Compare sorting approaches, runtime assumptions, and the ways sorted order changes an interview problem’s available solutions."
+  },
+  "interview-scheduler": {
+    "title": "Interview Scheduler: searching for an available time",
+    "description": "Work through an interview scheduling problem and practice using ordered information to reduce the search for a valid answer."
+  },
+  "shifted-search": {
+    "title": "Search a rotated sorted array",
+    "description": "Find a target in a shifted sorted array by reasoning about ordered intervals and choosing which half can still contain the answer."
+  },
+  "sorted-matrix-search": {
+    "title": "Search a sorted matrix",
+    "description": "Use a matrix’s ordering constraints to reduce the search space. Track boundaries and test targets at edges or outside the data."
+  },
+  "age-sort": {
+    "title": "Age Sort: use bounded values to organize an array",
+    "description": "Explore how a restricted value range can change a sorting problem. Compare counting-based work with general comparison sorting."
+  },
+  "first-bad-version": {
+    "title": "First Bad Version: binary search on a boundary",
+    "description": "Find a transition in an ordered sequence using a predicate. Practice binary-search interval definitions and edge-boundary cases."
+  },
+  "linked-lists": {
+    "title": "Linked lists: nodes, links, and traversal",
+    "description": "Understand linked-list structure, traversal costs, and the pointer relationships behind insertion, deletion, and reversal."
+  },
+  "pointers": {
+    "title": "Pointers and references in linked structures",
+    "description": "Reason about references, node identity, and reachability so pointer updates do not lose the remainder of a list or tree."
+  },
+  "implement-a-linked-list": {
+    "title": "Implement a linked list",
+    "description": "Build linked nodes and list operations, maintain head and tail relationships, and test empty and single-node structures."
+  },
+  "combine-blockchains": {
+    "title": "Combine Blockchains: work with linked chains",
+    "description": "Practice combining linked chains while preserving their nodes and maintaining the relationships needed to traverse the result."
+  },
+  "reverse-a-linked-list": {
+    "title": "Reverse a linked list: preserve and redirect pointers",
+    "description": "Reverse a list by tracking the previous, current, and next nodes. Explain the invariant and handle empty and single-node inputs."
+  },
+  "mirror-delete": {
+    "title": "Mirror Delete: linked-list removal practice",
+    "description": "Work through a linked-list deletion exercise with careful reference updates, boundary checks, and tests that preserve reachable nodes."
+  },
+  "queues": {
+    "title": "Queues: first-in-first-out processing",
+    "description": "Learn queue operations, implementation choices, and the role of first-in-first-out order in breadth-first traversal and scheduling."
+  },
+  "stacks": {
+    "title": "Stacks: last-in-first-out processing",
+    "description": "Learn stack operations and use last-in-first-out state for nested structures, traversal, and interview problem solving."
+  },
+  "implement-a-queue": {
+    "title": "Implement a queue data structure",
+    "description": "Implement enqueue and dequeue behavior while maintaining first-in-first-out order and handling empty-queue transitions."
+  },
+  "implement-a-stack": {
+    "title": "Implement a stack data structure",
+    "description": "Implement push, pop, and peek, maintain the top of the stack, and reason about operation costs and empty-state behavior."
+  },
+  "max-min-stack": {
+    "title": "Min and max stack: retain aggregate state",
+    "description": "Support stack operations while tracking minimum and maximum values. Practice duplicate values and restoring earlier aggregate state."
+  },
+  "valid-brackets": {
+    "title": "Valid brackets: match nested delimiters with a stack",
+    "description": "Validate bracket ordering with a stack of unmatched openings. Test mismatched types, unfinished openings, and closing-first inputs."
+  },
+  "trees": {
+    "title": "Trees: structure, height, and recursive reasoning",
+    "description": "Learn tree terminology and recursive structure, then prepare for traversal, depth, ancestor, and binary-search-tree exercises."
+  },
+  "tree-traversal-in-order-pre-order-post-order": {
+    "title": "Binary tree traversal: inorder, preorder, and postorder",
+    "description": "Compare traversal orders by changing when each node is processed. Trace recursive calls and distinguish traversal from search-tree ordering."
+  },
+  "binary-search-trees": {
+    "title": "Binary search trees: ordering and search",
+    "description": "Understand the ordering rules that guide binary-search-tree operations and how tree height affects search performance."
+  },
+  "implement-a-binary-search-tree": {
+    "title": "Implement a binary search tree",
+    "description": "Build a binary search tree, preserve its ordering contract during updates, and test search paths and empty-tree behavior."
+  },
+  "binary-tree-max-depth": {
+    "title": "Maximum depth of a binary tree",
+    "description": "Compute a tree’s depth from its subtrees. State the empty-tree convention and compare balanced and chain-shaped inputs."
+  },
+  "binary-search-tree-validate": {
+    "title": "Validate a binary search tree with ancestor bounds",
+    "description": "Check the complete binary-search-tree ordering rule, including ancestor constraints that a parent-only comparison can miss."
+  },
+  "closest-common-ancestor-in-binary-tree": {
+    "title": "Lowest common ancestor of a binary tree",
+    "description": "Find the shared ancestor of two nodes by reasoning about subtree results and the relationship between node identity and ancestry."
+  },
+  "graphs": {
+    "title": "Graphs: representations, traversal, and interview problems",
+    "description": "Model relationships with graph nodes and edges, compare representations, and prepare for reachability and traversal exercises."
+  },
+  "depth-first-search": {
+    "title": "Depth-first search: visited state and active paths",
+    "description": "Traverse a graph by following branches, track visited nodes to handle cycles, and reason about recursive or explicit stack state."
+  },
+  "breadth-first-search": {
+    "title": "Breadth-first search: queues and shortest unweighted paths",
+    "description": "Traverse by distance with a queue, avoid duplicate discoveries, and reconstruct shortest paths when edges have equal cost."
+  },
+  "implement-a-graph": {
+    "title": "Implement a graph data structure",
+    "description": "Represent vertices and edges, maintain neighbor relationships, and prepare a graph structure for traversal and reachability queries."
+  },
+  "pilot-a-rocket": {
+    "title": "Shortest path in an unweighted graph: Pilot a Rocket",
+    "description": "Find a route through a satellite network. Practice BFS discovery order, parent tracking, cycles, and an unreachable destination."
+  },
+  "count-islands": {
+    "title": "Number of Islands: DFS and BFS region counting",
+    "description": "Count connected land regions in a matrix. Compare DFS and BFS, mark visited cells, and test disconnected and diagonal land."
+  },
+  "robot-maze": {
+    "title": "Robot Maze: find a valid path through a grid",
+    "description": "Determine whether a robot can reach an exit under the allowed movement rules. Practice grid bounds, blocked cells, and path choices."
+  },
+  "subproblems-and-overlapping-subproblems": {
+    "title": "Subproblems and overlapping subproblems",
+    "description": "Identify repeated smaller decisions and define state precisely before using caching or a dynamic-programming table."
+  },
+  "memoization": {
+    "title": "Memoization: cache repeated subproblem results",
+    "description": "Turn repeated recursive work into reusable results. Choose complete cache keys and distinguish missing results from valid zero values."
+  },
+  "bottom-up-vs-top-down": {
+    "title": "Top-down vs. bottom-up dynamic programming",
+    "description": "Compare memoized recursion with tabulation, choose a valid evaluation order, and reason about stack and table storage."
+  },
+  "dynamic-programming": {
+    "title": "Dynamic programming: states, transitions, and subproblems",
+    "description": "Develop a recurrence, identify repeated states, and connect memoization and tabulation to interview problem-solving strategies."
+  },
+  "vending-machine": {
+    "title": "Vending Machine: dynamic programming practice",
+    "description": "Work through a vending-machine interview problem by identifying choices, smaller subproblems, and the state needed to reuse results."
+  },
+  "three-moves": {
+    "title": "Three Moves: dynamic programming practice",
+    "description": "Define transitions for a constrained-movement problem and practice solving repeated subproblems without recomputing each path."
+  },
+  "steal-packages": {
+    "title": "House Robber: choose non-adjacent values with dynamic programming",
+    "description": "Maximize a total without taking adjacent entries. Derive skip/take decisions and compare recursive, memoized, and iterative approaches."
+  },
+  "why-does-javascript-get-its-own-topic": {
+    "title": "Why JavaScript interview preparation needs language practice",
+    "description": "Connect general algorithm skills with JavaScript-specific behavior, browser programming, and practical utility implementations."
+  },
+  "javascript-interview-questions": {
+    "title": "JavaScript interview questions and language concepts",
+    "description": "Practice explaining JavaScript behavior and implementation choices alongside algorithm exercises and practical coding questions."
+  },
+  "fix-this": {
+    "title": "JavaScript this binding: fix the receiver",
+    "description": "Trace JavaScript receivers and callback invocation so you can explain and repair unexpected this values in interview code."
+  },
+  "array-methods": {
+    "title": "Implement JavaScript array methods",
+    "description": "Practice array-method behavior, callback arguments, iteration, and edge cases by implementing familiar JavaScript operations."
+  },
+  "build-a-javascript-promise": {
+    "title": "Build a JavaScript Promise implementation",
+    "description": "Explore asynchronous state, fulfillment, rejection, and chaining by building a teaching implementation of promise behavior."
+  },
+  "pub-sub-and-event-driven-programming": {
+    "title": "Build a JavaScript pub-sub and event emitter",
+    "description": "Implement event subscription and publication, track listeners, and connect the pattern to event-driven JavaScript applications."
+  },
+  "debounce": {
+    "title": "Debounce in JavaScript: implementation and timing",
+    "description": "Implement a debounce that waits for activity to settle. Trace timers, preserve arguments and this, and compare it with throttling."
+  },
+  "throttle": {
+    "title": "Throttle in JavaScript: implementation and timing",
+    "description": "Limit callback frequency during repeated events. Explain cooldown windows, trailing updates, and how throttling differs from debounce."
+  }
+}

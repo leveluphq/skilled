@@ -1,0 +1,19 @@
+Breadth-first search explores an unweighted graph in layers from a starting vertex. A FIFO queue expands vertices discovered earlier before vertices discovered later. The recording traces this behavior and its queue implementation. The layer order supports shortest paths measured in edges when the graph's edges all have equal cost.
+
+## Mark when you enqueue
+
+Begin with the start in the queue and visited set. When expanding a vertex, enqueue each neighbor that has not already been discovered and mark it immediately. Marking at enqueue time prevents several vertices from adding the same neighbor before its first queued copy is processed.
+
+For a diamond A to B and C, with both B and C leading to D, D should enter the queue once. Its first discovery has the smallest possible edge distance because all shallower queued layers are processed first. A predecessor map can remember which vertex discovered D and later reconstruct the route back to A.
+
+## Use queue and set operations that support the bound
+
+The current Python lesson uses a set for visited membership. Checking a growing list for each neighbor would add a linear search to repeated edge processing. Queue representation matters too: repeatedly shifting the front of a dynamic array can add work that the graph-level analysis does not include. A deque or an advancing head index avoids that particular repeated shift.
+
+With adjacency lists, a traversal that expands each reachable vertex once examines its outgoing edges once, giving O(V + E) work under bounded membership and queue-operation assumptions. The queue, visited set, and predecessor map can each retain linear state. Returning a route adds storage for the route itself.
+
+## Keep the objective within the guarantee
+
+A weighted edge may make a two-edge route cheaper than a one-edge route. Ordinary FIFO BFS minimizes edge count, so weighted shortest paths need a different method unless all weights are equal. Starting from one vertex also does not visit disconnected components automatically.
+
+Test a cycle, a converging diamond, an unreachable target, and a start that is already the target. Continue with [Pilot a Rocket](/watch/pilot-a-rocket) to reconstruct a route including both endpoints. Use the [graph traversal tool](/tools/graph-traversal) to compare BFS with DFS on a graph where the first DFS route is longer.

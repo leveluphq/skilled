@@ -1,0 +1,19 @@
+```swift
+class Stack {
+    var stack: [Int]
+
+    init() {
+        stack = []
+    }
+    func peek() -> Int? {
+        return stack.last
+    }
+    func push(_ item: Int) -> Int {
+        stack.append(item)
+        return item
+    }
+    func pop() -> Int? {
+        return stack.popLast()
+    }
+}
+```

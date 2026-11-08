@@ -1,0 +1,21 @@
+```java
+class Solution {
+    public ListNode combineBlockchains(ListNode chainHead1, ListNode chainHead2) {
+        // Stopping condition when one of lists is null, we return the other
+        if (chainHead1 == null) {
+            return chainHead2;
+        } else if (chainHead2 == null) {
+            return chainHead1;
+        }
+
+        // Recursively call our function
+        if (chainHead1.data < chainHead2.data) {
+            chainHead1.next = combineBlockchains(chainHead1.next, chainHead2);
+            return chainHead1;
+        } else {
+            chainHead2.next = combineBlockchains(chainHead1, chainHead2.next);
+            return chainHead2;
+        }
+    }
+}
+```

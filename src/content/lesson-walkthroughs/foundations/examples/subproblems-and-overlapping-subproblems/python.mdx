@@ -1,0 +1,10 @@
+```python
+def fib_calls(n: int) -> list[int]:
+    calls = 0
+    def fib(value):
+        nonlocal calls
+        calls += 1
+        return value if value < 2 else fib(value - 1) + fib(value - 2)
+    answer = fib(n)
+    return [answer, calls]
+```

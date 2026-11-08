@@ -1,0 +1,18 @@
+```javascript
+const array = [
+  { id: 1, name: 'Jeni' },
+  { id: 2, name: 'Bob' },
+  { id: 3, name: 'Carol' },
+];
+
+const getFriend = (friends, id) => {
+  for (let i = 0; i < friends.length; i++) {
+    const friend = friends[i];
+    if (friend.id === id) {
+      return friend;
+    }
+  }
+}
+
+console.log(getFriend(array, 3).name); // Carol
+```

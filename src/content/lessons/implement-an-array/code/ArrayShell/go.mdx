@@ -1,0 +1,33 @@
+```go
+type DynamicArray struct {
+	length int
+	data   map[int]int
+}
+
+func NewDynamicArray() *DynamicArray {
+	return &DynamicArray{
+		length: 0,
+		data:   map[int]int{},
+	}
+}
+
+func (a *DynamicArray) Get(index int) int {
+	// get an item at an index
+}
+
+func (a *DynamicArray) Push(item int) int {
+	// add an item to the end of the array
+}
+
+func (a *DynamicArray) Pop() (int, bool) {
+	// remove the last item in the array
+}
+
+func (a *DynamicArray) Insert(index, item int) map[int]int {
+	// add an item at any index
+}
+
+func (a *DynamicArray) Remove(index int) (int, bool) {
+	// remove an item at any index
+}
+```

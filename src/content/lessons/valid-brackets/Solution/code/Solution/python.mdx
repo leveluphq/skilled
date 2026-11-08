@@ -1,0 +1,31 @@
+```python
+def has_valid_brackets(string):
+    matching_brackets = {
+                        '(': ')',
+                        '[': ']',
+                        '{': '}'
+                        }
+
+    # Convert the keys to an array of opening bracking strings
+    opening_brackets = list(matching_brackets.keys())
+    # Convert the values to an array of closing bracket strings
+    closing_brackets = list(matching_brackets.values())
+    bracket_stack = []
+
+    for character in string:
+        if character in opening_brackets:
+            bracket_stack.append(character)
+        elif character in closing_brackets:
+            # A closing bracket with an empty stack has no opening bracket to match
+            if not bracket_stack:
+                return False
+
+            latest_bracket = bracket_stack.pop()
+            matching_bracket = matching_brackets[latest_bracket]
+            
+            if character != matching_bracket:
+                return False
+
+    # check if we opened/closed all brackets which creates an empty stack.
+    return len(bracket_stack) == 0
+```

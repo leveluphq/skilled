@@ -1,0 +1,11 @@
+```go
+func ContainsBST(values []*int, target int) bool {
+    index := 0
+    for index < len(values) && values[index] != nil {
+        value := *values[index]
+        if value == target { return true }
+        if target < value { index = 2*index+1 } else { index = 2*index+2 }
+    }
+    return false
+}
+```

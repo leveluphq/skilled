@@ -1,0 +1,211 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { ItemWithMargin } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import SimpleLinkedList from 'svg/SimpleLinkedList';
+import SinglyLinkedList from 'svg/SinglyLinkedList';
+import DoublyLinkedList from 'svg/DoublyLinkedList';
+import NodeSimple from './code/NodeSimple';
+import LinkedListWrapper from './code/LinkedListWrapper';
+import RunnerTechnique from './RunnerTechnique.mdx';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+
+<Section>
+
+Linked lists are a low-level data structure that are simple, lightweight, and flexible.
+They are commonly used to implement other data structures like stacks/queues or bucketing for hash tables.
+We use linked lists when the most important consideration is operations at the head and tail where we want fast prepends/appends/reads of these values.
+
+Linked list nodes are stored in arbitrary memory slots,
+and each item in the linked list uses a <ConceptModal content={<PointersConcept />}>pointer</ConceptModal>
+to indicate the element that comes after it.
+
+Very often for linked list interview questions, you are just given a head node as an input.
+This means to perform any operation, you need to start from the front and must iterate through the linked list at <BigO.n /> time, touching each node to find the next value.
+In this instance, you won't have access to a tail element, and the nodes won't have a pointer to access previous nodes.
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+<CheatSheetTables table={<BigOTable {...bigO} />} dataStructure={<SimpleLinkedList />} />
+
+Note: You only get constant time `append` if a linked list provides a pointer to the tail node.
+If you don't have a reference to the tail, it takes linear time because you would need to iterate through the entire linked list to arrive at the tail.
+
+<div style={{marginTop: '24px'}}>
+
+<ProsCons pros={pros} cons={cons} />
+
+</div>
+
+**Linked Lists in Interviews**
+
+- Be comfortable taking an input head node of a singly linked list and iterating from there
+- Always keep the runner technique in mind
+- Understand how to manage multiple pointers
+- Know the different <Link href={`/${PageRoot.Course}/implement-a-linked-list`} passHref><a>linked list techniques</a></Link> and operations
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Linked Lists" />
+
+The easiest way to think of a linked list is a train.
+Each individual train car will have its `data` which are the items or people that this train car holds.
+This car will also have a reference to the previous and next car through its coupling,
+but it has no knowledge of the train as a whole.
+
+<Image src="/images/linked-list-train.jpg" alt="A train car illustrates a doubly linked node with connections to both the previous and next car." width={1600} height={534} />
+
+<ItemWithMargin>
+
+<SubsectionHeader>Singly Linked List</SubsectionHeader>
+
+</ItemWithMargin>
+
+A singly linked list means that each node will point to the `next` one in the list.
+This means you can move forward through the list but not backward.
+
+<SvgWrapper>
+
+<SinglyLinkedList />
+
+</SvgWrapper>
+
+<ItemWithMargin>
+
+<SubsectionHeader>Doubly Linked List</SubsectionHeader>
+
+</ItemWithMargin>
+
+Doubly linked lists have nodes that provide a pointer to the `next` AND `previous` node.
+This means you can move both forward and backward.
+If needed, you could reverse directions to reach a node behind the one you're at,
+but with a singly linked list, you would have no way of reaching this node unless you started back at the head.
+
+<SvgWrapper>
+
+<DoublyLinkedList />
+
+</SvgWrapper>
+
+<ItemWithMargin>
+
+<SubsectionHeader>Linked List Nodes and Wrapper Objects</SubsectionHeader>
+
+</ItemWithMargin>
+
+Very often in an interview question, you are simply given the head node of a singly linked list as an input to the question.
+This means to reach any other node, you must start iterating from the front.
+
+<NodeSimple />
+
+In practical implementations though, you likely have access to a linked list wrapper object that points at the `head` and possibly `tail`.
+The wrapper object may also provide the `size` of the linked list.
+When you have access to a `head` and `tail`, you get <BigO.constant /> operations at each end.
+
+<LinkedListWrapper />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Linked Lists vs Arrays</SubsectionHeader>
+
+Linked lists and arrays appear to have a lot of similarities.
+You may be wondering why we would use a linked list over an array.
+We know arrays, we understand them, and we see them frequently.
+
+As with all data structures, there are tradeoffs.
+Attributes that make an array useful in some cases,
+can become detrimental in other scenarios.
+
+Arrays are very tightly structured.
+We enforce them to be sequential in memory with all the values indexed.
+This is great when we need to access values at a certain index, and it's easy for us as developers to grasp the composition of our array.
+The cost we pay to maintain arrays is that anytime we insert/delete inside the array, it must reindex the items and update their location in memory.
+As the array grows in size, our programming language underneath the hood must continue to allocate more memory for it.
+They must fit inside the RAM of the machine we're using,
+and we're bound to the structure of arrays and constraints they impose.
+
+<Container>
+
+```javascript
+// 'h', 'e', 'l', 'l', 'o' as array vs linked list
+
+// Array (in back-to-back memory slots)
+Index               0     1     2     3     4
+                    |     |     |     |     |
+Memory address     418   419   420   421   422
+                   ___   ___   ___   ___   ___
+Items              "h"   "e"   "l"   "l"   "o"
+
+// Linked list (assigned to random locations in memory and pointed to)
+"h"
+321 ---> "e"
+         981 ---> "l"
+                  1421 ---> "l"
+                            56 ---> "o"
+                                    717 ---> null
+```
+
+</Container>
+
+Linked lists on the other hand are a very loose data structure.
+Since linked lists maintain order by simply pointing at the next item in the list,
+they don't require any structure in memory.
+When you have access to the `head` and `tail`, you get fast operations at both ends.
+To add/remove items in the middle, you have to iterate <BigO.n /> to get there,
+but the update itself only requires changing a pointer.
+The items before and after it have no knowledge of the change and don't care — they simply manage their own pointers.
+
+There is no mapping or way to find an element other than the reference to it from the preceding node.
+So to look up a desired item, we must start at the first element and walk through the linked list sequentially.
+
+When our programming language creates a new node in the linked list, it allocates it to any random memory slot.
+The node before it simply sets its `next` attribute to this new node.
+The `next` attribute is a pointer to the following element in the sequence.
+
+It's possible we may need fast access at another location in a linked list besides the `head` or the `tail`.
+With a linked list, we can iterate to the desired spot and store a pointer to this node in a variable.
+Then we'll get <BigO.constant /> operations at this spot since we can access the item through a variable.
+Storing multiple nodes in variables is a common technique in interviews.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Linked Lists in the Real World</SubsectionHeader>
+
+- Browser back and forward buttons (doubly linked list where each page knows the one you visited before and after)
+- Implementing stacks and queues (fast operations at the ends)
+- Blockchain (each block stores a hash pointer to the previous block, like a backward singly linked list)
+- "Undo" button in your text editor
+
+The pattern is that for all these implementations, each item simply points to the item before it, after it, or both.
+
+</Section>
+
+<Section>
+
+<RunnerTechnique />
+
+</Section>

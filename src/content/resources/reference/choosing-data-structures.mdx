@@ -1,0 +1,57 @@
+Choose a data structure by the operations the problem needs and the facts the algorithm must preserve. A collection's familiar name is less useful than a clear answer to “what must be cheap, ordered, unique, or reachable after the next update?”
+
+Start by writing the retained state in plain language. Examples include earlier values and their indexes, discovered nodes waiting in FIFO order, the smallest item among current candidates, or the membership of connected components. Then choose a representation whose operations support the invariant. This reference connects those choices with the course's lessons, patterns, and tools.
+
+## Use an array when positions and sequential access matter
+
+Arrays support direct indexed access and compact scans. They are a natural fit for prefix calculations, binary search over sorted data, dynamic-programming tables, and outputs whose positions correspond to input positions. Dynamic arrays usually provide amortized constant-time append, with occasional resizing.
+
+Inserting or deleting near the front of a contiguous array can move many entries. A routine that performs that operation inside a loop can become quadratic. Index meaning also matters: sorting may destroy the relationship between original positions and values unless original indexes are retained separately.
+
+For [Product Array](/course/product-array), an output array has the same length as the input and can store prefix state directly. For [Walk a Matrix](/course/walk-a-matrix), separate row and column boundaries describe the remaining region. Neither task becomes clearer merely by replacing indexes with nodes.
+
+## Use maps and sets for explicit membership
+
+A map associates a key with retained information. A set records membership without an extra payload. Choose a frequency map when multiplicity matters, a position map when original indexes matter, and a set when a boolean seen/unseen distinction is sufficient.
+
+Expected constant-time lookup usually assumes an appropriate hash implementation and key behavior. Hashing a long string can cost work proportional to its length. Mutable or identity-based keys need a deliberate contract. A lookup result of zero, false, or undefined may be a valid stored value, so presence must not be inferred from truthiness alone.
+
+[Two Sum](/course/target-two-sum) stores earlier values and indexes. [Catch the Hacker](/course/catch-the-hacker) counts email frequencies. [Prefix sums](/patterns/prefix-sums) can require frequencies of earlier cumulative sums rather than merely a set of sums. All use a map, but the payload and update timing differ.
+
+## Choose a stack or queue by removal order
+
+A stack removes the most recently retained item. It models unmatched opening brackets, explicit DFS work, undo histories, and suspended recursive behavior. A queue removes the oldest retained item. It models BFS frontiers and work that must be processed in discovery order.
+
+The removal order can be part of the correctness argument. In an unweighted graph, FIFO processing visits nodes in nondecreasing distance layers. Replacing the queue with a stack changes the discovered path and loses that shortest-path argument.
+
+Choose an implementation that supports the needed end operations efficiently. A deque can add or remove at both ends. An array-backed queue can use a head index with occasional compaction. The [graph visualizer](/tools/graph-traversal) shows the frontier separately from visit order; the [JavaScript queue guide](/guides/javascript-queue) examines the storage and cost details.
+
+## Use linked nodes when the available references justify them
+
+A linked list supports constant pointer work to insert or detach near an already known node or predecessor. Finding that location can still require a linear scan. A singly linked node does not provide direct access to its predecessor, and a list does not support constant-time access by arbitrary index.
+
+Node identity and ownership matter. Reversing a list rewrites links while preserving nodes. Returning newly allocated nodes with equal values may violate an identity-sensitive contract. Removing one incoming link does not guarantee that no other reference keeps the node reachable.
+
+Use the [pointer visualizer](/tools/linked-list-pointers) to inspect saved successors, head changes, and cycles. Then practice [Mirror Delete](/course/mirror-delete), where the offset is measured from the tail and its zero-based convention affects pointer spacing.
+
+## Choose a heap for repeated frontier extrema
+
+A heap exposes a minimum or maximum according to its comparator. It is useful for top-K selection, merging ordered streams, and priority-based work. It does not provide full sorted iteration, fast arbitrary lookup, or a generally ordered array representation.
+
+For retaining the largest K values, a min-heap of size K keeps the weakest retained candidate at its root. A new larger candidate can replace that root. The orientation follows the decision the algorithm must make; memorizing “top-K means max-heap” misses that distinction.
+
+Comparator correctness is part of the data structure's contract. Avoid subtraction-based comparisons that can overflow, and define tie behavior when reproducible order matters. Study [heaps and priority queues](/patterns/heaps-and-priority-queues) and the language-specific references before assuming that two libraries orient their roots the same way.
+
+## Distinguish ordered trees, tries, and connectivity structures
+
+A balanced search tree maintains key order and supports operations such as predecessor, successor, and ordered range queries. Its logarithmic height depends on balancing. A plain binary search tree can become a chain and degrade to linear operations.
+
+A trie organizes keys by symbol prefixes. It fits prefix lookup and incremental text navigation when the text unit and normalization policy are explicit. It can retain more nodes and links than a hash set of complete words. A trie is not automatically the best choice for every string lookup.
+
+Union-find answers whether items belong to the same evolving component under supported unions. It does not retain a path between two vertices and does not directly support arbitrary deletions. Use [tries](/patterns/tries) for prefix operations and [union-find](/patterns/union-find) for their distinct contracts. Use BFS when the required output is an actual shortest unweighted route.
+
+## Check the full operation sequence
+
+List the operations and how often they occur. A structure with cheap lookup but expensive repeated deletion may be wrong for the workload. Include preprocessing, retained output, traversal depth, and key-comparison cost. The [complexity reference](/reference/data-structure-time-complexity) distinguishes worst-case, expected, and amortized qualifications.
+
+Finally test a boundary that challenges the chosen representation. Try an empty frontier, duplicate priorities, a missing key, an index zero, a skewed tree, or a cyclic list when supported. Explain which invariant each operation preserves. The [pattern quiz](/tools/pattern-quiz) supplies constraint-based decisions; the next step is implementing one choice and checking its actual behavior.

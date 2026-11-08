@@ -1,0 +1,7 @@
+```typescript
+function parseScore(value: unknown): number | null {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+  if (value < 0 || value > 100) return null;
+  return value;
+}
+```

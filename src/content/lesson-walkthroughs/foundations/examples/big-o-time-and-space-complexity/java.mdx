@@ -1,0 +1,13 @@
+```java
+import java.util.*;
+
+class SuffixCopiesExample {
+static List<List<Integer>> suffixCopies(List<Integer> values) {
+    List<List<Integer>> suffixes = new ArrayList<>();
+    for (int index = 0; index < values.size(); index++) {
+        suffixes.add(new ArrayList<>(values.subList(index, values.size())));
+    }
+    return suffixes;
+}
+}
+```

@@ -1,0 +1,53 @@
+```rust
+impl Solution {
+    pub fn find_target_index(items: Vec<i32>, target: i32) -> i32 {
+        let item_at = |index: i32| items[index as usize];
+
+        // Initialize the upper and lower bound to the binary search
+        // (signed, as the end index can move to before the first item)
+        let mut start_index = 0;
+        let mut end_index = items.len() as i32 - 1;
+
+        // Loop until our bounds converge
+        while start_index <= end_index {
+            // Number of items between the lower and upper bound
+            let items_between_start_end = (end_index - start_index) / 2;
+            let mid_index = start_index + items_between_start_end;
+
+            // Item found, return mid index as solution
+            if item_at(mid_index) == target {
+                return mid_index;
+            }
+
+            let is_left_correctly_ordered = item_at(mid_index) >= item_at(start_index);
+
+            // The left half, start to midpoint, is sorted normally
+            // (rotation in right half or has been eliminated)
+            if is_left_correctly_ordered {
+                let target_in_left_half =
+                    target >= item_at(start_index) && target < item_at(mid_index);
+
+                if target_in_left_half {
+                    end_index = mid_index - 1;
+                } else {
+                    start_index = mid_index + 1;
+                }
+            // The right half, midpoint to the end, is sorted normally
+            // (rotation in left half)
+            } else {
+                let target_in_right_half =
+                    target <= item_at(end_index) && target > item_at(mid_index);
+
+                if target_in_right_half {
+                    start_index = mid_index + 1;
+                } else {
+                    end_index = mid_index - 1;
+                }
+            }
+        }
+
+        // Target not found in the input
+        -1
+    }
+}
+```

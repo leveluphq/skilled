@@ -1,0 +1,30 @@
+```cpp
+struct Node {
+    int data;
+    Node* next;
+
+    Node(int data) : data(data), next(nullptr) {}
+
+    // O(1)
+    Node* prepend(int data) {
+        Node* prependedNode = new Node(data);
+        prependedNode->next = this;
+
+        return prependedNode;
+    }
+
+    // O(n)
+    Node* append(int data) {
+        Node* appendedNode = new Node(data);
+        Node* currentNode = this;
+
+        while (currentNode->next != nullptr) {
+            currentNode = currentNode->next;
+        }
+
+        currentNode->next = appendedNode;
+
+        return appendedNode;
+    }
+};
+```

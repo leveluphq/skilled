@@ -1,0 +1,41 @@
+```python
+OPEN = 0
+BLOCKED = 1
+EXIT = 2
+
+# Main function
+def has_exit_path(room_matrix):
+    # Return false if the matrix is invalid
+    if not room_matrix or len(room_matrix) == 0 or len(room_matrix[0]) == 0:
+        return False
+
+    # Recursively walk through the room to check if there is a valid path
+    is_valid_path = walk_through_room(room_matrix, 0, 0)
+
+    return is_valid_path
+
+# Recursive helper function
+def walk_through_room(room_matrix, row, col):
+    # Base case 1: Outside of room, so there can't be a path through this
+    is_outside_room = (row > len(room_matrix) - 1) or (col > len(room_matrix[0]) - 1)
+    if is_outside_room:
+        return False
+
+    # Base case 2: A path successfully reached the end, so propagate this upward
+    is_exit_node = room_matrix[row][col] == EXIT
+    if is_exit_node:
+        # Set the current node as true as well
+        return True
+
+    # Base case 3: We reached a blocking node
+    is_blocking_node = room_matrix[row][col] == BLOCKED
+    if is_blocking_node:
+        return False
+
+    # Recursive case: move down and right
+    down_result = walk_through_room(room_matrix, row + 1, col)
+    right_result = walk_through_room(room_matrix, row, col + 1)
+
+    # Returns true if either is successful
+    return down_result or right_result
+```

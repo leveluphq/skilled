@@ -1,0 +1,73 @@
+A greedy algorithm commits to a local choice and continues with the remaining problem. Its usefulness depends on why that commitment preserves an optimal solution. A rule that sounds reasonable on several examples can still discard the best answer. Interval scheduling gives a concrete place to practice the proof, the implementation, and the counterexamples together.
+
+## Separate the objective from the input format
+
+Suppose a single room has meeting requests with fixed start and end times. Choose as many requests as possible, with no overlapping selected meetings. Every request has equal value. Represent a meeting as the half-open interval from start to end, so a meeting ending at three can be followed by one starting at three.
+
+Require finite numeric endpoints and strictly positive duration. Zero-duration intervals would need a separate compatibility convention and are rejected here. Negative times are valid; the origin of the clock does not affect compatibility. The result should contain references to the selected original records in chronological order, while leaving the input array and records unchanged.
+
+This differs from merging overlapping intervals, finding the maximum number of simultaneous meetings, assigning several rooms, or maximizing total meeting value. Those tasks can share an interval-shaped input without sharing an algorithm. The [course scheduler exercise](/course/interview-scheduler) is another reason to read the precise requested output before choosing a pattern.
+
+## Choose the earliest finishing compatible request
+
+Sort requests by increasing end time. Scan them once, accepting a request when its start is at least the end of the last accepted meeting. Among requests with the same end, this implementation uses their original input positions as a deterministic tie break. Equal end times do not change the number of slots available afterward.
+
+```javascript
+function maximumMeetings(intervals) {
+  const ordered = intervals.map((interval, index) => {
+    if (!interval || !Number.isFinite(interval.start) || !Number.isFinite(interval.end) ||
+        interval.start >= interval.end) {
+      throw new RangeError('Expected finite, positive-duration intervals.');
+    }
+    return { interval, index };
+  });
+  ordered.sort((a, b) => a.interval.end - b.interval.end || a.index - b.index);
+  const selected = [];
+  let lastEnd = -Infinity;
+  for (const { interval } of ordered) {
+    if (interval.start >= lastEnd) {
+      selected.push(interval);
+      lastEnd = interval.end;
+    }
+  }
+  return selected;
+}
+```
+
+The decorated array allows sorting without rearranging the caller's array. Its entries retain the original records rather than cloning their fields. Initializing lastEnd to negative infinity permits any finite starting time. Checking compatibility with greater-than-or-equal implements the declared half-open boundary rule; a strict comparison would wrongly reject back-to-back meetings.
+
+## Make the exchange argument explicit
+
+Take an optimal schedule containing the maximum possible number of meetings. Let its first meeting be o, and let g be a meeting with the earliest end time among all requests. The greedy choice ends no later than o. Replace o with g. Every later meeting in the optimal schedule started at or after o ended, so it also starts at or after g ends. The replacement preserves feasibility and the meeting count.
+
+Therefore, some optimal schedule begins with the greedy choice. After selecting g, the remaining task consists of requests starting at or after g's end, with the same maximum-count objective. Apply the same exchange reasoning to that smaller task. Repeating it proves that the complete greedy schedule has optimal cardinality.
+
+Each part of that proof has a job. The replacement identifies the choice being exchanged. The end-time inequality preserves every later request. Equal value preserves the objective. The reduced task has the same form as the original. Saying that the choice leaves more room is an intuition; the exchange specifies why no optimal count is lost. Cornell's [interval-scheduling proof notes](https://www.cs.cornell.edu/courses/cs482/2005su/handouts/greedy_ahead.pdf) develop this reasoning through a related stays-ahead argument.
+
+## Reject plausible rules with small counterexamples
+
+Earliest start time can select the long interval from zero to ten and block the two compatible requests from one to two and two to three. It returns one meeting where two are possible. A candidate rule must account for how long its commitment blocks the room, not just when it begins.
+
+Shortest duration also fails. Consider intervals from zero to three, three to six, and two to four. The shortest one is two to four, but it overlaps both of the other intervals. Taking it yields one meeting; selecting zero to three followed by three to six yields two. Duration alone does not describe where a meeting lies relative to other requests.
+
+These examples are useful tests for proposed alternatives. They do not prove earliest finish is correct; that requires the exchange argument. Testing and proof complement each other: tests find a mistaken rule or boundary implementation, while the proof explains the complete declared input domain.
+
+## Change the objective and revisit the proof
+
+If the long meeting from zero to ten has value one hundred and the two short meetings each have value two, earliest finish can return total value four while the best schedule has value one hundred. The exchange no longer preserves the objective when it replaces one meeting with another. Equal contribution was an assumption used by the maximum-count proof.
+
+Weighted interval scheduling usually calls for dynamic programming: sort intervals, locate a compatible predecessor, and compare taking the current interval plus a prior best value with skipping it. That combines [binary-search boundaries](/patterns/binary-search) with [dynamic programming](/patterns/dynamic-programming). A similar input format does not let the earlier proof carry over unchanged.
+
+Greedy coin selection has the same need for a declared domain. With denominations one, three, and four and target six, choosing four first leads to three coins, while two threes use two. Before accepting a local rule, ask which property of the permitted inputs makes its exchange safe.
+
+## Report sorting, scanning, and output costs
+
+The scan performs O(n) compatibility checks after sorting. With an O(n log n) comparison sort, sorting dominates the total time. JavaScript's specification does not promise one time or auxiliary-space bound for every engine's Array.sort implementation; the algorithmic estimate assumes the usual comparison-sort behavior. The comparator is pure and imposes a deterministic end-time/index order.
+
+The decorated copy costs O(n) space. The selected output stores at most n references. This version therefore uses linear explicit storage even if a particular engine sorts in place internally. A variant allowed to rearrange the input could avoid that copy, but the mutation contract would change. If input is already sorted by the required order, the scan itself can run in linear time.
+
+## Validate against exhaustive schedules
+
+For a small input, enumerate every subset and reject any subset containing a pair of overlapping meetings. Count the largest feasible subset, then compare that count with the greedy result. Checking feasibility independently from the greedy selection avoids repeating the implementation's own mistake in its test oracle.
+
+Include empty input, all-overlapping requests, duplicate records, equal ends, unsorted requests, negative times, and meetings sharing an endpoint. Verify original object identity and that frozen inputs remain unchanged. Reject missing, nonfinite, reversed, and zero-duration endpoints. Then state the exchange proof aloud while pointing to the exact comparison and compatibility condition that implement it.

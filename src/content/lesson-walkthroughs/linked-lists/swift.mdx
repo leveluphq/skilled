@@ -1,0 +1,64 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A linked list stores a sequence through nodes that refer to other nodes. A singly linked node points to its successor; a doubly linked node also points to its predecessor. The recording compares those links with array indexes. For interview problems, the first question is often what references the function receives: only a head, a head and tail, or a complete wrapper object.
+
+## Separate reaching a node from changing its links
+
+If you already have a predecessor, inserting after it needs a small number of reference changes. Finding the predecessor by position may require a linear walk from the head. Describing insertion as constant time without naming the available reference hides that search cost.
+
+Appending has the same distinction. A singly linked list with only its head must walk to the end. A wrapper that retains a tail can append directly, provided it also updates the empty-list case. Removing the tail from a singly linked list still needs its predecessor unless that reference is available separately.
+
+## Preserve the rest of the chain
+
+When changing a next reference, keep access to any nodes you still need. Reversal is a useful example: save the old successor before pointing the current node backward. Otherwise, the remaining chain may become unreachable from the function's local references.
+
+A function that prepends, removes the head, or reverses the list may return a different head. Callers must use that returned reference. Matching node values is also different from matching node identity; two nodes may contain equal data while occupying different positions in the chain.
+
+## Test structural boundaries
+
+Use an empty list, one node, and two nodes before testing a long example. Check that the last next reference is empty and that any wrapper's length agrees with a full traversal. For a doubly linked list, walking backward should recover the same nodes in reverse order. Accidental cycles can make a simple traversal run forever.
+
+The blockchain comparison in the recording is an analogy for backward links; it does not imply that ordinary blocks form a doubly linked list. Continue with [Pointers](/watch/pointers) for reference identity, [Implement a Linked List](/watch/implement-a-linked-list) for mutations, and the [pointer visualizer](/tools/linked-list-pointers) for a step-by-step reversal trace.
+
+## Choose the second middle for an even-length list
+
+The example builds a singly linked list from the supplied values and advances two runners. Slow moves one link per iteration; fast moves two. With `[10, 20, 30, 40]`, the result is 30, the second of the two middle values. With three values it is the ordinary middle. An empty input returns an explicit absent result.
+
+The loop continues only while fast and its next link both exist. This guard makes the two-link step safe. Since the lists constructed here are acyclic, fast eventually reaches the end. Applying the same loop to a cyclic external list would need a different contract or cycle handling.
+
+## Separate construction from traversal
+
+Building n nodes takes O(n) time and storage. Traversing them to find the middle takes O(n) time and only a constant number of runner references. The entire function therefore allocates O(n); calling the whole example constant-space would omit its construction step.
+
+Check lengths zero through four before trying larger inputs. These small cases establish the selected middle convention and the empty-list behavior. Values can repeat, because the runners follow node identity and links rather than comparing payload values. Native ownership choices differ: some versions use garbage-collected references, while others use owning nodes and borrowed traversal references. Those choices must preserve the same traversal without introducing an ownership cycle. For deletion or reversal practice, keep track of the link you still need before replacing it.
+
+## Swift example and implementation choices
+
+ListNode is a class so links and runner assignments share node identity. Its immutable next reference makes this constructed chain acyclic by design. Optional binding checks the two positions fast needs before advancing, and the returned Int? separates absence from zero. ARC manages the node lifetimes, but allocating the entire chain still contributes O(n) storage to the full function.
+
+### Worked example
+
+```swift
+func middleValue(_ values: [Int]) -> Int? {
+    class ListNode {
+        let value: Int
+        let next: ListNode?
+        init(_ value: Int, _ next: ListNode?) { self.value = value; self.next = next }
+    }
+    var head: ListNode?
+    for value in values.reversed() { head = ListNode(value, head) }
+    var slow = head
+    var fast = head
+    while let node = fast, let next = node.next {
+        slow = slow?.next
+        fast = next.next
+    }
+    return slow?.value
+}
+```
+
+## Continue in Swift
+
+[Open Linked Lists](/course/linked-lists) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Swift example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Swift interview preparation guide](/interview-prep/swift) connects these language choices with further practice and the cross-language operation reference.

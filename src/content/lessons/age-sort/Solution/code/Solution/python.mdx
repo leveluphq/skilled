@@ -1,0 +1,19 @@
+```python
+MIN_AGE = 0
+MAX_AGE = 100
+
+def sort_by_age(ageList):
+    sorted_age_list = []
+    age_count = [0] * (MAX_AGE + 1)
+
+    for age in ageList:
+        age_count[age] += 1
+
+    for age in range(MIN_AGE, MAX_AGE + 1):
+        count = age_count[age]
+
+        for i in range(count):
+            sorted_age_list.append(age)
+
+    return sorted_age_list
+```

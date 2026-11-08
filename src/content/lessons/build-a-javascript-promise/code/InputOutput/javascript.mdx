@@ -1,0 +1,29 @@
+```javascript
+class PromiseSimple {
+  constructor() {...}
+  // Should contain these two functions at minimum
+  then(fnOnResolve) {...}
+  catch(fnOnReject) {...}
+
+  // ...likely will have other helper functions
+}
+
+const makeApiCall = () => {
+  return new PromiseSimple((resolve, reject) => {
+    // Perform async action...
+    const apiResponse = request('/api');
+
+    if (apiResponse.statusCode >= 400) {
+      reject(apiResponse);
+    } else {
+      resolve(apiResponse.data);
+    }
+  });
+};
+
+makeApiCall()
+  .then((response) => /* do something with response */)
+  .then((response) => /* do something else with response */)
+  .then((response) => /* do one last thing with response */)
+  .catch((err) => /* handle error */)
+```

@@ -1,0 +1,24 @@
+```java
+static void breadthFirstSearch(GraphNode startingNode) {
+    // offer adds to the back of the queue, and poll removes from the front
+    Queue<GraphNode> bfsQueue = new ArrayDeque<>();
+    bfsQueue.offer(startingNode);
+    Set<GraphNode> visitedNodes = new HashSet<>();
+
+    visitedNodes.add(startingNode);
+
+    while (!bfsQueue.isEmpty()) {
+        GraphNode node = bfsQueue.poll();
+
+        // Use node value for the question
+        visit(node);
+
+        for (GraphNode childNode : node.edges) {
+            if (!visitedNodes.contains(childNode)) {
+                bfsQueue.offer(childNode);
+                visitedNodes.add(childNode);
+            }
+        }
+    }
+}
+```

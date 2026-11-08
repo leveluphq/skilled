@@ -1,0 +1,91 @@
+Java interview practice usually depends on choosing a small set of collections and using their contracts accurately. A short algorithm can fail because an absent map result is unboxed, a comparator overflows, or a queue operation removes from the wrong end. Prepare those operations alongside the algorithm's invariant.
+
+The examples use Java 17-compatible syntax and standard-library collections. They are ordinary functions inside a small class, not the exact signature of every exercise. Match the lesson's provided types and return convention before pasting an implementation into its editor.
+
+## Choose collections by the next operation
+
+Use an array when the size is fixed and indexed primitive values are enough. An `ArrayList` provides a resizable indexed collection of references; `ArrayList<Integer>` therefore involves boxed integer values. A `HashMap` associates a key with a value, while a `HashSet` records membership. An `ArrayDeque` supports stack or queue operations at its ends.
+
+For a FIFO queue, pair `addLast` with `removeFirst`. For a stack, pair `addLast` with `removeLast`. Choosing one pair consistently makes the processing order visible. An `ArrayDeque` cannot contain null, so enqueue only existing tree children instead of treating null as an ordinary node marker. Its end operations have amortized constant cost under the library contract. See the [ArrayDeque reference](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/ArrayDeque.html).
+
+A priority queue answers a different question: which queued value has the smallest priority according to its comparator? Removing from a priority queue does not preserve arrival order. Choose it for priority-based work, and use a deque for the layers of an unweighted BFS.
+
+## Preserve absence, index zero, and numeric range
+
+Two Sum can use a map from earlier value to index. Look up the complement before storing the current element so one position cannot match itself. An index of zero is a valid successful result. In this implementation, a null lookup means absent because the map only stores actual integer indexes, never null values.
+
+The arithmetic uses long keys even though the input values and target are int. The cast happens before subtraction. An int subtraction that already overflowed cannot be repaired by assigning its result to a long afterward.
+
+```java
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
+final class JavaInterview {
+    static Optional<int[]> twoSum(int[] values, int target) {
+        Map<Long, Integer> previous = new HashMap<>();
+        for (int index = 0; index < values.length; index++) {
+            long complement = (long) target - values[index];
+            Integer earlier = previous.get(complement);
+            if (earlier != null) return Optional.of(new int[] {earlier, index});
+            previous.put((long) values[index], index);
+        }
+        return Optional.empty();
+    }
+
+    static List<Integer> bfsOrder(Map<Integer, List<Integer>> graph, int start) {
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
+        Set<Integer> seen = new HashSet<>();
+        List<Integer> order = new ArrayList<>();
+        seen.add(start);
+        queue.addLast(start);
+        while (!queue.isEmpty()) {
+            int node = queue.removeFirst();
+            order.add(node);
+            for (int neighbor : graph.getOrDefault(node, List.of())) {
+                if (seen.add(neighbor)) queue.addLast(neighbor);
+            }
+        }
+        return order;
+    }
+}
+```
+
+Both functions assume non-null inputs and, for the graph, non-null neighbor lists and labels. A missing adjacency key means no outgoing edges. The returned BFS order follows each neighbor list's order and includes the start even if it has no listed neighbors. No iteration over the map's keys determines the traversal.
+
+Two Sum takes expected O(n) time and O(n) map storage under the usual well-dispersed hash model. BFS takes expected O(V + E) work over the reachable vertices and examined edges, with O(V) visited and queue storage. [HashMap's documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html) qualifies its basic-operation cost by hash dispersion and does not promise map iteration order.
+
+## Keep equality separate from object identity
+
+Use value equality for boxed values and strings when the problem asks whether their contents match. Comparing two `Integer` objects with `==` compares references when neither side is being unboxed. Small examples may appear to work because some boxed values are cached. A test using larger values can expose the mistaken identity assumption.
+
+The null check above deliberately asks whether a lookup returned an object. After that check, placing the `Integer` into the primitive result array unboxes it safely. If a map's valid values include null, `get` alone cannot distinguish absence from a present null; use the map's presence operation when that distinction belongs to the contract.
+
+For composite keys, choose an immutable representation with consistent equality and hashing. Mutating fields used in a key's hash after insertion can make lookups fail even though the object remains in the map. Arrays also do not automatically become content-based keys merely because they contain the same numbers.
+
+## Write comparators without subtraction overflow
+
+Use `Integer.compare(a, b)` or `Long.compare(a, b)` for numeric comparison. A comparator returning `a - b` can overflow and reverse the intended ordering. Reversing the subtraction does not solve that problem for a descending comparator.
+
+Java's `PriorityQueue` exposes a minimum under its chosen order. To keep the K largest stream values, a size-K minimum heap exposes the weakest retained value for replacement. Iterating over the queue is not a sorted-output operation; repeatedly removing its head or sorting a separate result has a different cost. The [PriorityQueue reference](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/PriorityQueue.html) specifies its ordering and operation bounds.
+
+For sorted arrays or intervals, state whether sorting may mutate the caller's input. Copying an array first changes the space budget. A shallow copy of a collection still refers to the same mutable element objects, which matters when interval fields are edited after sorting.
+
+## Define the text unit before counting characters
+
+Java strings use UTF-16. `length` and `charAt` describe code units; some Unicode code points use two code units. A fixed-size alphabet table is appropriate when an exercise promises lowercase English letters. It is not automatically correct for arbitrary text containing supplementary characters.
+
+For code-point processing, use a code-point-aware traversal or convert with `codePoints().toArray()` when the allocation is acceptable. That conversion makes indexing convenient but adds storage. Code points still differ from user-perceived grapheme clusters, so clarify which unit a palindrome, frequency count, or substring length should use.
+
+Recursion is another runtime consideration. A correct recursive DFS can exhaust the call stack on a long chain. Practice the explicit deque or stack form and include its retained frontier in the memory analysis rather than treating recursion as free.
+
+## Practice a sequence with observable failure cases
+
+Start with [Two Sum](/course/target-two-sum), [bracket matching](/course/valid-brackets), and [BFS](/course/breadth-first-search). Test repeated values, no pair, index zero, a cyclic graph, an isolated start, and extreme int values whose complement does not fit in int. Compare returned pair validity with a direct two-loop reference.
+
+Then implement a boundary search and a top-K heap. Explain the difference between absent and zero, value and identity, queue order and priority order, and arithmetic width before running the tests. Use the [complexity reference](/reference/data-structure-time-complexity) to state collection assumptions and the [study-plan builder](/tools/study-plan-builder) to reserve time for another attempt without the previous code open.

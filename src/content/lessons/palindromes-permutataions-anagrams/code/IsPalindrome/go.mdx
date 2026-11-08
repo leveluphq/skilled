@@ -1,0 +1,29 @@
+```go
+import (
+	"regexp"
+	"strings"
+)
+
+// Regex to remove non-alphanumeric
+var nonAlphanumeric = regexp.MustCompile(`[^0-9a-zA-Z]`)
+
+func removeNonAlphanumeric(str string) string {
+	return nonAlphanumeric.ReplaceAllString(str, "")
+}
+
+func isPalindrome(str string) bool {
+	// For simplicity, I'm doing the transforming here at an assumed O(n) cost
+	// You could also not transform it and consider this when you compare characters
+	formattedString := strings.ToLower(removeNonAlphanumeric(str))
+
+	// Walk from the beginning and end to the middle and compare each character
+	for i := range len(formattedString) / 2 {
+		// If the characters are ever not equal, it's not a palindrome
+		if formattedString[i] != formattedString[len(formattedString)-1-i] {
+			return false
+		}
+	}
+
+	return true
+}
+```

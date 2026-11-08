@@ -1,0 +1,15 @@
+```rust
+use std::collections::HashMap;
+
+fn fib_memo_stats(n: i32) -> Vec<i32> {
+    fn fib(value: i32, memo: &mut HashMap<i32, i32>) -> i32 {
+        if let Some(&answer) = memo.get(&value) { return answer; }
+        let answer = if value < 2 { value } else { fib(value - 1, memo) + fib(value - 2, memo) };
+        memo.insert(value, answer);
+        answer
+    }
+    let mut memo = HashMap::new();
+    let answer = fib(n, &mut memo);
+    vec![answer, memo.len() as i32]
+}
+```

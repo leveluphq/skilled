@@ -1,0 +1,81 @@
+The course's Two Sum exercise expects every matching pair of original indexes from unique integers. For `intArrayOf(4, 1, 5, 2, 3)` and target `6`, both `[1, 2]` and `[0, 3]` belong in the answer. The function must keep scanning after finding a match.
+
+Kotlin's HashMap gives us nullable lookup results, while IntArray keeps the input's numeric storage primitive. We collect pairs in a mutable list and return `Array<IntArray>`, matching the starter. No input values are reordered or overwritten.
+
+## Narrow a nullable lookup inside a branch
+
+The map associates each earlier number with its index. Retrieving a missing key returns null. Store that result in a local val and compare it with null; inside the branch, Kotlin can use the index as a non-null Int.
+
+```kotlin
+class Solution {
+    fun getTargetIndexes(array: IntArray, target: Int): Array<IntArray> {
+        val seen = HashMap<Int, Int>()
+        val pairs = mutableListOf<IntArray>()
+
+        for ((j, value) in array.withIndex()) {
+            val complement = target.toLong() - value.toLong()
+            if (complement >= Int.MIN_VALUE.toLong() && complement <= Int.MAX_VALUE.toLong()) {
+                val earlier = seen[complement.toInt()]
+                if (earlier != null) {
+                    pairs.add(intArrayOf(earlier, j))
+                }
+            }
+            seen[value] = j
+        }
+        return pairs.toTypedArray()
+    }
+}
+```
+
+Index zero is a normal non-null value, so it is retained. There is no need for `!!`, a guessed sentinel index, or a second containsKey call. The map never stores nullable values, making null an unambiguous absence signal for this implementation.
+
+## Widen Int arithmetic before subtraction
+
+Both input values and the target are Int, but their difference can exceed the Int range. Convert before subtracting so the complement is computed as Long. A complement outside the Int range cannot appear in this IntArray and can be skipped.
+
+Converting the result of an Int subtraction to Long would happen too late. Likewise, converting an out-of-range Long complement back to Int before checking its range would lose the original value. The order is widen, subtract, check, then narrow.
+
+For `[Int.MAX_VALUE, 1]` and target `Int.MIN_VALUE`, wrapped Int arithmetic must not invent a match. The wider subtraction preserves the mathematical interpretation. For `[Int.MIN_VALUE, Int.MAX_VALUE]` and target `-1`, the valid pair must still be returned.
+
+## Keep the current position out of the dictionary
+
+The map contains only positions earlier than the current index. Look up the complement first, then insert the current value. This makes each match use distinct positions and prevents recording the same pair in both orders.
+
+On `[4, 1, 5, 2, 3]`, the first two insertions are `4 → 0` and `1 → 1`. The `5` finds index `1`; the `2` finds index `0`. The final `3` cannot find itself because it is not inserted until after its lookup.
+
+A self-match example such as `[3]` with target `6` checks this ordering directly. A multi-answer example checks the separate requirement that the function must not return immediately after its first successful lookup.
+
+## Distinguish primitive arrays from collection objects
+
+IntArray stores primitive integer entries. `Array<Int>` is a different representation, particularly on the JVM where generic collections involve boxing. The map's generic Int keys and values are boxed there, while each returned pair remains an IntArray.
+
+Each `intArrayOf(earlier, j)` allocates a distinct pair. Reusing one mutable IntArray across several list entries would make them share contents. `toTypedArray()` creates the outer result array but does not clone the inner arrays, so fresh pair construction is necessary.
+
+Kotlin's [null-safety documentation](https://kotlinlang.org/docs/null-safety.html) explains local checks and smart casts. The check here is backed by actual lookup behavior; casting away nullability would remove that protection instead of explaining it.
+
+## Compare normalized contents in examples
+
+```kotlin
+fun checkExamples() {
+    val solution = Solution()
+    val input = intArrayOf(4, 1, 5, 2, 3)
+    val before = input.copyOf()
+    val actual = solution.getTargetIndexes(input, 6)
+        .map { it.sorted() }
+        .sortedWith(compareBy<List<Int>> { it[0] }.thenBy { it[1] })
+    check(actual == listOf(listOf(0, 3), listOf(1, 2)))
+    check(input.contentEquals(before))
+    check(solution.getTargetIndexes(intArrayOf(3), 6).isEmpty())
+    check(solution.getTargetIndexes(intArrayOf(Int.MAX_VALUE, 1), Int.MIN_VALUE).isEmpty())
+}
+```
+
+Call this helper from a local main function. Comparing arrays with `==` checks their identity rather than the intended nested numeric contents, so the pair comparison converts entries into lists. The normalization preserves duplicate answers instead of hiding them in a set.
+
+Add empty input, negative values, no answer, and a match involving index zero. A small nested-loop reference should widen addition to Long too; otherwise the reference can repeat the same overflow defect.
+
+## Explain uniqueness and expected cost
+
+With unique integers, one index per map key is sufficient. If repeated values become legal and every index pair is required, the map must store multiple earlier positions per value, and the output can become quadratic.
+
+For the current contract, expected hash-map work is `O(n + k)`, auxiliary map storage is `O(n)`, and output storage is `O(k)`. Unique values bound the number of answers linearly. Before practicing, explain the nullable lookup branch and the earlier-prefix invariant separately, then reconstruct the loop from those two facts.

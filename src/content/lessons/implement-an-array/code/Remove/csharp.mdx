@@ -1,0 +1,28 @@
+```csharp
+public T Remove(int index) {
+    // Ensure the array has items
+    if (this.length == 0) {
+        return default;
+    }
+
+    // Ensure we're removing an item inside the array
+    if (index > this.length - 1 || index < 0) {
+        return default;
+    }
+
+    T itemToBeRemoved = this.data[index];
+
+    // Shift items inward one index towards the one we remove
+    for (int i = index; i < this.length - 1; i++) {
+        this.data[i] = this.data[i + 1];
+    }
+
+    // The item we want to delete is just overwritten to the value of the index that comes after it.
+
+    // Since all items were shifted inward one spot, we need to remove the last index/item since our array size shrinks by 1
+    this.data.Remove(this.length - 1);
+    this.length--;
+
+    return itemToBeRemoved;
+}
+```

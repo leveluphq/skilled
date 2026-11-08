@@ -1,0 +1,27 @@
+```javascript
+type EventCallback = (data: any) => void;
+
+interface Subscribers {
+  [eventName: string]: EventCallback[];
+}
+
+class PubSub {
+  subscribers: Subscribers;
+
+  constructor() {
+    this.subscribers = {};
+  }
+
+  subscribe(eventName: string, callback: EventCallback): void {
+    // Subscribe a callback to an eventName
+  }
+
+  publish(eventName: string, data: any): void {
+    // Execute callbacks for an eventName
+  }
+
+  unsubscribe(eventName: string, callback: EventCallback): void {
+    // Remove a previously added callback
+  }
+}
+```

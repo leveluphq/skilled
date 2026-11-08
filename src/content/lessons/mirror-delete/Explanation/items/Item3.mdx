@@ -1,0 +1,40 @@
+import Null from 'content/blocks/Null';
+
+The final task with this problem is to be thoughtful about edge cases and handle both normal and extreme scenarios.
+
+The `k` in this problem is a zero-based index.
+Imagine we had a linked list with 4 items, `42 -> 15 -> 7 -> 26`.
+`k = 0` corresponds to the tail with a value of `26`, and `k = 3` corresponds to the item at `linkedList.length - 1` which is our head with a value of `42`.
+
+**Case 1: k == 0**
+
+We need to delete the tail node.
+This means our `follow` pointer needs to end one node behind our `lead`.
+So when `lead` reaches `k = 0`, our `follow` will be at `k = 1`.
+
+**Case 2: k > 0 && k < linkedList.length - 1**
+
+We want to delete a node inside the list that is not our head or tail.
+
+**Case 3: k == linkedList.length - 1**
+
+This corresponds to the head of the linked list since `k` is a zero-based index starting from the tail.
+Since there is no spot in front of the head, it can't be deleted as we normally would,
+and this is an edge case we need to account for.
+
+When we iterate our `lead` runner forward, if it ends exactly on the <Null /> terminator,
+we know that we wanted to delete our head node since we are one spot outside the list.
+
+To delete the current head, we just return a new head which will be `head.next`.
+
+**Case 4: k >= linkedList.length**
+
+`k` is outside the bounds of our linked list, and we just return the head without removing a node.
+
+**Off-By-One**
+
+The final consideration is handling indexes and considering off-by-one cases.
+For this to work, we need to get `lead` and `follow` positioned correctly.
+Keep in mind the zero-based indexing.
+
+Give this a shot and check the solution when you're ready.

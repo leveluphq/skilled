@@ -1,0 +1,117 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { ItemWithMargin } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import NativeSort from './content/NativeSort';
+
+import BucketSort from './BucketSort.mdx';
+
+<Section>
+
+Sorting is an incredibly important concept in computer science, and many academics devote their career to the topic.
+In interviews, being told data is either sorted or unsorted is often a key piece of information in a problem.
+It is not common to need to implement sorting from scratch in an interview, but it is helpful to understand some of the more popular options at a high level.
+
+The most important points to understand for sorting:
+
+1. Sorting is assumed <BigO.nlogn />
+2. Know how to use the native sorting functionality in your language of choice
+3. Understand the implications of sorted vs. unsorted data
+4. Special case of <BigO.n /> for bucket sort
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Sorting in Interviews</SubsectionHeader>
+
+### 1. Sorting is Assumed <BigO.nlogn />
+
+It is up to your language or even the implementation of the language to decide which sorting algorithm to use.
+However, you can assume it will use a <BigO.nlogn /> version like quick sort or merge sort.
+
+For your interviews, it is unlikely (although not impossible) that you will need to know how to write a sorting algorithm from scratch.
+If you use a built-in sort function, you'll just need to acknowledge that your sorting will add <BigO.nlogn /> time complexity.
+
+### 2. Sort in Your Chosen Language
+
+You need to be able to sort for any data type in your language.
+This could be arrays of numbers, strings, or even objects.
+
+<NativeSort />
+
+### 3. Understand the Implications of Sorted vs. Unsorted Data
+
+If you are told the data is already sorted, then this is often an indication you can use the information to improve on your time complexity, with a very common way being binary search.
+
+If the data is unsorted, then applying a sort to it can improve on a <BigO.n2 /> or worse solution.
+Sorting the data can also make it more logical and easier to work with.
+
+### 4. Bucket Sorting
+
+<BucketSort />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Popular Sorting Algorithms</SubsectionHeader>
+
+It's helpful to understand which algorithms have the best runtimes and how they work to gain some intuition for sorting.
+Below are some of the most popular sorting algorithms.
+We mention the average and worst case because the arrangement of the items in the array can have a large impact on the runtime,
+but you are still safe to assume it's <BigO.nlogn /> for your native sort implementation.
+
+The GIFs below are from <a href="https://visualgo.net/en/sorting" target="_blank" rel="noopener noreferrer">VisuAlgo</a>, and another good visualization tool was created by <a href="https://www.toptal.com/developers/sorting-algorithms" target="_blank" rel="noopener noreferrer">Toptal</a>.
+
+### Selection Sort
+
+Average & Worst Time: <BigO.n2 /> | Space: <BigO.constant />
+
+Selection sort is very inefficient but the easiest to understand.
+In nested loops, you find the smallest element and move it to the front.
+Then you find the second smallest and move it to the second spot.
+Then you find the third smallest and move it to the third spot.
+You repeat this until all the items are sorted.
+
+<Image src="/images/selection-sort.gif" maxWidth="400px" alt="Selection sort repeatedly finds the smallest remaining value and places it at the next output position." width={600} height={417} />
+
+### Bubble Sort
+
+Average & Worst Time: <BigO.n2 /> | Space: <BigO.constant />
+
+Bubble sort is also very simple.
+It iterates through the array and compares each element with the item after it and swaps them accordingly based on their value.
+It will take up to <BigO.n /> passes over the input data structure to get it entirely sorted, and each pass is <BigO.n />, which gives <BigO.n2 /> time.
+
+<Image src="/images/bubble-sort.gif" maxWidth="400px" alt="Bubble sort compares adjacent bars and swaps out-of-order neighbors until the values are sorted." width={600} height={417} />
+
+### Merge Sort
+
+Average & Worst Time: <BigO.nlogn /> | Space: <BigO.n />
+
+Merge sort is <BigO.nlogn />, and it is viewed as one of the "good" sorting algorithms.
+Merge sort repeatedly divides the arrays in half until you reach just two elements.
+It then sorts these elements and begins merging the arrays back together and sorts them at each merge.
+
+<Image src="/images/merge-sort.gif" maxWidth="400px" alt="Merge sort divides values into smaller sequences and merges sorted sequences back together." width={283} height={283} />
+
+### Quick Sort
+
+Average Time: <BigO.nlogn />, Worst Time: <BigO.n2 /> | Space: <BigO.logn />
+
+Quick sort is a "good" sorting algorithm because it operates at <BigO.nlogn />.
+However, in the worst case it can be <BigO.n2 /> when the partition element is repeatedly the smallest or largest item (like an already sorted array that always uses the first item as the partition element), but this is often assumed to occur very rarely.
+
+Quick sort works by picking a random element and items are swapped it based on whether they are larger or smaller than the partition element.
+
+<Image src="/images/quick-sort.gif" maxWidth="400px" alt="Quicksort partitions values around a pivot and sorts the resulting regions." width={600} height={417} />
+
+</Section>

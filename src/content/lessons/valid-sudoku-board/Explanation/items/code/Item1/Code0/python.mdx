@@ -1,0 +1,14 @@
+```python
+def has_valid_shape(board):
+    # If we don't have any rows or columns, it must be false
+    if len(board) == 0 or len(board[0]) == 0:
+        return False
+
+    # of rows and columns must be equal to be a square
+    row_count = len(board)
+    column_count = len(board[0])
+    is_square = row_count == column_count
+
+    if not is_square:
+        return False
+```

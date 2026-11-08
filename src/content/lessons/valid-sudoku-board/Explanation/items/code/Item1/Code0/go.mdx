@@ -1,0 +1,19 @@
+```go
+func hasValidShape(board [][]int) bool {
+	// If we don't have any rows or columns, it must be false
+	if len(board) == 0 || len(board[0]) == 0 {
+		return false
+	}
+
+	// # of rows and columns must be equal to be a square
+	rowCount := len(board)
+	columnCount := len(board[0])
+	isSquare := rowCount == columnCount
+
+	if !isSquare {
+		return false
+	}
+
+	return true
+}
+```

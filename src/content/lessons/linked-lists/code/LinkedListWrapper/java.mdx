@@ -1,0 +1,27 @@
+```java
+class Node<T> {
+    T data;
+    Node<T> next;
+    Node<T> previous;
+
+    Node(T data) {
+        this.data = data;
+        this.next = null;
+        this.previous = null;
+    }
+}
+
+class LinkedList<T> {
+    private Node<T> head;
+    private Node<T> tail;
+
+    public LinkedList(T data) {
+        Node<T> node = new Node<>(data);
+        this.head = node;
+        this.tail = node;
+    }
+
+    public void append(T data) { /* add item to back and update tail */ }
+    public void prepend(T data) { /* add item to front and update head */ }
+}
+```

@@ -1,0 +1,22 @@
+```swift
+class ListNode {
+    var data: Int // the unix timestamp of when the block was added
+    var next: ListNode?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+// Input
+let skilledChainHead = ListNode(42)
+skilledChainHead.next = ListNode(159)
+// many more additions to each...
+
+let devCoinHead = ListNode(123)
+devCoinHead.next = ListNode(482)
+// many more additions to each...
+
+// Output: combineBlockchains(skilledChainHead, devCoinHead)
+42 -> 123 -> 159 -> 482 // ... and so on
+```

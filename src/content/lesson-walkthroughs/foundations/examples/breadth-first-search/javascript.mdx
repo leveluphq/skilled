@@ -1,0 +1,21 @@
+```javascript
+function bfsOrder(graph, start) {
+    if (start < 0 || start >= graph.length)
+        return [];
+    const queue = [start];
+    const visited = new Set([start]);
+    const output = [];
+    let head = 0;
+    while (head < queue.length) {
+        const node = queue[head++];
+        output.push(node);
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+            }
+        }
+    }
+    return output;
+}
+```

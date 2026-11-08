@@ -1,0 +1,43 @@
+```python
+class DoublyNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self, data):
+        initial_node = DoublyNode(data)
+
+        self.length = 1
+        self.head = initial_node
+        self.tail = initial_node
+
+    # O(1)
+    def prepend(self, data):
+        prepended_node = DoublyNode(data)
+        previous_head = self.head
+
+        self.head = prepended_node
+        self.head.next = previous_head
+
+        previous_head.prev = self.head
+
+        self.length += 1
+
+        return self.head
+
+    # O(1)
+    def append(self, data):
+        appended_node = DoublyNode(data)
+        previous_tail = self.tail
+
+        self.tail = appended_node
+        self.tail.prev = previous_tail
+
+        previous_tail.next = self.tail
+
+        self.length += 1
+
+        return appended_node
+```

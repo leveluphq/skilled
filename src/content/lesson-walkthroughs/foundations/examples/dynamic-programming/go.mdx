@@ -1,0 +1,16 @@
+```go
+func MinimumCoins(coins []int, amount int) int {
+    impossible := amount+1
+    best := make([]int, amount+1)
+    for index := 1; index <= amount; index++ { best[index] = impossible }
+    for value := 1; value <= amount; value++ {
+        for _, coin := range coins {
+            if coin <= value && best[value-coin] != impossible && 1+best[value-coin] < best[value] {
+                best[value] = 1+best[value-coin]
+            }
+        }
+    }
+    if best[amount] == impossible { return -1 }
+    return best[amount]
+}
+```

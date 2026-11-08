@@ -1,0 +1,36 @@
+```python
+# The input is the index number, and the output will be the head node.
+def delete_node(head, index):
+    # If we want to delete the current head node,
+    # we just return the node after the current head.
+    if index == 0:
+        return head.next
+
+    preceding_node = head
+
+    # Find the node that precedes the index of the node that we want to delete
+    for i in range(index - 1):
+        preceding_node = preceding_node.next
+
+    # Skip past our node to be removed
+    # Equivalent to preceding_node.next = preceding_node.next.next
+    node_to_be_removed = preceding_node.next
+    preceding_node.next = node_to_be_removed.next
+
+    # There are now no nodes in the linked list that are pointing to node_to_be_removed.
+    # The node that was before it is now pointing to the one after it.
+
+    return head
+
+head = Node(42)
+head.next = Node(9000)
+head.next.next = Node(10)
+head.next.next.next = Node(20)
+# 42 -> 9000 -> 10 -> 20
+
+head = delete_node(head, 2)
+# 42 -> 9000 -> 20
+
+head = delete_node(head, 0)
+# 9000 -> 20
+```

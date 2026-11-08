@@ -1,0 +1,452 @@
+[
+  {
+    "lesson": "age-sort",
+    "variant": "Solution",
+    "summary": "Sort bounded ages with a frequency table, preserving duplicate values.",
+    "notes": {
+      "javascript": "Initialize all 101 array counters with `fill(0)`. An uninitialized JavaScript slot would make an increment produce `NaN`.",
+      "typescript": "The `number[]` contract still requires integer ages in range. The type annotation cannot make an out-of-range counter index valid.",
+      "python": "The count list holds independent integer entries. Expansion appends each age repeatedly, preserving the original frequency without sorting the input.",
+      "java": "The output array is allocated at the exact input length. A separate write index fills it as the age counters are expanded.",
+      "cpp": "The counter array indexes the bounded age directly. The returned vector grows as counts are expanded; the input reference is only read.",
+      "csharp": "The result list reserves input-length capacity, then `ToArray` creates the required array return value. Include that final allocation in storage accounting.",
+      "go": "The result slice starts at length zero with input-length capacity. `append` adds output items; capacity alone does not create initialized result positions.",
+      "kotlin": "`IntArray` initializes counters to zero. The mutable result list is converted to an `IntArray` to satisfy the course return contract.",
+      "swift": "The result array appends ages in counter order. The input array remains a value passed for reading; this function never changes its elements.",
+      "rust": "The age is cast to `usize` for indexing. The bounded nonnegative contract makes that cast valid; `with_capacity` reserves output storage without filling it."
+    },
+    "title": "Counting sort for ages in {language}: worked solution"
+  },
+  {
+    "lesson": "best-time-to-buy-and-sell-stock",
+    "variant": "Solution",
+    "summary": "Find the best single chronological stock trade with one scan.",
+    "notes": {
+      "javascript": "The empty loop preserves a zero profit for empty input. No array sorting is used, so the original chronology remains available throughout.",
+      "typescript": "Both running states are numbers. Keep the profit comparison before the minimum update to make the earlier-purchase invariant explicit.",
+      "python": "The early length check handles empty and singleton lists before reading the first price. The scan retains only the minimum and best profit.",
+      "java": "The early return protects the first array access. Integer subtraction must remain within bounds even when both supplied prices individually fit `int`.",
+      "cpp": "The vector is passed by reference but only read. The running minimum replaces an O(n²) enumeration of all legal buy-and-sell pairs.",
+      "csharp": "The length guard prevents indexing an empty array. `Math.Max` retains zero when every legal trade would lose money.",
+      "go": "The empty-slice guard precedes the first indexed price. Updating scalar state avoids allocating a table of profits for every day.",
+      "kotlin": "The empty-array check protects initialization. `maxOf` and `minOf` update separate summaries of the already scanned prefix.",
+      "swift": "The scan tracks scalar values while reading the array. Keeping profit initially zero implements the option to make no trade.",
+      "rust": "The owned vector is traversed without constructing price pairs. The two scalar summaries retain all information needed for the one-transaction contract."
+    },
+    "title": "Best stock profit in {language}: one transaction"
+  },
+  {
+    "lesson": "catch-the-hacker",
+    "variant": "Solution",
+    "summary": "Count email occurrences and return the unique most frequent address.",
+    "notes": {
+      "javascript": "The table uses email strings as object keys. For a reusable counter over arbitrary strings, prefer `Map` or an object without inherited properties.",
+      "typescript": "The frequency table receives dynamically computed keys. A stricter standalone TypeScript project can annotate it as `Record<string, number>`.",
+      "python": "Dictionary membership distinguishes a missing address from an existing count. The second pass selects the greatest completed frequency.",
+      "java": "`HashMap<String, Integer>` stores boxed counts. Iterating `entrySet` exposes both the address and count without searching the original array again.",
+      "cpp": "The hash table counts string keys, then the winner scan compares their frequencies. The unique maximum makes iteration order irrelevant.",
+      "csharp": "`Dictionary<string, int>` requires initializing an absent key before incrementing it. The separate winner scan reads the completed counts.",
+      "go": "A missing map entry reads as zero, so the count increment needs no explicit insertion branch. Map iteration order does not affect a unique winner.",
+      "kotlin": "The mutable map stores counts for exact strings. Nullable lookup needs a default count before addition; it does not imply address normalization.",
+      "swift": "The dictionary maps complete strings to counts. A default zero supports counting without treating an absent entry as a valid winning address.",
+      "rust": "The `HashMap` owns address strings and counts. Entry-based updates avoid scanning for a key, and the returned winner owns its string value."
+    },
+    "title": "Most frequent email in {language}: hash-map solution"
+  },
+  {
+    "lesson": "first-bad-version",
+    "variant": "Solution",
+    "summary": "Find the first true value in a monotone version predicate.",
+    "notes": {
+      "javascript": "`Math.floor` turns the midpoint into an integer version. Call the supplied `isBadVersion`; its behavior depends on each test case.",
+      "typescript": "A `number` annotation does not imply integer division. The explicit floor is required before calling the provided version predicate.",
+      "python": "The predicate uses the snake_case name `is_bad_version`. Integer midpoint calculation keeps every call inside the remaining version interval.",
+      "java": "`Solution` inherits `VersionControl`, which supplies the predicate. Preserve that inheritance rather than implementing a test-specific replacement method.",
+      "cpp": "The provided version predicate is callable from the solution. Integer division floors the nonnegative interval width, avoiding a floating midpoint.",
+      "csharp": "`VersionControl` supplies `IsBadVersion` through inheritance. The midpoint uses the difference between bounds to avoid overflowing their sum.",
+      "go": "The provided `isBadVersion` function closes over the test boundary. The solution only supplies candidate version numbers and narrows its bounds.",
+      "kotlin": "`VersionControl()` constructs the base class that exposes the predicate. Keep the midpoint candidate when the predicate reports a bad version.",
+      "swift": "The inherited predicate belongs to `VersionControl`. Swift integer division already produces the required whole-number midpoint for positive bounds.",
+      "rust": "This entry takes `&self` because the predicate is a supplied method. Preserve that receiver when moving the code into the starter."
+    },
+    "title": "First Bad Version in {language}: boundary binary search"
+  },
+  {
+    "lesson": "reverse-a-linked-list",
+    "variant": "Solution",
+    "summary": "Reverse a linked list by moving nodes from an untouched suffix to a reversed prefix.",
+    "notes": {
+      "javascript": "The temporary next-node variable preserves the suffix before `currentNode.next` is overwritten. The returned object is the new head, not an array.",
+      "typescript": "Node references describe mutable links. The null terminator must remain a real absence value even if the original annotation is permissive.",
+      "python": "Python assignment shares node objects. Saving `current_node.next` preserves the suffix while changing the current object’s next field.",
+      "java": "Local `ListNode` variables hold references. Reassigning a variable moves a pointer; assigning its `next` field changes the original list.",
+      "cpp": "The `ListNode*` values are non-owning traversal pointers here. Relinking does not allocate replacement nodes or reverse their data values.",
+      "csharp": "The local variables refer to node instances. The temporary next reference must be captured before assigning the current node’s `next` field.",
+      "go": "The `*ListNode` pointers preserve node identity. Use the returned pointer as the head after the final current pointer becomes nil.",
+      "kotlin": "Nullable `ListNode` references represent the terminator. The loop condition establishes that the current node exists before accessing its next link.",
+      "swift": "`ListNode` is a class, so changing `next` mutates that shared node despite Swift arrays elsewhere having value semantics.",
+      "rust": "`node.next.take()` detaches the suffix while leaving `None` behind. Each owned box moves into the reversed prefix without cloning the list."
+    },
+    "title": "Reverse a linked list in {language}: pointer walkthrough"
+  },
+  {
+    "lesson": "mirror-delete",
+    "variant": "Solution",
+    "summary": "Delete the zero-based kth node from the end of a linked list.",
+    "notes": {
+      "javascript": "The lead pointer advances `k + 1` links. The separate null check after that loop distinguishes valid head removal from an oversized k.",
+      "typescript": "The implementation returns a head reference, which may change. Callers must keep that return value instead of assuming the original head survives.",
+      "python": "Identity checks against `None` delimit the list. Removing the head returns its successor; interior deletion changes the predecessor’s next link.",
+      "java": "The early null check prevents reading through an exhausted lead reference. The return value handles the head-deletion case without a dummy node.",
+      "cpp": "The raw pointers walk existing nodes. The relink skips one node; memory ownership outside the course representation needs a separate deletion policy.",
+      "csharp": "The null checks protect the offset walk. Relinking the predecessor changes the original chain, and the returned head can be different.",
+      "go": "The provided node uses exported `Next` fields. A nil lead after exactly the offset identifies a valid head deletion.",
+      "kotlin": "The nullable references distinguish an absent node from a value. Assertions inside traversal rely on the established gap and list-length conditions.",
+      "swift": "Optional chaining relinks the predecessor safely after the offset checks. Returning `head?.next` handles deletion of the original first node.",
+      "rust": "The code first counts the follower steps through an immutable borrow, then takes a mutable walk. This avoids simultaneous aliasing mutable pointers."
+    },
+    "title": "Remove kth node from end in {language}: zero-based deletion"
+  },
+  {
+    "lesson": "combine-blockchains",
+    "variant": "Solution",
+    "summary": "Merge two sorted linked chains while preserving duplicate timestamps.",
+    "notes": {
+      "javascript": "The final `currentNode1 || currentNode2` selects the remaining node reference. It attaches a whole sorted suffix without copying its values.",
+      "typescript": "The node parameters are mutable references. Reassigning `combinedTail.next` joins original chains, so callers should treat both inputs as consumed.",
+      "python": "The conditional head selection retains an original node. Python’s `or` selects the non-None suffix when one input is exhausted.",
+      "java": "All traversal variables reference supplied nodes. The selected head remains fixed while the tail advances, avoiding a return of only the last node.",
+      "cpp": "Pointer relinking reuses original nodes. The strict timestamp comparison chooses the second chain on ties while retaining both equal-valued nodes.",
+      "csharp": "The merge changes `next` fields on original node instances. Its output therefore shares those instances rather than containing copied timestamps.",
+      "go": "Exported `Data` and `Next` fields belong to the provided node type. Only the contributing chain pointer advances after a comparison.",
+      "kotlin": "The implementation handles nullable initial heads before selecting a non-null result tail. Subsequent nullable links describe each remaining suffix.",
+      "swift": "The initial guard also handles an absent chain. Node classes retain reference identity, so sorting the links consumes the original chain structure.",
+      "rust": "The contributing option is taken, its next link is detached, and the owned box moves to the result. No cloned suffix is needed."
+    },
+    "title": "Merge sorted linked lists in {language}: Combine Blockchains"
+  },
+  {
+    "lesson": "count-islands",
+    "variant": "Solution",
+    "summary": "Count side-connected land components with a destructive flood fill of the working grid.",
+    "notes": {
+      "javascript": "The nested arrays are shared references. Flood fill writes `~` into the caller’s rows, so repeated calls on the same grid see the changes.",
+      "typescript": "The `string[][]` cells are changed in place. Copy each row if a caller needs the original map after counting.",
+      "python": "The nested lists are mutable. The recursive helper marks a cell before visiting neighbors, which prevents adjacent land from recursing forever.",
+      "java": "The grid uses `char[][]`, matching the land and water constants. Its rows are changed in place through the same array references.",
+      "cpp": "The grid reference lets the helper replace land cells directly. Four recursive calls implement side connectivity; no diagonal calls are present.",
+      "csharp": "The jagged `char[][]` stores mutable rows under the rectangular-input contract. The recursive helper shares and updates those rows.",
+      "go": "The grid uses byte slices because the course symbols are ASCII. Assigning water changes the shared backing row, not a copied cell.",
+      "kotlin": "`Array<CharArray>` gives independently mutable primitive rows. Passing the grid to the helper preserves access to the same cells.",
+      "swift": "This version copies `grid` into a local `map` and marks that value through `inout`. The caller’s grid remains unchanged; copying adds grid storage.",
+      "rust": "The owned grid is marked through mutable slice borrows. Signed neighbor coordinates are bounds-checked before conversion to indexing types."
+    },
+    "title": "Count Islands in {language}: DFS flood-fill walkthrough"
+  },
+  {
+    "lesson": "binary-search-tree-validate",
+    "variant": "Solution",
+    "summary": "Validate every binary-tree node against bounds inherited from all its ancestors.",
+    "notes": {
+      "javascript": "The initial bounds are negative and positive infinity. Strict comparisons reject duplicate data values while admitting finite endpoint integers.",
+      "typescript": "The bound parameters are numbers, and infinities represent an unrestricted root. Child calls narrow one bound while retaining the inherited other bound.",
+      "python": "The recursive bounds use numeric infinities. The null base case accepts an empty subtree without reading any node fields.",
+      "java": "The bounds are `long`, wider than the node’s `int` data. This permits both endpoint int values without special subtraction or addition.",
+      "cpp": "The helper uses `long long` bounds around integer node data. Pointer null checks precede every field access.",
+      "csharp": "The helper’s `long` bounds extend beyond the `int` node range. Strict comparisons encode the lesson’s duplicate-rejection rule.",
+      "go": "The root is a node pointer, while the initial bounds use machine-sized integer extremes. The runner’s 32-bit node values fit inside those bounds.",
+      "kotlin": "The nullable node check is separate from `Long` bounds. Converting node data to the bound type preserves strict comparisons at Int endpoints.",
+      "swift": "The initial `Int.min` and `Int.max` surround the runner’s 32-bit node values on this platform. A full-width Int contract would need optional bounds.",
+      "rust": "Tree links use shared `Rc<RefCell<BinaryNode>>` handles. Borrowed node data and child handles carry recursive bounds without replacing tree identities."
+    },
+    "title": "Validate a binary search tree in {language}: inherited bounds"
+  },
+  {
+    "lesson": "binary-tree-max-depth",
+    "variant": "Solution",
+    "summary": "Measure a binary tree’s longest root-to-leaf path in edges.",
+    "notes": {
+      "javascript": "The stack stores objects containing both a node and its depth. Initial maximum -1 preserves the empty-tree result.",
+      "typescript": "The stack pairs mutable node references with numeric depths. The null check prevents absent children from contributing an extra level.",
+      "python": "The stack contains node-depth records and uses end removal. It avoids Python recursion limits for the traversal itself.",
+      "java": "A `NodeAtDepth` record carries a nullable node inside a non-null queue element. This avoids inserting null directly into `ArrayDeque`.",
+      "cpp": "The stack holds node-depth pairs. Structured binding extracts both values together, keeping each depth attached to its correct subtree.",
+      "csharp": "A typed `Stack<(BinaryNode Node, int Depth)>` groups each pending node with its depth. The maximum starts below every real-node depth.",
+      "go": "The `nodeDepth` struct keeps pointer and depth together in the slice stack. The final element is removed for depth-first traversal.",
+      "kotlin": "`ArrayDeque<Pair<BinaryNode?, Int>>` stores nullable children inside non-null pair objects. Each pair retains the correct edge count.",
+      "swift": "The tuple array stores an optional node and its edge depth. Popping from the end processes pending subtrees without shifting the array.",
+      "rust": "The stack stores optional shared tree handles and depths. Cloning child `Rc` handles shares existing nodes; it does not clone entire subtrees."
+    },
+    "title": "Binary tree maximum depth in {language}: count edges"
+  },
+  {
+    "lesson": "closest-common-ancestor-in-binary-tree",
+    "variant": "Solution",
+    "summary": "Find the lowest common ancestor in a general binary tree and return the original node.",
+    "notes": {
+      "javascript": "The function returns an original object reference from the tree. Constructing a new object with matching data would violate the identity contract.",
+      "typescript": "The nullable return type describes either an original node or absence. Both non-null child results identify a split beneath the current node.",
+      "python": "The function propagates original node objects. Returning a data integer would lose the node identity required by the course.",
+      "java": "The `BinaryNode` return is an input-tree reference. The recursive split rule depends on structure, without ordering comparisons between target values.",
+      "cpp": "The returned `BinaryNode*` must point into the input tree. A newly allocated node with equal data is not a valid ancestor reference.",
+      "csharp": "The recursive result is a node instance from the original graph. Reference identity survives propagation through parent calls.",
+      "go": "The returned `*BinaryNode` is either an original node pointer or nil. Target values choose matches, while child links determine ancestry.",
+      "kotlin": "The nullable result distinguishes a missing subtree match. Return the current original node when both child searches produce a result.",
+      "swift": "The node class has reference semantics. Optional results propagate a found original instance, including when a target is itself the ancestor.",
+      "rust": "Cloned `Rc` handles preserve pointer identity. The temporary `RefCell` borrow is released before recursion needs the child handles."
+    },
+    "title": "Lowest common ancestor in {language}: return the original node"
+  },
+  {
+    "lesson": "generate-all-permutations",
+    "variant": "Solution",
+    "summary": "Generate positional string permutations, retaining repeated results for repeated characters.",
+    "notes": {
+      "javascript": "String indexing and slicing use UTF-16 code units. The course’s simple text fits that model; arbitrary displayed Unicode characters need another representation.",
+      "typescript": "The `string[]` result retains duplicate entries. Type annotations do not change the positional branches created by repeated input characters.",
+      "python": "Slicing builds a new remaining string for each branch. List appends preserve duplicate results rather than deduplicating equal strings.",
+      "java": "`charAt` and substring operate on UTF-16 units. The intermediate `ArrayList` is converted to the required string array at return.",
+      "cpp": "Indexing `std::string` selects bytes. This matches the course’s simple text, while arbitrary UTF-8 character permutations need explicit decoding.",
+      "csharp": "Indexing selects UTF-16 `char` values. `Substring` removes the chosen position, and `ToArray` returns every collected occurrence.",
+      "go": "This version slices bytes and chooses byte positions. Its contract is the course’s ASCII text; multibyte UTF-8 needs a rune-based rewrite.",
+      "kotlin": "Indexed strings use UTF-16 `Char` values. The mutable result list collects every branch, including identical strings from repeated positions.",
+      "swift": "The character array permits integer indexing of Swift `Character` values. Creating it and rebuilding suffix strings contributes copying work.",
+      "rust": "The code collects Unicode scalar `char` values before removing a position. Those are not necessarily user-perceived grapheme clusters."
+    },
+    "title": "Generate string permutations in {language}: positional results"
+  },
+  {
+    "lesson": "group-permutations-of-palindromes",
+    "variant": "Solution",
+    "summary": "Filter palindrome permutations, then group retained strings by character multiset.",
+    "notes": {
+      "javascript": "Parity counting iterates characters, while the sorted key uses split-and-sort. Those units agree for the course’s lowercase alphanumeric input.",
+      "typescript": "The nested string-array return preserves input occurrences. The table’s sorted keys group anagrams only after the palindrome parity check succeeds.",
+      "python": "`sorted(string)` supplies a canonical character order. Dictionary groups retain the original strings, including repeated input occurrences.",
+      "java": "`computeIfAbsent` creates one list per sorted key. The parity helper uses character counts before each eligible string joins its group.",
+      "cpp": "The code sorts a copy of each eligible string as its key. The original string is appended to the hash-table group.",
+      "csharp": "The dictionary stores `List<string>` groups and converts them to arrays on return. `Array.Sort` affects the temporary key characters.",
+      "go": "The sorted key uses a byte slice, matching lowercase alphanumeric input. Map values are collected without promising a group iteration order.",
+      "kotlin": "`getOrPut` creates a mutable list for a new sorted key. The key and the output string have different roles and must not be interchanged.",
+      "swift": "The dictionary’s default empty array lets a qualifying string append directly to its group. Sorting uses Swift Character ordering.",
+      "rust": "The key is rebuilt from sorted Unicode scalars. `HashMap` entry updates preserve each owned input string in the matching group."
+    },
+    "title": "Group palindrome permutations in {language}: counts and keys"
+  },
+  {
+    "lesson": "interview-scheduler",
+    "variant": "Solution",
+    "summary": "Merge sorted interval coverage with an explicit touching-endpoint rule.",
+    "notes": {
+      "javascript": "The numeric comparator avoids JavaScript’s default text sorting. Sorting and extending interval objects can change the input and its shared objects.",
+      "typescript": "The interval objects are mutable references. A copied outer array would still share their end fields with the caller.",
+      "python": "The interval representation uses dictionaries. Sorting the list and updating an end value can affect the original list and its objects.",
+      "java": "The interval array is sorted by start. Extending an existing `Interval` object also changes that object through other retained references.",
+      "cpp": "The interval vector is sorted through its reference parameter. The merge must use the larger end to avoid shrinking a containing interval.",
+      "csharp": "The returned collection contains interval class instances. Updating the latest merged end can be visible to callers retaining those instances.",
+      "go": "`slices.SortFunc` changes input order. Interval structs copied into the result have value semantics, so extending a result end differs from mutating a shared class.",
+      "kotlin": "The sorted traversal compares each start with the last result end. Shared interval objects can retain mutations even when the outer collection is copied.",
+      "swift": "`sorted` creates an ordered array, but `Interval` is a class. Updating its end still mutates the shared interval instance.",
+      "rust": "The owned vector sorts by `f64::total_cmp`. Provided `Interval` values are copied into result storage, and the last result receives the merged end."
+    },
+    "title": "Merge intervals in {language}: Interview Scheduler"
+  },
+  {
+    "lesson": "max-min-stack",
+    "variant": "Solution",
+    "summary": "Support stack extrema through histories that retain duplicate record values.",
+    "notes": {
+      "javascript": "The two history arrays include equal extrema. Independent comparisons during pop allow one removed item to update both histories.",
+      "typescript": "The class maintains three arrays whose tops must agree about current extrema. Keep the push return value consistent with the course API.",
+      "python": "The main list and two history lists use end append and pop. Empty operations remain outside the declared contract.",
+      "java": "The auxiliary stacks record duplicate extrema. Reading their tops is constant work and does not scan the main stack.",
+      "cpp": "The class stores value and extremum histories. Equality on pop restores earlier records without searching for a replacement minimum or maximum.",
+      "csharp": "The class separates ordinary stack contents from extremum history. Equal extrema need repeated history entries so one pop does not erase all copies.",
+      "go": "The slice-backed histories remove their final elements. Queries read those final elements directly rather than iterating the stack.",
+      "kotlin": "The mutable collections retain earlier extrema under the current ones. Duplicate comparisons preserve correct results after repeated-value pops.",
+      "swift": "The class’s arrays hold the value stack and extrema histories. End operations avoid the shifts caused by front removal.",
+      "rust": "The design object owns its vectors. Query methods read history tops; push and pop update all required histories through mutable access."
+    },
+    "title": "Min-max stack in {language}: constant-time extrema"
+  },
+  {
+    "lesson": "pilot-a-rocket",
+    "variant": "Solution",
+    "summary": "Find an unweighted shortest route and reconstruct it from predecessor links.",
+    "notes": {
+      "javascript": "The queue implementation is part of the time bound. A head index avoids repeated front insertion or removal as the BFS frontier grows.",
+      "typescript": "The predecessor table distinguishes an undiscovered key from the start’s null predecessor. That distinction also prevents revisiting the start through a cycle.",
+      "python": "Check the queue’s operations when stating complexity. List front insertion or removal costs linear time; a deque preserves the graph algorithm’s linear bound.",
+      "java": "The FIFO queue and predecessor map separate discovery order from route reconstruction. Missing predecessor values terminate the reversed chain at the start.",
+      "cpp": "The queue processes discovered vertices FIFO. The predecessor map records one incoming edge for each newly visited vertex.",
+      "csharp": "The queue holds pending vertex names. The predecessor dictionary supports reconstructing one shortest route without storing a route per pending item.",
+      "go": "The queue advances by reslicing its front. The empty-string predecessor marks base, while map membership distinguishes undiscovered vertices.",
+      "kotlin": "The queue and mutable predecessor map preserve breadth-first discovery. A missing route remains a nullable result rather than an empty successful route.",
+      "swift": "The queue keeps a front index instead of removing the array’s first element. The start is excluded explicitly when testing predecessor absence.",
+      "rust": "`VecDeque` provides FIFO operations. Borrowed string keys in the predecessor map refer to the owned graph, and the final route owns its strings."
+    },
+    "title": "BFS shortest path in {language}: Pilot a Rocket"
+  },
+  {
+    "lesson": "robot-maze",
+    "variant": "Solution",
+    "summary": "Memoize directed maze reachability while keeping unknown distinct from false.",
+    "notes": {
+      "javascript": "The memo rows begin with absent entries. Explicit comparisons with true and false distinguish both completed answers from unknown cells.",
+      "typescript": "The memo’s Boolean cells are filled lazily. A truthiness-only lookup would fail to reuse known-false answers.",
+      "python": "The memo separates unknown from cached Boolean answers. Both successful and failed suffix searches should stop repeated recursion.",
+      "java": "Boxed `Boolean[][]` entries start null. `Boolean.TRUE.equals` and `Boolean.FALSE.equals` inspect them without unboxing an unknown null.",
+      "cpp": "`optional<bool>` represents unknown, false, and true separately. Comparing it with false must preserve the difference from an empty optional.",
+      "csharp": "Nullable `bool` entries distinguish unknown from known false. Each memo row must be allocated before recursive lookup.",
+      "go": "The memo uses integer states to distinguish unknown from completed answers. That representation avoids conflating a false result with a missing state.",
+      "kotlin": "`arrayOfNulls<Boolean>` supplies unknown entries. Nullable Boolean comparisons let false results be cached as effectively as true results.",
+      "swift": "The optional memo stores three states. The helper changes that table through its mutation interface while reading room values.",
+      "rust": "`Option<bool>` stores the tri-state memo explicitly. Shared room slices and mutable memo slices separate read-only input from computed state."
+    },
+    "title": "Maze reachability in {language}: memoized down/right search"
+  },
+  {
+    "lesson": "shifted-search",
+    "variant": "Solution",
+    "summary": "Search a distinct rotated sorted array by identifying an ordered half.",
+    "notes": {
+      "javascript": "`Math.floor` keeps midpoint indexes integral. The two ordered-half range tests use inclusive outer bounds and exclude the checked midpoint.",
+      "typescript": "The numeric array is read without mutation. TypeScript’s number type still needs an explicit whole-number midpoint.",
+      "python": "The inclusive end starts at length minus one, so an empty list exits before indexing. Floor-based midpoint calculation matches the bound convention.",
+      "java": "The midpoint uses the interval difference. Each unsuccessful branch moves strictly beyond that midpoint, ensuring two-element intervals terminate.",
+      "cpp": "The index variables are signed so an empty vector can begin with end -1. Avoid unsigned underflow when adapting this pattern.",
+      "csharp": "The Int indexes can represent the empty interval’s negative end. Exact midpoint equality is checked before selecting an ordered half.",
+      "go": "The signed integer end can be -1 for an empty slice. The loop guard prevents indexing until a nonempty interval exists.",
+      "kotlin": "The method reads an `IntArray` and returns an Int index. Moving a bound past the midpoint preserves termination without making a subarray.",
+      "swift": "The search indexes the array without slicing it. Signed bounds represent the empty interval and preserve the missing-value sentinel.",
+      "rust": "The closure converts signed candidate indexes to `usize` only during guarded lookup. Keeping the search bounds signed represents end -1 safely."
+    },
+    "title": "Search a rotated sorted array in {language}: Shifted Search"
+  },
+  {
+    "lesson": "sorted-matrix-search",
+    "variant": "Solution",
+    "summary": "Eliminate a row or column at each step in a row-and-column sorted matrix.",
+    "notes": {
+      "javascript": "The loop checks the row bound before reading the first row’s length. That short-circuit order protects an empty outer matrix.",
+      "typescript": "The return annotation fixes row-first coordinates as a two-number tuple. The missing result uses the same shape with two negative indexes.",
+      "python": "The row starts at length minus one. The loop’s short-circuit guard prevents a first-row lookup when the outer list is empty.",
+      "java": "The returned `int[]` contains row then column. The traversal moves only up or right and never creates a flattened array.",
+      "cpp": "The signed row can become -1 to terminate above the matrix. Guard it before indexing the vector with a converted size type.",
+      "csharp": "The method returns a two-element integer array. The first loop condition protects the first-row access for empty outer input.",
+      "go": "The returned slice stores row-first coordinates. A negative row exits before the code reads a cell or the first-row width.",
+      "kotlin": "`intArrayOf` keeps the return in the starter’s primitive-array form. Bound checks precede every matrix access.",
+      "swift": "The two-element array reports coordinates. The method reads value-semantic input without copying it into a flattened search space.",
+      "rust": "The row is signed, while the column is an indexing type. Bounds establish a valid row before the code casts it for access."
+    },
+    "title": "Search a sorted matrix in {language}: staircase walkthrough"
+  },
+  {
+    "lesson": "steal-packages",
+    "variant": "Solution",
+    "summary": "Maximize a nonadjacent selection with two rolling prefix optima.",
+    "notes": {
+      "javascript": "The temporary previous optimum must be saved before `maxProfit` changes. Otherwise the next step can combine adjacent houses.",
+      "typescript": "The two numeric states summarize prefixes, not individual house values. Their update order preserves that meaning at the next iteration.",
+      "python": "The loop uses scalar prefix optima and leaves the input list untouched. Starting from zero allows selecting no house.",
+      "java": "The method uses bounded `int` sums. Expanded value ranges need a wider intermediate even when every individual house value fits.",
+      "cpp": "The vector reference is read only. Saving the old optimum before assignment prevents the rolling recurrence from using the new state twice.",
+      "csharp": "`Math.Max` chooses take or skip. The temporary old optimum becomes the two-houses-back state only after the new optimum is computed.",
+      "go": "The slice is traversed by value. Two scalar states replace a full DP table when only the maximum total is required.",
+      "kotlin": "The loop reads primitive array values. `maxOf` compares two legal prefix constructions, and the saved old optimum advances the history.",
+      "swift": "The method keeps bounded Int totals while reading the array. No selection indexes are stored, so it cannot reconstruct chosen houses.",
+      "rust": "The vector is consumed for iteration, while the recurrence stores two totals. Arithmetic bounds must cover sums, not merely individual values."
+    },
+    "title": "House Robber in {language}: maximum nonadjacent sum"
+  },
+  {
+    "lesson": "sum-digits",
+    "variant": "Solution",
+    "summary": "Sum decimal digits through a decreasing recursive integer decomposition.",
+    "notes": {
+      "javascript": "`Math.floor(number / 10)` removes the final digit. Ordinary division alone would leave fractions and break the nonnegative-integer recurrence.",
+      "typescript": "The number annotation permits fractions, so the lesson’s integer precondition still matters. The explicit floor makes each recursive argument smaller.",
+      "python": "Integer floor division removes the final digit. Python’s unbounded integers allow wider inputs, but recursion depth still grows with their digit count.",
+      "java": "Integer division by ten truncates nonnegative input as required. The zero base case stops before another recursive call.",
+      "cpp": "The `%` remainder supplies one digit, and integer division supplies the prefix. The nonnegative precondition avoids signed-remainder ambiguity.",
+      "csharp": "The integer parameter keeps division integral. Add the current remainder to the returned suffix sum rather than overwriting either contribution.",
+      "go": "Integer division and remainder provide the two recurrence terms. The recursive result combines with the current digit after the call returns.",
+      "kotlin": "Int division removes one decimal digit for nonnegative input. The zero return is both the stopping rule and additive identity.",
+      "swift": "Swift Int division gives the remaining prefix directly. Negative-number extensions need a deliberate magnitude policy before using the recurrence.",
+      "rust": "The associated function calls itself through `Solution`. Its i32 input bounds recursion depth, while the zero case closes the recurrence."
+    },
+    "title": "Sum decimal digits in {language}: recursive solution"
+  },
+  {
+    "lesson": "three-moves",
+    "variant": "IterativeSolution",
+    "summary": "Count ordered one-, two-, and three-step routes with rolling dynamic programming.",
+    "notes": {
+      "javascript": "The three scalar counts start at 0, 0, and 1. Compute their sum before shifting to preserve the empty-sequence seed.",
+      "typescript": "The numeric states count complete sequences, not move lengths. Very large targets can exceed Number’s safe integer range.",
+      "python": "The iterative version avoids recursive calls. Python integers grow as counts grow, so wide inputs increase arithmetic cost despite constant state count.",
+      "java": "The three `int` states avoid a table, but the exponentially growing answer eventually exceeds their range. Bound the requested board length.",
+      "cpp": "The iterative loop retains only three preceding counts. Signed integer overflow is invalid, so larger targets need a wider or arbitrary-precision result.",
+      "csharp": "The Int states implement the ordered-sequence recurrence. Overflow behavior must be defined if the accepted board length is expanded.",
+      "go": "The loop advances exactly one board position per iteration. The machine-sized integer type bounds the largest representable count.",
+      "kotlin": "The negative-input return precedes iteration. Three rolling Int counts avoid recursion and allocation of a per-position table.",
+      "swift": "The negative guard precedes the range loop. Adding the three Int counts can trap if expanded targets exceed the representable range.",
+      "rust": "The i32 counts use checked arithmetic in the runner. The implementation returns before iteration for a negative target."
+    },
+    "title": "Count 1, 2, or 3-step paths in {language}: Three Moves"
+  },
+  {
+    "lesson": "vending-machine",
+    "variant": "Solution",
+    "summary": "Minimize unlimited coin usage with a bottom-up amount table.",
+    "notes": {
+      "javascript": "`Infinity` remains infinite when one is added, so unreachable predecessor amounts cannot become falsely competitive candidates.",
+      "typescript": "The table contains numbers including `Infinity`. The final sentinel comparison translates an unreachable target into the contract’s -1 result.",
+      "python": "Floating infinity represents unreachable amounts while reachable entries remain integer counts. An unreachable predecessor stays infinite after addition.",
+      "java": "The integer maximum is a sentinel, not arithmetic infinity. The guard excludes it before adding one and prevents an overflowed candidate.",
+      "cpp": "The `INT_MAX` sentinel must be checked before addition. Only reachable predecessor states can improve the current amount.",
+      "csharp": "The int maximum denotes an unreachable amount. The reachability guard prevents adding one to that sentinel.",
+      "go": "The sentinel is `math.MaxInt32`. The guarded recurrence avoids treating a sentinel increment as a valid coin count.",
+      "kotlin": "`Int.MAX_VALUE` is guarded before incrementing. The primitive IntArray keeps one minimum count for each amount through the target.",
+      "swift": "The `Int.max` sentinel cannot safely be incremented. The predecessor guard keeps unreachable states out of candidate arithmetic.",
+      "rust": "`saturating_add(1)` keeps the maximum sentinel at the maximum instead of overflowing. Reachable smaller counts can still improve the minimum."
+    },
+    "title": "Coin change in {language}: minimum-coin dynamic programming"
+  },
+  {
+    "lesson": "valid-sudoku-board",
+    "variant": "Solution",
+    "summary": "Validate filled Sudoku entries against rows, columns, and subsquares.",
+    "notes": {
+      "javascript": "The tracker factories create fresh objects for every region. Filling an array with one shared object would mix unrelated rows or columns.",
+      "typescript": "The record-based trackers count positive cell values. Fresh tracker objects are required even when their outer arrays have fixed lengths.",
+      "python": "The region dictionaries are independent. Their counts ignore zeros and reject the second occurrence of any filled value in a region.",
+      "java": "The list factories allocate a new HashMap for every row, column, and block. Reusing one map would create false cross-region duplicates.",
+      "cpp": "The per-region maps count filled values. The computed block row and column use integer division by the subsquare side length.",
+      "csharp": "The array factory constructs independent dictionaries. A shared dictionary instance would wrongly merge the membership of separate regions.",
+      "go": "The map factories initialize each map before assigning counts. A nil map can be read but cannot receive these updates.",
+      "kotlin": "The Array initializer calls the factory for each entry, creating separate mutable maps. This avoids aliasing trackers across rows and blocks.",
+      "swift": "The dictionaries track region membership while the board is read. Integer block coordinates follow the square-root shape check.",
+      "rust": "The vectors contain independent HashMap values. Entry increments record row, column, and block counts without modifying the owned board."
+    },
+    "title": "Validate Sudoku in {language}: rows, columns, and subsquares"
+  },
+  {
+    "lesson": "walk-a-matrix",
+    "variant": "Solution",
+    "summary": "Traverse a rectangle in clockwise spiral order using shrinking boundaries.",
+    "notes": {
+      "javascript": "The result uses append-style array pushes. Bounds change after each edge, and final reverse-direction edges need their own guards.",
+      "typescript": "The `number[]` return contains values rather than coordinates. Numeric boundary variables describe the remaining rectangle without a visited table.",
+      "python": "The result list appends emitted cells. Empty outer input needs a guard before deriving the first row’s width.",
+      "java": "The result array has exactly row-count times column-count slots. The write index must advance once per emitted cell and never revisit an edge.",
+      "cpp": "The signed boundary indexes can cross to end traversal. The input vector reference is read without marking cells.",
+      "csharp": "The List result grows during traversal and converts to an array at return. Count that conversion when discussing output allocation.",
+      "go": "The result slice starts empty and appends cells in edge order. Empty input must be handled before indexing the first row.",
+      "kotlin": "The mutable result list is separate from the matrix. The final row and column guards prevent duplicates on narrow rectangles.",
+      "swift": "The array appends cells while four signed boundaries shrink. Guard dimensions before constructing ranges for empty or exhausted edges.",
+      "rust": "The first-row width uses `first().map_or`, so empty outer input is safe. Signed boundaries are converted only during valid cell reads."
+    },
+    "title": "Spiral matrix traversal in {language}: Walk a Matrix"
+  }
+]

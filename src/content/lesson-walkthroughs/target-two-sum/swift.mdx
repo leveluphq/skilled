@@ -1,0 +1,76 @@
+The Swift Two Sum exercise returns every matching pair of original indexes from unique integers. For `[4, 1, 5, 2, 3]` with target `6`, the result needs both `[1, 2]` and `[0, 3]`. A single-answer return inside the loop would miss required work.
+
+We will use a Dictionary from Int values to Int indexes and return `[[Int]]`, matching the starter. The array stays in its original order. Dictionary optional binding gives us a clear way to distinguish a missing partner from a partner stored at index zero.
+
+## Bind the earlier index only when it exists
+
+Dictionary subscripting returns an optional value. An `if let` branch unwraps a real earlier index, including zero. Lookup happens before insertion, keeping the map restricted to the already-visited prefix.
+
+```swift
+class Solution {
+    func getTargetIndexes(_ array: [Int], _ target: Int) -> [[Int]] {
+        var seen: [Int: Int] = [:]
+        var pairs: [[Int]] = []
+
+        for (j, value) in array.enumerated() {
+            let (complement, overflow) = target.subtractingReportingOverflow(value)
+            if !overflow, let earlier = seen[complement] {
+                pairs.append([earlier, j])
+            }
+            seen[value] = j
+        }
+        return pairs
+    }
+}
+```
+
+The optional test asks whether a key exists, not whether its index has a truthy value. Swift does not implicitly convert an Int into Bool, but a handwritten sentinel check such as `earlier != 0` would still be wrong for this problem.
+
+## Handle subtraction overflow as a failed possible partner
+
+Swift's ordinary integer arithmetic traps on overflow. Both a target and value can fit in Int while their difference does not. The reporting operation computes a partial result and a Boolean overflow flag without trapping.
+
+When overflow is true, the mathematical complement is outside Int's range and cannot equal any Int in the array. Skipping only that lookup is safe. The current value is still inserted because it can participate in a later valid pair.
+
+Do not use the partial complement when the flag reports overflow. Replacing subtraction with a wrapping operator would likewise substitute a different number system for the exercise's mathematical sum. The [Swift operator guide](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/advancedoperators/) describes ordinary and overflow arithmetic behavior.
+
+## Trace the earlier-prefix invariant
+
+Before an iteration at `j`, the dictionary contains values from indexes less than `j`. On `[4, 1, 5, 2, 3]`, it first receives `4 → 0` and `1 → 1`. The later `5` finds `1`, yielding `[1, 2]`; the `2` then finds `4`, yielding `[0, 3]`.
+
+The final `3` has not been inserted when its complement is checked, so it cannot pair with itself. The same rule makes `[3]` with target `6` return no pairs. Each valid pair appears once, when the later member arrives, so reversed duplicates need no separate filtering structure.
+
+Keeping the whole scan is essential. A match establishes the answer for the current number, not for every later number. The return belongs after the loop, and empty input naturally returns an empty outer array.
+
+## Keep index and value semantics clear
+
+`enumerated()` provides offsets and elements together. For a full Array, those offsets are the original zero-based positions required by this exercise. If adapting the code to a collection slice with different indexes, do not assume enumeration offsets are interchangeable with that collection's native indexes.
+
+Swift arrays and dictionaries have value semantics, commonly implemented using copy-on-write storage. The parameter array is only read, so no input copy is needed just to preserve its order. Sorting the input would change index meaning and add work unless original positions were carried alongside values.
+
+Every appended pair is a new small array value. The output format intentionally contains index arrays, not the matching numbers themselves. Returning `[array[earlier], value]` would have the wrong meaning even when a familiar example made the numbers look plausible.
+
+## Test pair contents independently of ordering
+
+```swift
+func checkExamples() {
+    let solution = Solution()
+    let input = [4, 1, 5, 2, 3]
+    let actual = solution.getTargetIndexes(input, 6)
+        .map { $0.sorted() }
+        .sorted { $0.lexicographicallyPrecedes($1) }
+    precondition(actual == [[0, 3], [1, 2]])
+    precondition(input == [4, 1, 5, 2, 3])
+    precondition(solution.getTargetIndexes([3], 6).isEmpty)
+    precondition(solution.getTargetIndexes([Int.max, 1], Int.min).isEmpty)
+    precondition(solution.getTargetIndexes([Int.min, Int.max], -1) == [[0, 1]])
+}
+```
+
+Run the helper from a standalone Swift program. Add empty input, no answer, negative values, and a pair using index zero. A nested-loop reference should use checked addition or a suitable wider representation so that its own arithmetic cannot repeat the overflow defect.
+
+## Explain the expected cost and input restriction
+
+With ordinary Dictionary hashing, the scan takes expected `O(n + k)` work and `O(n)` dictionary storage, plus the result. Under unique inputs, each number has only one possible complement value, so the number of pairs is at most linear.
+
+If duplicate values become legal and every index pair is required, retain multiple earlier positions per value. The output of that generalized problem can be quadratic. Before practicing, explain the optional binding and overflow flag separately, then reconstruct the loop from the earlier-prefix invariant.

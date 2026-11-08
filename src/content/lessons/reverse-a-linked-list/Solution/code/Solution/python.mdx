@@ -1,0 +1,23 @@
+```python
+def reverse_linked_list(head):
+    previous_node = None
+    current_node = head
+
+    while current_node != None:
+        # Store the actual next node in the linked list
+        next_node = current_node.next
+
+        # This reverses the current node to point to the previous node
+        current_node.next = previous_node
+
+        # We now step our previous node forward
+        previous_node = current_node
+
+        # We step our current node forward
+        current_node = next_node
+
+    # Since current_node becomes null at the tail,
+    # we return the previous_node which is the new head
+    # and the front of our linked list
+    return previous_node
+```

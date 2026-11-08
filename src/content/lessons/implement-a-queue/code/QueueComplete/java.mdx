@@ -1,0 +1,59 @@
+```java
+class Node<T> {
+    T data;
+    Node<T> prev;
+
+    Node(T data) {
+        this.data = data;
+        this.prev = null;
+    }
+}
+
+class Queue<T> {
+    private Node<T> first;
+    private Node<T> last;
+
+    public Queue() {
+        this.first = null;
+        this.last = null;
+    }
+
+    // Get the first item
+    public Node<T> peek() {
+        return this.first;
+    }
+
+    // Add a new last item
+    public Node<T> enqueue(T item) {
+        Node<T> newLastNode = new Node<>(item);
+        boolean isEmptyList = this.first == null && this.last == null;
+
+        if (isEmptyList) {
+            this.first = newLastNode;
+            this.last = newLastNode;
+        } else {
+            this.last.prev = newLastNode;
+            this.last = newLastNode;
+        }
+
+        return newLastNode;
+    }
+
+    // Remove the first item
+    public Node<T> dequeue() {
+        Node<T> removedItem = this.first;
+
+        if (removedItem == null) {
+            return null;
+        }
+
+        if (this.first == this.last) {
+            this.last = null;
+        }
+
+        this.first = removedItem.prev;
+
+        return removedItem;
+    }
+}
+```

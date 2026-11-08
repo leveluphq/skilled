@@ -1,0 +1,61 @@
+```csharp
+public class Solution {
+    private const string StartNode = "base";
+    private const string EndNode = "ship";
+
+    public string[] PilotRocket(Dictionary<string, string[]> satellites) {
+        // Queue to handle BFS
+        var bfsNodeQueue = new Queue<string>();
+        bfsNodeQueue.Enqueue(StartNode);
+
+        // Use a hash table to track the node that came
+        // prior to the current in our BFS to track the path
+        var previousNodeInPath = new Dictionary<string, string>();
+        previousNodeInPath[StartNode] = null;
+
+        // Perform our BFS
+        while (bfsNodeQueue.Count > 0) {
+            string node = bfsNodeQueue.Dequeue();
+
+            // We've successfully reached the end, and now we should build the path to get here
+            if (node == EndNode) {
+                return GetShortestPathToShip(previousNodeInPath);
+            }
+
+            foreach (string connectedNode in satellites[node]) {
+                // Check if we have visited this node yet
+                if (!previousNodeInPath.ContainsKey(connectedNode)) {
+                    // Add the node to the queue for our BFS
+                    bfsNodeQueue.Enqueue(connectedNode);
+
+                    // Set the current node as the one that came before each of its siblings
+                    previousNodeInPath[connectedNode] = node;
+                }
+            }
+        }
+
+        // We iterated through all the nodes, and no paths lead to the ship
+        return null;
+    }
+
+    private string[] GetShortestPathToShip(Dictionary<string, string> previousNodeInPath) {
+        var pathToShip = new List<string>();
+
+        // We start at the final node and work our way backward to the start
+        string node = EndNode;
+
+        while (node != null) {
+            pathToShip.Add(node);
+
+            // Doing a look up on the hash table for each node
+            // will yield the previous node in the path
+            node = previousNodeInPath[node];
+        }
+
+        // Since we worked our way backward,
+        // we must reverse the path to be in the correct order base -> ship
+        pathToShip.Reverse();
+        return pathToShip.ToArray();
+    }
+}
+```

@@ -1,0 +1,17 @@
+```cpp
+#include <vector>
+#include <optional>
+#include <functional>
+
+std::vector<int> inOrder(const std::vector<std::optional<int>>& values) {
+    std::vector<int> output;
+    std::function<void(std::size_t)> walk = [&](std::size_t index) {
+        if (index >= values.size() || !values[index]) return;
+        walk(2 * index + 1);
+        output.push_back(*values[index]);
+        walk(2 * index + 2);
+    };
+    walk(0);
+    return output;
+}
+```

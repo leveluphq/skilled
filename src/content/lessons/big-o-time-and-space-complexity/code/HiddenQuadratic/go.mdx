@@ -1,0 +1,8 @@
+```go
+func hiddenQuadratic(input []int) {
+	for i := range input {
+		// slices.Clone copies the rest of the slice, which is also O(n)
+		fmt.Println(slices.Clone(input[i:]))
+	}
+}
+```

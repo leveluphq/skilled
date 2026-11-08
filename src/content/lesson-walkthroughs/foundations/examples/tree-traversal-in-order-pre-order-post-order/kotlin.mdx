@@ -1,0 +1,14 @@
+```kotlin
+fun inOrder(values: List<Int?>): List<Int> {
+    val output = mutableListOf<Int>()
+    fun walk(index: Int) {
+        if (index >= values.size) return
+        val value = values[index] ?: return
+        walk(2 * index + 1)
+        output.add(value)
+        walk(2 * index + 2)
+    }
+    walk(0)
+    return output
+}
+```

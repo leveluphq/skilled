@@ -1,0 +1,66 @@
+```swift
+class Solution {
+    private let openSpot = 0
+    private let blockedSpot = 1
+    private let exitSpot = 2
+
+    func hasExitPath(_ roomMatrix: [[Int]]) -> Bool {
+        // Return false if the matrix is invalid
+        if roomMatrix.isEmpty || roomMatrix[0].isEmpty {
+            return false
+        }
+
+        // Init our memoize matrix, where nil means we don't know yet if a spot is on a valid path
+        var memoizedPathValidity = [[Bool?]](
+            repeating: [Bool?](repeating: nil, count: roomMatrix[0].count),
+            count: roomMatrix.count
+        )
+
+        // Recursively walk through the room to check if there is a valid path
+        let isValidPath = walkThroughRoom(roomMatrix, 0, 0, &memoizedPathValidity)
+
+        return isValidPath
+    }
+
+    // Recursive helper function
+    private func walkThroughRoom(_ roomMatrix: [[Int]], _ row: Int, _ col: Int, _ memo: inout [[Bool?]]) -> Bool {
+        // Base case 1: Outside of room, so there can't be a path through this
+        let isOutsideRoom = row > roomMatrix.count - 1 || col > roomMatrix[0].count - 1
+        if isOutsideRoom {
+            return false
+        }
+
+        // Base case 2: A path successfully reached the end, so propagate this upward
+        let isOnValidPath = memo[row][col] == true
+        let isExitNode = roomMatrix[row][col] == exitSpot
+        if isOnValidPath || isExitNode {
+            // Set the current node as true as well
+            memo[row][col] = true
+            return true
+        }
+
+        // Base case 3: We reached a blocking node
+        let isOnInvalidPath = memo[row][col] == false
+        let isBlockingNode = roomMatrix[row][col] == blockedSpot
+        if isOnInvalidPath || isBlockingNode {
+            memo[row][col] = false
+            return false
+        }
+
+        // Recursive case: move down and right
+        let downResult = walkThroughRoom(roomMatrix, row + 1, col, &memo)
+        let rightResult = walkThroughRoom(roomMatrix, row, col + 1, &memo)
+
+        if !downResult && !rightResult {
+            // If both this node's right and down are false, we memoize this to false
+            memo[row][col] = false
+        } else {
+            // If either of the paths are true, we set this node as true since at least one can reach the exit
+            memo[row][col] = true
+        }
+
+        // Returns true if either is successful
+        return downResult || rightResult
+    }
+}
+```

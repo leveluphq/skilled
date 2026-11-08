@@ -1,0 +1,24 @@
+import { MarginContainer } from 'content/blocks/styles';
+import { ImageColumns } from './styles';
+
+We have already done the challenging part by recognizing the overlapping subproblems and writing a recursive function.
+Now we just need to memoize the paths we've traversed so we don't walk through them again.
+
+You can imagine that if we didn't memoize the results, we would traverse through the same path many times.
+Instead, we can remember the result from points we have already passed through and not revisit the same nodes over and over.
+
+<MarginContainer>
+<ImageColumns>
+<img src="/images/robot-complete-grid.png" alt="A robot-path grid records counts of routes to the destination, with blocked cells contributing no route." width={1252} height={1246} />
+<img src="/images/robot-complete-paths.png" alt="Rightward and downward arrows trace available routes across an open grid toward the destination." width={1252} height={1246} />
+</ImageColumns>
+</MarginContainer>
+
+We will create another `r x c` matrix that we will store the results of its paths.
+If either right or down reach an exit, we memoize the result for the current node to be true.
+If both right and down return false, we set the memoized value to false.
+When a recursive call reaches this node again, we can immediately return the result that we stored in the memoization matrix instead of continuing with the recursive case.
+
+This ensures we follow each path once instead of for every possible combination.
+
+With that, we can write the optimal solution that takes our recursive function and introduces memoization to remove duplicate work.

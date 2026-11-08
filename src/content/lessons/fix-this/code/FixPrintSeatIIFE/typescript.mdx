@@ -1,0 +1,10 @@
+```javascript
+setUserSeats(users: User[]) {
+  for (var i = 0; i < users.length; i++) {
+    // Wrap the callback in an IIFE to scope the index
+    users[i].printSeatNumber = ((seatNumber) => {
+      return () => console.log(seatNumber);
+    })(i);
+  }
+}
+```

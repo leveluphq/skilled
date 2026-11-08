@@ -1,0 +1,31 @@
+```cpp
+class Solution {
+public:
+    int findMaxDepth(BinaryNode* root) {
+        stack<pair<BinaryNode*, int>> nodeStack;
+        int maxDepth = -1; // Value to return if no node is given
+
+        if (root != nullptr) {
+            // Updates to the correct root depth of 0
+            maxDepth = maxDepth + 1;
+            // Add the root to the stack
+            nodeStack.push({root, maxDepth});
+        }
+
+        while (!nodeStack.empty()) {
+            // Remove top item on the stack and extract the node and its depth
+            auto [node, depth] = nodeStack.top();
+            nodeStack.pop();
+
+            // If the node exists, compare it to the current max and add its children to the stack
+            if (node != nullptr) {
+                maxDepth = max(maxDepth, depth);
+                nodeStack.push({node->right, depth + 1});
+                nodeStack.push({node->left, depth + 1});
+            }
+        }
+
+        return maxDepth;
+    }
+};
+```

@@ -1,0 +1,19 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class AsciiPalindromeExample {
+public static bool AsciiPalindrome(string text) {
+    var clean = new List<char>();
+    foreach (char original in text) {
+        char value = original;
+        if (value >= 'A' && value <= 'Z') value = (char)(value + ('a' - 'A'));
+        if ((value >= 'a' && value <= 'z') || (value >= '0' && value <= '9')) clean.Add(value);
+    }
+    for (int left = 0, right = clean.Count - 1; left < right; left++, right--) {
+        if (clean[left] != clean[right]) return false;
+    }
+    return true;
+}
+}
+```

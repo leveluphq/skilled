@@ -1,0 +1,26 @@
+```python
+def recursive_validate(root, lower_bound, upper_bound):
+    # Base case 1 (reached leaf, valid)
+    if root == None:
+        return True
+
+    # Base case 2 (invalid)
+    if (root.data <= lower_bound) or (root.data >= upper_bound):
+        return False
+
+    # When we traverse left, the current node's value must be the newest upper bound
+    # This ensures it's always strictly decreaseing from the current node
+    is_valid_left = recursive_validate(root.left, lower_bound, root.data)
+
+    # When we traverse right, the current node's value must be the newest lower bound
+    # This ensures it's always strictly increasing from the current node
+    is_valid_right = recursive_validate(root.right, root.data, upper_bound)
+
+    # Both must be true for this to return true
+    return (is_valid_left and is_valid_right)
+
+
+def is_bst(root):
+    is_valid = recursive_validate(root, float("-inf"), float("inf"))
+    return is_valid
+```

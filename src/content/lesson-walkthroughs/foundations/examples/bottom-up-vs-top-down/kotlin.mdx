@@ -1,0 +1,8 @@
+```kotlin
+fun fibTable(n: Int): List<Int> {
+    val table = mutableListOf(0)
+    if (n >= 1) table.add(1)
+    for (index in 2..n) table.add(table[index - 1] + table[index - 2])
+    return table
+}
+```

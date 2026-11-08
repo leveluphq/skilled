@@ -1,0 +1,11 @@
+```javascript
+const apiRequest = async () => {
+  // do some async things for an unknown amount of time...
+  return { answer: 42 };
+}
+
+const run = async () => {
+  const response = await apiRequest();
+  console.log(response);
+}
+```

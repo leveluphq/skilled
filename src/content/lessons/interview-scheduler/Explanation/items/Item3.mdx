@@ -1,0 +1,14 @@
+import SameStartEnd from './code/SameStartEnd';
+import InsideInterval from './code/InsideInterval';
+
+The final step is to think through edge cases.
+
+1. What if the start time of a meeting is the exact same time as the end time of the current combined interval? **We still merge them**.
+
+<SameStartEnd />
+
+2. What if the start and end time of a meeting come before the end of the current combined interval? **We merge them, but the end time is not updated since it is already the latest value**.
+
+<InsideInterval />
+
+With that, we can code out our solution.

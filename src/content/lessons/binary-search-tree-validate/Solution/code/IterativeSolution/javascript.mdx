@@ -1,0 +1,33 @@
+```javascript
+const isBST = (root) => {
+  const stack = [];
+  let currentNode = root;
+  let inOrderValue = -Infinity;
+
+  // Begin itertaive in-order traversal
+  while (stack.length > 0 || currentNode !== null) {
+    // Traverse down a node's left children as long as they continue to exist
+    while (currentNode !== null) {
+      stack.push(currentNode);
+      currentNode = currentNode.left;
+    }
+
+    // Check nodes in-order, testing that their value is larger than the previous
+    currentNode = stack.pop();
+
+    // In-order traversal failed
+    if (currentNode.data <= inOrderValue) {
+      return false;
+    }
+
+    // Update value
+    inOrderValue = currentNode.data;
+
+    // Continue in-order traveresal to the current node's right path
+    currentNode = currentNode.right;
+  }
+
+  // Finish traversal and all values were valid
+  return true;
+}
+```

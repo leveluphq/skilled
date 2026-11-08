@@ -1,0 +1,48 @@
+```go
+const (
+	open    = 0
+	blocked = 1
+	exit    = 2
+)
+
+// Main function
+func hasExitPath(roomMatrix [][]int) bool {
+	// Return false if the matrix is invalid
+	if len(roomMatrix) == 0 || len(roomMatrix[0]) == 0 {
+		return false
+	}
+
+	// Recursively walk through the room to check if there is a valid path
+	isValidPath := walkThroughRoom(roomMatrix, 0, 0)
+
+	return isValidPath
+}
+
+// Recursive helper function
+func walkThroughRoom(roomMatrix [][]int, row int, col int) bool {
+	// Base case 1: Outside of room, so there can't be a path through this
+	isOutsideRoom := row > len(roomMatrix)-1 || col > len(roomMatrix[0])-1
+	if isOutsideRoom {
+		return false
+	}
+
+	// Base case 2: A path successfully reached the end, so propagate this upward
+	isExitNode := roomMatrix[row][col] == exit
+	if isExitNode {
+		return true
+	}
+
+	// Base case 3: We reached a blocking node
+	isBlockingNode := roomMatrix[row][col] == blocked
+	if isBlockingNode {
+		return false
+	}
+
+	// Recursive case: move down and right
+	downResult := walkThroughRoom(roomMatrix, row+1, col)
+	rightResult := walkThroughRoom(roomMatrix, row, col+1)
+
+	// Returns true if either is successful
+	return downResult || rightResult
+}
+```

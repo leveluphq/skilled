@@ -1,0 +1,21 @@
+```kotlin
+fun remove(key: String): Int? {
+    val index = hash(key)
+    val bucket = table[index]
+
+    // Find the key in the bucket, delete the key-value pair, and return its value
+    if (bucket != null) {
+        for (i in 0 until bucket.size) {
+            if (bucket[i].key == key) {
+                val value = bucket[i].value
+                bucket.removeAt(i)
+
+                return value
+            }
+        }
+    }
+
+    // Return null if the key didn't exist
+    return null
+}
+```

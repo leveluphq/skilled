@@ -1,0 +1,19 @@
+This course's Two Sum problem returns every valid pair of indexes. It does not stop after finding one pair, and it does not return the values themselves. With `[3, 3, 3]` and target 6, all three index pairs are answers. That output contract explains why the stored history must retain more than one occurrence of a value.
+
+## Store all earlier positions
+
+Scan from left to right. At index j, calculate the complement needed to reach the target. Look up every earlier index containing that complement and emit a pair with j. Only then add j to the history for the current value. Looking up first prevents the current position from pairing with itself.
+
+For `[1, 4, 1, 4]` and target 5, the second 4 matches both earlier 1s. A map that stores only the latest index for each value loses a valid pair. A set remembers membership but also discards the index information required by this exercise. Store a list of earlier positions under each value.
+
+## Explain why each pair appears once
+
+Every valid pair has one later index. The algorithm emits that pair when it visits the later position, because the earlier position is already in the history. It cannot emit the same pair at an earlier step, and it never revisits that later position. The order of the two indexes follows directly from the left-to-right scan.
+
+The history can grow linearly, and the result can be quadratic. If k pairs are returned, expected time is O(n + k) under the map-operation model. Calling this unconditional linear time ignores the work required to write every answer. Include numeric overflow assumptions when calculating a complement in a fixed-width language.
+
+## Use duplicate-heavy tests
+
+Check repeated values, a target of zero, negative values, no matching pair, and an answer that includes index zero. With a tiny input, compare against a nested-loop oracle that checks every ordered index combination with the first index smaller than the second. Verify the complete set of pairs rather than only its length.
+
+The [JavaScript walkthrough](/course/target-two-sum/javascript) contains the current implementation and links to all ten programming languages. Use the [original exercise](/course/target-two-sum) when you want to run code and retain your normal progress.

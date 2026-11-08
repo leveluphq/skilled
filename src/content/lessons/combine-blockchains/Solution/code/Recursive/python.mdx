@@ -1,0 +1,16 @@
+```python
+def combine_blockchains(chain_head1, chain_head2):
+    # Stopping condition when one of lists is None, we return the other
+    if chain_head1 == None:
+        return chain_head2
+    elif chain_head2 == None:
+        return chain_head1
+
+    # Recursively call our function
+    if chain_head1.data < chain_head2.data:
+        chain_head1.next = combine_blockchains(chain_head1.next,  chain_head2)
+        return chain_head1
+    else:
+        chain_head2.next = combine_blockchains(chain_head1,  chain_head2.next)
+        return chain_head2
+```

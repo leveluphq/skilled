@@ -1,0 +1,8 @@
+```javascript
+// const and let are hoisted but NOT initialized (temporal dead zone), so we get an error
+console.log(greet, friend) // ReferenceError: Cannot access 'greet' before initialization
+const greet = 'hello';
+let friend = 'world';
+
+console.log(greet, friend) // This never runs because the code crashed with an error
+```

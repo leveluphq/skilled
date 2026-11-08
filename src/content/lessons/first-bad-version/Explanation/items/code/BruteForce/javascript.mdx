@@ -1,0 +1,9 @@
+```javascript
+const firstBadVersionBruteForce = (totalVersions) => {
+  for (let currentVersion = 1; currentVersion <= totalVersions; currentVersion++) {
+    if (isBadVersion(currentVersion)) {
+      return currentVersion;
+    }
+  }
+}
+```

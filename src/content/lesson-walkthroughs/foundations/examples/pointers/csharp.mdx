@@ -1,0 +1,22 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class AliasTraceExample {
+private sealed class Box {
+    public int Value;
+    public Box(int value) { Value = value; }
+}
+public static List<int> AliasTrace() {
+    var original = new Box(1);
+    var alias = original;
+    var trace = new List<int> { original.Value };
+    alias.Value = 2;
+    trace.Add(original.Value);
+    alias = new Box(9);
+    trace.Add(original.Value);
+    trace.Add(alias.Value);
+    return trace;
+}
+}
+```

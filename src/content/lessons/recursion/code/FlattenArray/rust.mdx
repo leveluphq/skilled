@@ -1,0 +1,42 @@
+```rust
+use std::collections::VecDeque;
+
+// A Vec holds one type, so an item that is either an integer or a nested list is an enum
+enum Element {
+    Integer(i32),
+    List(Vec<Element>),
+}
+
+fn recursive_flatten(array: &[Element]) -> Vec<i32> {
+    let mut flattened_array = Vec::new();
+
+    for item in array {
+        match item {
+            // If the item is a list, flatten it with a recursive call
+            Element::List(list) => flattened_array.extend(recursive_flatten(list)),
+            Element::Integer(integer) => flattened_array.push(*integer),
+        }
+    }
+
+    flattened_array
+}
+
+fn iterative_flatten(array: Vec<Element>) -> Vec<i32> {
+    let mut output = Vec::new();
+    let mut to_be_flattened = VecDeque::from([Element::List(array)]);
+
+    while let Some(current) = to_be_flattened.pop_front() {
+        match current {
+            // Put the list's items at the front, in order, to be flattened next
+            Element::List(list) => {
+                for item in list.into_iter().rev() {
+                    to_be_flattened.push_front(item);
+                }
+            }
+            Element::Integer(integer) => output.push(integer),
+        }
+    }
+
+    output
+}
+```

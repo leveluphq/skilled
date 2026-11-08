@@ -1,0 +1,27 @@
+```rust
+// sort() sorts a Vec in place. It's a stable O(n log n) sort, and
+// sort_unstable() is usually faster when the order of equal items doesn't matter
+let mut numbers = vec![1, 50, 10000, 510, 5050, 60];
+numbers.sort(); // [1, 50, 60, 510, 5050, 10000]
+
+// Compare in reverse to sort in descending order
+numbers.sort_by(|a, b| b.cmp(a)); // [10000, 5050, 510, 60, 50, 1]
+
+// Strings sort as expected
+let mut months = vec!["March", "Jan", "Feb", "Dec"];
+months.sort(); // ["Dec", "Feb", "Jan", "March"]
+
+// Possibly unintuitive: floats can't use sort() because NaN has no order,
+// so compare them with total_cmp
+let mut prices: Vec<f64> = vec![2.5, 1.0, 10.25];
+prices.sort_by(|a, b| a.total_cmp(b)); // [1.0, 2.5, 10.25]
+
+// Use sort_by_key to sort structs by a field
+let mut players = vec![
+    Player { score: 20 },
+    Player { score: 100 },
+    Player { score: 5 },
+];
+players.sort_by_key(|player| player.score);
+// => [Player { score: 5 }, Player { score: 20 }, Player { score: 100 }]
+```

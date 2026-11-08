@@ -1,0 +1,46 @@
+```go
+func findTargetIndex(items []int, target int) int {
+	// Initialize the upper and lower bound to the binary search
+	startIndex := 0
+	endIndex := len(items) - 1
+
+	// Loop until our bounds converge
+	for startIndex <= endIndex {
+		// Number of items between the lower and upper bound
+		itemsBetweenStartEnd := (endIndex - startIndex) / 2
+		midIndex := startIndex + itemsBetweenStartEnd
+
+		// Item found, return mid index as solution
+		if items[midIndex] == target {
+			return midIndex
+		}
+
+		isLeftCorrectlyOrdered := items[midIndex] >= items[startIndex]
+
+		if isLeftCorrectlyOrdered {
+			// The left half, start to midpoint, is sorted normally
+			// (rotation in right half or has been eliminated)
+			targetInLeftHalf := target >= items[startIndex] && target < items[midIndex]
+
+			if targetInLeftHalf {
+				endIndex = midIndex - 1
+			} else {
+				startIndex = midIndex + 1
+			}
+		} else {
+			// The right half, midpoint to the end, is sorted normally
+			// (rotation in left half)
+			targetInRightHalf := target <= items[endIndex] && target > items[midIndex]
+
+			if targetInRightHalf {
+				startIndex = midIndex + 1
+			} else {
+				endIndex = midIndex - 1
+			}
+		}
+	}
+
+	// Target not found in the input
+	return -1
+}
+```

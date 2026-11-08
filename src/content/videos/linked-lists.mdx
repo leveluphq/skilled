@@ -1,0 +1,19 @@
+A linked list stores a sequence through nodes that refer to other nodes. A singly linked node points to its successor; a doubly linked node also points to its predecessor. The recording compares those links with array indexes. For interview problems, the first question is often what references the function receives: only a head, a head and tail, or a complete wrapper object.
+
+## Separate reaching a node from changing its links
+
+If you already have a predecessor, inserting after it needs a small number of reference changes. Finding the predecessor by position may require a linear walk from the head. Describing insertion as constant time without naming the available reference hides that search cost.
+
+Appending has the same distinction. A singly linked list with only its head must walk to the end. A wrapper that retains a tail can append directly, provided it also updates the empty-list case. Removing the tail from a singly linked list still needs its predecessor unless that reference is available separately.
+
+## Preserve the rest of the chain
+
+When changing a next reference, keep access to any nodes you still need. Reversal is a useful example: save the old successor before pointing the current node backward. Otherwise, the remaining chain may become unreachable from the function's local references.
+
+A function that prepends, removes the head, or reverses the list may return a different head. Callers must use that returned reference. Matching node values is also different from matching node identity; two nodes may contain equal data while occupying different positions in the chain.
+
+## Test structural boundaries
+
+Use an empty list, one node, and two nodes before testing a long example. Check that the last next reference is empty and that any wrapper's length agrees with a full traversal. For a doubly linked list, walking backward should recover the same nodes in reverse order. Accidental cycles can make a simple traversal run forever.
+
+The blockchain comparison in the recording is an analogy for backward links; it does not imply that ordinary blocks form a doubly linked list. Continue with [Pointers](/watch/pointers) for reference identity, [Implement a Linked List](/watch/implement-a-linked-list) for mutations, and the [pointer visualizer](/tools/linked-list-pointers) for a step-by-step reversal trace.

@@ -1,0 +1,17 @@
+```kotlin
+fun dequeue(): Node? {
+    val removedItem = first
+
+    if (removedItem == null) {
+        return null
+    }
+
+    if (first === last) {
+        last = null
+    }
+
+    first = removedItem.prev
+
+    return removedItem
+}
+```

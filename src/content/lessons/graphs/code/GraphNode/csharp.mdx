@@ -1,0 +1,12 @@
+```csharp
+public class GraphNode {
+    // NOTE: We're defining the data as an int here, but in reality it can be any data type
+    public int data;
+    public List<GraphNode> edges;
+
+    public GraphNode(int data) {
+        this.data = data;
+        this.edges = new List<GraphNode>();
+    }
+}
+```

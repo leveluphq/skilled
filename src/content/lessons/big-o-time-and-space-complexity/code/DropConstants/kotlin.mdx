@@ -1,0 +1,29 @@
+```kotlin
+fun case1(input: IntArray) {
+    for (i in 0 until input.size) {
+        println(i * 2) // O(n)
+    }
+    for (i in 0 until input.size) {
+        println(i * 10) // O(n)
+    }
+    for (i in 0 until input.size) {
+        println(i * 42) // O(n)
+    }
+}
+
+fun case2(input: IntArray) {
+    for (i in 0 until input.size) {
+        println(i * 2) // O(n)
+        println(i * 10) // O(n)
+        println(i * 42) // O(n)
+    }
+}
+
+fun case3(input: IntArray) {
+    for (i in 0 until input.size) {
+        for (j in 0 until input.size) {
+            println("$i $j")
+        }
+    }
+}
+```

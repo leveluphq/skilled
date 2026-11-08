@@ -1,0 +1,34 @@
+table:
+  name: categories
+  schema: public
+array_relationships:
+- name: lessons
+  using:
+    foreign_key_constraint_on:
+      column: categoryId
+      table:
+        name: lessons
+        schema: public
+select_permissions:
+- permission:
+    columns:
+    - description
+    - id
+    - position
+    - previewVideo
+    - slug
+    - title
+    - video
+    filter: {}
+  role: anonymous
+- permission:
+    columns:
+    - description
+    - id
+    - position
+    - previewVideo
+    - slug
+    - title
+    - video
+    filter: {}
+  role: user

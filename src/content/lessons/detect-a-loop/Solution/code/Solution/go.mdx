@@ -1,0 +1,24 @@
+```go
+func hasLoop(head *ListNode) bool {
+	// Both runners start at the first node
+	fast := head
+	slow := head
+
+	// Walk through the nodes and only break if the fast runner reaches the tail
+	for fast != nil && fast.Next != nil {
+		// Move our slow pointer 1 node and fast pointer 2 nodes
+		slow = slow.Next
+		fast = fast.Next.Next
+
+		// If the fast meets the slow pointer at the same node, we know we have a cycle.
+		// We compare the pointers and not the nodes' data, since different nodes can hold the same data.
+		if slow == fast {
+			return true
+		}
+	}
+
+	// If our fast pointer above hits a nil node,
+	// we break the loop and know we have reached the tail
+	return false
+}
+```

@@ -1,0 +1,23 @@
+```kotlin
+fun run(id: String): Double {
+    return calculatePrice(Item(id))
+}
+
+fun calculatePrice(item: Item): Double {
+    return item.price + calculateTax(item.price)
+}
+
+fun calculateTax(price: Double): Double {
+    return price * 0.1
+}
+
+run("id1")
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run("id1")                            |
+------------------------------------------
+   Call Stack
+```

@@ -1,0 +1,26 @@
+```rust
+fn reverse_string(s: &str) -> String {
+    let mut characters = s.chars();
+
+    // Base case
+    let Some(first_character) = characters.next() else {
+        return String::new();
+    };
+
+    // Recursively add the front character to end of the remaining string
+    let mut reversed = reverse_string(characters.as_str());
+    reversed.push(first_character);
+    reversed
+}
+
+reverse_string("dev");
+// reverse_string("dev")
+//   reverse_string("ev")
+//     reverse_string("v")
+//       reverse_string("")
+//       return ""
+//     return "" + 'v'
+//   return "v" + 'e'
+// return "ve" + 'd'
+// -> "ved"
+```

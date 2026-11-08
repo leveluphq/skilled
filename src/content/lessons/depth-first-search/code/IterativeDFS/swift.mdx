@@ -1,0 +1,24 @@
+```swift
+func iterativeDepthFirstSearch(_ startingNode: GraphNode) {
+    // Init our stack and set of visited nodes
+    // (a Set of ObjectIdentifier tracks nodes by identity, since GraphNode isn't Hashable)
+    var dfsStack = [startingNode]
+    var visitedNodes = Set<ObjectIdentifier>()
+
+    while let node = dfsStack.popLast() {
+        // A node can be added to the stack more than once, so skip it if we already visited it
+        if visitedNodes.contains(ObjectIdentifier(node)) {
+            continue
+        }
+
+        visit(node)
+        visitedNodes.insert(ObjectIdentifier(node))
+
+        for childNode in node.edges {
+            if !visitedNodes.contains(ObjectIdentifier(childNode)) {
+                dfsStack.append(childNode)
+            }
+        }
+    }
+}
+```

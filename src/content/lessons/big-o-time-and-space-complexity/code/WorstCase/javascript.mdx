@@ -1,0 +1,30 @@
+```javascript
+const arr = [4, 5, 7, 6, 2, 0, 1, 3];
+
+// Best Case: find 4 at the 0th index - iterate 1 item
+function findFour(input) {
+  for (let i = 0; i < input.length; i++) {
+    if (input[i] === 4) {
+      return i;
+    }
+  }
+}
+
+// Average Case: find 6 in the middle at index 3 - iterate 4 items
+function findSix(input) {
+  for (let i = 0; i < input.length; i++) {
+    if (input[i] === 6) {
+      return i;
+    }
+  }
+}
+
+// Worst Case: find 3 at the last index - iterate all `n` items
+function findThree(input) {
+  for (let i = 0; i < input.length; i++) {
+    if (input[i] === 3) {
+      return i;
+    }
+  }
+}
+```

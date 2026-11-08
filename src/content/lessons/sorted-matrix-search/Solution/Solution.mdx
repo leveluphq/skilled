@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+We recognized that at any item, all the values up and left must be smaller, and all the values down and right must be larger.
+This means that if we start at the bottom-left item, we can iterate inward and give ourselves a decision with two options that can eliminate an entire row or column on every comparison.
+
+Our solutions follows the logic:
+
+1. Start at the bottom-left node and compare it to the target value.
+  If the target is larger then move right, and if the target is smaller then move up.
+2. If the traget is found at any step, return the coordinates.
+3. If the target is not found, compare the current value to the target and move either up or right.
+4. If you reach either the top edge or right edge, you have run out of moves, and the value doesn't exist in the matrix.
+  Return the coordinates as `[-1, -1]`.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="r + c" /> time and <BigO.constant /> space.
+</p>
+
+By understanding the implications of ordering, we are able to drastically reduce the problem space on each move.
+We eliminate an entire row or column on every move which means in the worst case, we only traverse `r + c` items to the top-right item.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

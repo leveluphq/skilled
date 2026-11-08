@@ -1,0 +1,104 @@
+Two pointers track positions whose movement reduces the remaining work. One may scan from each end of a sorted array, both may move forward at different speeds, or one may mark where the next retained value belongs. The useful part of the pattern is the reason a move can discard candidates safely.
+
+Before writing the loop, state what each pointer means and which candidates remain possible. Then explain why moving a pointer preserves every answer that has not already been ruled out. Without that argument, an implementation may look linear while skipping a valid result.
+
+## Sorted Two Sum from opposite ends
+
+Given an ascending array and a target, return two distinct positions whose values add to that target. Start at the smallest and largest remaining values.
+
+```javascript
+function twoSumSorted(values, target) {
+  let left = 0;
+  let right = values.length - 1;
+  while (left < right) {
+    const sum = values[left] + values[right];
+    if (sum === target) return [left, right];
+    if (sum < target) left += 1;
+    else right -= 1;
+  }
+  return null;
+}
+```
+
+If the sum is too small, the current left value cannot form a solution with any remaining right value: the current right value is already the largest available. Discarding that left position is safe. If the sum is too large, the current right value cannot pair with any remaining left value because the current left value is already the smallest.
+
+That proof depends on sorted order. Moving the left pointer through an unsorted array does not necessarily increase the available sums. Sort first only if the problem permits it, and include the sort's time, mutation, and index-preservation costs in your answer.
+
+On `[1, 3, 4, 6, 8]` with target 10, the initial sum is 9, so move left. The next sum is 11, so move right. The next sum is 9, so move left again. The pair 4 and 6 reaches the target. Every move removed a candidate endpoint for a stated reason.
+
+## What happens to original indices
+
+A sorted-input contract returns positions in the provided sorted array. If the original task gives unsorted values and asks for original indices, sorting the values alone destroys that mapping.
+
+One approach sorts value/index pairs. Another uses a map of earlier values and their original indices. The map approach takes expected linear time with additional storage; the sorting approach may be appropriate when ordered data is already needed for other work.
+
+Returning values instead of indices is a different contract. A function can produce the right numbers and still fail an index-based exercise. Clarify that before comparing algorithms. The [worked interview explanation](/guides/explain-your-interview-solution) covers the map version and duplicate-value cases.
+
+## A palindrome check
+
+For a basic palindrome check, compare the outermost characters, then move both boundaries inward. After each successful comparison, the removed outer pair is known to match.
+
+```javascript
+function isPalindrome(text) {
+  const characters = [...text];
+  let left = 0;
+  let right = characters.length - 1;
+  while (left < right) {
+    if (characters[left] !== characters[right]) return false;
+    left += 1;
+    right -= 1;
+  }
+  return true;
+}
+```
+
+Under this contract, punctuation and case are significant. `Racecar` is not the same as `racecar`. Normalizing case and removing punctuation would change the accepted input model and require decisions about Unicode and locale behavior.
+
+The code compares code points after creating an array. It runs in O(n) time and uses O(n) extra storage for that conversion. For a fixed ASCII alphabet, direct indexed access can avoid the copy. A grapheme-aware problem needs a suitable segmentation step; code points and displayed characters are not always equivalent.
+
+The empty string and a single character return true because no unmatched pair exists. That is a deliberate convention, not an accidental side effect to ignore in the explanation.
+
+## Read and write pointers
+
+Two pointers can also travel in the same direction. In an in-place filtering problem, a read pointer examines each entry while a write pointer marks the next output position. The prefix before write contains exactly the values retained so far.
+
+```javascript
+function removeSortedDuplicates(values) {
+  if (values.length === 0) return 0;
+  let write = 1;
+  for (let read = 1; read < values.length; read += 1) {
+    if (values[read] !== values[write - 1]) {
+      values[write++] = values[read];
+    }
+  }
+  return write;
+}
+```
+
+The function returns the valid prefix length and mutates the input. Entries beyond that prefix are unspecified by this contract. A caller should not assume the array's physical length shrinks unless the function explicitly truncates it.
+
+Sorted order makes equal values adjacent. Comparing with the last retained value therefore removes duplicates correctly. On an unsorted input, this method only collapses adjacent runs; it does not remove every repeated value. Again, the precondition belongs in the algorithm's explanation.
+
+The read pointer advances once per entry and the write pointer never exceeds the read pointer. That relationship ensures an output write does not overwrite an unread future entry.
+
+## Slow and fast movement on linked structures
+
+In a linked list, pointers follow references rather than numeric array indices. Different traversal speeds can reveal properties such as a midpoint or a cycle. A cycle-detection argument analyzes the relative movement after both references enter the cycle.
+
+Do not transfer array bounds directly to a list. Validate that a reference exists before following its next link, and decide what an empty list means for the task. Comparing node values is also different from comparing node identity: repeated values do not establish a cycle.
+
+Reversal uses another small group of references. Save the next node before redirecting the current node's link, then advance. The [linked-list topic](/topics/linked-lists) and [reversal exercise](/course/reverse-a-linked-list) provide practice with reachability and reference updates.
+
+## Distinguish two pointers from a sliding window
+
+A sliding window usually maintains a contiguous interval and state about its contents as boundaries move. Opposite-end pair search can discard endpoints without maintaining the sum of everything between them. Read/write filtering maintains a valid output prefix rather than an interval awaiting repair.
+
+The techniques can share linear movement, but their correctness arguments differ. Choose an invariant that describes the actual problem instead of giving every pair of indices the same template.
+
+For a window example, see [sliding window](/patterns/sliding-window). Its counterexample with negative values shows how a plausible pointer movement can become invalid when the input assumptions change.
+
+## Check progress and boundary behavior
+
+Every loop iteration must either return or move a pointer toward termination. Test empty and single-item inputs, all-equal values, an absent answer, and an answer at the outermost positions. For pair problems, use a strict `left < right` condition when positions must differ.
+
+For in-place output, inspect the valid prefix after every step. For sorted search, name the candidates excluded by each move. If you cannot justify an exclusion, keep the baseline solution until you have a reason the faster one preserves the answer.

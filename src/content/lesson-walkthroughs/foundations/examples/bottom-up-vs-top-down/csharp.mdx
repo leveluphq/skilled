@@ -1,0 +1,13 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class FibTableExample {
+public static List<int> FibTable(int n) {
+    var table = new List<int> { 0 };
+    if (n >= 1) table.Add(1);
+    for (int index = 2; index <= n; index++) table.Add(table[index - 1] + table[index - 2]);
+    return table;
+}
+}
+```

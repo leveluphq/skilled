@@ -1,0 +1,31 @@
+```rust
+use std::collections::HashMap;
+
+struct Graph {
+    adjacency_list: HashMap<char, Vec<char>>,
+    undirected: bool,
+}
+
+impl Graph {
+    // Rust has no default arguments, so pass `true` for the usual undirected graph
+    fn new(undirected: bool) -> Self {
+        Graph {
+            adjacency_list: HashMap::new(),
+            undirected,
+        }
+    }
+
+    fn add_vertex(&mut self, vertex: char) {
+        // Add a node to the adjacency list
+    }
+
+    fn add_edge(&mut self, source: char, destination: char) {
+        // Connect two nodes by an edge
+        // If undirected, create a reciprocal edge
+    }
+
+    fn remove_vertex(&mut self, vertex: char) {
+        // Remove a vertex and clean up the edges pointing to it
+    }
+}
+```

@@ -1,0 +1,81 @@
+Product Array returns a slice where each position contains the product of every other input integer. Division is forbidden, and `[2, 3, 4]` should produce `[12, 8, 6]`. The Go starter uses int64 values, so both running products and the output must retain that width.
+
+We will create a result slice with the same length as the input. The first pass stores each left-side product there. The second pass multiplies each by its right-side product, using just one suffix scalar rather than a second working slice.
+
+## Allocate length for indexed output writes
+
+Unlike a slice with length zero and spare capacity, `make([]int64, len(nums))` creates positions we can immediately assign by index. Those positions start at zero, so the first pass assigns each prefix directly instead of multiplying into the initial values.
+
+```go
+func buildProductArray(nums []int64) []int64 {
+    results := make([]int64, len(nums))
+    prefix := int64(1)
+    for i, value := range nums {
+        results[i] = prefix
+        prefix *= value
+    }
+
+    suffix := int64(1)
+    for i := len(nums) - 1; i >= 0; i-- {
+        results[i] *= suffix
+        suffix *= nums[i]
+    }
+    return results
+}
+```
+
+The indexes use int because slice indexing and length naturally use that type. The numeric values use int64, keeping index representation separate from arithmetic representation. Both running products begin at one, the product of an empty segment.
+
+## Keep the current value outside both segments
+
+At index `i`, prefix means the product of all values strictly before `i`. Write it before multiplying by the current value. In the reverse pass, suffix means the product strictly after `i`, and it is also used before the current value extends it.
+
+For `[2, 3, 4]`, the first pass writes `[1, 2, 6]`. The reverse pass starts at the last position with suffix one, leaving `6`. The suffix becomes `4`, turning the middle output into `8`; then it becomes `12`, turning the first output into `12`.
+
+Updating either scalar too soon includes the very position the output should exclude. The loop order is a consequence of those segment definitions rather than a pattern to memorize without explanation.
+
+## Distinguish slice length, capacity, and aliases
+
+`make([]int64, 0, len(nums))` would reserve capacity but still have length zero. Assigning `results[0]` would panic until an append or reslice made that position part of the length. This implementation needs indexed writes, so it allocates the final length at the start.
+
+An assignment such as `results := nums` would copy the slice header and share its backing array. Replacing result values would then change the input values needed by the reverse pass. The fresh make allocation gives the output separate storage.
+
+A returned slice still owns access to its backing allocation after the function returns; it is not a pointer into a temporary stack buffer that becomes invalid. Go's [slice documentation](https://go.dev/blog/slices-intro) explains the relationship between slice headers and backing arrays.
+
+## Let zeros and empty inputs follow the same rule
+
+For `[2, 0, 4]`, outputs at the first and last positions include the zero, while the middle output excludes it. The result is `[0, 8, 0]`. With two zeros, every output includes at least one, so all answers are zero.
+
+Negative values need no separate handling: `[-2, 3, -4]` yields `[-12, 8, -6]`. A singleton yields `[1]`, using the empty-product convention. Empty input skips both loops and returns a non-nil, zero-length slice.
+
+That final distinction can matter when encoding output as JSON: nil and empty slices can have different encodings. Both have length zero for algorithmic purposes, but this function consistently returns the allocated result shape.
+
+## Check values and input preservation
+
+```go
+func checkExamples() {
+    cases := []struct { input, expected []int64 }{
+        {[]int64{}, []int64{}}, {[]int64{7}, []int64{1}},
+        {[]int64{2, 3, 4}, []int64{12, 8, 6}},
+        {[]int64{2, 0, 4}, []int64{0, 8, 0}},
+        {[]int64{0, 3, 0}, []int64{0, 0, 0}},
+        {[]int64{-2, 3, -4}, []int64{-12, 8, -6}},
+    }
+    for _, item := range cases {
+        before := append([]int64(nil), item.input...)
+        actual := buildProductArray(item.input)
+        if len(actual) != len(item.expected) { panic("wrong length") }
+        for i := range actual {
+            if actual[i] != item.expected[i] || item.input[i] != before[i] { panic("wrong products") }
+        }
+    }
+}
+```
+
+Use these snippets in a local main package, calling checkExamples from main. Slices cannot be compared with `==` for their element contents, so the helper checks entries explicitly. A nested-loop product reference is useful for exhaustive small cases and should stay within the same arithmetic bounds.
+
+## State the fixed-width assumption
+
+All running prefix, suffix, and output products must fit in int64. Go integer overflow does not provide an automatic exception to enforce this assumption. Inputs requiring unlimited exact products need a big-integer contract and revised arithmetic costs.
+
+Two passes use `O(n)` arithmetic operations and constant extra scalar state beyond the `O(n)` output. The final full running products are computed even though they are not returned. When practicing, explain the allocation length and the two excluded segments before reconstructing the loops.

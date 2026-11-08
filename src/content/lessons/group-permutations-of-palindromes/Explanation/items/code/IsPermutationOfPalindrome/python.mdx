@@ -1,0 +1,27 @@
+```python
+# We use the modulo operator to determine if a number is odd
+def is_odd(num):
+    return num % 2 != 0
+
+# All O(c) operations
+def is_permutation_of_palindrome(string):
+    # Use a hash table to count the occurence of each character in a string
+    # These are sequential O(c) operations
+
+    character_count_table = {}
+
+    for char in string:
+        if char not in character_count_table:
+            character_count_table[char] = 0
+
+        character_count_table[char] += 1
+
+    # Sum the number of characters that contain an odd count
+    odd_character_count = 0
+    for character_count in character_count_table.values():
+        if is_odd(character_count):
+            odd_character_count += 1
+
+    # If only one character has an odd count, this function returns true
+    return odd_character_count <= 1
+```

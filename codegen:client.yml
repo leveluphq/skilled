@@ -1,0 +1,24 @@
+# The client's types and Apollo hooks, from local Hasura (docs/README.md, step 4):
+#   npm run codegen:client
+# HASURA_GRAPHQL_ENDPOINT moves it off localhost:8080.
+overwrite: true
+schema:
+  - ${HASURA_GRAPHQL_ENDPOINT:http://localhost:8080}/v1/graphql:
+      headers:
+        X-Hasura-Admin-Secret: changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme
+        Content-Type: application/json
+documents:
+  - 'src/components/**/*.ts'
+  - '!src/components/**/__tests__/**'
+generates:
+  src/types/generated/client.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withHooks: true
+      withComponent: false
+      withHOC: false
+      noNamespaces: true # Use these next 2 or not?
+      strict: true

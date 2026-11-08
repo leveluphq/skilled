@@ -1,0 +1,15 @@
+table:
+  name: affiliate_payouts
+  schema: public
+object_relationships:
+- name: user
+  using:
+    foreign_key_constraint_on: affiliateUserId
+array_relationships:
+- name: sales
+  using:
+    foreign_key_constraint_on:
+      column: affiliatePayoutId
+      table:
+        name: sales
+        schema: public

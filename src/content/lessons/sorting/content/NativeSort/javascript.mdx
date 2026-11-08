@@ -1,0 +1,25 @@
+import { Container } from 'style/elements';
+
+In JavaScript, the sort can be deceiving, so it's essential to use the callback function.
+It converts all elements to strings and compares their sequence of UTF-encoded characters.
+
+<Container>
+
+```javascript
+// Possibly unintuitive
+// JavaScript converts items to a string and sorts by its UTF encoding
+[1, 50, 10000, 510, 5050, 60].sort(); // [1, 10000, 50, 5050, 510, 60]
+
+// Use the callback function, which must return a negative number, zero, or a positive number
+// Returning a boolean like (a, b) => a > b does not sort correctly
+[1, 50, 10000, 510, 5050, 60].sort((a, b) => a - b); // [1, 50, 60, 510, 5050, 10000]
+
+// Strings sort as expected
+['March', 'Jan', 'Feb', 'Dec'].sort(); // ["Dec", "Feb", "Jan", "March"]
+
+// Use the callback function to handle objects
+[{ score: 20 }, { score: 100 }, { score: 5 }].sort((a, b) => a.score - b.score);
+// => [{ score: 5 }, { score: 20 }, { score: 100 }]
+```
+
+</Container>

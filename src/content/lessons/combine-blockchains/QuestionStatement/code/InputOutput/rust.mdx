@@ -1,0 +1,25 @@
+```rust
+#[derive(PartialEq, Eq, Clone)]
+pub struct ListNode {
+    pub data: i32, // the unix timestamp of when the block was added
+    pub next: Option<Box<ListNode>>,
+}
+
+impl ListNode {
+    pub fn new(data: i32) -> Self {
+        ListNode { data, next: None }
+    }
+}
+
+// Input
+let mut skilled_chain_head = Box::new(ListNode::new(42));
+skilled_chain_head.next = Some(Box::new(ListNode::new(159)));
+// many more additions to each...
+
+let mut dev_coin_head = Box::new(ListNode::new(123));
+dev_coin_head.next = Some(Box::new(ListNode::new(482)));
+// many more additions to each...
+
+// Output: combine_blockchains(Some(skilled_chain_head), Some(dev_coin_head))
+42 -> 123 -> 159 -> 482 // ... and so on
+```

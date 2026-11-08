@@ -1,0 +1,30 @@
+```java
+// Ex. factorial of 4: 4! = 4 * 3 * 2 * 1 = 24
+
+static long iterativeFactorial(int number) {
+    long factorial = 1;
+
+    for (int i = 1; i <= number; i++) {
+        factorial = factorial * i;
+    }
+
+    return factorial;
+}
+
+// Same as:
+// 4! = 4 * 3 * 2 * 1
+//    = 4 * 3!
+//    = 4 * 3 * 2!
+//    = 4 * 3 * 2 * 1!
+//    = 4 * 3 * 2 * 1
+
+static long recursiveFactorial(int number) {
+    // Stop calling when the value is 1 or less
+    if (number <= 1) {
+        return 1;
+    }
+
+    // Multiply a number by the factorial of the number that comes before it
+    return number * recursiveFactorial(number - 1);
+}
+```

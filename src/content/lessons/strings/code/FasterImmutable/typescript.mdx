@@ -1,0 +1,15 @@
+```javascript
+// If immutable, do operations on an array and combine
+const duplicateString = (str: string, numDuplicates: number): string => {
+  const solutionArray = [];
+
+  for (let i = 0; i < numDuplicates; i++) {
+    // .push is O(1)
+    solutionArray.push(str);
+
+    // Faster than str += str which would be O(n) for copying each time
+  }
+
+  return solutionArray.join('');
+}
+```

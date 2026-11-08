@@ -1,0 +1,53 @@
+```python
+import unittest
+test_results = []
+class TestSum(unittest.TestCase):
+
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False
+
+    def test_1(self):
+        self.description = "empty"
+        self.actual_result = sort_by_age([])
+        self.expected_result = []
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_2(self):
+        self.description = "one item"
+        self.actual_result = sort_by_age([42])
+        self.expected_result = [42]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_3(self):
+        self.description = "two items"
+        self.actual_result = sort_by_age([42, 1])
+        self.expected_result = [1, 42]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "unique sort"
+        self.actual_result = sort_by_age([33, 25, 99, 50, 42])
+        self.expected_result = [25, 33, 42, 50, 99]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_5(self):
+        self.description = "sort with duplicates"
+        self.actual_result = sort_by_age([1, 3, 1, 3, 1, 4, 6, 5, 6])
+        self.expected_result = [1, 1, 1, 3, 3, 4, 5, 6, 6]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

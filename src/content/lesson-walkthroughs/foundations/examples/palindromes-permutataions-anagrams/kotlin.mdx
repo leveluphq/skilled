@@ -1,0 +1,13 @@
+```kotlin
+fun asciiPalindrome(text: String): Boolean {
+    val clean = text.filter { it in 'a'..'z' || it in 'A'..'Z' || it in '0'..'9' }.lowercase()
+    var left = 0
+    var right = clean.length - 1
+    while (left < right) {
+        if (clean[left] != clean[right]) return false
+        left++
+        right--
+    }
+    return true
+}
+```

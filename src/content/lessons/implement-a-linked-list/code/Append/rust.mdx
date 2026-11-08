@@ -1,0 +1,31 @@
+```rust
+// O(n) append
+fn append(mut head: Option<Box<Node>>, data: i32) -> Option<Box<Node>> {
+    // Create a new node to append
+    let appended_node = Box::new(Node::new(data));
+    // Start at the link to the head. We hold the links (the `next` values)
+    // so that we can fill the empty one after the last node.
+    let mut current_link = &mut head;
+
+    // Iterate through our list until we pass the last node
+    while let Some(current_node) = current_link {
+        // Step through nodes
+        current_link = &mut current_node.next;
+    }
+
+    *current_link = Some(appended_node);
+
+    // Return the head
+    head
+}
+
+// Each node owns the one after it, so we build the list from the back
+let mut head = None;
+for data in [20, 10, 9000, 42] {
+    head = Some(Box::new(Node { data, next: head }));
+}
+// 42 -> 9000 -> 10 -> 20
+
+head = append(head, 8);
+// 42 -> 9000 -> 10 -> 20 -> 8
+```

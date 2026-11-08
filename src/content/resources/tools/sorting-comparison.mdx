@@ -1,0 +1,43 @@
+Compare insertion, selection, and bubble sort on identical numeric input. The tool shows individual comparisons and array writes, including intermediate states that a final sorted answer would hide. Change the input order and see which work changes with it.
+
+The counters come from the displayed implementations. They measure value comparisons and assignments to array elements. They do not measure elapsed time, allocations, CPU instructions, or the performance of a language's built-in sort. A short input can explain an algorithm without supporting a production benchmarking claim.
+
+## Start with the same input for every method
+
+Enter up to twelve comma-separated integers between -999 and 999. Negative values, repeated values, and empty input are supported. Apply the input before stepping. Invalid input leaves the last valid demonstration available and reports what needs fixing.
+
+Each method receives a separate copy. The completed-count table compares all three on that same copy of the input, while the step player follows the selected method. Changing the selected method resets the step position so a comparison from one trace is never paired with state from another.
+
+Try sorted, reversed, and equal-value presets. They have the same size but different order. This separates a claim about n from a claim about how much disorder is present. An implementation can have quadratic worst-case time while doing linear work on a particular input family.
+
+## Keep a sorted prefix with insertion sort
+
+Insertion sort holds the next key outside the array, shifts larger prefix entries to the right, and writes the key into the resulting gap. Before each insertion, the earlier prefix is sorted. After the insertion, that property covers one additional position.
+
+During a shift, the displayed array can temporarily contain a duplicated value and omit the held key. This is expected. The key is still retained in a local variable and appears in the step explanation. Requiring every intermediate array to be a permutation of the input would misdescribe this implementation.
+
+The loop stops shifting when it reaches a prefix value less than or equal to the key. Equal values therefore keep their relative order. With already sorted input, each key needs one comparison and one final assignment. Reverse input requires the triangular sequence of shifts and quadratic work.
+
+## Select the smallest remaining value
+
+Selection sort scans the entire unsorted suffix to find its minimum, then swaps that entry into the next final position. After pass i, the prefix through i contains its final sorted values.
+
+Every remaining candidate must be examined even when the input already looks sorted. For n elements the implementation performs n(n − 1)/2 value comparisons. It avoids a swap when the minimum is already at the required position, so its write count still depends on input order.
+
+A swap counts as two array-element assignments in this model. Any temporary variable used to hold a value is excluded from the array-write counter. Selection sort can move an equal value past another equal value during a long-distance swap, so this ordinary implementation is not stable. Distinct record identities would be needed to observe stability directly; numeric equality alone cannot show it.
+
+## Stop bubble sort after an unchanged pass
+
+Bubble sort compares adjacent values and swaps an inverted pair. A pass moves the largest remaining value to the right edge of the unsorted region. Later passes can stop before the suffix already known to be final.
+
+The demonstration also stops when a complete pass performs no swap. If every adjacent pair is ordered, the array is sorted. This makes its sorted-input comparison count linear rather than quadratic. Reverse input still requires repeated passes with quadratic work.
+
+Strict greater-than comparisons preserve the order of equal entries during adjacent swaps. That stability result depends on the comparison rule. Replacing it with greater-than-or-equal would perform unnecessary equal-value swaps and invalidate the same reasoning for records.
+
+## Interpret the comparison table carefully
+
+A smaller operation count on five values does not establish faster performance on every machine or input distribution. Actual runtime depends on representation, compiler, memory traffic, comparison cost, and implementation details. Built-in sorting algorithms may combine several strategies and exploit ordered runs.
+
+The useful comparison here is causal. Ask which invariant lets the algorithm avoid work, which loop must inspect every candidate, and which assignments are repeated when the input is reversed. State the measured operation before interpreting its count.
+
+All three methods sort in place within their working copy and require constant algorithmic auxiliary storage. The page retains a snapshot history for navigation, which adds teaching overhead. Study [sorting and searching](/topics/searching-and-sorting) for broader choices, then use [complexity practice](/tools/complexity-practice) to turn these observed traces into a bound that holds as input grows. For a bounded integer-domain alternative, compare [Age Sort](/course/age-sort), where the key range changes the available strategy.

@@ -1,0 +1,51 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A graph represents entities as vertices and relationships as edges. Unlike a simple rooted tree, it can contain cycles, disconnected components, and several paths to the same vertex. The recording introduces these properties through examples and compares storage forms. The representation should preserve the relationships that your algorithm needs to answer its question.
+
+## Define what an edge means
+
+In a directed graph, an edge from A to B does not imply an edge from B to A. An undirected relationship is traversable in both directions. A weighted edge also carries a cost. Minimizing the number of edges and minimizing the sum of weights are different objectives, so ordinary breadth-first search does not solve every shortest-path problem.
+
+Connectivity also depends on direction. A route from A to B does not establish that B can reach A. Before choosing a traversal, specify the start, the target or completion condition, and whether an isolated vertex counts as part of the input. Those decisions determine what a complete answer means.
+
+## Choose the representation's costs
+
+An adjacency list stores neighbors for each vertex and is useful for iterating outgoing connections. A matrix stores a slot for each pair of vertices, making edge checks direct at a quadratic storage cost. An edge list records relationships explicitly and may require scanning to find all neighbors unless an index is added.
+
+Graph nodes can also contain direct references to neighboring objects. In that form, identity matters: two nodes with equal labels may still be distinct vertices unless uniqueness is guaranteed. A grid can be an implicit graph, where allowed neighboring cells define edges without allocating a separate object for every relationship.
+
+## Make repeated reachability explicit
+
+A visited set prevents a cycle from making a traversal repeat forever. Starting from one vertex visits only its reachable component. To cover a disconnected graph, choose another unvisited start until every required vertex has been handled. Each traversal's work should be charged against the vertices and edges it examines.
+
+Continue with [Depth-First Search](/watch/depth-first-search), [Breadth-First Search](/watch/breadth-first-search), and [Implement a Graph](/watch/implement-a-graph). The [graph traversal tool](/tools/graph-traversal) lets you compare worklist order on the same graph, including the difference between finding a route and proving it has the fewest edges.
+
+## Count outgoing adjacency entries
+
+The example accepts a list of neighbor lists and returns each vertex's out-degree. For `[[1, 2], [2], []]`, the answer is `[2, 1, 0]`. Vertex identifiers are the integer positions of the outer list. An empty neighbor list is a real isolated or sink vertex; an absent outer entry would mean something else.
+
+Parallel edges count separately because each is an adjacency entry. A self-loop contributes one outgoing entry in this directed representation. An undirected graph usually records each ordinary edge in both endpoint lists, so summing all degrees counts those stored representations rather than the number of unique undirected edges.
+
+## Choose a representation for the operation
+
+Reading each list's stored length takes O(V) time in these examples and returns O(V) integers. It does not traverse every neighbor simply to count it. Other graph operations, including traversal and vertex removal, must inspect more of the adjacency data and often take O(V + E).
+
+Test no vertices, one isolated vertex, a self-loop, and duplicate edges. The examples assume neighbor identifiers refer to existing positions when a traversal actually follows them. Deciding whether to reject, skip, or create missing vertices belongs in an external-input contract. For an implementation that mutates graphs, also decide whether repeated vertex insertion preserves or replaces its existing adjacency list.
+
+## TypeScript example and implementation choices
+
+The nested readonly array type prevents mutation through either graph or its neighbor lists inside this function. It does not validate the integer vertex identifiers or eliminate duplicate adjacency entries. The result number[] is newly allocated. Degree depends only on each stored list's length, so an unreachable vertex still receives an output position just like any other vertex.
+
+### Worked example
+
+```typescript
+function outDegrees(graph: readonly (readonly number[])[]): number[] {
+  return graph.map(neighbors => neighbors.length);
+}
+```
+
+## Continue in TypeScript
+
+[Open Graphs](/course/graphs) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the TypeScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [TypeScript interview preparation guide](/interview-prep/typescript) connects these language choices with further practice and the cross-language operation reference.

@@ -1,0 +1,21 @@
+```go
+// O(1) prepend
+func prependNode(head *Node, data int) *Node {
+	// Create a new node to prepend
+	prependedNode := &Node{Data: data}
+	// Set its next to the current node
+	prependedNode.Next = head
+
+	// Return our new node
+	return prependedNode
+}
+
+head := &Node{Data: 42}
+head.Next = &Node{Data: 9000}
+head.Next.Next = &Node{Data: 10}
+head.Next.Next.Next = &Node{Data: 20}
+// 42 -> 9000 -> 10 -> 20
+
+head = prependNode(head, 8)
+// 8 -> 42 -> 9000 -> 10 -> 20
+```

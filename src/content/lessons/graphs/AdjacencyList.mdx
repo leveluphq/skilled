@@ -1,0 +1,17 @@
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import GraphFourNodes from 'svg/GraphFourNodes';
+import AdjacencyList from './code/AdjacencyList';
+
+### Adjacency List
+
+We'll use the following graph in our examples:
+
+<SvgWrapper fill="none" stroke="hackyfix">
+  <GraphFourNodes />
+</SvgWrapper>
+
+An adjacency list is one of the most common ways to represent a graph.
+A hash table is used where a key represents the individual nodes, and each key's value is an array of the neighbors connected to this node.
+So the array represents the edges for nodes connected to the current node.
+
+<AdjacencyList />

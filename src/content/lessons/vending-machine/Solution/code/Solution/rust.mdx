@@ -1,0 +1,60 @@
+```rust
+// Stands in for Infinity: no valid coin combination for an amount (yet).
+// It's added to with saturating_add, so it stays the largest value.
+const INFINITY: i32 = i32::MAX;
+
+impl Solution {
+    pub fn min_coins_for_change(denominations: Vec<i32>, target: i32) -> i32 {
+        let target = target as usize;
+
+        /*
+          Init all values to INFINITY which indicates there isn't a valid coin combination for an amount (yet)
+          This is our dp / memo list that we're using to memoize the solution to subproblems
+        */
+        let mut min_coins_for_amount = vec![INFINITY; target + 1];
+
+        // Bottom-up, start with 0 which is always 0
+        min_coins_for_amount[0] = 0;
+
+        /*
+          Begin at the smallest amount and build a running table of
+          the smallest values required to reach EVERY amount up to the target
+        */
+        for amount in 0..min_coins_for_amount.len() {
+            // Try each denomination to reach the current amount
+            for &coin in &denominations {
+                let coin = coin as usize;
+
+                if coin <= amount {
+                    // The current minimum (subproblem solution) found at this amount.
+                    let existing_min_coins_for_amount = min_coins_for_amount[amount];
+                    /*
+                      Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                      Always increment by +1 because we are trying one additional coin.
+                    */
+                    let min_amount_with_current_coin =
+                        min_coins_for_amount[amount - coin].saturating_add(1);
+
+                    /*
+                      Memoize the minimum coins to reach the current amount.
+                      This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                      If there isn't a valid combination, this just remains INFINITY.
+                    */
+                    min_coins_for_amount[amount] =
+                        existing_min_coins_for_amount.min(min_amount_with_current_coin);
+                }
+            }
+        }
+
+        /*
+          If we didn't find a combination that matched our target (it's still INFINITY), return -1.
+          Otherwise, the target does exist for that amount and we return it.
+        */
+        if min_coins_for_amount[target] == INFINITY {
+            -1
+        } else {
+            min_coins_for_amount[target]
+        }
+    }
+}
+```

@@ -1,0 +1,20 @@
+```swift
+class Solution {
+    func getMaxProfit(_ prices: [Int]) -> Int {
+        var maxProfit = 0
+
+        // With no prices, there is no trade to make
+        guard var minPrice = prices.first else {
+            return maxProfit
+        }
+
+        for price in prices {
+            let profitAtCurrentDay = price - minPrice
+            maxProfit = max(maxProfit, profitAtCurrentDay)
+            minPrice = min(price, minPrice)
+        }
+
+        return maxProfit
+    }
+}
+```

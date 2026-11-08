@@ -1,0 +1,57 @@
+```rust
+impl Solution {
+    pub fn walk_matrix(matrix: Vec<Vec<i32>>) -> Vec<i32> {
+        let mut result = Vec::new();
+        let item_at = |row: i32, column: i32| matrix[row as usize][column as usize];
+
+        // Initialize the upper and lower bounds indexes
+        // (signed, as an end can move to before the first row or column)
+        let row_count = matrix.len() as i32;
+        let column_count = matrix.first().map_or(0, Vec::len) as i32;
+        let mut start_row = 0;
+        let mut end_row = row_count - 1;
+        let mut start_column = 0;
+        let mut end_column = column_count - 1;
+
+        // We will keep walking as long as rows or columns remain.
+        // That happens as long as the end is greater or equal to the start.
+        while end_row >= start_row && end_column >= start_column {
+            // Walk across the top starting row for each column from beginning to end
+            // This is left-right across the top
+            for column in start_column..=end_column {
+                // Add the item to result in order
+                result.push(item_at(start_row, column));
+            }
+
+            // Increment our start row since we visited each value
+            start_row += 1;
+
+            // Walk top-bottom for the end column
+            for row in start_row..=end_row {
+                result.push(item_at(row, end_column));
+            }
+            end_column -= 1;
+
+            // Since we increment start_row, we need to make sure we are still in bounds
+            if end_row >= start_row {
+                // Walk right-left on the bottom row
+                for column in (start_column..=end_column).rev() {
+                    result.push(item_at(end_row, column));
+                }
+            }
+            end_row -= 1;
+
+            // Since we decrement end_column, we need to make sure we are still in bounds
+            if end_column >= start_column {
+                // Walk bottom-top for the start column
+                for row in (start_row..=end_row).rev() {
+                    result.push(item_at(row, start_column));
+                }
+            }
+            start_column += 1;
+        }
+
+        result
+    }
+}
+```

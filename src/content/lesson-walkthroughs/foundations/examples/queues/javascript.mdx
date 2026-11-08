@@ -1,0 +1,10 @@
+```javascript
+function fifoOrder(values) {
+    const queue = [...values];
+    const output = [];
+    let head = 0;
+    while (head < queue.length)
+        output.push(queue[head++]);
+    return output;
+}
+```

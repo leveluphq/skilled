@@ -1,0 +1,15 @@
+```java
+import java.util.*;
+
+class BinarySearchExample {
+static int binarySearch(List<Integer> values, int target) {
+    int low = 0, high = values.size();
+    while (low < high) {
+        int middle = low + (high - low) / 2;
+        if (values.get(middle) < target) low = middle + 1;
+        else high = middle;
+    }
+    return low < values.size() && values.get(low) == target ? low : -1;
+}
+}
+```

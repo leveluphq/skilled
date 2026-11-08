@@ -1,0 +1,74 @@
+A deep clone needs a data contract. Copying an object graph can mean preserving cycles, preserving shared references, copying prototypes, running getters, transferring buffers, or keeping property descriptors. Those choices are observable. An interview answer should name the supported data before presenting a recursive function as a universal clone.
+
+For application data that fits its supported types, use the platform's structured-clone operation. A JSON stringify-and-parse round trip has different behavior and loses information. For a focused implementation exercise, the code below copies ordinary same-realm records and arrays, preserves cycles and aliases, and rejects functions, accessors, and unsupported object prototypes.
+
+## Distinguish a tree from an object graph
+
+Suppose two properties both refer to one child object. A correct graph copy under this contract makes those two properties refer to one copied child. It should not create two independent children, and neither copied property should point back to the original child. Sharing is part of the graph's structure.
+
+A cycle adds another requirement. If `source.self === source`, then `copy.self === copy` should hold. Recursing without a table of previously copied objects will never finish. A visited set alone can detect the repeat but cannot tell the algorithm which copied object to reuse. Store an original-to-copy map instead.
+
+```javascript
+function cloneDataGraph(value) {
+  const copies = new Map();
+  function copy(input) {
+    if (typeof input === 'function') throw new TypeError('Functions are outside the data contract');
+    if (input === null || typeof input !== 'object') return input;
+    if (copies.has(input)) return copies.get(input);
+    const array = Array.isArray(input);
+    const prototype = Object.getPrototypeOf(input);
+    if (array ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null)
+      throw new TypeError('Expected an ordinary record or array');
+    const output = array ? [] : Object.create(prototype);
+    copies.set(input, output);
+    for (const key of Reflect.ownKeys(input)) {
+      const descriptor = Object.getOwnPropertyDescriptor(input, key);
+      if (!Object.prototype.hasOwnProperty.call(descriptor, 'value'))
+        throw new TypeError('Accessors are outside the data contract');
+      Object.defineProperty(output, key, { ...descriptor, value: copy(descriptor.value) });
+    }
+    return output;
+  }
+  return copy(value);
+}
+```
+
+## Allocate before descending
+
+The map entry is inserted immediately after allocating the empty output. Descending into `input.self` can then find the output object even though its properties are still being filled. Inserting only after all children are copied would be too late for a cycle.
+
+For `source = { left: child, right: child }`, the left branch creates the child's copy and records it. The right branch retrieves that same object. A test should assert both `copy.left === copy.right` and `copy.left !== child`. Deeply equal values alone cannot establish either identity requirement.
+
+The table lasts for one top-level call. Separate calls produce independent copies. Keeping a global map would retain old graphs and could return stale copies after the source had changed. The local map also lets all temporary original-to-copy entries become collectible after the call finishes.
+
+For a concrete identity check, create one child with score 3 and place it under two parent keys. After copying, change the copied child's score to 8. Both copied keys should observe 8, while both original keys should still observe 3. This tests graph structure rather than merely comparing serialized values.
+
+## Copy properties without invoking getters
+
+`Reflect.ownKeys` includes string and symbol keys, including non-enumerable properties. Reading property descriptors lets the clone inspect ordinary data properties without invoking getters. An accessor causes an explicit rejection. Spreading the source into a new object would read enumerable values and could execute getters as a side effect.
+
+`Object.defineProperty` also handles an own key named `__proto__` as data. Assigning that key with ordinary bracket assignment on a normal object can instead interact with an inherited setter. Preserving a null prototype avoids adding inherited object methods to a record that originally had none.
+
+For arrays, own indexes and the length descriptor are copied. Missing indexes stay missing, preserving sparse holes rather than filling them with undefined. Additional own data properties and symbol properties follow the same rule. The code preserves individual property flags but does not reproduce whether the whole source object was made nonextensible. Object integrity is another policy beyond this data-graph contract.
+
+## Know which objects need a different mechanism
+
+Date, Map, Set, typed arrays, DOM nodes, class instances, and promises are rejected here because their prototypes are outside the accepted set. Their internal state cannot be recreated by blindly copying ordinary own properties. A Date's timestamp, for example, is not merely an enumerable `time` field waiting for a loop to find it.
+
+The same-realm restriction is deliberate. An ordinary object from another frame has another realm's Object prototype, so this small implementation rejects it. Proxies can run traps during reflection, and this code is intended for trusted ordinary data, not as a way to inspect hostile objects without executing anything.
+
+See the platform's [structuredClone documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone) for supported cloning and transfer behavior. Its transfer option can detach an original transferable resource, which is a different consequence from leaving all original data usable. Select that operation based on the real payload rather than expanding this exercise into a partial platform implementation.
+
+## Why JSON is a separate serialization contract
+
+JSON does not preserve object identity or cycles. It also changes or omits values that do not fit its data model, and its serialization hooks can run user code. A JSON round trip can be appropriate when the desired boundary is explicitly JSON-compatible data. It should not be described as an equivalent replacement for graph cloning.
+
+Primitive values need no recursive copy under this exercise. Null, strings, numbers, Booleans, undefined, bigint, and symbols retain their value. An object containing a function rejects when that property is reached. A failed clone does not mutate the original, although temporary output allocations may already exist before the failure.
+
+## Test structure, descriptors, and boundaries
+
+Test a nested record, an array, a sparse array, null, a null-prototype record, and a symbol-keyed data property. Include a self-cycle and two properties sharing one child. Change the copied child and check that the original child remains unchanged while the copy's aliases still refer to each other.
+
+Add a getter with a counter and confirm the operation rejects without calling the getter. Test a non-enumerable nonwritable property and an own `__proto__` data property. Date and custom class instances should reject clearly. For a complexity discussion, use the number of distinct objects and own properties: each is processed once, with O(V + E) graph work and O(V) mapping storage, plus recursive depth and the output graph.
+
+For a related traversal with different repeat semantics, read the [array-flattening guide](/guides/javascript-flatten-arrays). A repeated nested array should be expanded twice there, while this clone intentionally preserves shared identity. Reusing one global visited-set rule for both problems would silently change one of their contracts.

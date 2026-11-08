@@ -1,0 +1,65 @@
+Currying collects arguments across several calls before invoking a function. For a function of three required arguments, `curried(1)(2)(3)` and `curried(1, 2)(3)` can both invoke the original function with `[1, 2, 3]`. That behavior needs an explicit arity rule, especially when JavaScript functions use defaults, rest parameters, or optional arguments.
+
+The implementation below takes a required argument count rather than guessing from the function's length. It supports reusable partial applications and forwards every collected argument once the count is reached. The receiver comes from the final call. It is a normal-call utility, not a constructor adapter, and it does not interpret placeholder values as missing argument slots.
+
+## Decide when collection is complete
+
+JavaScript's function length counts parameters only up to the first default parameter and excludes rest parameters. That value can be useful metadata, but it does not necessarily describe the number of arguments an application wants to collect. An explicit arity makes the wrapper's stopping condition independent of those syntax details.
+
+For an arity of three, a call supplying two arguments returns another collector. A later call supplying one or more arguments invokes the function. With arity zero, the first invocation runs immediately, even with no arguments. An empty intermediate call before the required count returns another collector without advancing the count.
+
+```javascript
+function curry(fn, arity) {
+  if (typeof fn !== 'function') throw new TypeError('Expected a function');
+  if (!Number.isSafeInteger(arity) || arity < 0)
+    throw new RangeError('arity must be a nonnegative safe integer');
+  function collect(previous) {
+    return function (...incoming) {
+      const combined = previous.concat(incoming);
+      if (combined.length >= arity) return fn.apply(this, combined);
+      return collect(combined);
+    };
+  }
+  return collect([]);
+}
+```
+
+## Keep each partial application independent
+
+Suppose `withOne = curry((a, b, c) => [a, b, c], 3)(1)`. Calling `withOne(2)(3)` should produce `[1, 2, 3]`. Calling `withOne(4)(5)` afterward should produce `[1, 4, 5]`. The first completed branch must not leave its later arguments in a shared mutable list.
+
+`concat` creates a new combined argument array for each invocation. The closure retains the previous prefix without changing it. Several branches can therefore reuse the same prefix safely. Mutating a single captured array with push would require careful restoration and would easily contaminate another branch or a reentrant call.
+
+For a four-argument function, collecting one argument per call copies prefixes of lengths one, two, three, and four. Grouping all four arguments in one call copies only one combined list. This overhead is usually small for interview examples, but currying does not make argument collection free. Retained partial functions also retain their prefixes until those functions become unreachable.
+
+The argument values themselves are shared references. Currying does not deep-clone objects supplied as arguments. If an object changes between collecting a prefix and completing a call, the original function sees that changed object. Snapshotting mutable data is a separate policy with different costs.
+
+## Define the receiver at a visible call site
+
+This wrapper uses a regular function so the final invocation can provide `this`. For `partial = curried.call(firstObject, 1)`, the earlier receiver is not retained. Completing `partial.call(secondObject, 2, 3)` invokes the original function with secondObject as its receiver.
+
+That rule avoids an implicit choice about which earlier call should win. Another useful design binds the original function before currying, so its receiver stays fixed regardless of the final call. An arrow original function already has lexical `this`, and applying a receiver cannot change it.
+
+Read the [closures and this guide](/guides/javascript-closures-and-this) for the underlying distinction. The closure stores previously collected arguments; the final call supplies the dynamic receiver. Combining those concepts without stating which information is retained makes a wrapper difficult to reason about in method-heavy code.
+
+## Keep excess arguments and missing values separate
+
+Once enough arguments have been collected, the code forwards the entire combined list. If the arity is two and a caller supplies three arguments, the original function receives all three. A version that truncates to two would have a different contract, particularly for a function that reads rest arguments or arguments.length.
+
+Undefined is a supplied value and counts toward arity. Treating it as a placeholder would prevent passing a legitimate undefined argument and would change how defaults activate in the original function. Placeholder-based currying needs a distinct sentinel and an algorithm for filling the earliest open slots.
+
+Optional arguments also require an application decision. A collector cannot know that a caller has finished providing them without a count, a terminator call, or some other signal. An API that waits forever for every optional value is not useful. Choose the desired required count and let the original function handle its defaults after invocation.
+
+## Propagate returns and exceptions naturally
+
+The completed call returns the original function's result directly, including a promise. The wrapper does not await it or retry a rejection. A synchronous exception also propagates from the completed call. Partial collection alone does not run the original function and therefore cannot produce its side effects early.
+
+Using new with the wrapper is outside this contract. Constructor behavior includes prototype and instance rules that ordinary apply cannot reproduce. Similarly, this utility does not preserve all metadata of the original function, such as its name, length, custom properties, or identity. Callers should depend on the documented invocation behavior instead.
+
+## Test branches and invocation counts
+
+Use a spy original function and assert that incomplete applications do not call it. Complete the same required arity through single-argument, grouped, and excess-argument calls. Test zero arity, invalid arity, empty intermediate calls, and explicit undefined values. Check the argument sequence itself rather than only a commutative sum, since addition can hide reordered arguments.
+
+Reuse one partial prefix along two branches and verify they remain independent. Complete calls with two different receivers and confirm the final-call policy. Include a thrown error and a promise return to establish direct propagation. The number of captured argument references grows with the collected prefix; concatenating each prefix also copies those references at each stage.
+
+As a follow-up, compare currying with partial application. A partial helper can bind a fixed prefix and invoke immediately with later arguments, without waiting for an arity threshold. [Memoization](/guides/javascript-memoization) addresses another concern: reusing a completed call's result. Combining the wrappers requires deciding whether the cache observes the original full argument list or intermediate collector identities.

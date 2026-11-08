@@ -1,0 +1,17 @@
+import MultipleOverlapPartial from './code/MultipleOverlapPartial';
+import MultipleOverlapComplete from './code/MultipleOverlapComplete';
+
+Based on our previous understanding, we know that the first two meetings overlap, so we can combine them.
+
+<MultipleOverlapPartial />
+
+We see that the third meeting's start time also comes before the end of that combined interval,
+so it should be included as well.
+
+<MultipleOverlapComplete />
+
+By thinking through these simple examples, we discovered the foundation of our algorithm.
+**You walk through the array of meeting times, and if the start time comes before the end time of the currently tracked interval, we include it in this combined interval**.
+
+Specifically what we're doing is checking the start time of the current meeting against the end time of some aggregated interval.
+When we combine a meeting with an interval, if the newly added meeting's end time comes after the combined interval's end time, the combined interval's end time is updated to be the latest end from this new meeting.

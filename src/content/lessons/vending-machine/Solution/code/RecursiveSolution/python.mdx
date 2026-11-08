@@ -1,0 +1,58 @@
+```python
+def min_coins_for_change(denominations, target):
+    if target < 1:
+        return 0
+
+    """
+    Init all values to 0 which indicates no coins yet match the target
+    This is our dp / memo array that we're using to memoize the solution to subproblems
+    """
+
+    min_coins_for_amount = [0 for _ in range(target + 1)]
+
+    return min_coins_for_change_memo(denominations, target, min_coins_for_amount)
+
+
+def min_coins_for_change_memo(denominations, remaining, min_coins_for_amount):
+    """
+    Base case 1: Invalid remaining coins
+    We use -1 to indicate it's invalid
+    """
+    if remaining < 0:
+        return -1
+
+    # Reached zero, valid case
+    if remaining == 0:
+        return 0
+
+    # Check if we have a memoized (already calculated) value for this amount remaining amount
+    if min_coins_for_amount[remaining] != 0:
+        return min_coins_for_amount[remaining]
+
+
+    min_steps_for_remaining = float("inf")
+
+    # Subtract each coin from the current remaining amount (fork paths from this amount)
+    for coin in denominations:
+        steps_for_coin = min_coins_for_change_memo(denominations, remaining - coin, min_coins_for_amount)
+
+        """
+        If changeResult >= 0, it's possible to make change with this denomination,
+        and the steps for this denomination is less than the current min,
+        we increment the steps to account for it as the new mininum.
+
+        stepsForCoin = -1 means it's invalid which is why we check for >= 0
+        """
+        if steps_for_coin >= 0 and steps_for_coin < min_steps_for_remaining:
+            min_steps_for_remaining = steps_for_coin + 1
+
+    
+    """
+    If we're able to find a minStepsForRemaining for the current subproblem, we memoize it.
+    If it minStepsForRemaining === Infinity, it's not valid and we use our invalid placeholder -1.
+    """
+    min_coins_for_amount[remaining] = -1 if min_steps_for_remaining == float("inf") else min_steps_for_remaining
+
+
+    return min_coins_for_amount[remaining]
+```

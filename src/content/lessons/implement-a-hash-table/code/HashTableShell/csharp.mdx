@@ -1,0 +1,30 @@
+```csharp
+public class HashTable<TValue> {
+    // A key-value pair stored in a bucket
+    private class Entry {
+        public string key;
+        public TValue value;
+    }
+
+    private readonly int size;
+    private readonly List<Entry>[] table;
+
+    public HashTable(int size) {
+        this.size = size;
+        this.table = new List<Entry>[size];
+    }
+
+    public TValue Get(string key) {
+        // get a value by key
+    }
+    public void Insert(string key, TValue value) {
+        // add/update a value at a key
+    }
+    public TValue Remove(string key) {
+        // remove a value by key
+    }
+    private int Hash(string key) {
+        // our custom hash function
+    }
+}
+```

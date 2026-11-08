@@ -1,0 +1,30 @@
+```java
+class Parent {
+    int age;
+    Child c1;
+    Child c2;
+
+    Parent(int age, Child c1, Child c2) {
+        this.age = age;
+        this.c1 = c1;
+        this.c2 = c2;
+    }
+}
+
+class Child {
+    int age;
+    String mood;
+
+    Child(int age, String mood) {
+        this.age = age;
+        this.mood = mood;
+    }
+}
+
+Parent parent = new Parent(45, null, null);
+Child child1 = new Child(10, "happy");
+Child child2 = new Child(12, "bored");
+
+parent.c1 = child1;
+parent.c2 = child2;
+```

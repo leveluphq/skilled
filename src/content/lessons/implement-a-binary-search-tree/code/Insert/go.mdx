@@ -1,0 +1,35 @@
+```go
+func (t *BinarySearchTree) Insert(data int) *BinarySearchTree {
+	node := &BinaryNode{Data: data}
+
+	// First insert becomes root
+	if t.root == nil {
+		t.root = node
+		return t
+	}
+
+	currentNode := t.root
+
+	for {
+		if data < currentNode.Data {
+			// Insert the node if you reach a leaf and return
+			if currentNode.Left == nil {
+				currentNode.Left = node
+				return t
+			}
+
+			// Continue by traversing left
+			currentNode = currentNode.Left
+		} else {
+			// Insert the node if you reach a leaf and return
+			if currentNode.Right == nil {
+				currentNode.Right = node
+				return t
+			}
+
+			// Continue by traversing right
+			currentNode = currentNode.Right
+		}
+	}
+}
+```

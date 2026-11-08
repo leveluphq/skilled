@@ -1,0 +1,23 @@
+```kotlin
+fun insert(key: String, value: Int) {
+    val index = hash(key)
+    var bucket = table[index]
+
+    // Initialize our bucket if it doesn't exist yet
+    if (bucket == null) {
+        bucket = mutableListOf()
+        table[index] = bucket
+    }
+
+    // If the key already exists in the bucket, replace its value
+    for (i in 0 until bucket.size) {
+        if (bucket[i].key == key) {
+            bucket[i].value = value
+            return
+        }
+    }
+
+    // Otherwise, add the new key-value pair
+    bucket.add(Entry(key, value))
+}
+```

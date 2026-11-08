@@ -1,0 +1,111 @@
+A graph traversal answers “which nodes can I reach from here?” The order in which it explores those nodes determines what additional facts you can obtain along the way. Breadth-first search explores by distance in edges. Depth-first search follows one branch before returning to try another.
+
+Both can visit the reachable part of a graph in O(V + E) time with an adjacency list and suitable bookkeeping. Choosing between them requires looking at the result you need, how the graph is represented, and what state the implementation retains. Use the [graph traversal playground](/tools/graph-traversal) to inspect those choices on the same input.
+
+## Start with the graph representation
+
+For an adjacency list, each node maps to the neighbors reachable through one outgoing edge. An undirected connection normally appears in both nodes' neighbor lists. A directed edge appears only in the source node's list.
+
+```javascript
+const graph = {
+  A: ['B', 'C'],
+  B: ['D'],
+  C: ['E'],
+  D: ['F'],
+  E: ['F'],
+  F: [],
+};
+```
+
+The order of those neighbor arrays affects the order of equally eligible visits. It does not change which nodes are reachable. If an expected traversal sequence assumes alphabetical order, the implementation must sort neighbors or receive them in that order. Sorting adds work that should be included in the analysis.
+
+A grid is a graph too. Each valid cell is a node, and allowed moves define edges. The “neighbors” function may compute adjacent coordinates instead of looking them up in an object. Walls, diagonals, and movement rules are part of the problem contract.
+
+## BFS uses a queue
+
+Breadth-first search processes the first discovered node before later discoveries. Mark a node as seen when adding it to the queue, so two parents cannot enqueue it repeatedly before its first visit.
+
+```javascript
+function bfs(graph, start) {
+  const queue = [start];
+  const seen = new Set([start]);
+  const parent = new Map([[start, null]]);
+  const order = [];
+
+  for (let head = 0; head < queue.length; head += 1) {
+    const node = queue[head];
+    order.push(node);
+    for (const next of graph[node] || []) {
+      if (seen.has(next)) continue;
+      seen.add(next);
+      parent.set(next, node);
+      queue.push(next);
+    }
+  }
+  return { order, parent };
+}
+```
+
+The head index avoids repeatedly removing the first array entry. This small implementation retains processed entries in the array until it returns; the storage still stays O(V). A long-lived queue can use a dedicated queue representation or periodically release processed storage when that matters.
+
+On the example graph, the order is A, B, C, D, E, F. B and C are one edge from A. D and E are two edges away. F is three edges away, regardless of whether its first discovery comes through D or E.
+
+The parent map records one path back to the start. Reconstruct it by following parents from a target until null, then reversing the collected list. Parent assignment happens on first discovery, so that chain matches the search tree.
+
+## Why BFS finds a shortest unweighted path
+
+At the start, the queue contains distance zero. Processing a node at distance d discovers unseen neighbors at distance d + 1. Existing nodes at distance d are already ahead of those new entries. The queue therefore processes all shorter distances before a longer one can become the first route to a node.
+
+That argument depends on each edge contributing the same cost. If an edge has a weight, fewer edges need not mean a cheaper path. A weighted shortest-path problem requires an algorithm suited to its weight constraints. Do not apply the BFS proof while silently changing “distance” from edge count to arbitrary total cost.
+
+Multiple shortest paths can exist. BFS returns one consistent with neighbor order unless the problem asks you to retain all shortest predecessors. Counting or listing every shortest path adds state and may have a much larger output.
+
+## DFS follows an active path
+
+A recursive DFS marks a node when it enters the call, then explores each unseen neighbor before trying the next neighbor of the current node.
+
+```javascript
+function dfs(graph, start) {
+  const seen = new Set();
+  const order = [];
+
+  function visit(node) {
+    seen.add(node);
+    order.push(node);
+    for (const next of graph[node] || []) {
+      if (!seen.has(next)) visit(next);
+    }
+  }
+
+  visit(start);
+  return order;
+}
+```
+
+This version produces A, B, D, F, C, E for the example. The call to B must return before A's loop proceeds to C. The recursion stack records the unfinished calls along the current path.
+
+An iterative DFS can use an explicit stack, which avoids relying on the runtime's call-stack limit. To reproduce a recursive neighbor order exactly, preserve a frame's next-neighbor position or account for the reversal caused by pushing several neighbors. A stack that marks every sibling on push may produce a different discovery tree from recursive DFS, even if both visit the same reachable nodes.
+
+DFS is useful when the reasoning depends on entering and leaving a path: backtracking, recursive tree work, dependency exploration, and detecting certain cycle conditions. A visited set alone is enough to prevent repeated visits, but some cycle-detection problems also need to distinguish nodes on the current path from nodes whose exploration has finished.
+
+## Be precise about memory
+
+Both general graph algorithms often retain a seen set of up to O(V) nodes. A parent map and collected output can each add O(V) references. Those costs remain even if the frontier itself is small.
+
+For a tree, the active DFS recursion path has length h, the height. A balanced tree can have a short path; a chain can have h = V. BFS can hold a broad level in its queue. A wide tree can therefore make the frontier large even when its height is small.
+
+It is misleading to say DFS always uses less memory. A deep graph can make its active path large, while a narrow graph may keep the BFS queue small. State the structures your implementation retains and analyze the actual input family.
+
+## Cycles, disconnected nodes, and grid boundaries
+
+A graph can point back to a node already seen. Without a visited rule, both BFS and DFS can repeat work or loop forever. Self-loops deserve the same treatment. Marking on discovery is especially important for the BFS queue because multiple frontier nodes can share a neighbor.
+
+Starting at one node explores only its reachable component. To traverse an entire disconnected graph, iterate through all nodes and start a new search whenever a node remains unseen. Keep the seen set across those searches.
+
+For a grid, validate row and column bounds before reading a cell. Decide whether visiting may mutate the input. Replacing visited land with water saves a separate coordinate set, but it changes the grid and should be part of the contract. An island-counting solution can start a traversal at each unseen land cell and count those starts.
+
+## Choose based on the required result
+
+Use BFS when the task asks for the fewest unweighted moves or processing by distance. Use DFS when an active path, recursive decomposition, or finishing order is central to the reasoning. Either can determine reachability or count connected regions under the appropriate graph assumptions.
+
+Practice the distinction with [Pilot a Rocket](/course/pilot-a-rocket), which asks for an unweighted route, and [Count Islands](/course/count-islands), where either traversal can mark a connected region. In the playground, add a cycle and a disconnected node, then explain why neither changes the set reachable from the original start unless you add a connecting edge.

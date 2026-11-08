@@ -1,0 +1,7 @@
+```swift
+func suffixCopies(_ values: [Int]) -> [[Int]] {
+    var suffixes: [[Int]] = []
+    for index in values.indices { suffixes.append(Array(values[index...])) }
+    return suffixes
+}
+```

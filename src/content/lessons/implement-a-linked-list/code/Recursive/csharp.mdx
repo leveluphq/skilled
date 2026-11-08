@@ -1,0 +1,14 @@
+```csharp
+Node FindTailNodeRecursively(Node node) {
+    // Stopping condition when we find the tail node.
+    // We know that the `next` will be null for the tail.
+    if (node.next == null) {
+        return node;
+    }
+
+    // Continue to call our function recursively with the `next` node.
+    return FindTailNodeRecursively(node.next);
+}
+
+Node tailNode = FindTailNodeRecursively(head);
+```

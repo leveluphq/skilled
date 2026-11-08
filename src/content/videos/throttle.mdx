@@ -1,0 +1,19 @@
+A throttle limits execution during a stream of calls. A leading call can execute immediately, and a trailing call can preserve the latest invocation that arrived while the throttle was waiting. The exact leading and trailing policy belongs in the function's contract because different useful throttles produce different timelines.
+
+## Track the active window
+
+With a 100-millisecond window and leading plus trailing execution, a call at time zero can run immediately. Calls at 20 and 70 arrive during the waiting period. A trailing implementation stores the latest of those calls for the window boundary. It should execute with the arguments from time 70, rather than replaying every suppressed call.
+
+The current lesson uses an explicit `hasStoredEvent` flag. A stored argument cannot reliably double as a pending-call marker: zero, false, an empty string, undefined, and no argument can all be legitimate invocations. A truthiness check can silently drop a required trailing execution.
+
+## Preserve receiver and argument semantics
+
+Store the complete latest argument list and the receiver when the wrapper is called. When the pending call executes, invoke the original function with that receiver. A function expecting several arguments should not be reduced to a single event value merely because a browser event handler was the first use case.
+
+Timers run through the event loop and can fire later than their nominal deadline. Calls exactly at a boundary need a stated ordering policy in a deterministic test. Check a long stream, a short burst, one isolated call, and a call made immediately after a completed window.
+
+## Test the correction from the recording
+
+Make calls with 0, false, an empty string, and no arguments while a window is active. Confirm that the pending invocation still runs under the chosen trailing policy. Then create two separate throttled wrappers and verify that their timers and stored arguments remain independent.
+
+The [event timeline](/tools/debounce-throttle) lets you compare leading and trailing settings without changing the lesson editor. The [debounce and throttle guide](/guides/debounce-vs-throttle) explains when a quiet-period debounce or a rate-limited throttle fits the work. Use the updated course implementation when copying code, including the explicit pending-call flag described above.

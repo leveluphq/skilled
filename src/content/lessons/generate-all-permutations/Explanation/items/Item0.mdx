@@ -1,0 +1,14 @@
+import BaseCase from './code/BaseCase';
+
+Reading the prompt, at first glance it may not sound too complex.
+However, if you've already attempted it yourself, you realize it can get challenging quickly by trying to track all the different arrangements of characters.
+
+Let's start from the bottom using the simplest cases and build on top of that to gain intuition on how to work through this question.
+
+The most simple case is passing an empty string or passing a string containing one character.
+In both of these base scenarios, there wouldn't need to be any computations to generate the permutations.
+
+<BaseCase />
+
+What if we had two characters in the string? In this case, there are only two permutations
+where we simply flip their positions. For example, `'de'` would just be `['de', 'ed']`.

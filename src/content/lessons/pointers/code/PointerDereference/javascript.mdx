@@ -1,0 +1,13 @@
+```javascript
+parent.c1 = null;
+console.log(parent.c1, child1.mood); // null, stoked
+
+parent.c1 = child1;
+
+child1 = 'no longer an object pointer';
+console.log(parent.c1.mood, child1); // stoked, no longer an object pointer
+
+parent.c1 = false;
+child1 = null;
+console.log(parent.c1, child1); // false, null
+```

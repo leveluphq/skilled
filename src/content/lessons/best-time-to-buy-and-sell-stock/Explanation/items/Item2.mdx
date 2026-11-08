@@ -1,0 +1,7 @@
+import BigO from 'content/blocks/BigO';
+
+To improve on an <BigO.n2 /> solution, we know the common time complexities that perform better are <BigO.nlogn />, <BigO.n />, and <BigO.logn />.
+We use <BigO.nlogn /> with sorting which doesn't make sense in this problem because we saw that the order is crucial to finding the best result.
+With <BigO.logn />, we usually see it in binary search where the items must be ordered by their value, which again doesn't make sense.
+
+This leaves us with <BigO.n /> which would indicate that we would need to iterate through the input once and remove the nested loop.

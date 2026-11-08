@@ -1,0 +1,14 @@
+```python
+def brute_force_get_target_indexes(array, target):
+  results = []
+
+  # Iterate through array to check each value against every other value
+  for i in range(len(array)):
+    # We start j at i + 1 to make sure we don't compare the same index pairs more than once
+    for j in range(i+1, len(array)):
+      # If the sum of the values equals the target, we return the pair in an array
+      if (array[i] + array[j] == target):
+        results.append([i,j])
+
+  return results
+```

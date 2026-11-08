@@ -1,0 +1,15 @@
+```rust
+fn add_edge(&mut self, source: char, destination: char) {
+    self.adjacency_list
+        .entry(source)
+        .or_default()
+        .push(destination);
+
+    if self.undirected {
+        self.adjacency_list
+            .entry(destination)
+            .or_default()
+            .push(source);
+    }
+}
+```

@@ -1,0 +1,38 @@
+```swift
+class Solution {
+    // We will use -1 to indicate an unfilled spot
+    private let uncountedSpot = -1
+
+    func countTotalMoves(_ boardLength: Int) -> Int {
+        if boardLength < 0 {
+            return 0
+        }
+
+        // Initialize our memoize array
+        var memo = [Int](repeating: uncountedSpot, count: boardLength + 1)
+        let totalMoves = countTotalMovesMemoized(boardLength, &memo)
+        return totalMoves
+    }
+
+    // Recursive helper function that also tracks memoized values
+    private func countTotalMovesMemoized(_ boardLength: Int, _ memo: inout [Int]) -> Int {
+        // Base case 1: Invalid board length
+        if boardLength < 0 {
+            return 0
+        // Base case 2: Prompt says length 0 is still 1 step
+        } else if boardLength == 0 {
+            return 1
+        } else if memo[boardLength] != uncountedSpot {
+            return memo[boardLength]
+        } else {
+            // Recursive case (and memoize its result)
+            let totalMoves = countTotalMovesMemoized(boardLength - 1, &memo) +
+                countTotalMovesMemoized(boardLength - 2, &memo) +
+                countTotalMovesMemoized(boardLength - 3, &memo)
+            memo[boardLength] = totalMoves
+
+            return memo[boardLength]
+        }
+    }
+}
+```

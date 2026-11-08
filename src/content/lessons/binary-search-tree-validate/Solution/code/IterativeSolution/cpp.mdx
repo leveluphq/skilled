@@ -1,0 +1,38 @@
+```cpp
+class Solution {
+public:
+    bool isBST(BinaryNode* root) {
+        stack<BinaryNode*> nodeStack;
+        BinaryNode* currentNode = root;
+        // Below every int, like -Infinity
+        long long inOrderValue = LLONG_MIN;
+
+        // Begin iterative in-order traversal
+        while (!nodeStack.empty() || currentNode != nullptr) {
+            // Traverse down a node's left children as long as they continue to exist
+            while (currentNode != nullptr) {
+                nodeStack.push(currentNode);
+                currentNode = currentNode->left;
+            }
+
+            // Check nodes in-order, testing that their value is larger than the previous
+            currentNode = nodeStack.top();
+            nodeStack.pop();
+
+            // In-order traversal failed
+            if (currentNode->data <= inOrderValue) {
+                return false;
+            }
+
+            // Update value
+            inOrderValue = currentNode->data;
+
+            // Continue in-order traversal to the current node's right path
+            currentNode = currentNode->right;
+        }
+
+        // Finish traversal and all values were valid
+        return true;
+    }
+};
+```

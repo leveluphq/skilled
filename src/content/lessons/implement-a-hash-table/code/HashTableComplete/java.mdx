@@ -1,0 +1,86 @@
+```java
+import java.util.*;
+
+class HashTable<V> {
+    // A key-value pair stored in a bucket
+    private class Entry {
+        String key;
+        V value;
+
+        Entry(String key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private int size;
+    private List<Entry>[] table;
+
+    public HashTable(int size) {
+        this.size = size;
+        this.table = new List[size];
+    }
+
+    public V get(String key) {
+        int index = hash(key);
+        List<Entry> bucket = table[index];
+
+        if (bucket != null) {
+            for (int i = 0; i < bucket.size(); i++) {
+                if (bucket.get(i).key.equals(key)) {
+                    return bucket.get(i).value;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void insert(String key, V value) {
+        int index = hash(key);
+
+        if (table[index] == null) {
+            table[index] = new ArrayList<>();
+        }
+
+        List<Entry> bucket = table[index];
+
+        for (int i = 0; i < bucket.size(); i++) {
+            if (bucket.get(i).key.equals(key)) {
+                bucket.get(i).value = value;
+                return;
+            }
+        }
+
+        bucket.add(new Entry(key, value));
+    }
+
+    public V remove(String key) {
+        int index = hash(key);
+        List<Entry> bucket = table[index];
+
+        if (bucket != null) {
+            for (int i = 0; i < bucket.size(); i++) {
+                if (bucket.get(i).key.equals(key)) {
+                    V value = bucket.get(i).value;
+                    bucket.remove(i);
+
+                    return value;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public int hash(String key) {
+        int hash = 0;
+
+        for (int i = 0; i < key.length(); i++) {
+            hash = (hash + key.charAt(i)) % size;
+        }
+
+        return hash;
+    }
+}
+```

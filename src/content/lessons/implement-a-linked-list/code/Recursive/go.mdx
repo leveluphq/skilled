@@ -1,0 +1,14 @@
+```go
+func findTailNodeRecursively(node *Node) *Node {
+	// Stopping condition when we find the tail node.
+	// We know that the `Next` will be nil for the tail.
+	if node.Next == nil {
+		return node
+	}
+
+	// Continue to call our function recursively with the `Next` node.
+	return findTailNodeRecursively(node.Next)
+}
+
+tailNode := findTailNodeRecursively(head)
+```

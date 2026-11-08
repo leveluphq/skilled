@@ -1,0 +1,27 @@
+```swift
+class Solution {
+    func reverseLinkedList(_ head: ListNode?) -> ListNode? {
+        var previousNode: ListNode? = nil
+        var currentNode = head
+
+        while let node = currentNode {
+            // Store the actual next node in the linked list
+            let nextNode = node.next
+
+            // This reverses the current node to point to the previous node
+            node.next = previousNode
+
+            // We now step our previous node forward
+            previousNode = node
+
+            // We step our current node forward
+            currentNode = nextNode
+        }
+
+        // Since currentNode becomes nil at the tail,
+        // we return the previousNode which is the new head
+        // and the front of our linked list
+        return previousNode
+    }
+}
+```

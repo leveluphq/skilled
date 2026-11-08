@@ -1,0 +1,17 @@
+```kotlin
+fun dfsOrder(graph: List<List<Int>>, start: Int): List<Int> {
+    if (start !in graph.indices) return emptyList()
+    val stack = mutableListOf(start)
+    val visited = mutableSetOf<Int>()
+    val output = mutableListOf<Int>()
+    while (stack.isNotEmpty()) {
+        val node = stack.removeAt(stack.lastIndex)
+        if (!visited.add(node)) continue
+        output.add(node)
+        for (neighbor in graph[node].asReversed()) {
+            if (neighbor !in visited) stack.add(neighbor)
+        }
+    }
+    return output
+}
+```

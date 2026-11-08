@@ -1,0 +1,33 @@
+```rust
+struct Node {
+    data: i32,
+    next: Option<Box<Node>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, next: None }
+    }
+
+    // O(1)
+    fn prepend(self: Box<Self>, data: i32) -> Box<Node> {
+        let mut prepended_node = Box::new(Node::new(data));
+        prepended_node.next = Some(self);
+
+        prepended_node
+    }
+
+    // O(n)
+    fn append(&mut self, data: i32) -> &mut Node {
+        let appended_node = Box::new(Node::new(data));
+        // We walk the `next` links until we reach the empty one after the last node
+        let mut current_link = &mut self.next;
+
+        while let Some(current_node) = current_link {
+            current_link = &mut current_node.next;
+        }
+
+        current_link.insert(appended_node)
+    }
+}
+```

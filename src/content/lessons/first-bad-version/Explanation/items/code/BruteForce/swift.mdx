@@ -1,0 +1,12 @@
+```swift
+func firstBadVersionBruteForce(_ totalVersions: Int) -> Int {
+    for currentVersion in 1...totalVersions {
+        if isBadVersion(currentVersion) {
+            return currentVersion
+        }
+    }
+
+    // Only reached if no version is bad
+    return -1
+}
+```

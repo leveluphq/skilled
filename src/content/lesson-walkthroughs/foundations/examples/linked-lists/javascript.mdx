@@ -1,0 +1,22 @@
+```javascript
+function middleValue(values) {
+    class ListNode {
+        value;
+        next;
+        constructor(value, next = null) {
+            this.value = value;
+            this.next = next;
+        }
+    }
+    let head = null;
+    for (let index = values.length - 1; index >= 0; index--)
+        head = new ListNode(values[index], head);
+    let slow = head;
+    let fast = head;
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    return slow === null ? null : slow.value;
+}
+```

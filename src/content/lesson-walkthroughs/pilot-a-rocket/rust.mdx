@@ -1,0 +1,109 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Find a shortest route from the vertex named `base` to the vertex named `ship` in an unweighted adjacency map. Return the vertex names in route order, including both endpoints. If no route exists, return null rather than an empty route. Every referenced neighbor has an entry in the supplied graph, and the route follows the listed edge directions.
+
+## Explore routes in increasing edge count
+
+Breadth-first search uses a first-in, first-out queue. Start by enqueuing `base`. When removing a vertex, enqueue each neighbor that has not already been discovered. All vertices one edge from the start are discovered before vertices two edges away, and so on. The first discovery of a vertex therefore uses a shortest route to it.
+
+Keep a predecessor map. Set the start's predecessor to an absence sentinel and record each newly discovered neighbor's predecessor as the current vertex. The map also serves as the discovered set. Record a neighbor before enqueueing it, so several incoming edges cannot add it to the queue repeatedly.
+
+## Reconstruct one route
+
+Suppose base connects to a and b, a connects to c, b connects to ship, and c also connects to ship. Breadth-first search discovers a and b at distance one. Processing b discovers ship at distance two, before the route through a and c can improve anything. Its predecessor chain is ship, b, base.
+
+Follow that chain backward from ship until the start sentinel, collect the names, then reverse the collection. The result is `[base, b, ship]`. Keeping only a visited set would establish reachability but would lose the information needed to return the route. Storing a full route in every queue item is possible, but copies many shared prefixes.
+
+## Preserve the shortest-route guarantee
+
+The queue processes vertices in nondecreasing distance from base. When a vertex is first discovered from a distance-d predecessor, it gets distance d + 1. Any shorter predecessor would already have been processed and discovered it earlier. The recorded predecessor thus belongs to a shortest route.
+
+Cycles do not break termination because each vertex is discovered once. A self-loop on base sees the existing start entry and adds nothing. If the queue empties without finding ship, every reachable vertex has been explored, proving that no route exists. Several equal-length routes may exist; adjacency order selects one unless the contract supplies a tie rule.
+
+## Inspect the queue implementation's cost
+
+The graph algorithm examines O(V + E) reachable vertices and edges when queue operations take amortized O(1) time. A queue implemented with front insertion or removal on an array can move all its elements on each operation, adding O(V²) work in a wide search. A head index, deque, or linked queue avoids that repeated shifting.
+
+The queue and predecessor map use O(V) storage. Reconstructing a route costs time and output space proportional to its length. String-key hashing also depends on identifier lengths. The unweighted assumption matters: breadth-first search minimizes edge count, not a sum of arbitrary fuel costs or travel durations.
+
+## Test reachability and route validity
+
+Test a direct base-to-ship edge, an unreachable ship, a cycle, a self-loop, and a tempting longer route listed before a shorter one. Include branching paths with a shared destination to check discovery-time deduplication. Verify that every adjacent pair in the returned route is an edge and that the endpoints are correct.
+
+For generated checks, compute shortest distances independently and require the returned route length to equal the minimum distance plus one. If exact output order is required, make the shortest route unique or specify the tie behavior. A weighted follow-up needs an algorithm such as Dijkstra's for nonnegative weights; changing the queue order alone without distance relaxation does not establish correctness.
+
+## Rust implementation
+
+`VecDeque` provides FIFO operations. Borrowed string keys in the predecessor map refer to the owned graph, and the final route owns its strings.
+
+The course supplies any declared node types and invokes the entry in `impl Solution`, or the design constructor shown here. Owned values move unless borrowed or cloned; the signature makes that choice explicit. An `Option` separates a missing node or result from a valid value. The runner enables integer overflow checks, so wider constraints require deliberate type and arithmetic changes.
+
+```rust
+use std::collections::{HashMap, VecDeque};
+
+const START_NODE: &str = "base";
+const END_NODE: &str = "ship";
+
+impl Solution {
+    pub fn pilot_rocket(satellites: HashMap<String, Vec<String>>) -> Option<Vec<String>> {
+        // Queue to handle BFS
+        let mut bfs_node_queue = VecDeque::new();
+        bfs_node_queue.push_back(START_NODE);
+
+        // Use a hash table to track the node that came
+        // prior to the current in our BFS to track the path
+        let mut previous_node_in_path: HashMap<&str, Option<&str>> = HashMap::new();
+        previous_node_in_path.insert(START_NODE, None);
+
+        // Perform our BFS
+        while let Some(node) = bfs_node_queue.pop_front() {
+            // We've successfully reached the end, and now we should build the path to get here
+            if node == END_NODE {
+                return Some(get_shortest_path_to_ship(&previous_node_in_path));
+            }
+
+            let connected_nodes = satellites.get(node).map(Vec::as_slice).unwrap_or_default();
+
+            for connected_node in connected_nodes {
+                // Check if we have visited this node yet
+                if !previous_node_in_path.contains_key(connected_node.as_str()) {
+                    // Add the node to the queue for our BFS
+                    bfs_node_queue.push_back(connected_node);
+
+                    // Set the current node as the one that came before each of its siblings
+                    previous_node_in_path.insert(connected_node, Some(node));
+                }
+            }
+        }
+
+        // We iterated through all the nodes, and no paths lead to the ship
+        None
+    }
+}
+
+fn get_shortest_path_to_ship(previous_node_in_path: &HashMap<&str, Option<&str>>) -> Vec<String> {
+    let mut path_to_ship = Vec::new();
+
+    // We start at the final node and work our way backward to the start
+    let mut node = Some(END_NODE);
+
+    while let Some(current_node) = node {
+        path_to_ship.push(current_node.to_string());
+
+        // Doing a look up on the hash table for each node
+        // will yield the previous node in the path
+        node = previous_node_in_path[current_node];
+    }
+
+    // Since we worked our way backward,
+    // we must reverse the path to be in the correct order base -> ship
+    path_to_ship.reverse();
+    path_to_ship
+}
+```
+
+## Practice this implementation
+
+[Open Pilot a Rocket](/course/pilot-a-rocket) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Rust conventions and practice problems, use the [Rust interview guide](/interview-prep/rust).

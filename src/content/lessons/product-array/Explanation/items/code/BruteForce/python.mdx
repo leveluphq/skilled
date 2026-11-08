@@ -1,0 +1,15 @@
+```python
+def brute_force_answer(input):
+    results = [None for _ in range(len(input))]
+
+    for i in range(len(input)):
+        product = 1
+
+        for j in range(len(input)):
+            if i != j:
+                product*=input[j]
+
+        results[i] = product
+
+    return results
+```

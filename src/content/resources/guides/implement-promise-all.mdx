@@ -1,0 +1,107 @@
+`Promise.all` combines several asynchronous results into one promise. The implementation becomes easier to reason about once you separate three orders: the order inputs are listed, the order operations finish, and the order values must appear in the result.
+
+The result follows input order. If the second request finishes first, its value still belongs at index one. That requirement is why pushing each completed value into an array is the wrong starting point for an implementation.
+
+This guide builds a small userland implementation, explains its contract, and tests the cases that tend to expose incomplete solutions. It accepts an iterable and uses the native `Promise` constructor. It does not attempt the constructor-subclass and species behavior of the full language implementation.
+
+## Write down the contract
+
+For each input, accept either a promise, a thenable, or an ordinary value. Produce a promise that fulfills with the collected values when all inputs fulfill. Reject when an input rejects or when obtaining the inputs throws.
+
+An empty iterable fulfills with an empty array. It should not remain pending while waiting for a callback that will never exist. A nonempty result array must preserve positions even when completion order changes.
+
+Promise resolution does not mean that every network request or file operation runs in parallel. Those operations are often started before their promises reach this function. The aggregator observes the promises; it does not invent a scheduler, a concurrency limit, or a cancellation policy.
+
+The native API's behavior is specified in the [ECMAScript Promise.all algorithms](https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-promise.all). The implementation below deliberately covers a smaller teaching contract while preserving the everyday behavior this exercise usually asks about.
+
+## A complete teaching implementation
+
+```javascript
+function collectAll(iterable) {
+  return new Promise((resolve, reject) => {
+    const items = [...iterable];
+    if (items.length === 0) {
+      resolve([]);
+      return;
+    }
+
+    const results = new Array(items.length);
+    let remaining = items.length;
+
+    items.forEach((item, index) => {
+      Promise.resolve(item).then((value) => {
+        results[index] = value;
+        remaining -= 1;
+        if (remaining === 0) resolve(results);
+      }, reject);
+    });
+  });
+}
+```
+
+The spread operation consumes the iterable once. It also gives the implementation a known length and stable indices. If obtaining those items throws inside the promise executor, the constructor converts that exception into rejection of the returned promise.
+
+This buffering choice differs from the native algorithm's incremental iterator processing. In particular, this teaching version consumes the iterable before attaching its handlers. It is suitable for finite iterables and ordinary exercise inputs. Do not describe it as a specification-complete polyfill or use an infinite iterable with it.
+
+`Promise.resolve` normalizes ordinary values and assimilates thenables. Calling `.then` directly on every input would fail for an input such as `42`. Reimplementing thenable assimilation by hand would add behavior that the native promise machinery already handles for us.
+
+Each fulfillment callback closes over its original `index`. The `remaining` counter measures unfinished inputs, not the number of occupied array slots observed by a truthiness check. Values such as `undefined`, `false`, `0`, and an empty string are successful results.
+
+## Trace out-of-order completion
+
+Imagine the input positions are `[profile, settings, permissions]`. Settings finishes first, permissions second, and profile last. After the first completion, the result has a value at index one and two unfinished inputs. After the second, indices one and two have values. The final completion fills index zero and resolves the array.
+
+At no point should the implementation sort by completion time. Sorting afterward would also require retaining each input's original index, which the fixed-position assignment already handles directly.
+
+A useful invariant is: after each successful callback, every completed input has its value stored at its original position, and `remaining` equals the number of inputs whose fulfillment callbacks have not completed. When `remaining` reaches zero, every position has been assigned.
+
+The executor itself runs synchronously, but handlers registered with `.then` run asynchronously. Even if all inputs are plain values, the nonempty path completes through promise handlers. The empty path calls `resolve` immediately; a caller's `.then` handler still does not interrupt the current synchronous stack.
+
+## Understand rejection and cancellation
+
+Passing `reject` as the rejection handler settles the aggregate promise when an observed input rejects. Calling `resolve` later has no effect on an already settled promise. That makes an extra mutable “settled” flag unnecessary for this implementation's output behavior.
+
+The other operations continue. If three requests are in flight and the first one fails, this aggregator does not stop the remaining two. A cancellation system needs cooperation from the underlying operation, such as abortable requests, and a policy for when to trigger it.
+
+Also distinguish rejection order from input order. When several inputs reject at different times, the first rejection observed by the aggregator determines its rejection. It does not wait for the lowest-index failing input.
+
+If the application needs the outcome of every operation even when some fail, the appropriate contract resembles `Promise.allSettled`. If it needs the first successful result, that resembles `Promise.any`. State the desired behavior before choosing an aggregation method.
+
+## Test with promises you control
+
+Promises with externally held resolve functions let a test choose the completion order without relying on real timers.
+
+```javascript
+async function checkCompletionOrder() {
+  let resolveFirst;
+  let resolveSecond;
+  const first = new Promise((resolve) => { resolveFirst = resolve; });
+  const second = new Promise((resolve) => { resolveSecond = resolve; });
+  const result = collectAll([first, second, 7]);
+
+  resolveSecond('second');
+  resolveFirst('first');
+  return await result;
+}
+// Result: ['first', 'second', 7]
+```
+
+Test the empty case, one plain value, mixed inputs, a `Set`, an input that rejects, and an iterable that throws. Include a promise that fulfills with `undefined`, because an implementation that counts truthy results will get that case wrong.
+
+Test a thenable whose `then` method throws or attempts to resolve twice. The promise returned by `Promise.resolve` provides the expected one-settlement behavior. Your result counter should be attached to that normalized promise, not directly to an arbitrary thenable that could call a raw callback repeatedly.
+
+A sparse array is another useful boundary. Array iteration produces an `undefined` value for a hole. The spread operation materializes the position, and this implementation returns an array with that value. Be explicit about whether an exercise accepts arrays only or all finite iterables.
+
+## Complexity and retained state
+
+Let n be the number of inputs. The aggregator performs O(n) setup work and O(n) bookkeeping across successful completions, excluding the work performed by the asynchronous operations and any user-supplied iterator or thenable code. It retains O(n) references for the input snapshot and result array.
+
+That memory analysis deserves a qualification: holding a reference to a large object can keep that object alive, even though the aggregator treats the reference as one entry. The algorithmic model counts entries; actual retained bytes depend on their contents.
+
+The wall-clock duration is not the sum of every promise's duration when the operations have already started concurrently. It depends on when the required outcomes become available. Big O of the aggregator's bookkeeping is a different question from latency of the underlying operations.
+
+## Useful follow-up exercises
+
+Implement a concurrency limiter that accepts task functions. A task function can be started later, which makes a concurrency policy possible. Passing already-created promises cannot generally defer the operations that created them.
+
+Then write an `allSettled` variant and compare the result shape and rejection behavior. Add tests before changing the implementation. Practice the underlying promise behavior in [Build a JavaScript Promise](/course/build-a-javascript-promise), and use the [event-loop guide](/guides/javascript-event-loop) to trace when the handlers execute.

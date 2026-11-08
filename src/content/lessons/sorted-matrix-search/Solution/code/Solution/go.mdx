@@ -1,0 +1,31 @@
+```go
+func searchMatrix(matrix [][]int, target int) []int {
+	// Start from the bottom-left item
+	row := len(matrix) - 1
+	col := 0
+
+	// Continue to iterate until you reach an edge of the matrix
+	// and run out of moves in that direction
+	for row >= 0 && col < len(matrix[0]) {
+		currentItem := matrix[row][col]
+
+		// Return the target if we found it
+		if currentItem == target {
+			return []int{row, col}
+		}
+
+		// One of the following cases must be true
+		//
+		// 1. Move up if the current item is larger than target
+		// 2. Move right if the current item is smaller than target
+		if currentItem > target {
+			row--
+		} else {
+			col++
+		}
+	}
+
+	// Value not found
+	return []int{-1, -1}
+}
+```

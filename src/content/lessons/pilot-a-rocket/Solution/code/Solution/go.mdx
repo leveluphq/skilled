@@ -1,0 +1,83 @@
+```go
+import "slices"
+
+const (
+	startNode = "base"
+	endNode   = "ship"
+)
+
+func pilotRocket(satellites map[string][]string) []string {
+	// Queue to handle BFS
+	bfsNodeQueue := &Queue{}
+	bfsNodeQueue.Enqueue(startNode)
+
+	// Use a hash table to track the node that came
+	// prior to the current in our BFS to track the path.
+	// Nothing comes before the start, which we write as "".
+	previousNodeInPath := map[string]string{}
+	previousNodeInPath[startNode] = ""
+
+	// Perform our BFS
+	for bfsNodeQueue.Size() > 0 {
+		node := bfsNodeQueue.Dequeue()
+
+		// We've successfully reached the end, and now we should build the path to get here
+		if node == endNode {
+			return getShortestPathToShip(previousNodeInPath)
+		}
+
+		for _, connectedNode := range satellites[node] {
+			// Check if we have visited this node yet
+			if _, visited := previousNodeInPath[connectedNode]; !visited {
+				// Add the node to the queue for our BFS
+				bfsNodeQueue.Enqueue(connectedNode)
+
+				// Set the current node as the one that came before each of its siblings
+				previousNodeInPath[connectedNode] = node
+			}
+		}
+	}
+
+	// We iterated through all the nodes, and no paths lead to the ship
+	return nil
+}
+
+func getShortestPathToShip(previousNodeInPath map[string]string) []string {
+	pathToShip := []string{}
+
+	// We start at the final node and work our way backward to the start
+	node := endNode
+
+	for node != "" {
+		pathToShip = append(pathToShip, node)
+
+		// Doing a look up on the hash table for each node
+		// will yield the previous node in the path
+		node = previousNodeInPath[node]
+	}
+
+	// Since we worked our way backward,
+	// we must reverse the path to be in the correct order base -> ship
+	slices.Reverse(pathToShip)
+	return pathToShip
+}
+
+type Queue struct {
+	queue []string
+}
+
+// Adding to the back and taking from the front are both O(1)
+func (q *Queue) Enqueue(item string) {
+	q.queue = append(q.queue, item)
+}
+
+func (q *Queue) Dequeue() string {
+	item := q.queue[0]
+	q.queue = q.queue[1:]
+	return item
+}
+
+func (q *Queue) Size() int {
+	return len(q.queue)
+}
+```

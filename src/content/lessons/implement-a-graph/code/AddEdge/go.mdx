@@ -1,0 +1,9 @@
+```go
+func (g *Graph) AddEdge(source, destination string) {
+	g.adjacencyList[source] = append(g.adjacencyList[source], destination)
+
+	if g.undirected {
+		g.adjacencyList[destination] = append(g.adjacencyList[destination], source)
+	}
+}
+```

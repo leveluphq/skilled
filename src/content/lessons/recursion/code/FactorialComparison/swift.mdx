@@ -1,0 +1,30 @@
+```swift
+// Ex. factorial of 4: 4! = 4 * 3 * 2 * 1 = 24
+
+func iterativeFactorial(_ number: Int) -> Int {
+    var factorial = 1
+
+    for i in stride(from: 1, through: number, by: 1) {
+        factorial = factorial * i
+    }
+
+    return factorial
+}
+
+// Same as:
+// 4! = 4 * 3 * 2 * 1
+//    = 4 * 3!
+//    = 4 * 3 * 2!
+//    = 4 * 3 * 2 * 1!
+//    = 4 * 3 * 2 * 1
+
+func recursiveFactorial(_ number: Int) -> Int {
+    // Stop calling when the value is 1 or less
+    if number <= 1 {
+        return 1
+    }
+
+    // Multiply a number by the factorial of the number that comes before it
+    return number * recursiveFactorial(number - 1)
+}
+```

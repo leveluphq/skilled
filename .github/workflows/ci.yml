@@ -1,0 +1,264 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Grant the default token no more than it needs: this job only reads the tree.
+permissions:
+  contents: read
+
+# A newer push to the same ref makes an in-flight run obsolete, so cancel it
+# rather than paying for a result nobody will read.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Matches the version the suite is developed against.
+          node-version: 24
+          cache: npm
+
+      # `npm ci` installs strictly from package-lock.json, so a lockfile that has
+      # drifted from package.json fails here instead of quietly resolving to a
+      # different tree. The peer-dependency override it needs is committed in
+      # .npmrc, which is why no flag appears here.
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run ts
+
+      - name: Test
+        run: npm test
+
+      - name: Published concept and implementation examples
+        run: npm run test:content:foundations -- --runInBand
+
+      - name: SEO audit checks
+        run: npm run test:seo-audit
+
+  build:
+    # The production build, as a fresh clone makes it (docs/README.md): pages
+    # read the lessons from Hasura while they're built, so it starts Hasura
+    # with the schema and the course seed. No other services or keys are
+    # needed. It also applies the seed over itself, reordered and edited, the
+    # way a lesson change reaches production (scripts/course-seed.js).
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # The local-only values from hasura/docker-compose.yml
+      HASURA_GRAPHQL_ADMIN_SECRET: changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme_changeme
+      HASURA_VERSION: v2.48.10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Start Hasura and Postgres
+        run: |
+          docker compose -f hasura/docker-compose.yml up -d
+          timeout 180 sh -c 'until curl -sf http://localhost:8080/healthz; do sleep 2; done'
+
+      - run: npm ci
+
+      - name: Load the schema and the lessons
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/hasura" \
+            "https://github.com/hasura/graphql-engine/releases/download/$HASURA_VERSION/cli-hasura-linux-amd64"
+          chmod +x "$RUNNER_TEMP/hasura"
+          "$RUNNER_TEMP/hasura" --project hasura migrate apply --database-name default --skip-update-check
+          "$RUNNER_TEMP/hasura" --project hasura metadata apply --skip-update-check
+          node scripts/course-seed.js apply
+
+      - name: Course seed changes apply over a database
+        run: npx jest src/services/server/graphql/__tests__/courseSeed.hasura.test.ts
+        env:
+          COURSE_SEED_HASURA_TEST: 1
+
+      - name: Build
+        run: |
+          JWT_SECRET="$(openssl rand -base64 64 | tr -d '\n')" npm run build
+        env:
+          GRAPHQL_URL: http://localhost:8080/v1/graphql
+          ROOT_URL: http://localhost:3000
+          APP_STAGE: development
+          SITE_INDEXABLE: 'false'
+          OPEN_ALL_LESSONS: 'false'
+          NEXT_TELEMETRY_DISABLED: 1
+          # Node's default heap on the runner is too small for the build
+          NODE_OPTIONS: --max-old-space-size=4096
+
+      - name: The built app runs a lesson's code (npm run check:setup)
+        # The check a new contributor ends their setup with, on this build:
+        # the schema and seed, a lesson page, and Run Code in Docker
+        run: |
+          npm run runner:images javascript
+          export JWT_SECRET="$(openssl rand -base64 64 | tr -d '\n')" ENCRYPTION_KEY="$(openssl rand -base64 64 | tr -d '\n')"
+          npm start > "$RUNNER_TEMP/app.log" 2>&1 &
+          timeout 120 sh -c 'until curl -s -o /dev/null http://localhost:3000/; do sleep 2; done'
+          npm run check:setup -- javascript || { tail -50 "$RUNNER_TEMP/app.log"; exit 1; }
+        env:
+          APP_STAGE: development
+          ROOT_DOMAIN: localhost
+          ROOT_URL: http://localhost:3000
+          GRAPHQL_URL: http://localhost:8080/v1/graphql
+          JWT_TOKEN_NAME: stoken-ci
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Public pages and preview index controls
+        run: python3 scripts/check-public-seo.py --expect-noindex --report "$RUNNER_TEMP/public-seo.json"
+
+  conformance:
+    # Every lesson's reference solutions and starter code, and the harness
+    # controls, run in Docker, one job per language so each pulls only its
+    # own image. Parity with the old runner has its own job.
+    # GitHub's runners come with Docker. A fixed Ubuntu, so a change to
+    # ubuntu-latest can't change the results.
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { language: javascript, images: javascript, tests: 'JavaScript |the Docker backend' }
+          - { language: typescript, images: typescript, tests: 'TypeScript ' }
+          - { language: python, images: python, tests: 'Python ' }
+          - { language: java, images: java, tests: 'Java ' }
+          - { language: cpp, images: cpp, tests: 'C\+\+ ' }
+          - { language: csharp, images: csharp, tests: 'C# ' }
+          - { language: go, images: go, tests: 'Go ' }
+          - { language: kotlin, images: kotlin, tests: 'Kotlin ' }
+          - { language: swift, images: swift, tests: 'Swift ' }
+          - { language: rust, images: rust, tests: 'Rust ' }
+          - { language: parity, images: javascript typescript python, tests: '' }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Runner images
+        run: npm run runner:images ${{ matrix.images }}
+
+      - name: Lessons
+        if: matrix.language != 'parity'
+        run: npx jest -c jest.conformance.config.js test/conformance/${{ matrix.language }}.test.ts
+
+      - name: Controls
+        if: matrix.language != 'parity'
+        run: npx jest -c jest.conformance.config.js test/conformance/controls.test.ts -t "${{ matrix.tests }}"
+
+      - name: Parity with the old runner
+        if: matrix.language == 'parity'
+        run: npx jest -c jest.conformance.config.js test/conformance/parity.test.ts
+
+  runner-service:
+    # The runner service (docs/runner-service.md): the agent's tests, the
+    # Cloudflare Worker's types and tests, and two languages' lessons and
+    # controls run through the agent's Docker-host dispatcher, a fresh
+    # container per run
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+
+      - name: Agent tests
+        working-directory: runner/agent
+        run: |
+          test -z "$(gofmt -l .)"
+          go vet ./...
+          go test ./...
+
+      - name: Cloudflare Worker
+        working-directory: runner/cloudflare
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+
+      - run: npm ci
+
+      - name: Service images
+        run: |
+          npm run runner:images python java
+          node scripts/runner-service.js build python java
+
+      - name: Lessons and controls through the dispatcher
+        env:
+          RUNNER_SERVICE_SECRET: ci-secret
+          RUNNER_SERVICE_URL: http://127.0.0.1:8787
+          CONFORMANCE_RUNNER: service
+        run: |
+          node scripts/runner-service.js dispatch --addr 127.0.0.1:8787 &
+          until curl -sf http://127.0.0.1:8787/health; do sleep 1; done
+          npx jest -c jest.conformance.config.js test/conformance/python.test.ts test/conformance/java.test.ts
+          npx jest -c jest.conformance.config.js test/conformance/controls.test.ts -t "Python |Java "
+
+  system-runner:
+    # JavaScript, TypeScript and Python lessons and controls with the
+    # machine's own Node.js and Python (CODE_RUNNER=system, docs/README.md),
+    # on the oldest versions the lessons accept and the newest. The app and
+    # Jest run on Node.js 24; RUNNER_NODE is the Node.js that runs programs.
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { node: 18, python: '3.9' }
+          - { node: 26, python: '3.14' }
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: The Node.js that runs programs
+        run: echo "RUNNER_NODE=$(which node)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - run: npm ci
+
+      - name: Lessons and controls
+        env:
+          CONFORMANCE_RUNNER: system
+        run: |
+          "$RUNNER_NODE" --version
+          python3 --version
+          npx jest -c jest.conformance.config.js test/conformance/javascript.test.ts test/conformance/typescript.test.ts test/conformance/python.test.ts
+          npx jest -c jest.conformance.config.js test/conformance/controls.test.ts -t "^(JavaScript|TypeScript|Python) harness"

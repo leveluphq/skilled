@@ -1,0 +1,10 @@
+import BigO from 'content/blocks/BigO';
+
+There are a couple of ways to solve this using binary search or divide and conquering.
+For example, you could iterate down all `r` rows and do a binary search on all `c` columns.
+If you're brave, you could also just perform a binary search on rows and columns simultaneously, but this gets messy quickly.
+With divide and conquer, you can recursively split the matrix into four sub-matrices.
+
+All of these solutions are on the approximate order of <BigO.nlogn /> time complexity solutions.
+
+You can do better while also using simpler code.

@@ -1,0 +1,12 @@
+import Image from 'content/blocks/Image';
+
+When we iterate through the string, if we encounter a closing bracket, we want to compare it with the most recent opening bracket.
+We can then set them aside after finding a match since they have been accounted for as a valid pair.
+
+We want to store our opening brackets in the order in which they appear and be able to compare the last opening bracket we encountered to a closing bracket.
+This is a perfect opportunity to use a **stack**.
+
+We will `push` opening brackets to a stack when we see them and `pop` them when we encounter a closing bracket to compare them.
+If we iterate through the entire string and there aren't any remaining opening brackets in the stack, our input is valid.
+
+<Image src="/images/brackets-as-stack.png" alt="Opening brackets are pushed onto a stack; each closing bracket must match the bracket popped from the top." width={1786} height={900} />

@@ -1,0 +1,22 @@
+```rust
+impl Solution {
+    pub fn sum_digits(n: i32) -> i32 {
+        // ** Base case ** - we know to stop when our number no longer has digits
+        if n == 0 {
+            return 0;
+        }
+
+        /*
+          Recursive Case:
+            1. Extract the digit in the one's place using % 10
+            2. Remove the one's place by dividing by 10 (integer division rounds down, keeping it an int)
+            3. Sum it recursively with the rest of the digits in the integer
+        */
+        let ones_place_value = n % 10;
+        let trimmed_items = n / 10;
+        let sum_of_remaining_items = Self::sum_digits(trimmed_items); // recursive call
+
+        ones_place_value + sum_of_remaining_items
+    }
+}
+```

@@ -1,0 +1,12 @@
+```javascript
+function aliasTrace() {
+    const original = { value: 1 };
+    let alias = original;
+    const trace = [original.value];
+    alias.value = 2;
+    trace.push(original.value);
+    alias = { value: 9 };
+    trace.push(original.value, alias.value);
+    return trace;
+}
+```

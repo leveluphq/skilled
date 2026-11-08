@@ -1,0 +1,19 @@
+Depth-first search explores a branch before returning to pending alternatives. A recursive implementation gets that behavior from nested calls; an iterative implementation manages a stack explicitly. The recording compares those forms. The visit order also depends on neighbor order, so two valid DFS implementations need not print vertices in the same sequence.
+
+## Separate discovery from expansion
+
+On a graph with cycles, record enough visited state to avoid expanding a vertex repeatedly. A recursive DFS commonly marks a vertex when its call begins. The current iterative lesson marks a vertex when popping it, then skips entries already visited. That policy helps retain the intended branch-following behavior when several pending paths lead to the same vertex.
+
+Marking on push is another useful policy for some iterative traversals, but it can produce a different predecessor tree or visit order. Decide which behavior the exercise requires before changing the timing. If you want an iterative traversal that reproduces recursive entry and exit behavior exactly, explicit frames can retain a node's next-neighbor position.
+
+## Trace the stack on a converging graph
+
+Use a graph in which A connects to B and C, and both branches can reach D. Track the stack and visited set after each step. A stack may contain more than one pending entry for D under a mark-on-pop policy, but D should be expanded only once. Reversing the order in which neighbors are pushed also reverses which pending branch is explored next.
+
+A plain visited set is enough for reachability. Detecting directed cycles needs more information about the active path or equivalent state; reaching an already completed vertex does not by itself establish a cycle in the current path. State the traversal's purpose before adding a cycle-detection claim.
+
+## Count work and stored pending entries
+
+With adjacency lists and each vertex expanded once, a complete traversal of a reachable component takes O(V + E) work. Recursive depth can reach V. The exact stack bound for an iterative version depends on whether duplicate pending entries are allowed, so inspect that policy when discussing auxiliary space.
+
+Use the [graph traversal tool](/tools/graph-traversal) to inspect ordering. Then compare [Count Islands](/watch/count-islands), where DFS labels connected land, with [Robot Maze](/watch/robot-maze), where movement rules and remembered failed states change the search.

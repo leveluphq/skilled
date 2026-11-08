@@ -1,0 +1,10 @@
+```javascript
+setUserSeats(users) {
+  // Use let instead of var which is block scoped
+  for (let i = 0; i < users.length; i++) {
+    users[i].printSeatNumber = () => {
+      console.log(i);
+    }
+  }
+}
+```

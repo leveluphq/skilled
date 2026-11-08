@@ -1,0 +1,16 @@
+```kotlin
+fun enqueue(item: Int): Node {
+    val newLastNode = Node(item)
+    val isEmptyList = first == null && last == null
+
+    if (isEmptyList) {
+        first = newLastNode
+        last = newLastNode
+    } else {
+        last?.prev = newLastNode
+        last = newLastNode
+    }
+
+    return newLastNode
+}
+```

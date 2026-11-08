@@ -1,0 +1,21 @@
+```go
+// Create a helper function to add visitedNodes to the signature
+func dfs(currentNode *GraphNode, visitedNodes map[*GraphNode]bool) {
+	// Use node value for the question
+	visit(currentNode)
+
+	visitedNodes[currentNode] = true
+
+	for _, childNode := range currentNode.Edges {
+		if !visitedNodes[childNode] {
+			dfs(childNode, visitedNodes)
+		}
+	}
+}
+
+func recursiveDepthFirstSearch(startingNode *GraphNode) {
+	// Init our stack and set of visited nodes
+	visitedNodes := map[*GraphNode]bool{}
+	dfs(startingNode, visitedNodes)
+}
+```

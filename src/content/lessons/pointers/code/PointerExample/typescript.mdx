@@ -1,0 +1,19 @@
+```javascript
+interface Child {
+  age: number;
+  mood: string;
+}
+
+interface Parent {
+  age: number;
+  c1: Child | null;
+  c2: Child | null;
+}
+
+let parent: Parent = { age: 45, c1: null, c2: null };
+let child1: Child | null = { age: 10, mood: 'happy' };
+let child2: Child = { age: 12, mood: 'bored' };
+
+parent.c1 = child1;
+parent.c2 = child2;
+```

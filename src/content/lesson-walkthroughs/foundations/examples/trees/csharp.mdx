@@ -1,0 +1,14 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class MaxDepthExample {
+public static int MaxDepth(List<int?> values) {
+    int Height(int index) {
+        if (index >= values.Count || values[index] == null) return -1;
+        return 1 + Math.Max(Height(2 * index + 1), Height(2 * index + 2));
+    }
+    return Height(0);
+}
+}
+```

@@ -1,0 +1,49 @@
+```go
+func combineBlockchains(chainHead1 *ListNode, chainHead2 *ListNode) *ListNode {
+	// Store the head of the first item in the combined chain
+	resultHead := chainHead2
+	if chainHead1.Data < chainHead2.Data {
+		resultHead = chainHead1
+	}
+	// Init the combined list with the first item
+	combinedTail := resultHead
+	currentNode1 := chainHead1
+	currentNode2 := chainHead2
+
+	// Move the node forward that was already added to our resultHead
+	if chainHead1.Data < chainHead2.Data {
+		currentNode1 = currentNode1.Next
+	} else {
+		currentNode2 = currentNode2.Next
+	}
+
+	// We iterate through until one of the linked lists has been depleted
+	for currentNode1 != nil && currentNode2 != nil {
+		// In either case, we do the same thing.
+		// We attach the node to our combined list,
+		// and then we move forward in the contributed chain's list
+		if currentNode1.Data < currentNode2.Data {
+			combinedTail.Next = currentNode1
+			currentNode1 = currentNode1.Next
+		} else {
+			combinedTail.Next = currentNode2
+			currentNode2 = currentNode2.Next
+		}
+
+		// Move to the new tail in the combined chain
+		combinedTail = combinedTail.Next
+	}
+
+	// One of the chains has been depleted (reached nil)
+	// The other has its remaining items in sorted order,
+	// so we can just set the next value of our
+	// combined list to the node that isn't nil
+	if currentNode1 != nil {
+		combinedTail.Next = currentNode1
+	} else {
+		combinedTail.Next = currentNode2
+	}
+
+	return resultHead
+}
+```

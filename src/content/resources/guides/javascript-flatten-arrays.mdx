@@ -1,0 +1,70 @@
+Flattening a nested array means emitting its values in left-to-right order while replacing nested arrays with their contents. Before choosing recursion or a stack, decide how to treat sparse holes, repeated references, cycles, depth limits, and non-array iterables. Those choices determine whether an implementation matches a familiar array method or defines a smaller custom utility.
+
+The function below fully flattens nested arrays, skips missing own numeric indexes, preserves explicit undefined values, and treats every non-array value as a leaf. It uses an explicit stack so ordinary nesting depth does not consume JavaScript call frames. A cycle along the current nesting path rejects; shared arrays on separate branches are expanded each time.
+
+## Keep an index beside every active array
+
+A stack frame contains one array and the next index to visit within it. Inspect the top frame. If its index has reached the array length, remove that frame. Otherwise advance its index and either emit the value or push a new frame for a nested array.
+
+Saving the parent frame's index means traversal resumes immediately after the child array. The stack therefore reproduces a recursive left-to-right walk without repeatedly reversing arrays or inserting at the front of a work list. It also avoids the argument-count limits that can appear when a large result is expanded into a function call with spread syntax.
+
+```javascript
+function flattenArrays(input) {
+  if (!Array.isArray(input)) throw new TypeError('Expected an array');
+  const output = [];
+  const frames = [{ array: input, index: 0 }];
+  const active = new Set([input]);
+  while (frames.length) {
+    const frame = frames[frames.length - 1];
+    if (frame.index >= frame.array.length) {
+      active.delete(frame.array);
+      frames.pop();
+      continue;
+    }
+    const index = frame.index++;
+    if (!Object.prototype.hasOwnProperty.call(frame.array, index)) continue;
+    const value = frame.array[index];
+    if (!Array.isArray(value)) { output.push(value); continue; }
+    if (active.has(value)) throw new TypeError('Cyclic nested array');
+    active.add(value);
+    frames.push({ array: value, index: 0 });
+  }
+  return output;
+}
+```
+
+## Trace entry and return points
+
+For `[1, [2, [], [3]], 4]`, the outer frame emits 1 and pauses at its second entry. A child frame emits 2. The empty array contributes no values and is popped immediately. The next child emits 3. Once that child and its parent finish, the original outer frame resumes and emits 4.
+
+The result is `[1, 2, 3, 4]`. A simple stack of values can also work if nested entries are pushed in reverse order. Forgetting that reversal produces the wrong order. Frame-based traversal instead leaves every input array in its original order and advances through its indexes naturally.
+
+## Distinguish holes from undefined
+
+An array hole has no own property at an index, while an explicit undefined element does. In `[ , undefined, [ , 2]]`, the function emits `[undefined, 2]`. Testing `value === undefined` would drop both cases and lose an explicitly supplied value.
+
+This utility checks own indexes. It ignores numeric properties inherited through an array's prototype and ignores extra named properties on the array. That is a stated boundary of this function, rather than a promise to reproduce every abstract operation of the native flat method. Getters at own numeric indexes still execute when their values are read, so the intended input is stable, trusted array data.
+
+Strings, sets, maps, and objects remain leaf values. The function does not flatten every iterable. Expanding strings as iterables would turn words into characters, while recursively expanding arbitrary iterables could consume an infinite sequence. An iterable-flattening API needs a separate termination and text policy.
+
+## Detect a cycle on the active path
+
+Suppose `shared = [1, 2]` and input is `[shared, shared]`. The expected result is `[1, 2, 1, 2]`. When the first shared frame finishes, it leaves the active set. The second occurrence can therefore enter and expand normally.
+
+For `a = []; a.push(a)`, the array is already active when traversal tries to enter it again. That is a cycle and the function rejects. A global set that never removes completed arrays would incorrectly reject the repeated shared example. A [graph clone](/guides/javascript-deep-clone) has another requirement: it reuses a copied object for aliases. Flattening intentionally emits the repeated branch's values again.
+
+## Compare recursion with an explicit stack
+
+A recursive version is a useful first explanation because its code closely follows the nested shape. It can also overflow the call stack on deeply nested input. The explicit stack moves that depth into ordinary heap storage, where the process still has a finite memory limit. Avoid describing it as supporting unlimited depth or unlimited output.
+
+Let L be the number of visited numeric positions across all expanded occurrences and D the maximum nesting depth. Traversal takes O(L) work, stores O(D) frames and active identities, and returns O(m) leaf values. Shared branches count each time they are expanded. A compact graph with repeated references can therefore produce output much larger than the number of distinct arrays.
+
+For example, start with `[1]` and repeatedly make a new array containing the previous array twice. After ten such layers, there are only eleven distinct arrays, but flattening emits 1,024 ones. The repeated references are acyclic and valid under this contract. If a service accepts externally supplied structures, an output-size budget may be necessary even when nesting depth looks small. A maximum-depth check alone would not bound this expansion. A bounded variant should reject before appending beyond its agreed output limit, and tests should confirm that it leaves the original graph untouched on that failure.
+
+## Test behavior before adding a depth parameter
+
+Use an empty array, several empty nested arrays, a single leaf, mixed primitives, explicit undefined, sparse holes, and object leaves whose identity should be retained. Check that the original arrays remain unchanged. Build a deeply nested chain to confirm the implementation does not rely on recursive function calls.
+
+Test both a self-cycle and a cycle involving several arrays. Then test repeated acyclic references to ensure cycle detection has not become duplicate suppression. For ordinary dense acyclic inputs, compare the result with native `flat(Infinity)`, while keeping the inherited-index difference outside that comparison contract.
+
+A depth-limited variant should emit a nested array itself once the remaining flattening depth reaches zero. It then needs to define whether an unexpanded cyclic array is acceptable as a leaf. A lazy generator can stream leaves rather than retain the whole output, but callers must consume it to observe later errors. Add those features only after the current ordering, hole, and cycle behavior is covered by tests.

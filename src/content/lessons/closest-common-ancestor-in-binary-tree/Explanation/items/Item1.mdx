@@ -1,0 +1,22 @@
+import Null from 'content/blocks/Null';
+import Image from 'content/blocks/Image';
+
+Let's visualize what we just discussed.
+
+<Image src="/images/common-ancestor-traverse.gif" alt="A tree traversal returns information from both child subtrees to locate their closest common ancestor." width={320} height={336} />
+
+So we want a way to walk down all the nodes first.
+Then if we hit a <Null /> we return, or if we find one of the child targets, we return.
+These are the base cases.
+
+If we do find a target child, we need a way to propagate this information.
+Then at each parent node, we need to wait until both its `left` and `right` return and determine if a child exists in either path.
+The first node that indicates a child was found for both its `left` and `right` will be the lowest common ancestor, and then we just return this node.
+
+This is a perfect case for a recursive post-order traversal.
+A post-order traversal visits the paths' leaves first before using a current node.
+Each node waits in the call stack until the recursive calls finish for both paths, and then it handles the result.
+Our recursive traversal walks forward until it hits a base case and then returns the results, and then it has the effect of walking backward up the path as the recursion unwinds which is exactly what we want.
+
+At this point, for any given node, we have all the information we need to determine if this item is the closest common ancestor based on the results returned from traversing its paths.
+If it is, we then return this node upward to the original function call as the solution.

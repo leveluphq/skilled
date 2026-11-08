@@ -1,0 +1,19 @@
+```cpp
+#include <vector>
+
+std::vector<int> dfsOrder(const std::vector<std::vector<int>>& graph, int start) {
+    if (start < 0 || start >= static_cast<int>(graph.size())) return {};
+    std::vector<int> stack{start}, output;
+    std::vector<bool> visited(graph.size(), false);
+    while (!stack.empty()) {
+        const int node = stack.back(); stack.pop_back();
+        if (visited[node]) continue;
+        visited[node] = true;
+        output.push_back(node);
+        for (auto it = graph[node].rbegin(); it != graph[node].rend(); ++it) {
+            if (!visited[*it]) stack.push_back(*it);
+        }
+    }
+    return output;
+}
+```

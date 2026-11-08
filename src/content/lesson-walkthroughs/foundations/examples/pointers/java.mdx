@@ -1,0 +1,19 @@
+```java
+import java.util.*;
+
+class AliasTraceExample {
+static List<Integer> aliasTrace() {
+    class Box { int value; Box(int value) { this.value = value; } }
+    Box original = new Box(1);
+    Box alias = original;
+    List<Integer> trace = new ArrayList<>();
+    trace.add(original.value);
+    alias.value = 2;
+    trace.add(original.value);
+    alias = new Box(9);
+    trace.add(original.value);
+    trace.add(alias.value);
+    return trace;
+}
+}
+```

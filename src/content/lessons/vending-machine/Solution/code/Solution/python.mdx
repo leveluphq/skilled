@@ -1,0 +1,40 @@
+```python
+def min_coins_for_change(denominations, target):
+    """
+    Init all values to Infinity which indicates there isn't a valid coin combination for an amount (yet)
+    This is our dp / memo array that we're using to memoize the solution to subproblems
+    """
+    min_coins_for_amount = [float("inf") for _ in range(target + 1)]
+
+    # Bottom-up, start with 0 which is always 0
+    min_coins_for_amount[0] = 0
+
+    """
+    Begin at the smallest amount and build a running table of
+    the smallest values required to reach EVERY amount up to the target
+    """
+    for amount in range (len(min_coins_for_amount)):
+        # Try each denomination to reach the current amount
+        for coin in denominations:
+            if coin <= amount:
+                # The current minimum (subproblem solution) found at this amount.
+                existing_min_coin_for_amount = min_coins_for_amount[amount]
+                """
+                Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                Always increment by +1 because we are trying one additional coin.
+                """
+                min_amount_with_current_coin = min_coins_for_amount[amount - coin] + 1
+
+                """
+                Memoize the minimum coins to reach the current amount.
+                This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                If there isn't a valid combination, this just remains Infinity.
+                """
+                min_coins_for_amount[amount] = min(existing_min_coin_for_amount, min_amount_with_current_coin)
+
+    """
+    If we didn't find a combination that matched our target (target === Infinity), return -1.
+    Otherwise, the target does exist for that amount and we return it.
+    """
+    return -1 if min_coins_for_amount[target] == float("inf") else min_coins_for_amount[target]
+```

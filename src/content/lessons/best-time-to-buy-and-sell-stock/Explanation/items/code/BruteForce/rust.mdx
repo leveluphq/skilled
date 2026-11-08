@@ -1,0 +1,17 @@
+```rust
+fn brute_force_get_max_profit(prices: &[i32]) -> i32 {
+    let mut max_profit = 0;
+
+    for buy_day in 0..prices.len() {
+        let buy_price = prices[buy_day];
+
+        for sell_day in buy_day + 1..prices.len() {
+            let sell_price = prices[sell_day];
+            let profit = sell_price - buy_price;
+            max_profit = profit.max(max_profit);
+        }
+    }
+
+    max_profit
+}
+```

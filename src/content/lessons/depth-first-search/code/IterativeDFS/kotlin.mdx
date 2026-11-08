@@ -1,0 +1,25 @@
+```kotlin
+fun iterativeDepthFirstSearch(startingNode: GraphNode) {
+    // Init our stack and set of visited nodes
+    val dfsStack = ArrayDeque(listOf(startingNode))
+    val visitedNodes = mutableSetOf<GraphNode>()
+
+    while (dfsStack.isNotEmpty()) {
+        val node = dfsStack.removeLast()
+
+        // A node can be added to the stack more than once, so skip it if we already visited it
+        if (node in visitedNodes) {
+            continue
+        }
+
+        visit(node)
+        visitedNodes.add(node)
+
+        for (childNode in node.edges) {
+            if (childNode !in visitedNodes) {
+                dfsStack.addLast(childNode)
+            }
+        }
+    }
+}
+```

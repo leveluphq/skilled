@@ -1,0 +1,21 @@
+```javascript
+// O(1) prepend
+const prepend = (head: Node, data: any): Node => {
+  // Create a new node to prepend
+  const prependedNode = new Node(data);
+  // Set its next to the current node
+  prependedNode.next = head;
+
+  // Return our new node
+  return prependedNode;
+}
+
+let head = new Node(42);
+head.next = new Node(9000);
+head.next.next = new Node(10);
+head.next.next.next = new Node(20);
+// 42 -> 9000 -> 10 -> 20
+
+head = prepend(head, 8);
+// 8 -> 42 -> 9000 -> 10 -> 20
+```

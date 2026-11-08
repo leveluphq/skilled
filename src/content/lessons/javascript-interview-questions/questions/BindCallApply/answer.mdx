@@ -1,0 +1,36 @@
+import Bind from './code/Bind';
+import Call from './code/Call';
+import Apply from './code/Apply';
+
+All three of these methods can be used to set the `this` value of a function.
+There are some subtle differences in how they work though.
+
+### `bind`
+
+This is used to set the `this` of a function, but does not invoke the function immediately.
+Instead, it returns a **new function** with the `this` value set.
+So the value returned is a function you can execute later where the `this` is forced to take the value of the object that you called with `bind`.
+
+<Bind />
+
+### `call`
+
+The `call` method will execute a function immediately, and the first parameter is the object that is set as `this`. All the arguments after it will be passed to the function.
+
+<Call />
+
+### `apply`
+
+The `apply` method will execute a function immediately, and the first parameter is the object that is set as `this`. The second parameter is an array whose items will each be passed to the function as arguments.
+
+<Apply />
+
+### `call` vs. `apply`
+
+Both of these execute the function immediately.
+
+The primary difference is that `call` will take an arbitrary number of arguments. The first parameter is the value set to `this`. The remaining arguments will be used as parameters in the executed function.
+
+The `apply` method only takes **two arguments**. The first argument is the value to set `this`. The second argument is an array that is passed to the executed function as individual parameters.
+
+Sometimes these methods are simply used to execute a function, and if the `this` content is not necessary, you can use `null` as the first argument.

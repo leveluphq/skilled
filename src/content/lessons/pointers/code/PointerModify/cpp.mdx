@@ -1,0 +1,9 @@
+```cpp
+cout << parent->c1->mood << ", " << child1->mood << endl; // happy, happy
+
+child1->mood = "sad";
+cout << parent->c1->mood << ", " << child1->mood << endl; // sad, sad
+
+parent->c1->mood = "stoked";
+cout << parent->c1->mood << ", " << child1->mood << endl; // stoked, stoked
+```

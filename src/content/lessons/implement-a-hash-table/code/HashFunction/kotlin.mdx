@@ -1,0 +1,11 @@
+```kotlin
+fun hash(key: String): Int {
+    var hash = 0
+
+    for (i in 0 until key.length) {
+        hash = (hash + key[i].code) % size
+    }
+
+    return hash
+}
+```

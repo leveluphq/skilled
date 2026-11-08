@@ -1,0 +1,13 @@
+```go
+func FibCalls(n int) []int {
+    calls := 0
+    var fib func(int) int
+    fib = func(value int) int {
+        calls++
+        if value < 2 { return value }
+        return fib(value-1)+fib(value-2)
+    }
+    answer := fib(n)
+    return []int{answer, calls}
+}
+```

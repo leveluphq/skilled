@@ -1,0 +1,16 @@
+import Image from 'content/blocks/Image';
+
+So how did we come up with that?
+
+The final opening bracket `[` must have a matching `]`.
+Once those are matched, we can then move to the bracket behind it `{`.
+This requires that we have a closing `}` bracket.
+We move backward again and repeat this thought process with the other two items.
+
+<Image src="/images/bracket-mirror.png" alt="A mirror separates opening brackets from the corresponding closing brackets in reverse order." width={1724} height={740} />
+
+So we can see that the closing brackets must be the mirror image of the opening brackets.
+
+We can determine the valid closing brackets by starting with the most last (most recent) opening bracket on the end and work our way backward to the first opening bracket.
+
+<Image src="/images/bracket-match-intuition.gif" alt="Closing brackets must match opening brackets in reverse order, starting with the most recently opened bracket." width={600} height={226} />

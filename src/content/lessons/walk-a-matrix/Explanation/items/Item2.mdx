@@ -1,0 +1,19 @@
+import BigO from 'content/blocks/BigO';
+
+If your mind immediately thought of a hash table to track the visited cells, I want to applaud you 👏👏.
+This is usually a good first intuition and means you understand the value of constant time <BigO.constant /> inserts/lookups.
+However, we also know that using a hash table adds an additional linear <BigO.n /> space to our solution.
+
+Looking back at the path of our matrix walk, we see that when we reach our starting point after walking the perimeter, we ended one index back at (1,0).
+If we walk each side again, we can see that this happens every time — we just end one index closer to the center.
+
+It is the same problem repeated over and over but just shifted inward.
+If we solve it once, we can repeat the logic for every loop of the matrix until we reach the center.
+
+Since we walk this repeating pattern and simply shift an index towards the center each time we complete a side,
+we can derive the visited nodes from the position we are at during the walk with a lower and upper bounding index.
+We will need an index to track the start and end for both columns and rows.
+This means we can do it using 4 variables which reduces our space cost to constant <BigO.constant />,
+beating our hash table.
+
+Now let's code out how we would walk the initial perimeter so we can gain a better intuition of how the indexes work.

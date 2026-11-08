@@ -1,0 +1,17 @@
+```rust
+recursive_factorial(4) = 4 * recursive_factorial(3)
+  recursive_factorial(3) = 3 * recursive_factorial(2)
+    recursive_factorial(2) = 2 * recursive_factorial(1)
+      recursive_factorial(1) = 1 // base case
+
+// or
+
+recursive_factorial(4)
+  recursive_factorial(3)
+    recursive_factorial(2)
+      recursive_factorial(1)
+      return 1 // base case
+    return 2 * 1 // -> 2 * 1
+  return 3 * 2 // -> 3 * 2 * 1
+return 4 * 6 // 4 * 3 * 2 * 1
+```

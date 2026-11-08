@@ -1,0 +1,28 @@
+```javascript
+class Dispatcher {
+    constructor() {
+        this.listeners = new Map();
+    }
+    subscribe(event, callback) {
+        const subscription = { callback };
+        const bucket = this.listeners.get(event) ?? [];
+        bucket.push(subscription);
+        this.listeners.set(event, bucket);
+        return () => {
+            const current = this.listeners.get(event);
+            if (!current)
+                return;
+            const index = current.indexOf(subscription);
+            if (index !== -1)
+                current.splice(index, 1);
+            if (current.length === 0)
+                this.listeners.delete(event);
+        };
+    }
+    publish(event, data) {
+        const snapshot = (this.listeners.get(event) ?? []).slice();
+        for (const subscription of snapshot)
+            subscription.callback(data);
+    }
+}
+```

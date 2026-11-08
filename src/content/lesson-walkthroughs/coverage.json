@@ -1,0 +1,994 @@
+[
+  {
+    "lesson": "arrays",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-an-array",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "walk-a-matrix",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "product-array",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "valid-sudoku-board",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "best-time-to-buy-and-sell-stock",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "big-o-time-and-space-complexity",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "hash-tables",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-a-hash-table",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "catch-the-hacker",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "target-two-sum",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "strings",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "palindromes-permutataions-anagrams",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "group-permutations-of-palindromes",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "recursion",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "sum-digits",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "generate-all-permutations",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "logarithms-and-time-complexity",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "searching-and-binary-search",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "sorting",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "interview-scheduler",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "shifted-search",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "sorted-matrix-search",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "age-sort",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "first-bad-version",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "linked-lists",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "pointers",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-a-linked-list",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "combine-blockchains",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "reverse-a-linked-list",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "mirror-delete",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "queues",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "stacks",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-a-queue",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-a-stack",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "max-min-stack",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "valid-brackets",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "trees",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "tree-traversal-in-order-pre-order-post-order",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "binary-search-trees",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-a-binary-search-tree",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "binary-tree-max-depth",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "binary-search-tree-validate",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "closest-common-ancestor-in-binary-tree",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "graphs",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "depth-first-search",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "breadth-first-search",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "implement-a-graph",
+    "kind": "implementation",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "pilot-a-rocket",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "count-islands",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "robot-maze",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "subproblems-and-overlapping-subproblems",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "memoization",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "bottom-up-vs-top-down",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "dynamic-programming",
+    "kind": "concept",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "vending-machine",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "three-moves",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "steal-packages",
+    "kind": "exercise",
+    "languages": [
+      "javascript",
+      "typescript",
+      "python",
+      "java",
+      "cpp",
+      "csharp",
+      "go",
+      "kotlin",
+      "swift",
+      "rust"
+    ]
+  },
+  {
+    "lesson": "why-does-javascript-get-its-own-topic",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "javascript-interview-questions",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "fix-this",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "array-methods",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "build-a-javascript-promise",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "pub-sub-and-event-driven-programming",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "debounce",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  },
+  {
+    "lesson": "throttle",
+    "kind": "javascript",
+    "languages": [
+      "javascript",
+      "typescript"
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+```swift
+class ListNode {
+    var data: Int
+    var next: ListNode?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+// Input
+let head = ListNode(42) // ... then add more nodes
+// k = 5     4     3    2    1    0
+       42 -> 52 -> 4 -> 6 -> 1 -> 9000
+
+
+// Output: mirrorDelete(head, 2)
+// Remove k = 2 which is the 6
+42 -> 52 -> 4 -> 1 -> 9000
+```

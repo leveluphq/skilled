@@ -1,0 +1,77 @@
+This Rust walkthrough returns every matching pair of original indexes from an input vector of unique i32 values. For `[4, 1, 5, 2, 3]` and target `6`, both `[1, 2]` and `[0, 3]` belong in the answer. Finding one pair does not finish the course exercise.
+
+The starter supplies the Solution type and expects `Vec<Vec<i32>>`. The implementation uses a HashMap from values to earlier indexes, handles missing lookups through Option, and checks arithmetic and index conversion rather than relying on wrapping casts.
+
+## Use checked subtraction for the complement
+
+A valid i32 target minus a valid i32 input may not fit in i32. `checked_sub` returns None for that case. An out-of-range mathematical complement cannot equal an i32 input value, so skipping its lookup is correct.
+
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn get_target_indexes(array: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut seen: HashMap<i32, i32> = HashMap::new();
+        let mut pairs = Vec::new();
+
+        for (offset, &value) in array.iter().enumerate() {
+            let j = i32::try_from(offset).expect("Input indexes must fit in i32");
+            if let Some(complement) = target.checked_sub(value) {
+                if let Some(&earlier) = seen.get(&complement) {
+                    pairs.push(vec![earlier, j]);
+                }
+            }
+            seen.insert(value, j);
+        }
+        pairs
+    }
+}
+```
+
+For a standalone program, declare `struct Solution;` before the impl and call the example helper from main. The course already supplies the type, so the exercise only needs the implementation matching its starter context.
+
+## Understand the reference returned by get
+
+`HashMap::get` borrows a stored value and returns `Option<&i32>`. The pattern `Some(&earlier)` copies that small integer out of the borrowed reference, giving a plain index value inside the branch. It does not remove the entry from the map.
+
+Index zero is still a successful Some value. There is no sentinel integer for absence, and no unwrap that could panic on an ordinary missing complement. The [HashMap API](https://doc.rust-lang.org/std/collections/struct.HashMap.html) documents the borrowing lookup interface.
+
+The immutable lookup borrow ends before the later insertion. We retain the copied index rather than a reference into the map while mutating it. This keeps the code's ownership story aligned with the simple scan rather than fighting the borrow checker.
+
+## Preserve earlier positions only
+
+Before each iteration, seen contains values from indexes earlier than the current offset. Lookup occurs before insertion. Any retrieved partner therefore has a different, earlier index, and each pair is discovered in only one direction.
+
+For `[4, 1, 5, 2, 3]`, the map first receives `4 → 0` and `1 → 1`. The `5` finds the earlier `1`, producing `[1, 2]`; the `2` then finds `4`, producing `[0, 3]`. The final `3` cannot pair with itself because its own entry is not present yet.
+
+Deleting matched entries is unnecessary under the unique-input contract. Returning immediately after a match would be wrong because later values can supply additional pairs. The function returns the accumulated vector only after the full scan.
+
+## Convert indexes to the result type deliberately
+
+Enumeration offsets are usize, but the course's returned index entries are i32. The checked TryFrom conversion rejects an input too large for that output representation. An `as i32` cast could truncate rather than preserving an exceptionally large position.
+
+The arithmetic check serves a different purpose. It protects the complement calculation, not the index conversion. For `[i32::MAX, 1]` and target `i32::MIN`, checked subtraction prevents a false wrapped match; for `[i32::MIN, i32::MAX]` and target `-1`, the valid pair still survives.
+
+In a general API unconstrained by this starter, returning usize indexes would avoid that particular output-width restriction. Matching the exercise's declared shape makes the conversion and its precondition relevant here.
+
+## Test normalized pairs and numeric boundaries
+
+```rust
+fn check_examples() {
+    let mut actual = Solution::get_target_indexes(vec![4, 1, 5, 2, 3], 6);
+    for pair in &mut actual { pair.sort_unstable(); }
+    actual.sort_unstable();
+    assert_eq!(actual, vec![vec![0, 3], vec![1, 2]]);
+    assert!(Solution::get_target_indexes(vec![3], 6).is_empty());
+    assert!(Solution::get_target_indexes(vec![i32::MAX, 1], i32::MIN).is_empty());
+    assert_eq!(Solution::get_target_indexes(vec![i32::MIN, i32::MAX], -1), vec![vec![0, 1]]);
+}
+```
+
+Sorting preserves duplicate result entries, so an implementation that emits a pair twice still fails. Add empty input, no answer, negative values, and a match whose earlier index is zero. A nested-loop reference should widen sums to i64 or check addition so the oracle itself stays correct at boundaries.
+
+## Account for ownership and expected bounds
+
+The input Vec is moved into the function by the starter signature, then borrowed for iteration. The scan does not clone or mutate its entries. A caller that needs to retain its own vector can provide a clone or adapt a separate general-purpose API to borrow a slice.
+
+With ordinary hashing assumptions, work is expected `O(n + k)` and map storage is `O(n)`, plus output. Unique inputs keep k at most linear. Repeated values would require multiple earlier positions per key if every index pair were wanted. Before practicing, explain Option handling, checked subtraction, and lookup-before-insertion as separate parts of the correctness argument.

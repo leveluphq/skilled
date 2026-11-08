@@ -1,0 +1,66 @@
+Choose an equality rule based on the distinction your program needs to preserve. JavaScript offers strict equality, coercive equality, Object.is, and collection key equality with different behavior around types, NaN, and signed zero. Object comparison adds another boundary: separately allocated objects remain different identities even when their visible fields match.
+
+Interview bugs often come from applying one of these rules without naming it. A cache key, a missing-value check, and a test that compares returned nodes may each need different behavior. Start with the values' types and the desired contract, then select the operation that expresses that contract directly.
+
+## Compare strict equality, Object.is, and Map keys
+
+Strict equality does not convert a number string into a number. For numbers, NaN is unequal to itself and positive and negative zero compare equal. Object.is instead recognizes NaN as the same value and distinguishes the two zeros. Map keys use SameValueZero, which combines NaN equality with treating both zeros as one key.
+
+```javascript
+function equalityCases() {
+  const a = { score: 1 };
+  const b = { score: 1 };
+  const map = new Map([[NaN, 'nan'], [-0, 'zero']]);
+  return {
+    numberAndText: 1 === '1',
+    strictNaN: NaN === NaN,
+    sameNaN: Object.is(NaN, NaN),
+    strictZero: 0 === -0,
+    sameZero: Object.is(0, -0),
+    mapNaN: map.get(NaN),
+    mapZero: map.get(0),
+    sameObject: a === a,
+    equalFields: a === b,
+  };
+}
+```
+
+The returned Booleans are false, false, true, true, false, true, and false in their respective comparison fields; the two lookups return nan and zero. Read each named field rather than memorizing a mixed list. The [ECMAScript comparison operations](https://tc39.es/ecma262/multipage/abstract-operations.html#sec-isstrictlyequal) provide the precise language rules. These executable examples make the distinctions observable in the same runtime as the course.
+
+## Preserve object identity deliberately
+
+The objects a and b contain the same visible score, but a === b is false. Assignment such as c = a makes c refer to the same object, so c === a is true. Mutating c.score also changes what a.score reads because both variables reach one object.
+
+Deep equality is an additional algorithm with its own data contract. It must decide how to compare cycles, prototypes, sparse arrays, non-enumerable properties, symbols, Maps, Sets, dates, and functions. Serializing two objects to JSON and comparing text does not establish a general deep-equality relation over all JavaScript values.
+
+Identity can be required even when value equality looks sufficient. The course's [common-ancestor problem](/course/closest-common-ancestor-in-binary-tree/javascript) returns an original tree node. A newly allocated node with equal data is not that node. Conversely, an API returning independent value records may care about their fields and allow separate identities.
+
+## Separate absence from falsy values
+
+Zero, false, an empty string, null, undefined, and NaN are falsy in Boolean conditions. A condition such as if (index) therefore does not mean that an index was found. Index zero is valid. Similarly, a cached result of false is still a result, and an explicit undefined array entry is different from a missing property.
+
+For Map lookups, has tests presence independently of get's returned value. An object can use an ownership check when own-key presence is the contract. For a nullable result, an explicit comparison with null or undefined avoids discarding unrelated falsy values. State which absence marker an API uses rather than treating every falsy value as interchangeable.
+
+The [memoization guide](/guides/javascript-memoization) uses a separate presence flag so undefined can be cached. The [array-flattening guide](/guides/javascript-flatten-arrays) checks property ownership to distinguish sparse holes from explicit undefined. Both are examples where truthiness alone loses information the program needs.
+
+## Coercive equality needs a conversion trace
+
+Coercive equality can compare unlike types by applying conversion rules. For example, zero equals false under == after Boolean conversion, and an empty string can compare equal to zero after numeric conversion. Null and undefined compare equal to each other under ==, while strict equality distinguishes them.
+
+Those examples do not justify a rule that all falsy values compare equal. NaN remains unequal to itself, and comparisons involving objects can call conversion methods. A chain of individually plausible comparisons can also be nontransitive when coercion follows different paths. Describe the actual operand types and conversion steps for each expression.
+
+For a concrete nontransitive sequence, compare an empty string with zero, then zero with the string zero. Both coercive comparisons are true after numeric conversion. Comparing the two strings directly is false because they are different strings and no numeric conversion is needed. The middle value did not create a universal equivalence class. A deduplication algorithm should therefore use a specified equality relation rather than chaining unrelated coercive comparisons.
+
+In application code, explicit conversion at an input boundary often makes the later equality test clearer. Number conversion can turn an empty string into zero, so checking only whether the converted value is finite may still accept an input the form meant to reject. Validate the original input's allowed format as well as the numeric result when that distinction matters.
+
+## Avoid accidental numeric-domain changes
+
+A parsed Number can lose integer precision beyond its safe integer range. Two distinct decimal integer strings can therefore become the same Number value after conversion. Strict equality cannot recover a distinction already lost during parsing. Keep the original text or use a suitable integer representation when the domain requires exact large integers.
+
+BigInt and Number are different types. Strict equality keeps them distinct, while some coercive comparisons can compare their numeric values. Arithmetic mixing also has its own rules and can throw. Do not change an entire solution to BigInt without updating literals, operators, input parsing, and output serialization consistently.
+
+## Test the rule the code depends on
+
+Execute the named cases and verify every field. Add a Map entry whose value is undefined and confirm has still reports presence. Test two equal-looking objects as keys and then the same object twice. For a cache that uses Map, include NaN and both zeros so its key policy is visible.
+
+Use the [JavaScript output quiz](/tools/javascript-output-quiz) to practice explaining results before revealing them. For a follow-up, design an equality function for one constrained data type, such as dense arrays of finite integers. Specify that narrow domain, compare length and corresponding values, and add an explicit decision about whether element order matters before extending it to arbitrary object graphs.

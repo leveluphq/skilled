@@ -1,0 +1,10 @@
+```python
+def fibonacci(n):
+    memo = { 0: 0, 1: 1 }
+
+    for i in range(2, n + 1):
+        current_fib = memo[i - 1] + memo[i - 2]
+        memo[i] = current_fib
+
+    return memo[n]
+```

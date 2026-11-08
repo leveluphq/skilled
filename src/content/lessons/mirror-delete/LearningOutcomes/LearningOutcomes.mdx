@@ -1,0 +1,6 @@
+import BigO from 'content/blocks/BigO';
+
+- Used the **runner technique** to solve this in <BigO.n /> time in one pass.
+  In this instance, the runner started k + 1 nodes ahead and iterated at the same speed as our follower.
+- Saw that we **delete a node** in a linked list by simply skipping it and setting the preceding pointer's `next` reference to the node after the one we want to delete.
+- We thought through edge cases and off-by-one errors

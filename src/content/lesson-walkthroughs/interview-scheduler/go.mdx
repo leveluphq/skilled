@@ -1,0 +1,85 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Merge overlapping interview intervals into a sorted list of combined intervals. An interval has `start` and `end` values with start no greater than end. Touching endpoints count as overlap in this lesson: `[1, 3]` and `[3, 5]` merge into `[1, 5]`. An empty input returns an empty list.
+
+## Sort by the start time
+
+Sorting makes every future interval begin no earlier than the current one. Initialize the result with the first sorted interval. For each next interval, compare its start with the end of the last interval in the result. If the new start is no greater than that end, the two overlap. Extend the result's end to the larger of their end values.
+
+If the new start is larger, append the interval as a new result group. No later interval can overlap the earlier completed group, because all later starts are at least as large as the current start. This is why the algorithm only needs to compare with the last merged interval.
+
+## Follow a contained interval and a bridge
+
+For `[[6, 8], [1, 4], [2, 3], [4, 7]]`, sorting gives `[[1, 4], [2, 3], [4, 7], [6, 8]]`. The interval `[2, 3]` is contained in `[1, 4]`, so the end remains 4. Next `[4, 7]` touches that end and extends it to 7. Finally `[6, 8]` extends the same merged interval to 8.
+
+Assigning the current interval's end directly would incorrectly shrink the result to 3 when processing the contained interval. Taking the maximum preserves the coverage already accumulated. The bridge example also shows why comparing only pairs from the original input is insufficient: merging changes the endpoint used for the next comparison.
+
+## State the prefix invariant
+
+After each iteration, the result is a sorted collection of disjoint intervals whose union equals the union of all processed intervals. The final result interval is the only one that can still grow. On overlap, extending its end preserves that union. On separation, appending starts a new disjoint interval without changing any completed group.
+
+Every input interval is processed once after sorting, so the invariant proves the final union is complete. Equality in the overlap comparison encodes the touching-endpoint rule. A half-open scheduling system might treat `[1, 3)` and `[3, 5)` as separate meetings. That would require a strict comparison and a clearly different contract.
+
+## Explain the mutation choices
+
+Several implementations sort the supplied collection and extend existing interval objects. The returned list may therefore share interval objects with the input. Copying only the outer list does not prevent changes to an interval's fields through those aliases. If callers require input preservation, copy each interval before modifying it.
+
+Sorting costs O(n log n), and the merge scan costs O(n). The output contains at most n intervals. Auxiliary sorting space depends on the language's sort, and copied or rebuilt intervals add storage. Avoid claiming universal O(1) total space for a method that allocates an output list or uses a sort with additional memory.
+
+## Test coverage and endpoint rules
+
+Use disjoint intervals, identical intervals, one interval containing all others, an unsorted input, and a chain of touching intervals. Include zero-duration intervals if the contract permits them. A two-interval test with equal boundary values fixes the intended overlap rule more clearly than a prose label alone.
+
+For an independent check, collect endpoint coordinates and compare the covered segments before and after merging, then verify sorted disjoint output. A follow-up can ask for the number of simultaneous interviews. That is a sweep-line counting problem: merging intervals loses the overlap counts and cannot by itself answer how many rooms are needed.
+
+## Go implementation
+
+`slices.SortFunc` changes input order. Interval structs copied into the result have value semantics, so extending a result end differs from mutating a shared class.
+
+The course uses the function name and concrete slice or pointer types shown here. A slice describes shared backing storage, so reslicing or passing it to a helper does not automatically copy its elements. A nil pointer is distinct from an empty slice. Keep the course's expected result shape and provide explicit copies if an adaptation must preserve mutable input.
+
+```go
+import (
+	"cmp"
+	"slices"
+)
+
+func mergeOverlappingIntervals(intervals []Interval) []Interval {
+	if len(intervals) == 0 {
+		return []Interval{}
+	}
+
+	// Sort by start time to get the meetings in the order they occur throughout the day
+	slices.SortFunc(intervals, func(a, b Interval) int {
+		return cmp.Compare(a.Start, b.Start)
+	})
+
+	// The combined intervals slice is initialized to the first meeting
+	mergedIntervals := []Interval{intervals[0]}
+
+	for _, currentInterval := range intervals {
+		latestMergedInterval := &mergedIntervals[len(mergedIntervals)-1]
+		isOverlapping := currentInterval.Start <= latestMergedInterval.End
+
+		if isOverlapping {
+			// Get the latest end time since they overlap and set it as the end time of the combined interval
+			latestMergedInterval.End = max(currentInterval.End, latestMergedInterval.End)
+		} else {
+			// Since currentInterval had the earliest start time of the remaining items,
+			// no additional items can overlap the latestMergedInterval we compared currentInterval to.
+			//
+			// Add the currentInterval as the last item to the merged intervals since it did not overlap.
+			// This will be the latest merged interval on the next iteration that we compare against.
+			mergedIntervals = append(mergedIntervals, currentInterval)
+		}
+	}
+
+	return mergedIntervals
+}
+```
+
+## Practice this implementation
+
+[Open Interview Scheduler](/course/interview-scheduler) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Go conventions and practice problems, use the [Go interview guide](/interview-prep/go).

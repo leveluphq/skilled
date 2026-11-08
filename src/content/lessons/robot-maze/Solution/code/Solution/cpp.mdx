@@ -1,0 +1,67 @@
+```cpp
+const int OPEN = 0;
+const int BLOCKED = 1;
+const int EXIT = 2;
+
+class Solution {
+public:
+    bool hasExitPath(vector<vector<int>>& roomMatrix) {
+        // Return false if the matrix is invalid
+        if (roomMatrix.empty() || roomMatrix[0].empty()) {
+            return false;
+        }
+
+        // Init our memoize matrix, where an empty optional means we haven't checked the spot yet
+        vector<vector<optional<bool>>> memoizedPathValidity(
+            roomMatrix.size(), vector<optional<bool>>(roomMatrix[0].size()));
+
+        // Recursively walk through the room to check if there is a valid path
+        bool isValidPath = walkThroughRoom(roomMatrix, 0, 0, memoizedPathValidity);
+
+        return isValidPath;
+    }
+
+private:
+    // Recursive helper function
+    bool walkThroughRoom(vector<vector<int>>& roomMatrix, int row, int col,
+                         vector<vector<optional<bool>>>& memo) {
+        // Base case 1: Outside of room, so there can't be a path through this
+        bool isOutsideRoom = row > (int) roomMatrix.size() - 1 || col > (int) roomMatrix[0].size() - 1;
+        if (isOutsideRoom) {
+            return false;
+        }
+
+        // Base case 2: A path successfully reached the end, so propagate this upward
+        bool isOnValidPath = memo[row][col] == true;
+        bool isExitNode = roomMatrix[row][col] == EXIT;
+        if (isOnValidPath || isExitNode) {
+            // Set the current node as true as well
+            memo[row][col] = true;
+            return true;
+        }
+
+        // Base case 3: We reached a blocking node
+        bool isOnInvalidPath = memo[row][col] == false;
+        bool isBlockingNode = roomMatrix[row][col] == BLOCKED;
+        if (isOnInvalidPath || isBlockingNode) {
+            memo[row][col] = false;
+            return false;
+        }
+
+        // Recursive case: move down and right
+        bool downResult = walkThroughRoom(roomMatrix, row + 1, col, memo);
+        bool rightResult = walkThroughRoom(roomMatrix, row, col + 1, memo);
+
+        if (downResult == false && rightResult == false) {
+            // If both this node's right and down are false, we memoize this to false
+            memo[row][col] = false;
+        } else {
+            // If either of the paths are true, we set this node as true since at least one can reach the exit
+            memo[row][col] = true;
+        }
+
+        // Returns true if either is successful
+        return downResult || rightResult;
+    }
+};
+```

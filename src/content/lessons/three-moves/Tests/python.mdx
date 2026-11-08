@@ -1,0 +1,91 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "invalid"
+        input = -1
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "empty"
+        input = 0
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "1"
+        input = 1
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "2"
+        input = 2
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 2
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "3"
+        input = 3
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 4
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "4"
+        input = 4
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 7
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "5"
+        input = 5
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 13
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "10"
+        input = 10
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 274
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_9(self):
+        self.description = "invalid (more negative)"
+        input = -5
+        self.actual_result = count_total_moves(input)
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

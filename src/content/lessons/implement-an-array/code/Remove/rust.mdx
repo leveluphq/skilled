@@ -1,0 +1,30 @@
+```rust
+fn remove(&mut self, index: usize) -> Option<i32> {
+    // Ensure the array has items
+    if self.length == 0 {
+        return None;
+    }
+
+    // Ensure we're removing an item inside the array
+    // (a usize index can't be negative)
+    if index >= self.length {
+        return None;
+    }
+
+    let item_to_be_removed = self.data[&index];
+
+    // Shift items inward one index towards the one we remove
+    for i in index..self.length - 1 {
+        self.data.insert(i, self.data[&(i + 1)]);
+    }
+
+    // The item we want to delete is just overwritten to the value of the index that comes after it.
+
+    // Since all items were shifted inward one spot, we need to remove the last index/item
+    // since our array size shrinks by 1
+    self.data.remove(&(self.length - 1));
+    self.length -= 1;
+
+    Some(item_to_be_removed)
+}
+```

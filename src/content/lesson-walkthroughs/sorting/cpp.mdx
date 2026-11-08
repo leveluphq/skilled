@@ -1,0 +1,56 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Sorting places values in an order defined by a comparison rule. It can simplify later searches, interval processing, and duplicate handling, but it also adds work and may mutate the input. The recording compares common sorting approaches. These notes focus on the properties you need to explain when choosing one for an interview solution.
+
+## Connect each method to its invariant
+
+Insertion sort grows a sorted prefix by placing the next value into that prefix. Merge sort recursively sorts parts and combines them in order. Quicksort partitions around a pivot and then handles the partitions. Tracing a small input should show what becomes true after each insertion, merge, or partition.
+
+Complexity depends on the algorithm and its implementation. A conventional merge sort takes O(n log n) time with linear auxiliary storage for merging. Quicksort has expected O(n log n) time under suitable pivot assumptions but can degrade to quadratic time. Its recursion depth also depends on partition balance; average stack usage is not a worst-case guarantee.
+
+## Define equality and stability
+
+A stable sort preserves the original order of elements that compare equal. That can matter when sorting records with more than one field. If an algorithm sorts intervals only by their start, consider whether ties need another comparison or whether any order of equal starts preserves the later invariant.
+
+In JavaScript, a comparator returns a negative number, zero, or a positive number. A boolean does not express both directions correctly. The default ordering also does not perform general numeric ascending comparison. Use an explicit numeric comparator when the contract is numeric, and define how unusual values should behave if they are permitted.
+
+## Include preparation in the full algorithm
+
+Sorting before a linear scan still gives an overall sorting-dominated bound. Copying first preserves input order but requires storage. An in-place sort may be acceptable for a disposable working array and surprising for an API whose caller expects the original order.
+
+Use the [sorting comparison tool](/tools/sorting-comparison) to inspect modeled comparisons and movements on the same input. Then try [Interview Scheduler](/watch/interview-scheduler), which sorts intervals before merging, and [Age Sort](/watch/age-sort), which can use a bounded key range instead of comparisons. State the key-range assumption before comparing its cost with a general-purpose sort.
+
+## Return a sorted copy with a clear mutation contract
+
+The example turns `[4, -1, 4, 2]` into `[-1, 2, 4, 4]` while leaving the caller's input unchanged. Its first obligation is preserving the multiset: every original value appears the same number of times. Its second is ordering each adjacent pair. Checking just the first and last values does not establish either property.
+
+Each language uses a standard numeric sorting operation and an explicit copy or value-semantic result. JavaScript and TypeScript pass a numeric comparator; their default array sort compares string representations and would place 10 before 2. The example uses integers, so subtraction is an adequate comparator within the supported range.
+
+## Separate library use from sorting-algorithm practice
+
+This function demonstrates an application-facing sorting contract. It does not implement merge sort or promise that every runtime uses the same algorithm. Library guarantees about stability, worst-case comparisons, and temporary storage should be read in the documentation for the specific operation and version.
+
+Include already sorted, reverse-sorted, empty, singleton, all-equal, and negative-valued inputs. Freeze or compare the input afterward to catch accidental mutation. The copied result requires O(n) storage before any internal sorting workspace is considered. When an interview asks for a particular sorting algorithm, explain its partition or merge invariant and use the library result as a test oracle, rather than treating this wrapper as that implementation.
+
+## C++ example and implementation choices
+
+Copying the vector creates an owned integer buffer, and std::sort reorders that copy in place. The const reference input remains unchanged. std::sort is not a stable sort, which would matter for records with equal keys and additional identity. This scalar example does not depend on stability. Count the copied vector's storage separately from any internal sorting workspace.
+
+### Worked example
+
+```cpp
+#include <vector>
+#include <algorithm>
+
+std::vector<int> sortCopy(const std::vector<int>& values) {
+    auto copy = values;
+    std::sort(copy.begin(), copy.end());
+    return copy;
+}
+```
+
+## Continue in C++
+
+[Open Sorting](/course/sorting) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the C++ example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [C++ interview preparation guide](/interview-prep/cpp) connects these language choices with further practice and the cross-language operation reference.

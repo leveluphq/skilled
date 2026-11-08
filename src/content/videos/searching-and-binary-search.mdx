@@ -1,0 +1,19 @@
+Binary search finds a target by repeatedly discarding a portion of a sorted search space. Its central requirement is a rule that makes one portion impossible. The recording contrasts searching methods and then follows the midpoint decisions. A correct implementation needs both that exclusion argument and boundary updates that always make progress.
+
+## Choose one interval convention
+
+With an inclusive interval, low and high both identify candidates. The interval is empty when low passes high. A midpoint match can return immediately for an ordinary exact-match contract. Otherwise, move a boundary beyond the midpoint because that position has already been ruled out.
+
+For `[2, 5, 8, 11, 14]` and target 11, the first midpoint contains 8. Sorted order proves that 8 and every earlier value are too small. The remaining candidates are 11 and 14. That proof depends on ordering; applying the same updates to an unsorted array would discard possible answers.
+
+## Decide what duplicates mean
+
+Finding any matching position, the first matching position, and the insertion boundary are different tasks. Returning at the first equality does not establish that a match is the first one. Boundary-search variants often keep a match as a candidate and continue on one side. State the requested result before translating the general idea into code.
+
+Check an empty array, one item, two items, a missing target, and a target at either end. Two-item intervals are particularly useful for catching a boundary that fails to move. In a fixed-width language, calculating the midpoint from the distance between boundaries can avoid overflowing their sum.
+
+## Count comparisons and representation costs
+
+Under bounded-cost comparisons and direct indexed access, each step halves the candidate count, giving logarithmic time. The iterative version needs constant auxiliary storage. A linked list does not offer the same direct midpoint access; reaching a midpoint can require traversal, changing the cost model.
+
+Continue with [First Bad Version](/watch/first-bad-version), where the target is a true/false transition, and [Shifted Search](/watch/shifted-search), where you first determine which half is sorted. For either follow-up, explain the exact property that makes a discarded interval impossible instead of memorizing a set of boundary assignments.

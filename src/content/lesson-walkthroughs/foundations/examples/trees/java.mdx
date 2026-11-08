@@ -1,0 +1,15 @@
+```java
+import java.util.*;
+
+class MaxDepthExample {
+static int maxDepth(List<Integer> values) {
+    class Walker {
+        int height(int index) {
+            if (index >= values.size() || values.get(index) == null) return -1;
+            return 1 + Math.max(height(2 * index + 1), height(2 * index + 2));
+        }
+    }
+    return new Walker().height(0);
+}
+}
+```

@@ -1,0 +1,40 @@
+import Image from 'content/blocks/Image';
+import { MarginContainer } from 'content/blocks/styles';
+
+import { ImageColumns } from './styles';
+
+To look for improvements, let's first understand the assumptions we can make about the data.
+Numbers are always increasing along any given row or column.
+
+If we take a matrix and pick different targets, let's see what intuition we can gain from that.
+
+<MarginContainer>
+<ImageColumns>
+<img src="/images/1-bigger-smaller-matrix-search.png" alt="In a sorted matrix, cells above and left of 9 are smaller; cells below and right are larger." width={1486} height={1316} />
+<img src="/images/2-bigger-smaller-matrix-search.png" alt="A sorted matrix marks values smaller and larger than the selected value 19." width={1486} height={1316} />
+</ImageColumns>
+</MarginContainer>
+
+We know that going right or going down from any given point must be ascending values based on the question prompt.
+If we consider an arbitrary point in the matrix, everything in the down-right direction must be larger than this item.
+It creates a box of values that all must be larger for all of the items that are both down and right from this point.
+
+For up and left, the opposite is true, and all values must be smaller in both directions which creates a box of all smaller values.
+If we consider an arbitrary point in the matrix, everything in the up-left direction must be smaller than this item.
+
+But what about values down-left or up-right?
+This mixes the logic, so values can be either smaller or larger.
+What I mean by this is that up is smaller and right is larger, so up-right is unknown.
+The same can be said for down-left.
+We can't make any assumptions about the data in these quadrants.
+
+<MarginContainer>
+<ImageColumns>
+<img src="/images/1-unknown-regions-matrix-search.png" alt="Relative to 9, the upper-right and lower-left matrix regions contain both smaller and larger values." width={1486} height={1316} />
+<img src="/images/2-unknown-regions-matrix-search.png" alt="Values in the upper-right and lower-left regions cannot be ordered against the selected matrix cell by direction alone." width={1486} height={1316} />
+</ImageColumns>
+</MarginContainer>
+
+Let's focus on down-left and up-right quadrants since this is the source of uncertainty in the data.
+
+<Image src="/images/quadrants-matrix-search.png" maxWidth="400px" alt="In a sorted matrix, upper-left values are smaller and lower-right values larger; the other quadrants are not determined." width={1486} height={1316} />

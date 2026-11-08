@@ -1,0 +1,7 @@
+```python
+def frequency_counts(values: list[int]) -> list[int]:
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return [counts[value] for value in values]
+```

@@ -1,0 +1,18 @@
+```javascript
+const WAIT_TIME = 5000; // 5 seconds
+const debouncedEventListiner = debounce(() => console.log('I executed'), WAIT_TIME);
+
+// time = 0
+debouncedEventListiner();
+// wait 2 seconds (time = 2)
+debouncedEventListiner();
+// wait 2 seconds (time = 4)
+debouncedEventListiner();
+// wait 2 seconds (time = 6)
+debouncedEventListiner();
+// do nothing for 5 seconds (time = 11)
+
+// Executes at time = 11 because previous executions reset it
+executes callback at                      |
+time                     0     5     10   11
+```

@@ -1,0 +1,50 @@
+import { Section } from 'style/elements/lesson';
+import { Container } from 'style/elements';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import BigO from 'content/blocks/BigO';
+import FactorialBottomUp from './code/FactorialBottomUp'
+import FactorialTopDown from './code/FactorialTopDown'
+import FibonacciBottomUp from './code/FibonacciBottomUp'
+import FibonacciTopDown from './code/FibonacciTopDown'
+
+<Section>
+
+There are two ways to approach dynamic programming problems, and that is bottom-up algorithms and top-down algorithms.
+The easiest way to remember them is that **bottom-up is iterative** and **top-down is recursive**.
+
+The bottom-up approach is often preferred because you don't have the risk of a stack overflow from recursion or incur the space complexity from the call stack.
+Tail-call optimization doesn't remove these downsides for most top-down solutions.
+It only applies when the recursive call is the very last operation in the function, but most top-down solutions (like the Fibonacci one below) still combine the results after their recursive calls return, and Python and most JavaScript engines don't implement it anyway.
+
+### Bottom-Up Approach
+
+Bottom-up takes the simplest/smallest value(s) and builds up from these to reach the solution.
+This is often the most intuitive way for people to solve problems when they are newer to programming.
+
+To calculate a large `fibonacci(n)`, we start at the bottom which is 0 and 1 for the first two items in the sequence.
+Then we repeatedly sum them together and build up to the solution.
+Each iteration of the loop is solving a subproblem to calculate a given Fibonacci number.
+
+<FibonacciBottomUp />
+
+### Top-Down Approach
+
+For the top-down approach, we start by considering the final solution and describe it as a combination of the results of a series of subproblems.
+This is our recursive approach.
+
+We start at the top (final state we want) and express it as a recursive function.
+The recursive function then calls itself with smaller input values until it reaches the base case.
+Once we reach the base case, the results are returned through the functions calls, and we combine the answers to build the final solution.
+
+Since a Fibonacci number is just the sum of the two Fibonacci numbers before it,
+if we solve this as a combination of subproblems with the same logic for every Fibonacci number, we can then use their results to calculate any `fibonacci(n)`.
+
+<FibonacciTopDown />
+
+### Optimization
+
+In dynamic programming, we use memoization to store the result of a subproblem so we don't repeat work when they overlap.
+We incur additional space complexity to store the result of each step so we can look up a result later without performing the computation again.
+Memoization can be used for both bottom-up and top-down.
+
+</Section>

@@ -1,0 +1,27 @@
+```rust
+// All rows in the matrix
+let row_count = matrix.len();
+// All columns in the 0th row
+let column_count = matrix[0].len();
+
+// Walk right (top row)
+for column in 0..column_count - 1 {
+    let node_in_first_row = matrix[0][column];
+}
+
+// Walk down (right column)
+for row in 0..row_count - 1 {
+    let node_in_last_column = matrix[row][column_count - 1];
+}
+
+// Walk left (bottom row)
+for column in (0..column_count).rev() {
+    let node_in_last_row = matrix[row_count - 1][column];
+}
+
+// Walk up (left column)
+// NOTE: notice stop before the 0th node at (1,0)
+for row in (1..=row_count - 2).rev() {
+    let node_in_first_column = matrix[row][0];
+}
+```

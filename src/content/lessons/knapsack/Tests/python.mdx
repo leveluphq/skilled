@@ -1,0 +1,193 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "example from the prompt"
+        input = {
+            "items": [
+                { "weight": 1, "value": 3 },
+                { "weight": 2, "value": 4 },
+                { "weight": 3, "value": 7 },
+                { "weight": 4, "value": 10 },
+                { "weight": 5, "value": 5 },
+                { "weight": 6, "value": 20 }
+            ],
+            "capacity": 5
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 13
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_2(self):
+        self.description = "capacity is 0"
+        input = {
+            "items": [
+                { "weight": 1, "value": 3 },
+                { "weight": 2, "value": 4 },
+                { "weight": 3, "value": 7 },
+                { "weight": 4, "value": 10 },
+                { "weight": 5, "value": 5 },
+                { "weight": 6, "value": 20 }
+            ],
+            "capacity": 0
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_3(self):
+        self.description = "no items"
+        input = { "items": [], "capacity": 10 }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "every item is too heavy"
+        input = {
+            "items": [
+                { "weight": 6, "value": 10 },
+                { "weight": 8, "value": 20 },
+                { "weight": 7, "value": 15 }
+            ],
+            "capacity": 5
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_5(self):
+        self.description = "each item can only be used once"
+        input = { "items": [{ "weight": 2, "value": 5 }], "capacity": 10 }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 5
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "exact fit"
+        input = {
+            "items": [
+                { "weight": 2, "value": 3 },
+                { "weight": 3, "value": 4 },
+                { "weight": 4, "value": 5 },
+                { "weight": 5, "value": 6 }
+            ],
+            "capacity": 5
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 7
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "capacity larger than all items combined"
+        input = {
+            "items": [
+                { "weight": 1, "value": 4 },
+                { "weight": 2, "value": 5 },
+                { "weight": 3, "value": 6 }
+            ],
+            "capacity": 100
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 15
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "greedy by value fails"
+        input = {
+            "items": [
+                { "weight": 5, "value": 10 },
+                { "weight": 3, "value": 7 },
+                { "weight": 2, "value": 6 }
+            ],
+            "capacity": 5
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 13
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_9(self):
+        self.description = "greedy by value-to-weight ratio fails"
+        input = {
+            "items": [
+                { "weight": 10, "value": 60 },
+                { "weight": 20, "value": 100 },
+                { "weight": 30, "value": 120 }
+            ],
+            "capacity": 50
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 220
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_10(self):
+        self.description = "example from the dynamic programming lesson"
+        input = {
+            "items": [
+                { "weight": 5, "value": 60 },
+                { "weight": 3, "value": 50 },
+                { "weight": 4, "value": 70 },
+                { "weight": 2, "value": 30 }
+            ],
+            "capacity": 5
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 80
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_11(self):
+        self.description = "larger case"
+        input = {
+            "items": [
+                { "weight": 4, "value": 38 },
+                { "weight": 9, "value": 9 },
+                { "weight": 6, "value": 39 },
+                { "weight": 8, "value": 38 },
+                { "weight": 2, "value": 39 },
+                { "weight": 1, "value": 31 },
+                { "weight": 5, "value": 36 },
+                { "weight": 4, "value": 13 },
+                { "weight": 12, "value": 31 },
+                { "weight": 9, "value": 36 },
+                { "weight": 8, "value": 26 },
+                { "weight": 11, "value": 10 },
+                { "weight": 4, "value": 10 },
+                { "weight": 14, "value": 34 },
+                { "weight": 7, "value": 1 },
+                { "weight": 11, "value": 5 },
+                { "weight": 3, "value": 38 },
+                { "weight": 1, "value": 20 }
+            ],
+            "capacity": 50
+        }
+        self.actual_result = get_max_value_knapsack(input["items"], input["capacity"])
+        self.expected_result = 341
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

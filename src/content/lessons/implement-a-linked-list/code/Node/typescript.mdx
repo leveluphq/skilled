@@ -1,0 +1,33 @@
+```javascript
+class Node {
+  data: any;
+  next: Node | null;
+
+  constructor(data: any) {
+    this.data = data;
+    this.next = null;
+  }
+
+  // O(1)
+  prepend(data: any): Node {
+    const prependedNode = new Node(data);
+    prependedNode.next = this;
+
+    return prependedNode;
+  }
+
+  // O(n)
+  append(data: any): Node {
+    const appendedNode = new Node(data);
+    let currentNode = this;
+
+    while (currentNode.next !== null) {
+      currentNode = currentNode.next;
+    }
+
+    currentNode.next = appendedNode;
+
+    return appendedNode;
+  }
+}
+```

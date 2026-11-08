@@ -1,0 +1,17 @@
+```go
+func bruteForceGetMaxProfit(prices []int) int {
+	maxProfit := 0
+
+	for buyDay := range len(prices) {
+		buyPrice := prices[buyDay]
+
+		for sellDay := buyDay + 1; sellDay < len(prices); sellDay++ {
+			sellPrice := prices[sellDay]
+			profit := sellPrice - buyPrice
+			maxProfit = max(profit, maxProfit)
+		}
+	}
+
+	return maxProfit
+}
+```

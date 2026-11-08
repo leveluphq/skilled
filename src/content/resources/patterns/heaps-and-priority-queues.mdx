@@ -1,0 +1,108 @@
+A priority queue returns the item with the highest priority according to a comparison rule. A binary heap is one implementation. It keeps the best item at the root and repairs only one root-to-leaf path after insertion or removal, giving logarithmic update work.
+
+Heaps are useful when candidates arrive over time and you repeatedly need the current minimum or maximum. Keeping the K largest stream values is a common example. The heap exposes the weakest retained candidate so a stronger arrival can replace it without sorting everything seen so far.
+
+## Separate heap order from sorted order
+
+For a numeric min-heap, each parent is at most its children. That guarantees the root is a minimum, but says nothing about which sibling is smaller. Reading the backing array from beginning to end does not generally produce sorted values.
+
+Store a complete binary tree in an array. At index i, children are at 2i + 1 and 2i + 2; the parent of a non-root node is `Math.floor((i - 1) / 2)`. The complete shape gives height O(log n), while the parent-child invariant supplies priority order along each path. [Python's heapq documentation](https://docs.python.org/3/library/heapq.html) describes this same zero-indexed min-heap representation.
+
+A binary search tree uses a different ordering rule: values in a left subtree compare before the node, and values in a right subtree compare after it. A heap is designed to expose an extreme efficiently, rather than support arbitrary ordered lookup. The similar tree drawings do not make those structures interchangeable.
+
+## Insert upward and remove downward
+
+The implementation below accepts finite JavaScript numbers. Empty `peek` and `pop` return undefined. It permits duplicate values. Its backing array is visible for teaching; callers must treat that array as read-only to preserve the invariant.
+
+```javascript
+class MinHeap {
+  constructor() {
+    this.values = [];
+  }
+
+  get size() { return this.values.length; }
+  peek() { return this.values[0]; }
+
+  push(value) {
+    if (!Number.isFinite(value)) throw new TypeError('Expected a finite number');
+    const heap = this.values;
+    heap.push(value);
+    let index = heap.length - 1;
+    while (index > 0) {
+      const parent = Math.floor((index - 1) / 2);
+      if (heap[parent] <= heap[index]) break;
+      [heap[parent], heap[index]] = [heap[index], heap[parent]];
+      index = parent;
+    }
+  }
+
+  pop() {
+    const heap = this.values;
+    if (heap.length === 0) return undefined;
+    const minimum = heap[0];
+    const last = heap.pop();
+    if (heap.length === 0) return minimum;
+    heap[0] = last;
+    let index = 0;
+    while (2 * index + 1 < heap.length) {
+      const left = 2 * index + 1;
+      const right = left + 1;
+      let smaller = left;
+      if (right < heap.length && heap[right] < heap[left]) smaller = right;
+      if (heap[index] <= heap[smaller]) break;
+      [heap[index], heap[smaller]] = [heap[smaller], heap[index]];
+      index = smaller;
+    }
+    return minimum;
+  }
+}
+```
+
+Insertion appends at the next available tree position, then swaps upward while the new value is smaller than its parent. Other subtrees remain valid. Removal saves the root, moves the final leaf to the root, and repeatedly swaps with the smaller child until the parent-child rule holds again. Choosing the larger child could leave the smaller child above its allowed parent and break the invariant.
+
+For a one-element heap, removing the final leaf empties the array and immediately returns. For a node with only a left child, the right-child bounds check prevents comparing against a missing value. Those small shapes expose indexing errors hidden by a balanced seven-node example.
+
+## Keep the K largest values in a stream
+
+Use a min-heap with capacity K. Before it is full, insert every arrival. Once full, ignore a value at or below the root; it cannot improve the retained K largest values. A larger arrival replaces the current minimum.
+
+```javascript
+function largestK(values, k) {
+  if (!Number.isSafeInteger(k) || k < 0) {
+    throw new RangeError('K must be a nonnegative safe integer');
+  }
+  const heap = new MinHeap();
+  for (const value of values) {
+    if (!Number.isFinite(value)) throw new TypeError('Expected finite numbers');
+    if (k === 0) continue;
+    if (heap.size < k) heap.push(value);
+    else if (value > heap.peek()) {
+      heap.pop();
+      heap.push(value);
+    }
+  }
+  return [...heap.values];
+}
+```
+
+The return value is a heap-ordered array, with duplicates retained. If K exceeds the number of arrivals, every input value is returned. K zero returns an empty array while still validating the input stream. The function does not mutate an input array, and can also consume a generator or other iterable of finite numbers.
+
+Consider values `[5, 1, 9, 3, 9]` with K = 3. After the first three arrivals, the heap contains 1, 5, and 9. Arrival 3 replaces 1. The final 9 replaces 3, leaving 5, 9, and 9. Duplicates represent separate arrivals and therefore separate retained values.
+
+A max-heap would expose the largest retained value, which is the candidate you most want to keep. For this top-K task, the useful root is the smallest among the retained winners. Define priority from the update you need to perform, rather than assuming “largest K” requires a max-heap.
+
+## State the cost and the output order
+
+Heap insertion and removal traverse at most one tree-height path, costing O(log h) comparisons and swaps for a heap of size h at least two, with constant work for smaller heaps. These bounds assume array capacity is available; a dynamic array may occasionally resize and copy its storage. `peek` is O(1). Building a heap by repeated insertion takes O(n log n) comparison work in the worst case; bottom-up heap construction can take O(n), but that is a separate algorithm from the constructor shown here.
+
+For n arrivals and capacity K, the selection uses O(n log(K + 1)) time for K at least one and O(n) input validation work when K is zero. The heap holds at most min(n, K) values. Returning a copy uses the same order of output space. An arbitrary enormous K does not cause an enormous preallocation in this implementation.
+
+If the caller requires the selected values sorted, sort the K retained values with a numeric comparator, adding O(K log K) work when K values are present. Selecting the correct set and ordering the output are separate requirements. For a static array and K close to n, sorting once may be simpler. A stream of unknown length makes the bounded storage of a heap more useful.
+
+## Test and extend the heap
+
+Compare a sequence of removals with a numeric sort of all inserted values. Interleave insertions and removals, inspect the parent-child invariant after every operation, and test empty, one-element, duplicate-heavy, increasing, decreasing, and negative inputs. Validate that NaN and infinities are rejected rather than allowed to corrupt comparisons.
+
+For top-K selection, sort a copy of the original input in descending numeric order and take its first K values. Compare that multiset with a sorted copy of the heap result. Include K zero, K one, K larger than n, and repeated largest values.
+
+To store tasks with priorities, introduce a comparator and a sequence number for deterministic ties. Do not assume equal-priority heap entries preserve arrival order automatically. Changing an arbitrary queued task's priority also needs a repair strategy or an indexed heap; mutating the priority in place can break the structure. Start with [tree concepts](/topics/trees), compare ordered boundaries in [binary search](/patterns/binary-search), and use the [pattern quiz](/tools/pattern-quiz) to practice choosing the retained heap's orientation.

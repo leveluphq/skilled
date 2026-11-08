@@ -1,0 +1,24 @@
+```python
+class ListNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+# Example 1
+# Input
+head = ListNode(42) # ... then add more nodes
+42 -> 100 -> 4 -> 7 -> None
+
+# Output: has_loop(head)
+False
+
+# Example 2
+# Input
+0 -> 1 -> 2 -> 3 -> 4
+          ^         |
+          |         v
+          7 <- 6 <- 5
+
+# Output: has_loop(head)
+True
+```

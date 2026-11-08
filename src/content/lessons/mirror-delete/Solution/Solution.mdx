@@ -1,0 +1,56 @@
+import BigO from 'content/blocks/BigO';
+import Null from 'content/blocks/Null';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import ConceptModal from 'content/blocks/ConceptModal';
+import DeleteNode from 'content/lessons/implement-a-linked-list/DeleteNode.mdx';
+import RunnerTechnique from 'content/lessons/linked-lists/RunnerTechnique.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+The optimal way to solve is question is to use the <ConceptModal content={<RunnerTechnique />}>runner technique</ConceptModal>.
+
+Since we want to delete the kth node from the end of the linked list, we can use 2 pointers to track our position.
+To remove the kth node, we actually want our pointer to stop our `follow` pointer one node before the one we want to delete.
+Then we <ConceptModal content={<DeleteNode />}>delete the node</ConceptModal> by pointing its `next` to the node after the kth one.
+
+To get the `lead` and `follow` pointer positioned correctly,
+we start by iterating the `lead` node from 0 to k nodes into the linked list.
+With zero-based indexing, this will actually be `k + 1` total steps.
+
+Once the runner is in its starting spot, iterate both the `lead` and `follow` pointers forward simultaneously by one node until `lead.next` is <Null />.
+Now our `lead` is at `k = 0`, our `follow` is at `k + 1`, and the node we want to delete is `k`.
+We can remove the node and then return the head of our list.
+
+The solution should also account for all the possible scenarios and edge cases since the only constraint the prompt puts on our `k` value is that `k >= 0`.
+These cases include:
+
+1. `k == 0` where we delete the tail
+2. `k > 0 && k < linkedList.length - 1` where we delete a node inside the list
+3. `k == linkedList.length - 1` where we delete the head
+4. `k >= linkedList.length` where the item isn't in the list
+
+It's easy to get an off-by-one error, so make sure you understand the indexes we're using in the solution and the cases we're guarding against.
+
+Accounting for all of this, our solution takes the following form:
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.constant /> space.
+</p>
+
+- Time: We iterate through `n` linked list nodes
+- Space: We only create 2 pointers
+
+<VariationsSubtitle />
+
+- Delete a node from a linked list (from the front)
+- Find the length of a linked list
+- Find where two linked lists intersect
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

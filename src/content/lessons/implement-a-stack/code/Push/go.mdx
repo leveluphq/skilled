@@ -1,0 +1,10 @@
+```go
+func (s *Stack) Push(item int) *Node {
+	previousLastItem := s.last
+
+	s.last = &Node{Data: item}
+	s.last.Prev = previousLastItem
+
+	return s.last
+}
+```

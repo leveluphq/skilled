@@ -1,0 +1,15 @@
+```kotlin
+fun multipleTimeComplexities(input: IntArray) {
+    // O(n)
+    input.forEach { item ->
+        /* do something */
+    }
+
+    // O(n^2)
+    input.forEach { item ->
+        input.forEach { otherItem ->
+            /* do something */
+        }
+    }
+}
+```

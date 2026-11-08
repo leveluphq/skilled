@@ -1,0 +1,15 @@
+import HoistSimple from './code/HoistSimple';
+import HoistLetConst from './code/HoistLetConst';
+
+Variables declared using the `var` keyword or functions declared using the `function` keyword will have their declarations moved to the top of their scope.
+
+<HoistSimple />
+
+So in the example above, even though we declared `hello` after the first `console.log`, it still recognizes the variable as existing but just `undefined`.
+Hoisting means JavaScript actually moves the `var hello;` to the top of the file which gives it an initial value of `undefined`.
+Then when the code execution actually reaches the original `var hello = 'world';` it just assigns the value for the first time.
+
+This is in contrast to `let` and `const`, which are hoisted to the top of their block but are not initialized, so they can't be accessed until the line that declares them runs (the time before that is called the temporal dead zone).
+You will receive a reference error saying the variable cannot be accessed before initialization and the program will crash.
+
+<HoistLetConst />

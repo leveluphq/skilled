@@ -1,0 +1,53 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The JavaScript part of the course studies language behavior alongside data structures and algorithms. Knowing how to choose a map or traverse a tree does not answer what a detached method uses as `this`, when a promise handler runs, or which calls a debounce retains. The recording introduces that additional practice area.
+
+## Connect behavior to an observable result
+
+A language question becomes easier to reason about when you specify the result. For a callback, identify when it executes and which values it can read then. For a method, identify the call form and receiver. For an asynchronous wrapper, write a timeline of calls and settlements before proposing an implementation.
+
+The [Fix this lesson](/watch/fix-this) has two independent failures: a method loses its intended receiver, and callbacks share a function-scoped loop variable. Both can produce incorrect output even when the underlying array traversal is straightforward. Explaining each failure separately is more useful than labeling the whole example a JavaScript quirk.
+
+## Choose the abstraction that matches the contract
+
+[Array Methods](/watch/array-methods) asks you to replace loops according to their purpose: transformation, selection, membership, or a quantified predicate. [Pub-Sub](/watch/pub-sub-and-event-driven-programming) stores callbacks by event name and then manages their lifetime. [Build a JavaScript Promise](/watch/build-a-javascript-promise) introduces settlement and queued reactions through a limited teaching implementation.
+
+These exercises also have algorithmic costs. Publishing to many listeners requires visiting them. Copying arrays allocates storage. A callback that captures a large object can retain it for as long as the callback remains reachable. Language semantics and resource analysis belong in the same explanation.
+
+## Practice with timelines and small counterexamples
+
+For timing utilities, compare a quiet period with a continuous burst. For closures, change the captured binding before invoking the callback. For reference identity, use two equal-looking objects and ask whether a map or removal operation treats them as the same value. Name the behavior before running the example, then compare the observed output.
+
+Use the [JavaScript preparation guide](/interview-prep/javascript) for a broader sequence and the [output quiz](/tools/javascript-output-quiz) for short reasoning practice. The goal is to explain a specific program's behavior and test the explanation, rather than guessing which detail an interviewer intends to call a trick.
+
+## Validate a runtime value at a boundary
+
+The example accepts an unknown value and returns a finite score between zero and one hundred, or null. The number 8 passes; the string `"8"` does not. Zero is valid. NaN, infinity, negative values, and values above one hundred are rejected.
+
+This is a small model for handling JSON, form input, or another runtime boundary. TypeScript can describe the value after checking it, but it cannot make a string arriving over a network become a number. A type assertion alone would not validate or convert that data.
+
+## Keep conversion separate from acceptance
+
+If a product should accept numeric strings, add an explicit parsing contract. Decide what an empty string means, whether whitespace is allowed, and whether partial strings such as `8points` should pass. Calling a conversion function without stating those choices can accidentally accept inputs that the interface meant to reject.
+
+The function performs a fixed number of checks and uses O(1) time and storage for its number/primitive contract. That simplicity makes the behavior easy to enumerate. Test zero, both range endpoints, a decimal, a numeric string, null, an object, NaN, and infinity. TypeScript's `unknown` parameter forces the implementation to narrow before arithmetic; the JavaScript version relies on the same executable checks. Both have the same runtime acceptance policy.
+
+## TypeScript example and implementation choices
+
+unknown forces narrowing before the implementation treats value as a number. After typeof and Number.isFinite checks, the range comparison uses a known numeric value and returns number | null. A type assertion would remove a compiler complaint without performing these checks. The executable JavaScript policy remains identical, so compile-time safety and runtime acceptance can be reviewed separately at this boundary.
+
+### Worked example
+
+```typescript
+function parseScore(value: unknown): number | null {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return null;
+  if (value < 0 || value > 100) return null;
+  return value;
+}
+```
+
+## Continue in TypeScript
+
+[Open Why does JavaScript Get its Own Topic](/course/why-does-javascript-get-its-own-topic) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the TypeScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [TypeScript interview preparation guide](/interview-prep/typescript) connects these language choices with further practice and the cross-language operation reference.

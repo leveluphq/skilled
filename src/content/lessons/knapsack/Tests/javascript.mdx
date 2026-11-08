@@ -1,0 +1,152 @@
+```javascript
+const tests = [
+  {
+    input: {
+      items: [
+        { weight: 1, value: 3 },
+        { weight: 2, value: 4 },
+        { weight: 3, value: 7 },
+        { weight: 4, value: 10 },
+        { weight: 5, value: 5 },
+        { weight: 6, value: 20 },
+      ],
+      capacity: 5,
+    },
+    expected: 13,
+    description: 'example from the prompt',
+  },
+  {
+    input: {
+      items: [
+        { weight: 1, value: 3 },
+        { weight: 2, value: 4 },
+        { weight: 3, value: 7 },
+        { weight: 4, value: 10 },
+        { weight: 5, value: 5 },
+        { weight: 6, value: 20 },
+      ],
+      capacity: 0,
+    },
+    expected: 0,
+    description: 'capacity is 0',
+  },
+  {
+    input: { items: [], capacity: 10 },
+    expected: 0,
+    description: 'no items',
+  },
+  {
+    input: {
+      items: [
+        { weight: 6, value: 10 },
+        { weight: 8, value: 20 },
+        { weight: 7, value: 15 },
+      ],
+      capacity: 5,
+    },
+    expected: 0,
+    description: 'every item is too heavy',
+  },
+  {
+    input: { items: [{ weight: 2, value: 5 }], capacity: 10 },
+    expected: 5,
+    description: 'each item can only be used once',
+  },
+  {
+    input: {
+      items: [
+        { weight: 2, value: 3 },
+        { weight: 3, value: 4 },
+        { weight: 4, value: 5 },
+        { weight: 5, value: 6 },
+      ],
+      capacity: 5,
+    },
+    expected: 7,
+    description: 'exact fit',
+  },
+  {
+    input: {
+      items: [
+        { weight: 1, value: 4 },
+        { weight: 2, value: 5 },
+        { weight: 3, value: 6 },
+      ],
+      capacity: 100,
+    },
+    expected: 15,
+    description: 'capacity larger than all items combined',
+  },
+  {
+    input: {
+      items: [
+        { weight: 5, value: 10 },
+        { weight: 3, value: 7 },
+        { weight: 2, value: 6 },
+      ],
+      capacity: 5,
+    },
+    expected: 13,
+    description: 'greedy by value fails',
+  },
+  {
+    input: {
+      items: [
+        { weight: 10, value: 60 },
+        { weight: 20, value: 100 },
+        { weight: 30, value: 120 },
+      ],
+      capacity: 50,
+    },
+    expected: 220,
+    description: 'greedy by value-to-weight ratio fails',
+  },
+  {
+    input: {
+      items: [
+        { weight: 5, value: 60 },
+        { weight: 3, value: 50 },
+        { weight: 4, value: 70 },
+        { weight: 2, value: 30 },
+      ],
+      capacity: 5,
+    },
+    expected: 80,
+    description: 'example from the dynamic programming lesson',
+  },
+  {
+    input: {
+      items: [
+        { weight: 4, value: 38 },
+        { weight: 9, value: 9 },
+        { weight: 6, value: 39 },
+        { weight: 8, value: 38 },
+        { weight: 2, value: 39 },
+        { weight: 1, value: 31 },
+        { weight: 5, value: 36 },
+        { weight: 4, value: 13 },
+        { weight: 12, value: 31 },
+        { weight: 9, value: 36 },
+        { weight: 8, value: 26 },
+        { weight: 11, value: 10 },
+        { weight: 4, value: 10 },
+        { weight: 14, value: 34 },
+        { weight: 7, value: 1 },
+        { weight: 11, value: 5 },
+        { weight: 3, value: 38 },
+        { weight: 1, value: 20 },
+      ],
+      capacity: 50,
+    },
+    expected: 341,
+    description: 'larger case',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = getMaxValueKnapsack(input.items, input.capacity);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

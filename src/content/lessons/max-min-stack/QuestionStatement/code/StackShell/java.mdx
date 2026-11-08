@@ -1,0 +1,34 @@
+```java
+class MaxMinStack {
+    // Any of the initial methods can be updated
+    private Deque<Integer> stack;
+
+    public MaxMinStack() {
+        stack = new ArrayDeque<>();
+    }
+
+    public int peek() {
+        return stack.peek();
+    }
+
+    public int push(int item) {
+        stack.push(item);
+        return item;
+    }
+
+    public int pop() {
+        return stack.pop();
+    }
+
+    // You must implement the methods below
+    public int getStackMax() {
+        // Return the largest integer currently in the stack (don't remove it)
+        return 0;
+    }
+
+    public int getStackMin() {
+        // Return the smallest integer currently in the stack (don't remove it)
+        return 0;
+    }
+}
+```

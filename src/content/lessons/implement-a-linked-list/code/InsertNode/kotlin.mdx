@@ -1,0 +1,38 @@
+```kotlin
+fun insertNode(head: Node, index: Int, value: Int): Node {
+    // First check if we want to add a node at the head
+    if (index == 0) {
+        // Inserting at 0 is equivalent to prepending
+        return prepend(head, value)
+    }
+
+    // Create the node we want to insert
+    val insertedNode = Node(value)
+    var precedingNode: Node? = head
+
+    // Find the node that precedes the index of the node that we want to insert
+    for (i in 0 until index - 1) {
+        precedingNode = precedingNode?.next
+    }
+
+    // Store the node that should come after the one we insert
+    val nodeAfterInserted = precedingNode?.next
+
+    // Insert our new node at the desired index
+    precedingNode?.next = insertedNode
+
+    // Set the inserted node's `next` pointer
+    insertedNode.next = nodeAfterInserted
+
+    return head
+}
+
+var head = Node(42)
+head.next = Node(9000)
+head.next?.next = Node(10)
+head.next?.next?.next = Node(20)
+// 42 -> 9000 -> 10 -> 20
+
+head = insertNode(head, 2, 777)
+// 42 -> 9000 -> 777 -> 10 -> 20
+```

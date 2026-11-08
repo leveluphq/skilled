@@ -1,0 +1,15 @@
+```swift
+func dequeue() -> Node? {
+    guard let removedItem = first else {
+        return nil
+    }
+
+    if first === last {
+        last = nil
+    }
+
+    first = removedItem.prev
+
+    return removedItem
+}
+```

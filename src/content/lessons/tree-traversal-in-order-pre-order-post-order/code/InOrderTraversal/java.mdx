@@ -1,0 +1,9 @@
+```java
+static void inOrderTraversal(BinaryTreeNode node) {
+    if (node != null) {
+        inOrderTraversal(node.left);
+        visitNode(node);
+        inOrderTraversal(node.right);
+    }
+}
+```

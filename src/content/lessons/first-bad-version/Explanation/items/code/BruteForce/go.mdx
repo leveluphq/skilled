@@ -1,0 +1,11 @@
+```go
+func firstBadVersionBruteForce(totalVersions int) int {
+	for currentVersion := 1; currentVersion <= totalVersions; currentVersion++ {
+		if isBadVersion(currentVersion) {
+			return currentVersion
+		}
+	}
+
+	return -1
+}
+```

@@ -1,0 +1,24 @@
+```csharp
+var pointer = new Dictionary<string, object> { ["hi"] = "world", ["is"] = true };
+// The object { hi: "world", is: true } is created in memory
+// The pointer variable references/points to the object
+// pointer ----> { hi: "world", is: true }
+
+Console.WriteLine(pointer["hi"]);
+// pointer accesses the object from memory and requests the value stored for `hi`
+// pointer ----> { hi: "world", is: true } ----> hi
+//                                         <---- "world"
+
+pointer["hi"] = "friends";
+// pointer reassigns the value for `hi`
+// pointer ----> { hi: "world", is: true } ----> hi = "friends"
+
+pointer = null;
+// pointer changes its reference from the object to null
+// The object still exists in memory but is just no longer referenced to by the variable
+//
+// pointer           { hi: "friends", is: true }
+//       |
+//       |
+//       |--> null
+```

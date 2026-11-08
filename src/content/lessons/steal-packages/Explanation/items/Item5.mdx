@@ -1,0 +1,32 @@
+import Image from 'content/blocks/Image';
+import MaxProfitEquation from './code/MaxProfitEquation';
+import MaxProfitOneBack from './inlineCode/MaxProfitOneBack';
+import MaxProfitTwoBack from './inlineCode/MaxProfitTwoBack';
+
+Using this dynamic programming approach requires O(n) space, but we don’t actually need the entire array to solve the problem.
+Just like how Fibonacci only needs the prior two numbers `fib(n) = fib(n - 1) + fib(n - 2)`,
+all we really need is the max profit from two houses back and the max profit from one house back.
+
+<MaxProfitEquation />
+
+So we can track the max profit values we need in variables instead of a full array and just update these variables each iteration which is enough information to solve any subproblem.
+
+The two variables we need:
+
+1. The max profit we found by solving the subproblem from **two houses back** or <MaxProfitTwoBack />.
+2. The max profit we found by solving the subproblem from **one house back** (the most recent max profit) or <MaxProfitOneBack />.
+
+Let's walk through it now by only using variables instead of the full memoization array.
+We start with an initial profit of 0 and then walk through the array with the approach we just outlined.
+
+The "max profit" and "max profit two houses back" are the important values we're tracking and the variables we're using to memoize the results from previous subproblems.
+The "max profit prev" is a temporary variable that we create each iteration to move the important variables forward after we solve each step.
+
+<Image src="/images/steal-five-items.gif" maxWidth="600px" alt="A five-house example compares adjacent exclusions while accumulating the best legal total." width={1000} height={434} />
+
+We build up the max profit as we iterate through the input, and once we reach the final house, the max profit we calculate here is also the solution.
+
+You may be wondering what happens if we skip two houses instead of one.
+As long as we propagate the max values forward correctly and solve the subproblems using the logic we outlined, the solution still holds.
+
+<Image src="/images/gap-steal-five-items.gif" maxWidth="600px" alt="At each house, compare skipping it with taking its value plus the best total from two houses earlier." width={1000} height={434} />

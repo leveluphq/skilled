@@ -1,0 +1,73 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Reverse a singly linked list by changing its links and return the new head. For `4 -> 8 -> 15 -> null`, the result is `15 -> 8 -> 4 -> null`. The task concerns node links, not sorting or reversing an array of values. The course supplies a node with `data` and `next` fields, using the equivalent type in each language.
+
+## Keep the reversed prefix and untouched suffix
+
+Start with a previous pointer set to null and a current pointer set to the head. Before each iteration, the previous pointer heads a correctly reversed prefix. The current pointer heads the remaining suffix in its original order. Together, those two chains contain every original node exactly once.
+
+To move one node from the suffix to the prefix, first save its original next pointer. Then redirect the current node's next link to the previous node. Advance previous to current, and current to the saved next node. The saved pointer is what makes the untouched suffix reachable after overwriting the link that used to lead to it.
+
+## Follow the links on a short list
+
+For `4 -> 8 -> 15`, begin with previous null and current 4. Save 8, point 4 to null, and advance. The prefix is now `4 -> null`, while the suffix starts at 8. Next save 15, point 8 to 4, and advance again. Finally save null, point 15 to 8, and let current become null.
+
+At that point previous points to 15, which heads the complete reversed list. Returning current would return null. Returning the original head would return only the old first node, which is now the tail. The return value must come from the pointer that tracks the completed prefix.
+
+## Preserve reachability while mutating
+
+Changing `current.next` before saving it loses the only route to the remainder of the list. Advancing through the new link then walks backward into the reversed prefix. That can produce a cycle or an incomplete result, depending on the surrounding update order. A three-node trace exposes this more clearly than a one-node example.
+
+The algorithm reuses the original nodes in reference-based implementations. Callers that retain a pointer to the old head will now see the tail. They must use the returned head for subsequent traversal. Rust's owned linked representation expresses this as moving boxed nodes and taking links, rather than creating several unrestricted mutable aliases.
+
+## Bound the work and the stack
+
+Every iteration consumes one node from the suffix, and no node reenters it. An acyclic n-node list therefore finishes after n iterations. The algorithm uses O(n) time and O(1) auxiliary pointers, excluding the existing list. It does not allocate an output array or use a recursive call stack.
+
+An empty list skips the loop and returns null. A singleton redirects its next pointer to null and returns the same node. A cyclic input does not satisfy the acyclic-list precondition; the ordinary termination argument no longer applies. Detecting or breaking cycles is a separate requirement that should be agreed before modifying the input.
+
+## Tests that expose pointer mistakes
+
+Test empty, singleton, two-node, and longer lists. Include repeated data values, because equal values must remain separate nodes. Traverse the result with a length bound so a faulty cycle becomes a clear failure rather than a hanging test. Confirm both the reversed value order and the null tail.
+
+Where the language exposes identity, verify that the node set is unchanged. Reversing a list twice should restore its original links and head identity. As a follow-up, reverse only a subrange. That version must also preserve the connection before the reversed region and reconnect its new tail to the suffix after the region.
+
+## Swift implementation
+
+`ListNode` is a class, so changing `next` mutates that shared node despite Swift arrays elsewhere having value semantics.
+
+The course uses the class shown here and supplies any declared node classes. Swift arrays have value semantics with copy-on-write storage, while class instances such as linked nodes retain reference identity. Optional values require an explicit absence case. Keep the starter's argument labels when calling the method. Swift integer overflow traps, so expanded constraints require a checked arithmetic policy.
+
+```swift
+class Solution {
+    func reverseLinkedList(_ head: ListNode?) -> ListNode? {
+        var previousNode: ListNode? = nil
+        var currentNode = head
+
+        while let node = currentNode {
+            // Store the actual next node in the linked list
+            let nextNode = node.next
+
+            // This reverses the current node to point to the previous node
+            node.next = previousNode
+
+            // We now step our previous node forward
+            previousNode = node
+
+            // We step our current node forward
+            currentNode = nextNode
+        }
+
+        // Since currentNode becomes nil at the tail,
+        // we return the previousNode which is the new head
+        // and the front of our linked list
+        return previousNode
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Reverse a Linked List](/course/reverse-a-linked-list) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Swift conventions and practice problems, use the [Swift interview guide](/interview-prep/swift).

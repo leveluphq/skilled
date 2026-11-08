@@ -1,0 +1,41 @@
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn get_target_indexes(array: Vec<i32>, target: i32) -> Vec<Vec<i32>> {
+        let mut results = Vec::new();
+        let mut array_element_at_index: HashMap<i32, i32> = HashMap::new();
+
+        // Loop through our input list and
+        // create a hash table that stores the list value and
+        // its corresponding index.
+        for (i, &element) in array.iter().enumerate() {
+            array_element_at_index.insert(element, i as i32);
+        }
+
+        for (i, &current_value) in array.iter().enumerate() {
+            let i = i as i32;
+            // We find the element that would be the match for the current value
+            // and check if it is in our hash table.
+            let matched_value = target - current_value;
+
+            // Check if our matched index is a valid list index
+            // ----
+            // NOTE: get() gives None if the value does not exist in the hash table,
+            // and values we've already used are stored as -1.
+            if let Some(&matched_index) = array_element_at_index.get(&matched_value)
+                && matched_index >= 0
+                && matched_index != i
+            {
+                results.push(vec![i, matched_index]);
+
+                // Make sure we don't use these values again
+                array_element_at_index.insert(current_value, -1);
+                array_element_at_index.insert(matched_value, -1);
+            }
+        }
+
+        results
+    }
+}
+```

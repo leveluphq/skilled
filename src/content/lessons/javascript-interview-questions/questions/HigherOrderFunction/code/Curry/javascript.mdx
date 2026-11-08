@@ -1,0 +1,12 @@
+```javascript
+// Curry the add function
+const add = a => b => a + b;
+const add5 = add(5);
+
+add5(10) // 15
+add5(37) // 42
+add5(0) // 5
+
+// Execute both sequentially
+add(1)(2) // 3
+```

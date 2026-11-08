@@ -1,0 +1,55 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A queue processes items in first-in, first-out order. The item that has waited longest leaves next. The recording introduces that ordering through examples and operations. It helps to separate the queue's behavior from its storage representation: a linked list, circular buffer, or another suitable structure can implement the same ordering.
+
+## Trace the front and the back
+
+Enqueue A, then B, then C. The front is A and the back is C. A dequeue returns A and moves the front to B. Enqueuing D afterward should leave the remaining order B, C, D. A structure that returns D next has implemented stack ordering instead.
+
+Peeking reads the next item without removing it. Empty behavior needs a defined contract, especially when the queue permits values such as null or undefined. A size or explicit emptiness check can distinguish an absent item from an allowed stored value. Do not assume every language's queue API chooses the same return or error behavior.
+
+## Choose a representation with efficient endpoints
+
+A linked queue that retains both endpoints can append at the back and remove at the front with constant link changes. A dynamic array that shifts every remaining value after each front removal can turn a long processing sequence into quadratic work. A moving head index avoids that repeated shift but may retain consumed storage until compaction or reuse.
+
+A circular buffer reuses capacity by wrapping indexes. Its implementation must distinguish a full buffer from an empty one and decide whether it grows, rejects, or overwrites when full. Those policies belong to the implementation contract; FIFO ordering alone does not choose them.
+
+## Connect FIFO order to graph distance
+
+Breadth-first search uses a queue so vertices are expanded by increasing distance from the start in an unweighted graph. Newly discovered neighbors wait behind previously discovered vertices at the same or earlier depth. Replacing the queue with a stack changes that guarantee. A visited set remains necessary when the graph can cycle or offer several routes to the same vertex.
+
+Continue with [Implement a Queue](/watch/implement-a-queue) to follow endpoint changes. Then study [Breadth-First Search](/watch/breadth-first-search) and [Pilot a Rocket](/watch/pilot-a-rocket), where FIFO processing supports a shortest route measured in number of edges. Weighted shortest paths require additional reasoning and a different ordering policy.
+
+## Preserve first-in, first-out order
+
+The example enqueues every input value and then drains the queue. For `[6, 2, 6]`, the output is `[6, 2, 6]`. The repeated six is a separate queue entry each time; equal payloads do not collapse into one item. An empty input produces an empty result.
+
+The implementation varies with the host language. A deque or linked queue offers a direct front-removal operation. An array-backed example can instead advance a head cursor, avoiding a full shift on every removal. Advancing that cursor does not itself release earlier array entries, so an indefinitely growing service queue would need a compaction or ring-buffer policy.
+
+## Include the cost of draining the queue
+
+With constant-time queue operations, filling and draining n entries takes O(n) time. The queue and returned list together use O(n) storage. Repeated front removal from a contiguous array may require moving the remaining suffix and turn draining into O(n²) work.
+
+Test one item, repeated values, negative values, and the empty stream. The complete queue implementation lesson adds the more revealing lifecycle check: remove the last item, enqueue again, and verify that both endpoint references describe the new queue. Queue order also matters in [breadth-first search](/course/breadth-first-search), where a stack would produce a different traversal and would not establish unweighted shortest-path layers.
+
+## TypeScript example and implementation choices
+
+readonly number[] describes the input view, while spreading produces the local queue buffer. The head index marks consumed entries without mutating or shifting that buffer. TypeScript annotations do not reclaim earlier elements as the cursor advances. This example is a finite fill-and-drain trace, so retaining the buffer until return is consistent with its linear-space contract.
+
+### Worked example
+
+```typescript
+function fifoOrder(values: readonly number[]): number[] {
+  const queue = [...values];
+  const output: number[] = [];
+  let head = 0;
+  while (head < queue.length) output.push(queue[head++]);
+  return output;
+}
+```
+
+## Continue in TypeScript
+
+[Open Queues](/course/queues) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the TypeScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [TypeScript interview preparation guide](/interview-prep/typescript) connects these language choices with further practice and the cross-language operation reference.

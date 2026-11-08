@@ -1,0 +1,14 @@
+```python
+def count_total_moves(board_length):
+    # Base case 1: Invalid board length
+    if board_length < 0:
+        return 0
+    # Base case 2: Introduction says length 0 is still 1 step
+    elif board_length == 0:
+        return 1
+    else:
+        # Recursive case
+        return (count_total_moves(board_length - 1) +
+                count_total_moves(board_length - 2) +
+                count_total_moves(board_length - 3))
+```

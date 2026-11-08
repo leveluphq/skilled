@@ -1,0 +1,7 @@
+```python
+def remove_vertex(self, vertex):
+    self.adjacency_list.pop(vertex)
+
+    for node in self.adjacency_list.keys():
+        self.adjacency_list[node] = [v for v in self.adjacency_list[node] if v != vertex]
+```

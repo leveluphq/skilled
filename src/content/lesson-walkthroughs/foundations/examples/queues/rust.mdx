@@ -1,0 +1,10 @@
+```rust
+use std::collections::VecDeque;
+
+fn fifo_order(values: &[i32]) -> Vec<i32> {
+    let mut queue: VecDeque<i32> = values.iter().copied().collect();
+    let mut output = Vec::new();
+    while let Some(value) = queue.pop_front() { output.push(value); }
+    output
+}
+```

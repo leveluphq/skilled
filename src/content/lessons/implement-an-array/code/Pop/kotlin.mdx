@@ -1,0 +1,13 @@
+```kotlin
+fun pop(): Int? {
+    if (length == 0) {
+        return null
+    }
+
+    val poppedItem = data[length - 1]
+    data.remove(length - 1)
+    length--
+
+    return poppedItem
+}
+```

@@ -1,0 +1,116 @@
+Start an event-loop problem by separating the current synchronous execution from work scheduled for later. A resolved promise does not interrupt the line of code currently running. A zero-delay timer does not jump ahead of promise reactions already waiting for the next microtask checkpoint.
+
+Those two rules explain many small interview examples, but a useful answer also identifies the environment. The browser's event loop, Node.js phases, rendering opportunities, and framework scheduling are related subjects with different details. The examples here use browser-style tasks and promise microtasks. They do not rely on Node-specific APIs such as `process.nextTick` or `setImmediate`.
+
+## Trace the synchronous stack first
+
+Read the whole current script and write down its synchronous output. When a statement schedules a callback, record that callback separately instead of executing it in your head immediately.
+
+```javascript
+const output = [];
+output.push('start');
+
+setTimeout(() => output.push('timer'), 0);
+Promise.resolve().then(() => output.push('promise'));
+
+output.push('end');
+// After the timer runs: ['start', 'end', 'promise', 'timer']
+```
+
+The timer registration is synchronous. Creating the promise and attaching the reaction are synchronous too. Their callbacks run later. The final synchronous push happens before either callback.
+
+At the relevant microtask checkpoint, the promise reaction pushes `promise`. The timer callback runs in a later task when it is eligible and selected. The zero in `setTimeout` supplies a requested delay, not permission to interrupt a running script.
+
+A practical tracing sheet has three columns: current output, microtasks waiting, and tasks waiting. Add a fourth column only when the example contains an API that needs it. Writing every browser subsystem into a small exercise usually makes the trace harder to follow.
+
+## Microtasks can schedule more microtasks
+
+When a microtask queues another microtask, the new one is considered during the same checkpoint after microtasks already ahead of it. This is why one pass over the original list is insufficient.
+
+```javascript
+const order = [];
+
+Promise.resolve().then(() => {
+  order.push('first');
+  Promise.resolve().then(() => order.push('nested'));
+});
+Promise.resolve().then(() => order.push('second'));
+setTimeout(() => order.push('timer'), 0);
+// After the timer runs: ['first', 'second', 'nested', 'timer']
+```
+
+The first two reactions are queued in registration order. Running the first reaction appends the nested reaction behind the second one. The checkpoint continues until the queue is drained, so the nested callback still precedes the timer.
+
+A promise chain adds another wrinkle. A later `.then` cannot run until the previous link settles. Do not place every callback in a chain into the queue at the moment you read the expression. Queue the reaction that is ready, then process what that reaction returns.
+
+## An async function starts synchronously
+
+Calling an async function executes its body until it reaches an await that suspends it, or until it returns or throws. It always returns a promise to its caller. The continuation after an await runs asynchronously, including when the awaited value is an ordinary value.
+
+```javascript
+const trace = [];
+
+async function load() {
+  trace.push('inside before await');
+  await 42;
+  trace.push('inside after await');
+}
+
+trace.push('before call');
+const pending = load();
+trace.push('after call');
+// After pending fulfills:
+// ['before call', 'inside before await', 'after call', 'inside after await']
+```
+
+The `await` makes the continuation asynchronous. It does not send the entire function to another thread. CPU-intensive work before or after the await can still occupy the same thread that needs to respond to user input.
+
+When an awaited promise rejects, execution resumes by throwing at the await expression. A surrounding `try`/`catch` can handle it. If nothing handles it inside the function, the async function's returned promise rejects. That behavior is useful when turning callback-style code into a sequence with explicit error handling.
+
+MDN's [await reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) documents the suspension and continuation behavior. The examples above use it to reason about one small execution trace at a time.
+
+## Promise executors and promise reactions are different
+
+The function passed to `new Promise` runs immediately. The function passed to `.then` is a reaction that runs after the current synchronous execution permits promise jobs to run.
+
+```javascript
+const messages = [];
+const promise = new Promise((resolve) => {
+  messages.push('executor');
+  resolve('ready');
+});
+
+promise.then((value) => messages.push(value));
+messages.push('script');
+// After the reaction: ['executor', 'script', 'ready']
+```
+
+A common faulty explanation says “promises run asynchronously” and then places the executor after `script`. Name the action precisely: construction and executor invocation happen now; the fulfillment reaction runs later.
+
+Throwing inside the executor rejects the created promise. Throwing inside a reaction rejects the promise returned by that `.then`. Those are separate promise objects. When tracing a longer chain, label the object each expression returns so you can identify which rejection a `.catch` will observe.
+
+## Timers are eligibility rules, not exact appointments
+
+A timer's callback can run later than its requested delay. Synchronous work, other tasks, background-tab policies, and nested-timer rules can affect the schedule. A trace that compares a promise callback with a timer can have a clear relative order without promising an exact real-world millisecond.
+
+For interface code, avoid deriving elapsed time from a count of timer ticks. Read a clock when elapsed time matters. Also avoid treating debounce or throttle as a guarantee that the browser can execute your callback on time. Those wrappers choose when to request or permit work; they cannot create idle main-thread time.
+
+The [debounce and throttle guide](/guides/debounce-vs-throttle) connects this behavior to application code. Its visualizer uses exact timestamps so the wrapper contract is visible, and explains the scheduling assumption separately.
+
+## Long microtask chains can delay other work
+
+Continuing to queue promise reactions or `queueMicrotask` callbacks can prevent the checkpoint from finishing promptly. Moving a large synchronous loop into a series of immediately ready microtasks does not automatically make the interface responsive.
+
+If a workload needs to yield to other tasks or rendering, choose a scheduling approach suitable for that workload and environment. A worker can move suitable computation away from the main thread; a timer-based yield makes a different scheduling choice. Neither follows automatically from adding the `async` keyword.
+
+This is also why a pending promise is not proof that work is happening on another thread. A promise represents an eventual outcome. The operation producing that outcome determines where and how work runs.
+
+## A repeatable method for output questions
+
+Execute synchronous statements first. Record registrations as they happen. Track which promise each chain link belongs to. At a checkpoint, run ready microtasks in order, including newly queued ones. Then examine the next eligible task and repeat the process.
+
+Test your predicted output in the stated environment, then explain the first place your prediction differed. If an exercise mixes Node and browser APIs, separate those assumptions before answering. Do not use a browser-specific mnemonic to justify an unrelated Node phase order.
+
+For practice, change the nested example so the inner promise reaction is registered from inside the timer. Then replace a resolved promise with a promise resolved by a later timer. Those small changes force you to trace readiness instead of memorizing a single output list.
+
+Continue with [implementing Promise.all](/guides/implement-promise-all). That exercise requires the same separation between synchronous setup, per-input reactions, and settlement of the combined result.

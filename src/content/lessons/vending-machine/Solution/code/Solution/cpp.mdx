@@ -1,0 +1,51 @@
+```cpp
+// Larger than any count of coins, like Infinity
+const int NO_COMBINATION = INT_MAX;
+
+class Solution {
+public:
+    int minCoinsForChange(vector<int>& denominations, int target) {
+        /*
+          Init all values to NO_COMBINATION which indicates there isn't a valid coin combination for an amount (yet)
+          This is our dp / memo array that we're using to memoize the solution to subproblems
+        */
+        vector<int> minCoinsForAmount(target + 1, NO_COMBINATION);
+
+        // Bottom-up, start with 0 which is always 0
+        minCoinsForAmount[0] = 0;
+
+        /*
+          Begin at the smallest amount and build a running table of
+          the smallest values required to reach EVERY amount up to the target
+        */
+        for (int amount = 0; amount < (int) minCoinsForAmount.size(); amount++) {
+            // Try each denomination to reach the current amount
+            for (int coin : denominations) {
+                // Skip a coin that's too big, or that leaves an amount no combination reaches
+                if (coin <= amount && minCoinsForAmount[amount - coin] != NO_COMBINATION) {
+                    // The current minimum (subproblem solution) found at this amount.
+                    int existingMinCoinForAmount = minCoinsForAmount[amount];
+                    /*
+                      Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                      Always increment by +1 because we are trying one additional coin.
+                    */
+                    int minAmountWithCurrentCoin = minCoinsForAmount[amount - coin] + 1;
+
+                    /*
+                      Memoize the minimum coins to reach the current amount.
+                      This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                      If there isn't a valid combination, this just remains NO_COMBINATION.
+                    */
+                    minCoinsForAmount[amount] = min(existingMinCoinForAmount, minAmountWithCurrentCoin);
+                }
+            }
+        }
+
+        /*
+          If we didn't find a combination that matched our target (target == NO_COMBINATION), return -1.
+          Otherwise, the target does exist for that amount and we return it.
+        */
+        return minCoinsForAmount[target] == NO_COMBINATION ? -1 : minCoinsForAmount[target];
+    }
+};
+```

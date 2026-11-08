@@ -1,0 +1,19 @@
+```cpp
+#include <vector>
+#include <optional>
+#include <functional>
+
+std::vector<int> fibMemoStats(int n) {
+    std::vector<std::optional<int>> memo(n + 1);
+    int computed = 0;
+    std::function<int(int)> fib = [&](int value) -> int {
+        if (memo[value]) return *memo[value];
+        const int answer = value < 2 ? value : fib(value - 1) + fib(value - 2);
+        memo[value] = answer;
+        ++computed;
+        return answer;
+    };
+    const int answer = fib(n);
+    return {answer, computed};
+}
+```

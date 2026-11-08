@@ -1,0 +1,34 @@
+```csharp
+public class MaxMinStack {
+    // Any of the initial methods can be updated
+    private readonly Stack<int> stack;
+
+    public MaxMinStack() {
+        stack = new Stack<int>();
+    }
+
+    public int Peek() {
+        return stack.Peek();
+    }
+
+    public int Push(int item) {
+        stack.Push(item);
+        return item;
+    }
+
+    public int Pop() {
+        return stack.Pop();
+    }
+
+    // You must implement the methods below
+    public int GetStackMax() {
+        // Return the largest integer currently in the stack (don't remove it)
+        return 0;
+    }
+
+    public int GetStackMin() {
+        // Return the smallest integer currently in the stack (don't remove it)
+        return 0;
+    }
+}
+```

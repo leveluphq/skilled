@@ -1,0 +1,62 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A binary search tree organizes values so comparisons can select one subtree at each step. Under a strict ordering, every value in a node's left subtree is smaller and every value in its right subtree is larger. The recording explains that rule, navigation, and common operations. Duplicate keys need an additional policy if the API permits them.
+
+## Apply the rule to entire subtrees
+
+Suppose the root is 10, its left child is 5, and 5 has a right child of 12. The local edge from 5 to 12 appears ordered, but 12 violates the root's left-subtree constraint. Checking only a node against its immediate children cannot validate the full tree. Ancestor bounds remain relevant farther down the path.
+
+Searching uses those bounds in the other direction. A target below the current value can only be in the left subtree; a larger target can only be in the right. If the selected child does not exist, the search is complete without scanning the opposite subtree. That exclusion argument depends on the tree actually satisfying the ordering invariant.
+
+## Explain extrema and shape
+
+The minimum is reached by following left links until none remains. That node can still have a right child, so it need not be a leaf. The maximum follows the corresponding right-link path and can have a left child. The recording's correction clarifies that distinction.
+
+Operation costs depend on height. A balanced tree can provide logarithmic-height paths, while an unbalanced tree can become a chain. Inserting already sorted values into an ordinary unbalanced implementation illustrates this worst case. Naming the structure a binary search tree does not promise self-balancing behavior.
+
+## Keep result shape and duplicate policy explicit
+
+A search might return a matching node, a boolean, or a stored value. The implementation lesson returns a node or an absent result. If equal values are allowed, decide whether insertion ignores them, stores counts, or consistently places them on a chosen side. Validation must use the same policy.
+
+Continue with [Implement a Binary Search Tree](/watch/implement-a-binary-search-tree) to trace insert and search. Then try [BST Validate](/watch/binary-search-tree-validate), whose inherited bounds catch the 12-under-5 counterexample. Use [Tree Traversal](/watch/tree-traversal-in-order-pre-order-post-order) to connect in-order visits with sorted output under the strict invariant.
+
+## Search by eliminating one subtree at a time
+
+For the heap-indexed tree `[8, 3, 10, 1, 6, null, 14]`, a search for 6 compares with 8, follows the left child to 3, and then follows the right child to 6. A search for 7 reaches an absent child and returns false. The function assumes that the supplied tree already satisfies the ordering contract.
+
+The example stores children at positions 2i + 1 and 2i + 2, with null slots marking missing nodes. A null root is an empty tree. Slots beneath an absent parent are unreachable. This representation is useful for a small worked example; it is not a recommendation for storing a very sparse production tree.
+
+## Relate the cost to height
+
+Each comparison follows at most one child, giving O(h) time for height h and O(1) additional storage in the iterative implementation. A balanced tree makes h logarithmic in its node count. A chain makes h linear. The search function does not rebalance the input or verify all ordering constraints first.
+
+Check the root, both extreme values, an absent value between existing keys, an empty tree, and a singleton. The complete insertion lesson allows equal keys on the right. The separate [validate BST exercise](/course/binary-search-tree-validate) uses its own stricter validation contract; read that contract before sharing duplicate-handling assumptions across the two tasks.
+
+## C# example and implementation choices
+
+The nullable integer list represents absent children explicitly. Value is read only inside a guarded nonnull position, so zero-valued keys work normally. The method returns Boolean membership without changing the supplied list. Neither nullable typing nor the loop proves the global BST invariant; a separate validator would need to inspect the relevant subtree bounds across all reachable nodes.
+
+### Worked example
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class ContainsBSTExample {
+public static bool ContainsBST(List<int?> values, int target) {
+    int index = 0;
+    while (index < values.Count && values[index] != null) {
+        int value = values[index].Value;
+        if (value == target) return true;
+        index = target < value ? 2 * index + 1 : 2 * index + 2;
+    }
+    return false;
+}
+}
+```
+
+## Continue in C#
+
+[Open Binary Search Trees](/course/binary-search-trees) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the C# example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [C# interview preparation guide](/interview-prep/csharp) connects these language choices with further practice and the cross-language operation reference.

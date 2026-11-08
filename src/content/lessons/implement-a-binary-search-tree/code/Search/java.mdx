@@ -1,0 +1,21 @@
+```java
+public BinaryNode search(int data) {
+    if (root == null) {
+        return null;
+    }
+
+    BinaryNode currentNode = root;
+
+    while (currentNode != null) {
+        if (data < currentNode.data) {
+            currentNode = currentNode.left;
+        } else if (data > currentNode.data) {
+            currentNode = currentNode.right;
+        } else if (currentNode.data == data) {
+            return currentNode;
+        }
+    }
+
+    return null;
+}
+```

@@ -1,0 +1,55 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Top-down and bottom-up dynamic programming can evaluate the same recurrence in different orders. A top-down solution starts with the requested state and recursively requests dependencies, caching completed answers. A bottom-up solution chooses an order in which those dependencies are already available. The recording compares both approaches with factorial and Fibonacci.
+
+## Keep the recurrence unchanged while changing order
+
+Fibonacci of n depends on the two preceding values. A top-down implementation begins at n and descends until it reaches the base cases. A bottom-up implementation begins with zero and one, then computes increasing indexes. Both must agree on Fibonacci of zero; the scalar-returning version in the original course returns n when n is below two. A function returning the entire table instead returns a one-element table for zero.
+
+Write the meaning of a table entry before writing the loop. If an entry stores the answer for index i, its dependencies must already contain the answers the recurrence needs. In other problems, increasing numeric order may be wrong. The appropriate order follows the dependency graph, not a general rule that loops always count upward.
+
+## Compare reachable work and stack depth
+
+Top-down evaluation can avoid states that the requested result never reaches. It also retains recursive frames and can encounter a depth limit. Bottom-up evaluation makes the order explicit and often avoids that stack, but a rectangular table may compute unused states. Neither form fixes a recurrence that combines the wrong choices.
+
+Tail-call optimization does not generally remove top-down dynamic programming's storage costs. Fibonacci combines results after child calls return, and cached answers still occupy memory. If a solution depends on a runtime optimization, verify that the language, runtime, and call position actually support it before using it in the space analysis.
+
+## Reduce storage only after understanding dependencies
+
+For Fibonacci, the next value needs only the preceding two. A bottom-up loop can retain those values instead of the full table. Other recurrences may need a larger window, a complete row, or reconstruction information. Removing the table can make it impossible to recover the chosen solution even when the optimum value is still available.
+
+Use the [dynamic programming tool](/tools/dynamic-programming) to inspect state updates. Then compare [Three Moves](/watch/three-moves), which sums ways to reach a position, with [Steal Packages](/watch/steal-packages), which chooses the best legal value. Explain the dependency order before attempting a rolling-state optimization.
+
+## Build the dependency table in order
+
+The example returns the entire Fibonacci table through n. Input 5 produces `[0, 1, 1, 2, 3, 5]`. Each cell after the first two reads the two previous cells, both of which are already final. The loop invariant is that every earlier position contains its correct recurrence value.
+
+For n = 0, the result contains only `[0]`. Initializing an unconditional two-element result would violate that contract. The examples handle this boundary before filling later cells. Inputs are nonnegative and bounded to avoid overflow in the fixed-width implementations.
+
+## Match retained state to the requested result
+
+Returning the full table requires O(n) output space. If the caller wanted only F(n), two rolling values could reduce retained recurrence state to O(1). That optimization would change what the function returns, so it is not a drop-in replacement for this example.
+
+Bottom-up evaluation does O(n) additions and uses no recursive call chain. A top-down memoized version also does linear work here, but reaches states through calls and retains a cache. For a different state graph with many unreachable states, top-down evaluation might avoid table entries that an eager bottom-up pass would fill. Choose an order by examining dependencies and required states, then justify it. Merely replacing recursion with a loop does not establish that those dependencies are ready when read.
+
+## Swift example and implementation choices
+
+The Array starts with zero and grows through append. A while loop makes the inclusive final index explicit and avoids constructing an invalid range for small n. Swift Int arithmetic must remain within range. The returned Array has value semantics, but its n + 1 positions still occupy linear result storage; copy-on-write is not a reason to omit that cost.
+
+### Worked example
+
+```swift
+func fibTable(_ n: Int) -> [Int] {
+    var table = [0]
+    if n >= 1 { table.append(1) }
+    var index = 2
+    while index <= n { table.append(table[index - 1] + table[index - 2]); index += 1 }
+    return table
+}
+```
+
+## Continue in Swift
+
+[Open Bottom-Up vs. Top-Down](/course/bottom-up-vs-top-down) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Swift example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Swift interview preparation guide](/interview-prep/swift) connects these language choices with further practice and the cross-language operation reference.

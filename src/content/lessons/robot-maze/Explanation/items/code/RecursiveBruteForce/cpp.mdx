@@ -1,0 +1,51 @@
+```cpp
+const int OPEN = 0;
+const int BLOCKED = 1;
+const int EXIT = 2;
+
+class Solution {
+public:
+    // Main function
+    bool hasExitPath(vector<vector<int>>& roomMatrix) {
+        // Return false if the matrix is invalid
+        if (roomMatrix.empty() || roomMatrix[0].empty()) {
+            return false;
+        }
+
+        // Recursively walk through the room to check if there is a valid path
+        bool isValidPath = walkThroughRoom(roomMatrix, 0, 0);
+
+        return isValidPath;
+    }
+
+private:
+    // Recursive helper function
+    bool walkThroughRoom(vector<vector<int>>& roomMatrix, int row, int col) {
+        // Base case 1: Outside of room, so there can't be a path through this
+        bool isOutsideRoom = row > (int) roomMatrix.size() - 1 || col > (int) roomMatrix[0].size() - 1;
+        if (isOutsideRoom) {
+            return false;
+        }
+
+        // Base case 2: A path successfully reached the end, so propagate this upward
+        bool isExitNode = roomMatrix[row][col] == EXIT;
+        if (isExitNode) {
+            // Set the current node as true as well
+            return true;
+        }
+
+        // Base case 3: We reached a blocking node
+        bool isBlockingNode = roomMatrix[row][col] == BLOCKED;
+        if (isBlockingNode) {
+            return false;
+        }
+
+        // Recursive case: move down and right
+        bool downResult = walkThroughRoom(roomMatrix, row + 1, col);
+        bool rightResult = walkThroughRoom(roomMatrix, row, col + 1);
+
+        // Returns true if either is successful
+        return downResult || rightResult;
+    }
+};
+```

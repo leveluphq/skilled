@@ -1,0 +1,23 @@
+```kotlin
+class Solution {
+    fun countTotalMoves(boardLength: Int): Int {
+        if (boardLength < 0) return 0
+
+        var threeSpotsBack = 0
+        var twoSpotsBack = 0
+        var oneSpotBack = 1
+
+        for (i in 0 until boardLength) {
+            val finalSpot = oneSpotBack + twoSpotsBack + threeSpotsBack
+
+            threeSpotsBack = twoSpotsBack
+            twoSpotsBack = oneSpotBack
+            oneSpotBack = finalSpot
+        }
+
+        // We return oneSpotBack because it was actually updated to the finalSpot
+        // during the last iteration of the loop when we moved values forward
+        return oneSpotBack
+    }
+}
+```

@@ -1,0 +1,23 @@
+```swift
+// Remove the characters that aren't letters or numbers
+func removeNonAlphanumeric(_ string: String) -> String {
+    return string.filter { $0.isLetter || $0.isNumber }
+}
+
+func isPalindrome(_ string: String) -> Bool {
+    // For simplicity, I'm doing the transforming here at an assumed O(n) cost
+    // You could also not transform it and consider this when you compare characters
+    // (we make an array of characters, since Swift strings aren't indexed by integers)
+    let formattedString = Array(removeNonAlphanumeric(string).lowercased())
+
+    // Walk from the beginning and end to the middle and compare each character
+    for i in 0..<formattedString.count / 2 {
+        // If the characters are ever not equal, it's not a palindrome
+        if formattedString[i] != formattedString[formattedString.count - 1 - i] {
+            return false
+        }
+    }
+
+    return true
+}
+```

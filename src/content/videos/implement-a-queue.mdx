@@ -1,0 +1,19 @@
+The queue in this lesson keeps references to its first and last nodes. New items join at the last node, while removals happen at the first. The node's link is named `prev`, but in this representation it points toward the next item to leave after the current one. Follow the actual arrows rather than relying on the property name alone.
+
+## Maintain both endpoints
+
+An empty queue has no first or last node. Enqueuing its first item must set both references to the new node. For a nonempty queue, connect the old last node to the new node, then update last. The first reference stays unchanged because an older item remains at the front.
+
+For A followed by B and C, first reaches A and last reaches C. The link from A reaches B, and B reaches C. Peeking should inspect the front without moving either endpoint. The exact returned shape follows the current implementation, so distinguish returning a node from returning only its data when writing a compatible wrapper.
+
+## Reset the tail when the final item leaves
+
+Dequeuing saves the front node and advances first along its link. If that was the only node, last must also become empty. Leaving a stale last reference can cause the next enqueue to attach to a node that is no longer in the queue.
+
+Test this operation sequence explicitly: enqueue A, dequeue A, enqueue B, then dequeue B. Also enqueue several values, remove some, add more, and confirm the original FIFO order across the mixed sequence. Repeated operations often expose endpoint mistakes that a single enqueue and dequeue miss.
+
+## Compare representations under the same contract
+
+With retained endpoints, these linked operations use constant link changes. Traversing the whole list to find the back on every enqueue would lose that property. An array-backed circular buffer can also provide efficient queue operations; the lesson chooses links to expose the endpoint mechanics, not because arrays are incapable of FIFO behavior.
+
+Use the [current implementation lesson](/course/implement-a-queue) to inspect its empty-result contract. Then revisit [Queues](/watch/queues) and apply the representation to [Breadth-First Search](/watch/breadth-first-search). Check both the graph traversal's result and the queue operations behind its claimed running time.

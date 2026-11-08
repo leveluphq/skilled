@@ -1,0 +1,25 @@
+import BigO from 'content/blocks/BigO';
+import BruteForce from './code/BruteForce';
+
+Coding out the brute force logic, we get the following solution:
+
+<BruteForce />
+
+We walk through the nested loops and check if the items at `i` and `j` add up to our target.
+If they do, we add that pair to our output.
+
+> Notice that the inner loop starts at `j = i + 1`.
+> This ensures that we don't check the same indexes more than once.
+> You may also think that improves our time complexity since we are reducing the total number of computations.
+> However, remember that we drop constants when calculating Big O, and by starting at `j + 1` each iteration, we are performing ~`n^2 / 2` operations which is still <BigO.n2 />.
+> We drop constants because as the input size grows large, constants lose meaning between different Big O complexities.
+
+It is worth noting that the space complexity is constant <BigO.constant /> because we don't create any new data structures
+aside from the `results` array which may or may not count against your space complexity, depending on what the interviewer specifies.
+
+The issue is that we repeat the same work over and over to look for the items that sum to the target.
+To restate that, arrays have an <BigO.n /> search time,
+and so for all `n` items in the array, we perform an additional <BigO.n /> search.
+
+A brute force solution can almost always be optimized.
+How can we remove this repeated work and drop the nested loop?

@@ -1,0 +1,71 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+struct Node {
+    data: i32,
+    prev: Option<Rc<RefCell<Node>>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, prev: None }
+    }
+}
+
+// `first` and `last` point to the same node when there is one item,
+// so the nodes are shared with Rc<RefCell<...>>
+struct Queue {
+    first: Option<Rc<RefCell<Node>>>,
+    last: Option<Rc<RefCell<Node>>>,
+}
+
+impl Queue {
+    fn new() -> Self {
+        Queue {
+            first: None,
+            last: None,
+        }
+    }
+
+    // Get the first item
+    fn peek(&self) -> Option<i32> {
+        self.first.as_ref().map(|first| first.borrow().data)
+    }
+
+    // Add a new last item
+    fn enqueue(&mut self, item: i32) {
+        let new_last_node = Rc::new(RefCell::new(Node::new(item)));
+
+        match &self.last {
+            // The queue is empty, so the new node is both the first and last item
+            None => self.first = Some(Rc::clone(&new_last_node)),
+            // The current last node references the new node behind it
+            Some(last) => last.borrow_mut().prev = Some(Rc::clone(&new_last_node)),
+        }
+
+        self.last = Some(new_last_node);
+    }
+
+    // Remove the first item
+    fn dequeue(&mut self) -> Option<i32> {
+        let Some(removed_item) = self.first.take() else {
+            return None;
+        };
+
+        // `first` and `last` were the same node, so the queue is now empty
+        if self
+            .last
+            .as_ref()
+            .is_some_and(|last| Rc::ptr_eq(last, &removed_item))
+        {
+            self.last = None;
+        }
+
+        self.first = removed_item.borrow_mut().prev.take();
+
+        let value = removed_item.borrow().data;
+        Some(value)
+    }
+}
+```

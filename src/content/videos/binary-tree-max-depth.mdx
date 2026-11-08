@@ -1,0 +1,37 @@
+{/* Composed by contentgen:videos. Edit the shared curriculum chapter. */}
+
+Return the maximum number of edges from a binary tree's root to a leaf. The lesson counts edges: a singleton root has depth 0, its child has depth 1, and an empty tree returns -1. This convention differs from examples that count nodes or levels. Agree on it before writing the base case.
+
+## Store a depth beside each pending node
+
+The selected implementation uses an explicit stack of node-and-depth pairs. Initialize it with the root at depth zero and initialize the maximum to -1. Pop a pair. If its node exists, update the maximum and push its children with depth increased by one. Null nodes contribute no depth and require no further expansion.
+
+The stack makes the traversal depth first. Pushing right before left causes the left subtree to be visited first in versions that pop from the end, but visitation order does not affect the maximum. Every real node carries the depth calculated from the path used to reach it.
+
+## Trace an uneven tree
+
+Suppose the root has a left leaf and a right child with its own right child. The root enters at depth 0. Its left leaf contributes 1. The right child also contributes 1, then its child contributes 2. The stored maximum ends at 2, regardless of which side is processed first.
+
+A node with only one child still extends a path. Treating missing children as depth zero inside an edge-counting recurrence can miscount the empty tree or add an unwanted level. The explicit stack avoids that ambiguity by attaching the correct depth to real nodes and ignoring nulls.
+
+## Explain why every candidate is considered
+
+Before each iteration, every unvisited real node is reachable through one of the pending subtree roots. Processing a real node records its depth and adds both child subtrees. Processing null discards an empty subtree. Thus no reachable node is omitted, and no real node is visited twice in an ordinary tree.
+
+The maximum never decreases. After traversal it equals the greatest depth among all real nodes, which is the longest root-to-node path and therefore the longest root-to-leaf path. An internal node cannot exceed every descendant's depth, so considering all nodes instead of only leaves still returns the same answer.
+
+## Separate traversal storage from tree shape
+
+Time is O(n), since every node and a bounded number of null child entries are processed. A depth-first stack holds pending siblings along the active path, using O(h) auxiliary space in the usual bound. A balanced tree has O(log n) height, while a skewed tree has O(n) height. The explicit stack avoids recursive call frames but still requires memory for its pending work.
+
+A breadth-first version counts completed levels and can require O(w) queue storage for maximum width w. Neither traversal is universally smaller: a broad tree and a narrow chain stress different structures. A recursive solution is concise but must use an empty-subtree base of -1 to preserve this lesson's edge convention.
+
+## Test the convention and traversal
+
+Test an empty tree for -1, a root alone for 0, one left child, one right child, a balanced tree, and a long chain. Put the deepest leaf in each side in separate cases. Trees with repeated data values are valid because this problem depends on structure, not search ordering or uniqueness.
+
+For an independent check, run a breadth-first level traversal and subtract one from the number of nonempty levels, returning -1 when there are none. A follow-up can ask for the actual deepest path rather than its length. That requires retaining parent information or a path, since the numeric maximum alone cannot reconstruct which nodes formed the answer.
+
+## Continue with the implementation
+
+Read the [JavaScript walkthrough](/course/binary-tree-max-depth/javascript) for the current code and links to the other programming languages. Use the [original lesson](/course/binary-tree-max-depth) for practice.

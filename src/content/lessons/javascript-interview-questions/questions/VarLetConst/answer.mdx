@@ -1,0 +1,22 @@
+import Var from './code/Var';
+import Let from './code/Let';
+import Const from './code/Const';
+
+The `var` variable declaration is typically viewed as a legacy pattern.
+It creates a variable that is function scoped and can be reassigned at any time.
+If a `var` variable is declared outside of a function, it is part of the global scope and will be a property on the global object.
+
+<Var />
+
+The `let` keyword was introduced in ES2015.
+A variable declared with `let` can be reassigned at any time, like a `var`.
+
+The primary difference between `let` and `var` is  that `let` is block scoped which means it is only available within a `{}` (including functions).
+
+<Let />
+
+The `const` keyword is used for constant variables and can only have one value ever assigned to it.
+An error will be thrown if we try to reassign a variable created using `const`.
+Like `let`, a `const` variable is block scoped.
+
+<Const />

@@ -1,0 +1,12 @@
+```javascript
+const findMaxDepth = (root) => {
+  if (root === null) {
+    return -1;
+  }
+
+  const leftDepth = findMaxDepth(root.left);
+  const rightDepth = findMaxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+```

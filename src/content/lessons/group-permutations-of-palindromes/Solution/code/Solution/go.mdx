@@ -1,0 +1,57 @@
+```go
+import (
+	"maps"
+	"slices"
+)
+
+func groupPermutationsOfPalindromes(strings []string) [][]string {
+	permutationsOfPalindromes := map[string][]string{}
+
+	// Iterate through all O(n) strings in our slice
+	for _, s := range strings {
+		// Check if each string is a palindrome O(c)
+		if isPermutationOfPalindrome(s) {
+			// Sort our string's order O(c log c)
+			// Permutations will sort to the same string
+			characters := []byte(s)
+			slices.Sort(characters)
+			sortedString := string(characters)
+
+			// The first time we see one of the string's permutations, the key
+			// holds a nil slice, and append starts a new one
+			permutationsOfPalindromes[sortedString] = append(permutationsOfPalindromes[sortedString], s)
+		}
+	}
+
+	// This collects all the values of the hash table into a slice
+	// Since the values are also slices, this is the form of the result we want
+	return slices.Collect(maps.Values(permutationsOfPalindromes))
+}
+
+// We use the modulo operator to determine if a number is odd
+func isOdd(num int) bool {
+	return num%2 != 0
+}
+
+// All O(c) operations
+func isPermutationOfPalindrome(s string) bool {
+	// Use a hash table to count the occurrence of each character in a string
+	// These are sequential O(c) operations
+	characterCountTable := map[rune]int{}
+
+	for _, char := range s {
+		characterCountTable[char]++
+	}
+
+	// Sum the number of characters that contain an odd count
+	oddCharacterCount := 0
+	for _, numCharacters := range characterCountTable {
+		if isOdd(numCharacters) {
+			oddCharacterCount++
+		}
+	}
+
+	// If at most one character has an odd count, this function returns true
+	return oddCharacterCount <= 1
+}
+```

@@ -1,0 +1,17 @@
+```swift
+func minimumCoins(_ coins: [Int], _ amount: Int) -> Int {
+    let impossible = amount + 1
+    var best = Array(repeating: impossible, count: amount + 1)
+    best[0] = 0
+    var value = 1
+    while value <= amount {
+        for coin in coins {
+            if coin <= value && best[value - coin] != impossible {
+                best[value] = min(best[value], 1 + best[value - coin])
+            }
+        }
+        value += 1
+    }
+    return best[amount] == impossible ? -1 : best[amount]
+}
+```

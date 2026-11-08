@@ -1,0 +1,46 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import RecursiveExpression from './code/RecursiveExpression';
+import SolutionCode from './code/Solution';
+
+This problem can be solved by decomposing the input integer to each digit and shifting it to the ones place by repeatedly dividing the number by 10.
+To extract the digit in the ones place, we take the modulo `% 10` of it to determine its value.
+We recursively divide by 10 and take the modulo of 10 until the input number reaches 0 which is the base case.
+
+This yields the recursive expression:
+
+<RecursiveExpression />
+
+**The base case is essential for any recursive problem.**
+Taking the recursive expression above and giving it a base case, we get our solution:
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="d" /> time and <BigO.n letter="d" /> space where <code>d</code> is the number of digits in the input.
+</p>
+
+The time and space complexity of this question is very interesting.
+Typically we need to account for the time to iterate through the entire input and the space required to build the stack for a recursive solution.
+
+Here the input is a single integer, so its size is measured by its number of digits `d`.
+We make one recursive call for each digit, so both the time and the call stack grow with `d`.
+Since an integer `n` has about `log10(n)` digits, you can also describe this as <BigO.logn /> where `n` is the value of the input.
+
+It's tempting to call this <BigO.constant /> because a 64-bit integer has at most 20 digits,
+but Python integers have no maximum value, so the number of digits can grow arbitrarily large.
+Give your answer in terms of the number of digits.
+
+<VariationsSubtitle />
+
+As an exercise, see if you can also come up with the iterative solution using a `while` loop.
+It still takes <BigO.n letter="d" /> time, but it only needs <BigO.constant /> space since there is no call stack.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

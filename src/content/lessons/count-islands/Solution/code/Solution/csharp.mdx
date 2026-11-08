@@ -1,0 +1,51 @@
+```csharp
+public class Solution {
+    private const char Land = '#';
+    private const char Water = '~';
+
+    public int CountIslands(char[][] grid) {
+        if (grid.Length == 0 || grid[0].Length == 0) {
+            return 0;
+        }
+
+        int numRows = grid.Length;
+        int numCols = grid[0].Length;
+        int islandCount = 0;
+
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                // We found another uncounted island
+                if (grid[row][col] == Land) {
+                    islandCount = islandCount + 1;
+                    // Mark all the pieces of land for the island as viewed
+                    MarkLandAsViewedDFS(grid, row, col);
+                }
+            }
+        }
+
+        return islandCount;
+    }
+
+    private void MarkLandAsViewedDFS(char[][] grid, int row, int col) {
+        int numRows = grid.Length;
+        int numCols = grid[0].Length;
+
+        // Stopping condition:
+        // 1. Outside of the map
+        // 2. Reached an adjacent water node
+        bool isOutsideMap = row < 0 || col < 0 || row >= numRows || col >= numCols;
+        if (isOutsideMap || grid[row][col] == Water) {
+            return;
+        }
+
+        // Recursive case:
+        // 1. Mark the node as viewed by flipping it to water
+        // 2. Check the nodes adjacent to the current
+        grid[row][col] = Water;
+        MarkLandAsViewedDFS(grid, row - 1, col);
+        MarkLandAsViewedDFS(grid, row + 1, col);
+        MarkLandAsViewedDFS(grid, row, col - 1);
+        MarkLandAsViewedDFS(grid, row, col + 1);
+    }
+}
+```

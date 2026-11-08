@@ -1,0 +1,73 @@
+```go
+type DynamicArray struct {
+	length int
+	data   map[int]int
+}
+
+func NewDynamicArray() *DynamicArray {
+	return &DynamicArray{
+		length: 0,
+		data:   map[int]int{},
+	}
+}
+
+func (a *DynamicArray) Get(index int) int {
+	return a.data[index]
+}
+
+func (a *DynamicArray) Push(item int) int {
+	a.data[a.length] = item
+	a.length++
+
+	return a.length
+}
+
+func (a *DynamicArray) Pop() (int, bool) {
+	if a.length == 0 {
+		return 0, false
+	}
+
+	poppedItem := a.data[a.length-1]
+	delete(a.data, a.length-1)
+	a.length--
+
+	return poppedItem, true
+}
+
+func (a *DynamicArray) Insert(index, item int) map[int]int {
+	if index > a.length-1 || index < 0 {
+		return nil
+	}
+
+	a.length++
+
+	for i := a.length - 1; i > index; i-- {
+		a.data[i] = a.data[i-1]
+	}
+
+	a.data[index] = item
+
+	return a.data
+}
+
+func (a *DynamicArray) Remove(index int) (int, bool) {
+	if a.length == 0 {
+		return 0, false
+	}
+
+	if index > a.length-1 || index < 0 {
+		return 0, false
+	}
+
+	itemToBeRemoved := a.data[index]
+
+	for i := index; i < a.length-1; i++ {
+		a.data[i] = a.data[i+1]
+	}
+
+	delete(a.data, a.length-1)
+	a.length--
+
+	return itemToBeRemoved, true
+}
+```

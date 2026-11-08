@@ -1,0 +1,13 @@
+```cpp
+Node* pop() {
+    Node* removedItem = last;
+
+    // Update `last` as long as we have items left in the stack
+    if (removedItem) {
+        last = removedItem->prev;
+    }
+
+    // The caller now owns removedItem and should delete it when done
+    return removedItem;
+}
+```

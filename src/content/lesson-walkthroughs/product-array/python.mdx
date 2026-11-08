@@ -1,0 +1,87 @@
+For each position in Product Array, multiply every input integer except the one at that position. The course forbids division and allows the returned list without charging it to auxiliary space. For `[2, 3, 4]`, the expected answer is `[12, 8, 6]`.
+
+Python can express the solution with two ordinary loops and two running integers. The first loop writes each left-side product into the result. The second loop multiplies in the corresponding right-side product. We never change the input and never construct a separate list of suffix products.
+
+## Store left products before advancing the prefix
+
+Initialize the output to a list of ones. During the first loop, `prefix` is the product of all values strictly before the current index. Assign it to the result, then include the current value for the next iteration.
+
+```python
+def build_product_array(input):
+    results = [1] * len(input)
+    prefix = 1
+
+    for i, value in enumerate(input):
+        results[i] = prefix
+        prefix *= value
+
+    suffix = 1
+    for i in range(len(input) - 1, -1, -1):
+        results[i] *= suffix
+        suffix *= input[i]
+
+    return results
+```
+
+The parameter name follows the course starter. It shadows Python's built-in `input` function inside this function; we never call that built-in here. In code of your own, a name such as `values` would avoid the shadowing while leaving the algorithm unchanged.
+
+The right-to-left `range` stops before `-1`, so it includes index `0`. If the input is empty, the range starts at `-1` and contains no indexes. The first loop is also empty, and the function returns the empty output list.
+
+## Trace both passes on a small list
+
+For `[2, 3, 4]`, `prefix` begins at `1`. The first pass writes `1`, then `2`, then `6`, leaving `[1, 2, 6]`. Each entry has everything it needs from the left, with none of its own value included.
+
+The suffix starts at `1` at the far right. Index `2` remains `6`. After including `4`, the suffix is `4`, which turns index `1` from `2` into `8`. After including `3`, the suffix is `12`, which turns index `0` into `12`. The final output is `[12, 8, 6]`.
+
+Multiplying by the current input before writing or updating the corresponding output is an off-by-one error in the mathematical boundary. The prefix and suffix must both exclude the current index at the moment they are used.
+
+## Use immutable fill values and avoid hidden copies
+
+`[1] * n` repeats references to an immutable integer, and later assignments replace individual list entries. That is safe. Repeating a mutable inner list, such as `[[]] * n`, would share that inner list across positions. A solution that stores per-position mutable records would need a different initialization.
+
+Slicing inside a list comprehension can hide repeated work. Computing the product of `input[:i] + input[i + 1:]` for every `i` creates copies and reprocesses overlapping segments. It takes quadratic work for a list of length `n`, even if the final expression is short. The two-pass implementation names and reuses the overlap instead.
+
+The [Python sequence documentation](https://docs.python.org/3/library/stdtypes.html#common-sequence-operations) describes repetition and slicing. For this exercise, reading a slice is unnecessary: the original list supports direct indexing while the output holds the reusable prefix state.
+
+## Let multiplication handle zeros and signs
+
+For `[2, 0, 4]`, the left products become `[1, 2, 0]`. The reverse pass supplies suffix products `4`, then `0`, at the relevant positions, producing `[0, 8, 0]`. The zero's own position still receives the product of its two nonzero neighbors.
+
+With two zeros, every output includes at least one zero. Negative values follow ordinary multiplication rules; `[-2, 3, -4]` gives `[-12, 8, -6]`. There is no need to count negative values separately or branch on the number of zeros.
+
+A singleton returns `[1]`, using the empty-product convention. Its left and right portions are both empty and each contributes identity `1`. If a problem restricts inputs to at least two values, this behavior still gives a well-defined extension useful for tests.
+
+## Compare against a simple independent implementation
+
+For small inputs, a quadratic oracle is useful because it computes each output directly and does not reuse the same prefix/suffix logic. The example checks both the result and input preservation.
+
+```python
+def product_oracle(values):
+    answer = []
+    for excluded in range(len(values)):
+        product = 1
+        for i, value in enumerate(values):
+            if i != excluded:
+                product *= value
+        answer.append(product)
+    return answer
+
+
+product_cases = [[], [7], [2, 3, 4], [2, 0, 4], [0, 3, 0], [-2, 3, -4]]
+for values in product_cases:
+    before = values.copy()
+    assert build_product_array(values) == product_oracle(values)
+    assert values == before
+
+assert build_product_array([10**30, 2, 3]) == [6, 3 * 10**30, 2 * 10**30]
+```
+
+Python's arbitrary-precision integers let the large-value case remain exact. This is useful behavior, but it does not mean multiplication has a constant cost for integers of unlimited size. The amount of numeric data stored in a product can grow with the input.
+
+## Distinguish arithmetic counts from bit complexity
+
+Under the conventional bounded-integer model, the method takes `O(n)` time and a constant number of auxiliary variables beyond the returned list. The returned list requires `O(n)` entries. The function performs no recursion and allocates no second list proportional to input length.
+
+For unrestricted Python integers, the running products and output values may contain many bits, so actual arithmetic time and memory depend on their sizes. A claim of constant auxiliary space counts the number of integer variables; it does not promise that their representations remain a fixed number of bytes.
+
+When you practice, start by writing the invariant beside each loop rather than memorizing the range arguments. Then check the zero case and the empty case. Those inputs make it easier to see whether the boundaries and multiplication identities have been implemented correctly.

@@ -1,0 +1,68 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Choose package values from a row of houses so that no two chosen houses are adjacent, and return the greatest obtainable total. Choosing no house is allowed, so an empty input returns zero. For `[2, 7, 9, 3, 1]`, choose values 2, 9, and 1 for a total of 12. This is the linear house-robber dynamic-programming problem.
+
+## Decide whether to take the current house
+
+For the first i houses, an optimal choice either skips the final house or takes it. Skipping preserves the best total for the previous prefix. Taking the final house forbids its immediate predecessor, so it adds the current value to the best total from two houses earlier.
+
+The recurrence is the maximum of those two totals. We need only the best values for the previous two prefixes, not the complete history of decisions. Initialize both to zero, representing the empty prefixes before the first house. For each value, compute the new optimum before shifting the older states forward.
+
+## Trace the rolling state
+
+For `[2, 7, 9, 3, 1]`, the best prefix totals become 2, 7, 11, 11, and 12. At the third house, taking 9 combines with the first house's optimum 2, giving 11. At the fourth, taking 3 gives 10, so skipping preserves 11. At the fifth, taking 1 combines with the three-house optimum 11, giving 12.
+
+The previous optimum must be saved before overwriting it. If both rolling variables are updated from the newly computed value, the next iteration can combine adjacent houses. State names should describe which prefix they summarize, and the assignment order should preserve that meaning at the start of each loop.
+
+## Prove that the two cases are exhaustive
+
+Every legal selection either contains the current final house or does not. The two cases cannot overlap. If it does not contain that house, an optimal selection for the shorter prefix is at least as good. If it does, removing the current house leaves a legal selection in the prefix ending two houses earlier.
+
+By induction, the stored prefix optima are correct. Taking the larger of the two cases therefore gives the correct optimum for the extended prefix. This reasoning also explains why locally taking whichever of two neighboring houses is larger can fail: a local choice affects the next available house and does not summarize the whole prefix.
+
+## Distinguish a value answer from a chosen route
+
+The rolling-state version returns only the maximum total. It does not retain which houses were selected. To reconstruct a selection, keep a full DP table or predecessor decisions and walk backward through take-or-skip choices. Several selections may have the same total, so a reconstruction task also needs a tie policy if exact indexes matter.
+
+The input remains unchanged. The scan takes O(n) time and O(1) auxiliary state. If expanded inputs permit negative values, allowing no house still makes zero a legal answer. Bounded integer implementations also need a contract that prevents the sum of selected values from overflowing, even when each individual value fits its type.
+
+## Test competing choices
+
+Use empty input, one house, two houses, all equal values, and a high middle value surrounded by smaller values. Include `[2, 1, 1, 2]`, where choosing both endpoints gives four. A greedy alternating-index rule can fail on other mixtures, so compare several patterns instead of relying on one canonical example.
+
+For short generated arrays, enumerate every subset, reject any subset containing adjacent indexes, and compare the largest remaining sum. That oracle checks the constraint independently of the recurrence. A circular-row follow-up makes the first and last houses adjacent; solve the two cases that exclude one endpoint or the other rather than applying the linear scan to the whole circle unchanged.
+
+## Swift implementation
+
+The method keeps bounded Int totals while reading the array. No selection indexes are stored, so it cannot reconstruct chosen houses.
+
+The course uses the class shown here and supplies any declared node classes. Swift arrays have value semantics with copy-on-write storage, while class instances such as linked nodes retain reference identity. Optional values require an explicit absence case. Keep the starter's argument labels when calling the method. Swift integer overflow traps, so expanded constraints require a checked arithmetic policy.
+
+```swift
+class Solution {
+    func stealPackages(_ packageValues: [Int]) -> Int {
+        var maxAtTwoHousesBefore = 0
+        var maxProfit = 0
+
+        for currentValue in packageValues {
+            // Temp variable to remember the max before reaching this house
+            let maxBeforeReachingCurrentHouse = maxProfit
+
+            // Find the max between the previous house or the current house + the house two spots back
+            maxProfit = max(maxAtTwoHousesBefore + currentValue, maxProfit)
+
+            // The max of the house before this one becomes the max of the house two spots back
+            // when entering the next iteration of the loop
+            maxAtTwoHousesBefore = maxBeforeReachingCurrentHouse
+        }
+
+        return maxProfit
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Steal Packages](/course/steal-packages) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Swift conventions and practice problems, use the [Swift interview guide](/interview-prep/swift).

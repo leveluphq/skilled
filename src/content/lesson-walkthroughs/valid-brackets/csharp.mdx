@@ -1,0 +1,81 @@
+This C# bracket validator accepts a string containing `()`, `[]`, `{}`, and ordinary text. It ignores the other characters and returns whether every bracket is closed in the right order. Empty input is valid, but `([)]` is invalid because its pairs cross.
+
+`Stack<char>` stores unfinished openers in last-in, first-out order. The current closer must match the opener most recently pushed. Counting brackets, even with one counter per type, cannot retain that order and accepts some invalid strings.
+
+## Push openers and compare the next closer
+
+The implementation below uses direct character comparisons for the fixed delimiter alphabet. It follows the starter's method name and creates a fresh stack for every call. A null string is outside the contract; callers should supply actual string input.
+
+```csharp
+using System.Collections.Generic;
+
+public class Solution {
+    public bool HasValidBrackets(string s) {
+        var stack = new Stack<char>();
+        foreach (char c in s) {
+            if (c == '(' || c == '[' || c == '{') {
+                stack.Push(c);
+                continue;
+            }
+            char expected = c == ')' ? '(' : c == ']' ? '[' : c == '}' ? '{' : '\0';
+            if (expected != '\0') {
+                if (stack.Count == 0 || stack.Pop() != expected) return false;
+            }
+        }
+        return stack.Count == 0;
+    }
+}
+```
+
+An ordinary character gives the local expected value `\0`, so it does not enter the closer branch. The marker is not a bracket and is never stored in the stack. This separates ignored text from an unmatched closer, which must return false.
+
+## Guard Pop with the stack count
+
+`Pop()` removes and returns the top entry, but throws when the stack is empty. The first half of the `||` expression detects that case. C# short-circuits the expression, so no pop occurs when the count is zero.
+
+If the stack is nonempty, the removed opener must equal the expected character. A mismatch makes the entire input invalid immediately. There is no reason to scan later text: it cannot repair which opener was on top at the position of the wrong closer.
+
+The [Stack.Pop documentation](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.stack-1.pop) describes its removal and empty-stack behavior. A TryPop-based implementation could express the same absence check, but using Pop with an explicit count guard keeps the two failure conditions visible.
+
+## Trace valid nesting and a crossing sequence
+
+On `a[({b})]c`, the letters are ignored. The stack receives `[`, then `(`, then `{`. The closer `}` consumes `{`; `)` consumes `(`; `]` consumes `[`. No entry remains after the final letter, so the result is true.
+
+For `([)]`, the stack contains `(` below `[` when the `)` arrives. The top is wrong, so the result is false. Searching deeper for `(` would skip an unfinished inner pair and violate the rule that brackets cannot overlap.
+
+For `(()`, every encountered closer finds a matching opener, but a `(` remains afterward. The final count check catches this unfinished input. It is a different reason for failure from an unmatched or incorrectly typed closer.
+
+## Understand char iteration without expanding the problem
+
+C# strings use UTF-16, and foreach over a string visits `char` code units. The six supported delimiters are ASCII and occupy one code unit each. A supplementary Unicode character may occupy two, but both units are ignored if they are not delimiters.
+
+This is sufficient for a Boolean test of these exact brackets. A function reporting visual character offsets would need a more explicit Unicode model. A function validating C# source code would also need to account for literals, comments, and escaping; quote characters do not create such states here.
+
+The stack is local rather than stored in a Solution field. An early return cannot leave partial state behind for the next call. That makes reuse of a Solution instance safe without a clearing step at the start of each request.
+
+## Run the edge cases on a reused instance
+
+```csharp
+public static class WalkthroughExamples {
+    public static void Check() {
+        var solution = new Solution();
+        var cases = new (string Text, bool Expected)[] {
+            ("", true), ("ordinary text", true), ("a + (b * [c])", true),
+            ("([]{})", true), ("([)]", false), ("]", false), ("(()", false),
+            ("🙂{x[y](z)}", true)
+        };
+        foreach (var item in cases) {
+            if (solution.HasValidBrackets(item.Text) != item.Expected) throw new System.Exception("Invalid result");
+        }
+        if (!solution.HasValidBrackets(new string('(', 20000) + new string(')', 20000))) throw new System.Exception("Deep nesting");
+    }
+}
+```
+
+Call the helper from a local console entry point. A failing input followed by a valid one checks call isolation. The deep case verifies that the algorithm stores nesting in a collection rather than recursively consuming a call frame per opener.
+
+## Describe the unfinished-prefix invariant
+
+After each valid prefix, the stack contains exactly the openers that still need closing, in their original order. Pushing extends that sequence; a successful pop removes its most recent entry. An empty sequence at the end means every required match has occurred.
+
+Under the normal amortized stack-operation model, the scan takes `O(n)` time. Working storage is `O(d)` for maximum unmatched depth and `O(n)` in the worst case. Reconstruct the method from this invariant, then test both crossing brackets and leftover openers before opening the course editor.

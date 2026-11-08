@@ -1,0 +1,63 @@
+```rust
+use std::collections::{HashMap, VecDeque};
+
+const START_NODE: &str = "base";
+const END_NODE: &str = "ship";
+
+impl Solution {
+    pub fn pilot_rocket(satellites: HashMap<String, Vec<String>>) -> Option<Vec<String>> {
+        // Queue to handle BFS
+        let mut bfs_node_queue = VecDeque::new();
+        bfs_node_queue.push_back(START_NODE);
+
+        // Use a hash table to track the node that came
+        // prior to the current in our BFS to track the path
+        let mut previous_node_in_path: HashMap<&str, Option<&str>> = HashMap::new();
+        previous_node_in_path.insert(START_NODE, None);
+
+        // Perform our BFS
+        while let Some(node) = bfs_node_queue.pop_front() {
+            // We've successfully reached the end, and now we should build the path to get here
+            if node == END_NODE {
+                return Some(get_shortest_path_to_ship(&previous_node_in_path));
+            }
+
+            let connected_nodes = satellites.get(node).map(Vec::as_slice).unwrap_or_default();
+
+            for connected_node in connected_nodes {
+                // Check if we have visited this node yet
+                if !previous_node_in_path.contains_key(connected_node.as_str()) {
+                    // Add the node to the queue for our BFS
+                    bfs_node_queue.push_back(connected_node);
+
+                    // Set the current node as the one that came before each of its siblings
+                    previous_node_in_path.insert(connected_node, Some(node));
+                }
+            }
+        }
+
+        // We iterated through all the nodes, and no paths lead to the ship
+        None
+    }
+}
+
+fn get_shortest_path_to_ship(previous_node_in_path: &HashMap<&str, Option<&str>>) -> Vec<String> {
+    let mut path_to_ship = Vec::new();
+
+    // We start at the final node and work our way backward to the start
+    let mut node = Some(END_NODE);
+
+    while let Some(current_node) = node {
+        path_to_ship.push(current_node.to_string());
+
+        // Doing a look up on the hash table for each node
+        // will yield the previous node in the path
+        node = previous_node_in_path[current_node];
+    }
+
+    // Since we worked our way backward,
+    // we must reverse the path to be in the correct order base -> ship
+    path_to_ship.reverse();
+    path_to_ship
+}
+```

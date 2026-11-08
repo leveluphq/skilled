@@ -1,0 +1,34 @@
+table:
+  name: sales
+  schema: public
+object_relationships:
+- name: affiliateLinkClick
+  using:
+    foreign_key_constraint_on: affiliateLinkClickId
+- name: affiliatePayout
+  using:
+    foreign_key_constraint_on: affiliatePayoutId
+- name: affiliateUser
+  using:
+    foreign_key_constraint_on: affiliateUserId
+- name: payingUser
+  using:
+    foreign_key_constraint_on: payingUserId
+- name: product
+  using:
+    foreign_key_constraint_on: purchasedProductId
+array_relationships:
+- name: giftCards
+  using:
+    foreign_key_constraint_on:
+      column: saleId
+      table:
+        name: gift_cards
+        schema: public
+- name: upgradeEventLogs
+  using:
+    foreign_key_constraint_on:
+      column: saleId
+      table:
+        name: upgrade_event_log
+        schema: public

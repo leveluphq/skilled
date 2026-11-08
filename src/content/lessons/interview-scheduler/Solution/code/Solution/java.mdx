@@ -1,0 +1,37 @@
+```java
+class Solution {
+    public Interval[] mergeOverlappingIntervals(Interval[] intervals) {
+        if (intervals.length == 0) {
+            return new Interval[0];
+        }
+
+        // Sort by start time to get the meetings in the order they occur throughout the day
+        Arrays.sort(intervals, Comparator.comparingDouble(interval -> interval.start));
+
+        // The combined intervals list is initialized to the first meeting
+        List<Interval> mergedIntervals = new ArrayList<>();
+        mergedIntervals.add(intervals[0]);
+
+        for (Interval currentInterval : intervals) {
+            Interval latestMergedInterval = mergedIntervals.get(mergedIntervals.size() - 1);
+            boolean isOverlapping = currentInterval.start <= latestMergedInterval.end;
+
+            if (isOverlapping) {
+                // Get the latest end-time since they overlap and set it as the end time of the combined interval
+                latestMergedInterval.end = Math.max(currentInterval.end, latestMergedInterval.end);
+            } else {
+                /*
+                  Since currentInterval had the earliest start time of the remaining items,
+                  no additional items can overlap the latestMergedInterval interval we compared currentInterval to.
+
+                  Add the currentInterval as the last item to the merged interval's output since it did not overlap.
+                  This will be the latest merged interval on the next iteration that we compare against.
+                */
+                mergedIntervals.add(currentInterval);
+            }
+        }
+
+        return mergedIntervals.toArray(new Interval[0]);
+    }
+}
+```

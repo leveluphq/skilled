@@ -1,0 +1,56 @@
+```kotlin
+class Solution {
+    fun walkMatrix(matrix: Array<IntArray>): List<Int> {
+        if (matrix.isEmpty()) return emptyList()
+        val result = mutableListOf<Int>()
+
+        // Initialize the upper and lower bounds indexes
+        val rowCount = matrix.size
+        val columnCount = matrix[0].size
+        var startRow = 0
+        var endRow = rowCount - 1
+        var startColumn = 0
+        var endColumn = columnCount - 1
+
+        // We will keep walking as long as rows or columns remain.
+        // That happens as long as the end is greater or equal to the start.
+        while (endRow >= startRow && endColumn >= startColumn) {
+            // Walk across the top starting row for each column from beginning to end
+            // This is left-right across the top
+            for (column in startColumn..endColumn) {
+                // Add the item to result in order
+                result.add(matrix[startRow][column])
+            }
+
+            // Increment our start row since we visited each value
+            startRow++
+
+            // Walk top-bottom for the end column
+            for (row in startRow..endRow) {
+                result.add(matrix[row][endColumn])
+            }
+            endColumn--
+
+            // Since we increment startRow, we need to make sure we are still in bounds
+            if (endRow >= startRow) {
+                // Walk right-left on the bottom row
+                for (column in endColumn downTo startColumn) {
+                    result.add(matrix[endRow][column])
+                }
+            }
+            endRow--
+
+            // Since we decrement endColumn, we need to make sure we are still in bounds
+            if (endColumn >= startColumn) {
+                // Walk bottom-top for the start column
+                for (row in endRow downTo startRow) {
+                    result.add(matrix[row][startColumn])
+                }
+            }
+            startColumn++
+        }
+
+        return result
+    }
+}
+```

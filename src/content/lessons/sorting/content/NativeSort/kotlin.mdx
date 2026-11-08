@@ -1,0 +1,25 @@
+import { Container } from 'style/elements';
+
+In Kotlin, `sort()` sorts an array or a `MutableList` in place, and `sorted()` returns a new sorted list.
+Numbers sort by their value and strings alphabetically, and `sortBy`/`sortedBy` sort objects by one of their properties.
+
+<Container>
+
+```kotlin
+// sort() sorts the array in place, comparing numbers by their value
+val numbers = intArrayOf(1, 50, 10000, 510, 5050, 60)
+numbers.sort() // [1, 50, 60, 510, 5050, 10000]
+
+// sortDescending() sorts from largest to smallest
+numbers.sortDescending() // [10000, 5050, 510, 60, 50, 1]
+
+// Strings sort as expected
+listOf("March", "Jan", "Feb", "Dec").sorted() // [Dec, Feb, Jan, March]
+
+// Use sortedBy to sort objects by a property
+data class Score(val score: Int)
+listOf(Score(20), Score(100), Score(5)).sortedBy { it.score }
+// => [Score(score=5), Score(score=20), Score(score=100)]
+```
+
+</Container>

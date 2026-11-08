@@ -1,0 +1,95 @@
+C++ lower_bound and upper_bound locate insertion boundaries in a partitioned range. On a vector sorted in ascending numeric order, lower_bound finds the first value at least as large as the target, while upper_bound finds the first value strictly greater. Their difference counts equal values without scanning a duplicate run.
+
+A returned iterator is a position, which may equal end. It is not automatically a dereferenceable match. The examples use C++17 vectors and explicit optional results to handle missing predecessors and successors, then apply custom comparisons to records sorted by a projected key.
+
+## Interpret two boundaries as a half-open range
+
+For `[2, 2, 2, 5]` and target 2, the equal range is `[0, 3)`. For target 3, both boundaries are index three: the empty range identifies an insertion point without claiming the target exists. For target 8, both boundaries equal the vector's length.
+
+A range starting or ending at a boundary uses the same convention as an ordinary half-open loop. Its size is upper minus lower. Equality does not justify returning an arbitrary midpoint when the requested output is a first position or count.
+
+```cpp
+#include <algorithm>
+#include <cstddef>
+#include <iterator>
+#include <optional>
+#include <utility>
+#include <vector>
+
+std::size_t countOccurrences(const std::vector<int>& values, int target) {
+    const auto first = std::lower_bound(values.begin(), values.end(), target);
+    const auto last = std::upper_bound(values.begin(), values.end(), target);
+    return static_cast<std::size_t>(last - first);
+}
+
+std::optional<int> predecessor(const std::vector<int>& values, int target) {
+    auto position = std::lower_bound(values.begin(), values.end(), target);
+    if (position == values.begin()) return std::nullopt;
+    return *std::prev(position);
+}
+
+std::optional<int> successor(const std::vector<int>& values, int target) {
+    const auto position = std::upper_bound(values.begin(), values.end(), target);
+    if (position == values.end()) return std::nullopt;
+    return *position;
+}
+
+struct Interval {
+    int start;
+    int end;
+};
+
+std::pair<std::size_t, std::size_t> startRange(
+    const std::vector<Interval>& intervals, int target) {
+    const auto first = std::lower_bound(intervals.begin(), intervals.end(), target,
+        [](const Interval& interval, int key) { return interval.start < key; });
+    const auto last = std::upper_bound(intervals.begin(), intervals.end(), target,
+        [](int key, const Interval& interval) { return key < interval.start; });
+    return {static_cast<std::size_t>(first - intervals.begin()),
+            static_cast<std::size_t>(last - intervals.begin())};
+}
+```
+
+The numeric functions require ascending sorted input. Predecessor means the largest value strictly less than target; successor means the smallest value strictly greater. These are value results rather than indexes, and nullopt represents absence. Neither function mutates the input.
+
+The record function requires ascending order by start. It returns the index range containing all records with the requested start, regardless of their end values. The data must remain stable for the duration of each search.
+
+## Check begin and end before moving or reading
+
+An empty vector has begin equal to end. Predecessor returns no result before attempting to move backward. On a nonempty vector, lower_bound at begin also means no strictly smaller value exists. Applying prev to begin would violate the iterator's valid movement range.
+
+Successor checks end before dereferencing. A target at or beyond the maximum value has no strictly greater successor, even if the target itself exists. Replacing upper_bound with lower_bound would change the result to greater-or-equal and produce the wrong answer for that contract.
+
+Do not convert a missing position into an unsigned index and subtract one without checking it. A wrapped size value does not represent a valid predecessor. Keeping the boundary as an iterator until its absence case is handled makes the required check visible.
+
+## Get the custom comparator's argument order right
+
+The lower_bound overload tests the range element against the search value. Its comparator above receives an Interval followed by an int. The upper_bound overload needs the opposite comparison direction, so its comparator receives an int followed by an Interval.
+
+Swapping one lambda into both calls can fail to compile for heterogeneous types. For similar numeric types, an incorrect comparison may compile while no longer describing the intended partition. Write the predicate in plain language: records before the lower boundary have start less than target; records before the upper boundary have start at most target.
+
+Sorting by a record's end field does not establish either partition by start. Sorting by start with an end-field tie break does preserve the needed start order, but the search result does not promise a particular order within an equal-start group unless the earlier sort established one.
+
+## Separate comparison bounds from iterator movement
+
+For vector iterators, the searches take O(log n) comparisons and logarithmic navigation work. Subtracting two vector iterators in the same valid range gives their distance in constant time. The [binary-search specification](https://eel.is/c++draft/alg.binary.search) distinguishes comparison work from traversal on other iterator categories.
+
+A lower_bound call on a linked sequence can still use logarithmic comparisons while making linear iterator steps. Likewise, applying a generic search over an ordered tree's iterators is different from using that container's own lookup operation. Name the iterator and container model when stating total time.
+
+Preprocessing matters too. Sorting an unsorted vector costs more than a single linear membership scan. Repeated queries can justify sorting, but only when changing order is allowed and the resulting indexes have the meaning the caller expects. These helpers assume the sorted data already exists.
+
+Validating sortedness inside every helper would add a linear scan to each query. If inputs arrive through an untrusted boundary, validate or construct their order once, then keep that invariant while serving repeated searches. Debug assertions can help catch an accidental mutation, but their enabled cost should be included when describing the checked execution.
+
+## Preserve iterator lifetime after the query
+
+An insertion into a vector may reallocate and invalidate saved iterators. The numeric helpers return copied values, and startRange returns indexes, so their results are not iterators into old storage. That does not make every later use immune to mutation: inserting before a saved index shifts which record it identifies.
+
+If a caller needs a lasting identity across inserts, an index into the current ordering may be the wrong result representation. Return a stable identifier or define a lookup strategy that matches the update pattern. For a static interview query, an index range can be entirely sufficient.
+
+## Test against direct scans
+
+For each target, count equal values with a linear loop. Find the largest strictly smaller value and smallest strictly larger value independently, then compare the optional results. Include empty input, a single value, all-equal values, duplicates at both ends, missing middle targets, and int extremes.
+
+For records, create several equal starts with different end values. Compare the returned half-open indexes with a direct scan over starts. Test targets before all starts, between groups, and after all starts. Verify the vector remains unchanged.
+
+Then implement the underlying [binary-search invariant](/patterns/binary-search) without the library call, and compare the resulting boundaries with these helpers. The [C++ preparation guide](/interview-prep/cpp) covers index types and lifetime more broadly; [First Bad Version](/course/first-bad-version) gives a predicate-based exercise where the boundary is not a stored numeric value.

@@ -1,0 +1,27 @@
+```javascript
+const findMaxDepth = (root) => {
+  const stack = [];
+  let maxDepth = -1; // Value to return if no node is given
+
+  if (root !== null) {
+    // Updates to the correct root depth of 0
+    maxDepth = maxDepth + 1;
+    // Add the root to the stack
+    stack.push({ node: root, depth: maxDepth  });
+  }
+
+  while(stack.length !== 0) {
+    // Remove top item on the stack and extract the node and its depth
+    const { node, depth } = stack.pop();
+
+    // If the node exists, compare it to the current max and add its children to the stack
+    if (node !== null) {
+      maxDepth = Math.max(maxDepth, depth);
+      stack.push({ node: node.right, depth: depth + 1 });
+      stack.push({ node: node.left, depth: depth + 1 });
+    }
+  }
+
+  return maxDepth;
+}
+```

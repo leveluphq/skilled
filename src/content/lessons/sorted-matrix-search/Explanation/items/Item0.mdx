@@ -1,0 +1,23 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+
+<Image src="/images/empty-matrix-search.png" maxWidth="400px" alt="A matrix increases from left to right in each row and from top to bottom in each column." width={1486} height={1206} />
+
+We can quickly recognize a brute force approach.
+We could iterate all rows and columns for <BigO.n letter="r x c" /> time.
+
+<Image src="/images/linear-matrix-search.png" maxWidth="400px" alt="A straightforward matrix search scans every row from left to right." width={1486} height={1206} />
+
+To improve upon the brute force solution, the key piece of information to recognize is that the matrix has ordering constraints.
+In interviews, a sorted data structure should always trigger the possibility for a binary search,
+and in this case, we could use it to improve over the brute force case.
+
+<Image src="/images/matrix-binary-search.gif" maxWidth="400px" alt="Searching each sorted matrix row with binary search reduces the work within each row." width={1200} height={661} />
+
+The simplest way to think about it is that we would traverse all `r` rows and and perform the binary search for all `c` columns
+which makes it <BigO.n letter="r log(c)" />.
+
+Binary search is definitely an improvement over brute force, but going from a one-dimensional to a two-dimensional data structure changes the benefit of binary search since we linearly scan down one of the dimensions.
+This weakens the improvement of binary search on ordered data.
+
+> You can also do a two-dimensional binary search where you're checking rows and columns simultaneously, but the time complexity is on a similar order.

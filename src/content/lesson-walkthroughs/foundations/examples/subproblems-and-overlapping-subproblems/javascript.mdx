@@ -1,0 +1,13 @@
+```javascript
+function fibCalls(n) {
+    let calls = 0;
+    function fib(value) {
+        calls++;
+        if (value < 2)
+            return value;
+        return fib(value - 1) + fib(value - 2);
+    }
+    const answer = fib(n);
+    return [answer, calls];
+}
+```

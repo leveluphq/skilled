@@ -1,0 +1,18 @@
+```cpp
+#include <vector>
+#include <algorithm>
+
+int minimumCoins(const std::vector<int>& coins, int amount) {
+    const int impossible = amount + 1;
+    std::vector<int> best(amount + 1, impossible);
+    best[0] = 0;
+    for (int value = 1; value <= amount; ++value) {
+        for (int coin : coins) {
+            if (coin <= value && best[value - coin] != impossible) {
+                best[value] = std::min(best[value], 1 + best[value - coin]);
+            }
+        }
+    }
+    return best[amount] == impossible ? -1 : best[amount];
+}
+```

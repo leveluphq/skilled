@@ -1,0 +1,16 @@
+```csharp
+public int CountTotalMoves(int boardLength) {
+    // Base case 1: Invalid board length
+    if (boardLength < 0) {
+        return 0;
+    // Base case 2: Introduction says length 0 is still 1 step
+    } else if (boardLength == 0) {
+        return 1;
+    } else {
+        // Recursive case
+        return CountTotalMoves(boardLength - 1) +
+            CountTotalMoves(boardLength - 2) +
+            CountTotalMoves(boardLength - 3);
+    }
+}
+```

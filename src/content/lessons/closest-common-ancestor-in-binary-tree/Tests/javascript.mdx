@@ -1,0 +1,77 @@
+```javascript
+class BinaryNode {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+const tests = [
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(20);
+      root.left.left = new BinaryNode(13);
+      root.left.left.left = new BinaryNode(8);
+      root.left.left.right = new BinaryNode(17);
+      root.left.left.right.right = new BinaryNode(40);
+
+      root.right = new BinaryNode(50);
+      root.right.left = new BinaryNode(70);
+
+      return [root, 8, 40];
+    })(),
+    expected: 13,
+    description: 'basic case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(7);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(55);
+      root.right.right.right = new BinaryNode(65);
+      root.right.right.right.right = new BinaryNode(75);
+      root.right.right.right.right.right = new BinaryNode(85);
+
+      return [root, 7, 85];
+    })(),
+    expected: 42,
+    description: 'unbalanced and root case',
+  },
+  {
+    input: (() => {
+      const root = new BinaryNode(42);
+
+      root.left = new BinaryNode(20);
+      root.left.left = new BinaryNode(17);
+      root.left.left.left = new BinaryNode(12);
+      root.left.left.right = new BinaryNode(18);
+      root.left.left.right.left = new BinaryNode(100);
+      root.left.right = new BinaryNode(25);
+      root.left.right.left = new BinaryNode(24);
+      root.left.right.right = new BinaryNode(27);
+
+      root.right = new BinaryNode(50);
+      root.right.right = new BinaryNode(70);
+      root.right.right.right = new BinaryNode(80);
+
+      return [root, 17, 100];
+    })(),
+    expected: 17,
+    description: 'ancestor is also a child',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = findClosestAncestor(...input);
+  const value = userAnswer ? userAnswer.data : userAnswer;
+  const passed = value === expected;
+
+  return { passed, description, expected, userAnswer: value };
+};
+```

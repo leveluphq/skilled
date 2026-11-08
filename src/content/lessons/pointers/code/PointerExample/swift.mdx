@@ -1,0 +1,29 @@
+```swift
+// Classes are reference types, so these variables point to objects in memory
+class Parent {
+    var age: Int
+    var c1: Child?
+    var c2: Child?
+
+    init(age: Int) {
+        self.age = age
+    }
+}
+
+class Child {
+    var age: Int
+    var mood: String
+
+    init(age: Int, mood: String) {
+        self.age = age
+        self.mood = mood
+    }
+}
+
+let parent = Parent(age: 45)
+var child1 = Child(age: 10, mood: "happy")
+let child2 = Child(age: 12, mood: "bored")
+
+parent.c1 = child1
+parent.c2 = child2
+```

@@ -1,0 +1,13 @@
+```java
+import java.util.*;
+
+class FibTableExample {
+static List<Integer> fibTable(int n) {
+    List<Integer> table = new ArrayList<>();
+    table.add(0);
+    if (n >= 1) table.add(1);
+    for (int index = 2; index <= n; index++) table.add(table.get(index - 1) + table.get(index - 2));
+    return table;
+}
+}
+```

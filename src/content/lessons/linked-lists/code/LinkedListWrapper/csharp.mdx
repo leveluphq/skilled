@@ -1,0 +1,27 @@
+```csharp
+public class Node {
+    public int data;
+    public Node next;
+    public Node previous;
+
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+        this.previous = null;
+    }
+}
+
+public class LinkedList {
+    public Node head;
+    public Node tail;
+
+    public LinkedList(int data) {
+        var node = new Node(data);
+        this.head = node;
+        this.tail = node;
+    }
+
+    public void Append(int data) { /* add item to back and update tail */ }
+    public void Prepend(int data) { /* add item to front and update head */ }
+}
+```

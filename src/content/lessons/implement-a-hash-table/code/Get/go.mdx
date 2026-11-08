@@ -1,0 +1,16 @@
+```go
+func (ht *HashTable) Get(key string) any {
+	index := ht.Hash(key)
+	bucket := ht.table[index]
+
+	// Check if the key exists in the bucket, and return its value if found
+	for i := range bucket {
+		if bucket[i].key == key {
+			return bucket[i].value
+		}
+	}
+
+	// Return nil if the key is not found
+	return nil
+}
+```

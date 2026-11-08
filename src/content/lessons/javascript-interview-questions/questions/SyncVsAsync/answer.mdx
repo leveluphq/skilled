@@ -1,0 +1,19 @@
+A JavaScript program executes exactly in-order on a single main thread.
+This means that code will run line-by-line synchronously.
+When our program encounters a synchronous function, it will add it to the call stack and the functions at the top of the call stack will run first.
+If a function takes a long time to finish, the following function must wait for it to complete before it can execute.
+This means long synchronous functions can cause our app to pause and appear frozen if not handled correctly.
+
+JavaScript also has the concept of asynchronous functions.
+This is code that hands an operation, such as a network request or a timer, to the environment (the browser or Node.js) to handle off the main thread, and then the result is passed to a callback or a resolved/rejected `Promise`.
+A callback is passed to the event queue (also called the task queue), while `Promise` handlers (and the code after an `await`) are passed to the microtask queue.
+Once the call stack is empty, the event loop runs every waiting microtask first, and only then passes the next item from the event queue to the call stack.
+Each callback will then be executed in order as it is popped off the stack, and the async function response is passed as its argument.
+Asynchronous functions prevent the main thread from being blocked while we wait for the result of a slow operation or side effect, so we can continue execution of the main program.
+
+Examples of common asynchronous functions include API calls, database queries, file system I/O, and waiting for the resolution of a `setTimeout` call.
+
+We can't discuss asynchronous JavaScript without going deeper into the `Promise` object and the `async`/`await` syntax.
+A `Promise` is the most common way to handle the response from an asynchronous function, and declaring a function as `async` means that JavaScript will just return a `Promise` from that function automatically.
+When we call an asynchronous function that returns a `Promise`, we can move past it and continue execution of the code on the main thread while the operation it started is pending, and using the `then` method or `await` keyword allows us to handle the result of an asynchronous function after it completes.
+Note that `async` does not move work to another thread: the body of an `async` function runs synchronously on the main thread until its first `await`, so an expensive calculation inside it still blocks our program (for that, we would use a Web Worker or `worker_threads` in Node.js).

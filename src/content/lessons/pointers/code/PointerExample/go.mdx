@@ -1,0 +1,20 @@
+```go
+type Child struct {
+	age  int
+	mood string
+}
+
+type Parent struct {
+	age int
+	c1  *Child
+	c2  *Child
+}
+
+// & creates each struct in memory and gives us a pointer to it
+parent := &Parent{age: 45, c1: nil, c2: nil}
+child1 := &Child{age: 10, mood: "happy"}
+child2 := &Child{age: 12, mood: "bored"}
+
+parent.c1 = child1
+parent.c2 = child2
+```

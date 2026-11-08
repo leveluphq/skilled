@@ -1,0 +1,21 @@
+```kotlin
+class Solution {
+    fun getMaxProfit(prices: IntArray): Int {
+        // With no prices, there's nothing to buy
+        if (prices.isEmpty()) {
+            return 0
+        }
+
+        var maxProfit = 0
+        var minPrice = prices[0]
+
+        for (price in prices) {
+            val profitAtCurrentDay = price - minPrice
+            maxProfit = maxOf(maxProfit, profitAtCurrentDay)
+            minPrice = minOf(price, minPrice)
+        }
+
+        return maxProfit
+    }
+}
+```

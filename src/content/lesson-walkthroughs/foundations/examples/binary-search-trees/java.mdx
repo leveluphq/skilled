@@ -1,0 +1,15 @@
+```java
+import java.util.*;
+
+class ContainsBSTExample {
+static boolean containsBST(List<Integer> values, int target) {
+    int index = 0;
+    while (index < values.size() && values.get(index) != null) {
+        int value = values.get(index);
+        if (value == target) return true;
+        index = target < value ? 2 * index + 1 : 2 * index + 2;
+    }
+    return false;
+}
+}
+```

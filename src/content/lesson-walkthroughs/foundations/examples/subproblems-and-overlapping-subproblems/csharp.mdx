@@ -1,0 +1,16 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class FibCallsExample {
+public static List<int> FibCalls(int n) {
+    int calls = 0;
+    int Fib(int value) {
+        calls++;
+        return value < 2 ? value : Fib(value - 1) + Fib(value - 2);
+    }
+    int answer = Fib(n);
+    return new List<int> { answer, calls };
+}
+}
+```

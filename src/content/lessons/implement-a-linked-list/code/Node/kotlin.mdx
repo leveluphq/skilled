@@ -1,0 +1,27 @@
+```kotlin
+class Node(var data: Int) {
+    var next: Node? = null
+
+    // O(1)
+    fun prepend(data: Int): Node {
+        val prependedNode = Node(data)
+        prependedNode.next = this
+
+        return prependedNode
+    }
+
+    // O(n)
+    fun append(data: Int): Node {
+        val appendedNode = Node(data)
+        var currentNode = this
+
+        while (currentNode.next != null) {
+            currentNode = currentNode.next!!
+        }
+
+        currentNode.next = appendedNode
+
+        return appendedNode
+    }
+}
+```

@@ -1,0 +1,93 @@
+A function that handles ten items quickly can still become impractical at a million items. Complexity analysis describes how the amount of work grows with the input. It helps you compare approaches before a benchmark is available, and it gives you a precise way to discuss what an interview solution needs as the problem gets larger.
+
+The analysis starts with an input definition and a cost model. If n is the number of array entries, say so. If a graph has V vertices and E edges, keep both quantities when they affect the work independently. The [Big O explorer](/tools/big-o) compares representative growth functions; this guide explains how to derive a bound from code.
+
+## Define the work you are counting
+
+For an array of fixed-size numbers, comparing two entries or reading an index is often modeled as constant work. Comparing arbitrarily long strings, multiplying huge integers, or invoking a callback can have costs of their own. A short source-code expression does not establish a constant-time operation.
+
+Separate the algorithm from the operations it calls. If a function loops over n strings and compares each with a target of length m, an analysis may need both n and m. If the exercise bounds string length by a small constant, you can explain that assumption and simplify the model.
+
+Big O is an asymptotic upper bound. Interview answers often use it informally for a tight growth description, but it is useful to know the difference. A linear algorithm also has a quadratic upper bound; O(n) is the more informative bound when linear growth is tight. A Θ notation explicitly states matching asymptotic upper and lower growth.
+
+## Add sequential work
+
+Two consecutive linear passes still do linear total work. If the first loop examines n entries and the second examines n entries, the total is roughly 2n elementary visits. The constant factor does not change the asymptotic class.
+
+```javascript
+function countSigns(values) {
+  let negatives = 0;
+  let positives = 0;
+  for (const value of values) if (value < 0) negatives += 1;
+  for (const value of values) if (value > 0) positives += 1;
+  return { negatives, positives };
+}
+```
+
+This function takes O(n) time and O(1) auxiliary space under the fixed-size-number model. A one-pass version could reduce some work, but both versions have the same asymptotic bound. Big O does not claim that every implementation in a class has identical speed.
+
+If the loops have independent input lengths n and m, write O(n + m). Replacing that with O(n) without explaining a relationship between the lengths loses information.
+
+## Multiply repeated nested work
+
+A loop inside another loop is a reason to inspect how many iterations occur, not an automatic O(n²) verdict.
+
+```javascript
+function pairCount(n) {
+  let count = 0;
+  for (let left = 0; left < n; left += 1) {
+    for (let right = left + 1; right < n; right += 1) {
+      count += 1;
+    }
+  }
+  return count;
+}
+```
+
+The inner loop runs n - 1 times, then n - 2, down to zero. The total is n(n - 1)/2, which grows quadratically. The triangular shape reduces the constant factor but preserves the O(n²) class.
+
+By contrast, a right pointer that only moves forward across an entire outer loop can produce O(n) total pointer moves. In a [sliding window](/patterns/sliding-window), each element may enter once and leave once. The inner while loop does not reset its progress for every outer iteration.
+
+Analyze the lifetime of the state, not indentation alone. Count the total times a pointer can advance, a node can be queued, or a cell can be processed.
+
+## Recognize logarithmic progress
+
+If each iteration reduces a remaining search interval by a constant factor, the number of iterations grows logarithmically. After k halvings, an interval of length n has roughly n divided by 2^k entries. Reaching one entry requires k proportional to log₂ n.
+
+Binary search uses that structure only if the implementation halves its candidate interval correctly. A function named `binarySearch` that copies a large slice at every step adds work beyond the comparisons. Analyze the implementation you wrote.
+
+A sorting-then-searching solution also needs the sorting cost. If the algorithm sorts n entries and then performs one logarithmic search, the sort usually dominates under a comparison-sort model. If it performs many searches, compare the one-time preparation with the number of future queries.
+
+## Analyze recursion through calls and work per call
+
+For a recursive function, count the calls and the local work. A single recursive call on half the input with constant local work has logarithmic depth and logarithmic total work. Two calls on halves with linear combining work lead to a different recurrence.
+
+A binary recursive call tree is not automatically exponential. Merge-sort-style recursion partitions the input, so the total size processed at each level is linear. Naive Fibonacci recursion repeatedly solves the same subproblems, which produces a different pattern.
+
+Memoization changes how often a distinct state is solved. Estimate the number of states and the work performed once per state. A state defined by two indices may have O(nm) possibilities. Adding a string slice or scanning all choices in every state can increase the time beyond that state count.
+
+The [dynamic programming guide](/patterns/dynamic-programming) develops this analysis from a concrete recurrence.
+
+## Count auxiliary space separately from output
+
+Auxiliary space is memory used beyond the input and any output convention the problem specifies. An output array of n values uses O(n) storage even if the algorithm otherwise needs only a few counters. Some exercises exclude required output from auxiliary space; state that convention explicitly.
+
+Recursion consumes stack space. A recursive traversal of a tree uses O(h) active call frames for height h. On a balanced tree h can be logarithmic; on a chain it can be linear. A recursive implementation is not O(1) auxiliary space just because it creates no explicit array.
+
+Copying and slicing also allocate memory. A solution that passes smaller copies to recursive calls may retain several copies at once. Work out which allocations are alive together before summing every allocation ever made. Peak live memory and total allocation over the full run are different measurements.
+
+## Worst-case, expected, and amortized costs
+
+Worst-case analysis bounds the most expensive allowed input of a given size. Expected analysis depends on a probability model or randomized behavior. A hash table's expected constant-time operations should not be described as unconditional worst-case constant-time operations.
+
+Amortized analysis spreads occasional expensive operations across a sequence. Appending to a dynamic array may occasionally require resizing and copying existing entries. With a suitable growth policy, the total cost of many appends can still be linear, giving amortized constant work per append.
+
+Expected and amortized answer different questions. An amortized claim need not rely on random inputs. A reference table should preserve those labels instead of flattening every entry into “O(1).” Use the [data structure reference](/reference/data-structure-time-complexity) when comparing alternatives.
+
+## Test the explanation against the code
+
+Before giving a final bound, inspect library calls, retained collections, recursion depth, and the amount of output. Check the empty input, maximum depth, duplicate-heavy data, and any shape that forces repeated work. State whether preprocessing is included.
+
+A useful interview explanation is concrete: “Each entry is inserted into the map once and looked up once. Under expected constant-time hash operations, the pass takes O(n) time. The map can hold n distinct values, so additional space is O(n).” That connects the bound to actions in the implementation.
+
+Benchmarking can help choose between implementations under realistic conditions, but it measures particular inputs and an environment. Use it alongside the growth analysis. A small benchmark cannot establish the behavior of every larger input family.

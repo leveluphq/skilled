@@ -1,0 +1,14 @@
+```go
+parent.c1 = nil
+fmt.Println(parent.c1, child1.mood) // nil, stoked
+
+parent.c1 = child1
+
+// child1 now points to a different object, but parent.c1 still points to the original
+child1 = &Child{mood: "no longer the original object"}
+fmt.Println(parent.c1.mood, child1.mood) // stoked, no longer the original object
+
+parent.c1 = nil
+child1 = nil
+fmt.Println(parent.c1, child1) // nil, nil
+```

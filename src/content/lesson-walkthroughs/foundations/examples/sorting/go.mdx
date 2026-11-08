@@ -1,0 +1,9 @@
+```go
+import "sort"
+
+func SortCopy(values []int) []int {
+    result := append([]int{}, values...)
+    sort.Ints(result)
+    return result
+}
+```

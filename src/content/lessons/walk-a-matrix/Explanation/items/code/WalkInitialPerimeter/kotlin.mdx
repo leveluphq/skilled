@@ -1,0 +1,27 @@
+```kotlin
+// All rows in the matrix
+val rowCount = matrix.size
+// All columns in the 0th row
+val columnCount = matrix[0].size
+
+// Walk right (top row)
+for (column in 0 until columnCount - 1) {
+    val nodeInFirstRow = matrix[0][column]
+}
+
+// Walk down (right column)
+for (row in 0 until rowCount - 1) {
+    val nodeInLastColumn = matrix[row][columnCount - 1]
+}
+
+// Walk left (bottom row)
+for (column in columnCount - 1 downTo 0) {
+    val nodeInLastRow = matrix[rowCount - 1][column]
+}
+
+// Walk up (left column)
+// NOTE: notice stop before the 0th node at (1,0)
+for (row in rowCount - 2 downTo 1) {
+    val nodeInFirstColumn = matrix[row][0]
+}
+```

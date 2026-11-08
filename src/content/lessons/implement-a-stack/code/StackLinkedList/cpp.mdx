@@ -1,0 +1,48 @@
+```cpp
+struct Node {
+    int data;
+    Node* prev;
+
+    Node(int data) : data(data), prev(nullptr) {}
+};
+
+class Stack {
+public:
+    Stack(const Stack&) = delete;
+    Stack& operator=(const Stack&) = delete;
+    ~Stack() {
+        while (last) { auto node = last; last = last->prev; delete node; }
+    }
+
+    Node* last;
+
+    Stack() {
+        last = nullptr;
+    }
+
+    Node* peek() {
+        return last;
+    }
+
+    Node* push(int item) {
+        Node* previousLastItem = last;
+
+        last = new Node(item);
+        last->prev = previousLastItem;
+
+        return last;
+    }
+
+    Node* pop() {
+        Node* removedItem = last;
+
+        // Update `last` as long as we have items left in the stack
+        if (removedItem) {
+            last = removedItem->prev;
+        }
+
+        // The caller now owns removedItem and should delete it when done
+        return removedItem;
+    }
+};
+```

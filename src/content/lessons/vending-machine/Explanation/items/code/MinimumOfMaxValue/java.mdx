@@ -1,0 +1,10 @@
+```java
+// Java ints have no Infinity, so INFINITY + 1 (Integer.MAX_VALUE + 1) overflows
+Math.min(INFINITY, INFINITY + 1) // Integer.MIN_VALUE, not INFINITY
+
+// So we only add a coin to a prior amount that isn't INFINITY,
+// and an amount that no coin can reach stays INFINITY
+if (coin <= amount && minCoinsForAmount[amount - coin] != INFINITY) {
+    minCoinsForAmount[amount] = Math.min(minCoinsForAmount[amount], minCoinsForAmount[amount - coin] + 1);
+}
+```

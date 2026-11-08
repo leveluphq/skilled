@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+The key to this question is getting the data sorted by start time so we can get the meetings in the order they occur throughout the day
+which allows us to easily and effectively compare meeting times to merge intervals.
+
+Once sorted, we iterate through our array of meeting times.
+
+1. Track the current combined interval's start and end time.
+2. If an item's start time is less than or equal `<=` to the interval's end time, we know they overlap because the meeting starts before the prior combined interval block ends.
+3. We also need to track the end time for an interval.
+  If a newly added meeting ends later than what the merged interval has stored, we update the end time.
+4. If an item isn't merged (it's start time comes after the combined interval's end time), we know that no more meetings should be included in this combined interval because all meetings will start after it ends since our data is sorted.
+  So we add the current meeting as the last item in the combined interval output, and it becomes the latest interval that we consider on the next iteration.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.nlogn /> time and <BigO.n /> space.
+</p>
+
+Our most expensive operation is the sort which we know requires <BigO.nlogn />.
+We create a new data structure to hold our merged intervals which takes an additional <BigO.n /> space.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

@@ -1,0 +1,86 @@
+Valid Brackets asks whether `()`, `[]`, and `{}` are matched in the correct nesting order. Ordinary text is ignored, so an empty string or a string with no brackets is valid. A crossing sequence such as `([)]` is invalid despite having balanced counts.
+
+Kotlin's ArrayDeque can act as a stack of unfinished opening brackets. We will add and remove from its last end. The function follows the course starter's Boolean method and keeps all mutable state inside the call.
+
+## Use the same end for adding and removing
+
+Adding at the back and removing at the back gives last-in, first-out behavior. A closer must consume the most recently opened bracket that has not already been closed. Removing from the front would implement a queue and lose that nesting rule.
+
+```kotlin
+class Solution {
+    fun hasValidBrackets(s: String): Boolean {
+        val stack = ArrayDeque<Char>()
+        for (c in s) {
+            if (c == '(' || c == '[' || c == '{') {
+                stack.addLast(c)
+                continue
+            }
+            val expected = when (c) {
+                ')' -> '('
+                ']' -> '['
+                '}' -> '{'
+                else -> null
+            }
+            if (expected != null) {
+                if (stack.isEmpty() || stack.removeLast() != expected) return false
+            }
+        }
+        return stack.isEmpty()
+    }
+}
+```
+
+The when expression returns Char for a supported closer and null for ordinary text. Testing that nullable value both classifies the character and makes the expected opener usable inside the branch. No not-null assertion is required.
+
+## Guard the empty removal explicitly
+
+`removeLast` requires an available entry. The empty check is evaluated first, and short-circuit `||` prevents removal when no opener exists. A lone closing bracket therefore returns false instead of causing an empty-collection exception.
+
+For a nonempty stack, the removed value must match the expected opener. If it does not, the function returns immediately. A later character cannot repair the order at the point where this closer arrived.
+
+The [Kotlin ArrayDeque API](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-array-deque/) describes operations on both ends. This example uses Kotlin's collection rather than requiring Java's deque class, making the chosen add/remove names explicit.
+
+## Trace a valid input and a crossing input
+
+For `a[({b})]c`, letters are ignored. The stack receives `[`, `(`, and `{`. Then `}` removes `{`, `)` removes `(`, and `]` removes `[`. No unfinished opener remains after the last letter.
+
+For `([)]`, the top is `[` when `)` arrives. The expected opener is `(`, so the comparison fails. Looking deeper for that `(` would skip a pending inner bracket, which is exactly the crossing behavior the exercise rejects.
+
+For `(()`, the loop's only closer succeeds, but an opener remains. The final empty check rejects that incomplete string. Correct processing of all encountered closers does not prove that every opener was eventually closed.
+
+## Keep character semantics appropriate to the task
+
+On the JVM, iterating a String visits UTF-16 Char values. All six supported delimiters fit in one such value. A supplementary character may be represented by two code units, but neither is an ASCII bracket and both are ignored.
+
+The function reports only a Boolean, so it does not need a user-facing character-position model. If a later version reports error locations, define whether those positions are code units, code points, or displayed characters before returning indexes.
+
+Quotes and comments have no special role. A bracket inside a quoted phrase still counts under this contract. Parsing Kotlin source while excluding string templates, comments, and escaped characters would need additional lexical rules.
+
+## Verify call isolation and nesting depth
+
+```kotlin
+fun checkExamples() {
+    val solution = Solution()
+    val cases = listOf(
+        "" to true, "ordinary text" to true, "a + (b * [c])" to true,
+        "([]{})" to true, "([)]" to false, "]" to false, "(()" to false,
+        "🙂{x[y](z)}" to true
+    )
+    for ((text, expected) in cases) check(solution.hasValidBrackets(text) == expected)
+    check(!solution.hasValidBrackets("("))
+    check(solution.hasValidBrackets("[]"))
+    check(solution.hasValidBrackets("(".repeat(20000) + ")".repeat(20000)))
+}
+```
+
+Run the helper from a local main function. The same Solution instance is reused across invalid and valid calls. Because the deque is local, early returns cannot leave unfinished state behind for a later call. Moving it into a reusable field would require a separate reset policy and add avoidable failure cases.
+
+The deep input verifies an iterative implementation rather than one recursive call per opener. Recursion is unnecessary because the deque explicitly stores the unfinished nesting that the call stack would otherwise need to represent.
+
+## Explain the invariant and bounds
+
+After each successfully processed prefix, the deque contains exactly the unmatched openers in encounter order. The next closer may match only the last one. A final empty deque means every opening bracket received the required closer in the required order.
+
+The scan takes `O(n)` time under amortized deque operations. Stack storage is `O(d)` for maximum unfinished depth and worst-case `O(n)`. A long series of adjacent completed pairs can have low depth even when total length is large.
+
+Before practicing, reconstruct the method from the last-unmatched-opener rule. Test crossing brackets and leftover openers separately: they exercise different paths that a simple balanced example cannot distinguish.

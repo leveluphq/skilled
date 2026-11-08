@@ -1,0 +1,115 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The implementation lesson builds a binary search tree with an insert method, a search method, and a retained root reference. It does not rebalance the tree. Both methods follow the ordering rule until they find a matching node or an absent child, so their running time depends on the resulting tree height.
+
+## Establish the root before following branches
+
+An empty tree has no root. Its first insertion creates the root node. Later insertions compare the new value with the current node and select the appropriate child. Finding an absent child identifies the insertion position: attach the new node there and finish. Traversing both subtrees would ignore the search ordering that makes this structure useful.
+
+For inserts 8, 3, 10, and 6, the value 6 follows left from 8 and right from 3. Its position must satisfy both comparisons. That complete path explains the inherited ordering condition; comparing only with the final parent is not the whole reasoning.
+
+## Search follows the same exclusion rule
+
+Starting at the root, return the current node on a match. Otherwise select one child by comparison. If that child is absent, return the implementation's missing result. Check whether callers expect a node or its contained value; returning only data would change this lesson's API.
+
+Test a root match, a leaf match, a missing value between existing keys, and targets outside the entire range. Decide how equal inserts behave before extending the example. A duplicate policy is part of the data structure, so insertion, search, and any later validation must agree.
+
+## Measure the path you actually built
+
+Inserting sorted values into an unbalanced tree can create a chain. Each later insertion then walks farther, and a sequence of inserts can take quadratic total work. For a balanced shape, individual paths are logarithmic. The simple code does not establish that balance automatically.
+
+An iterative implementation can retain only its current reference while searching. A recursive implementation also retains a call chain whose depth follows the path. Count the allocated nodes separately from that auxiliary work.
+
+Open the [current implementation](/course/implement-a-binary-search-tree), draw its shape after each insertion, then continue with [BST Validate](/watch/binary-search-tree-validate). Include an ancestor-bound violation in your tests so a locally plausible tree cannot pass unnoticed.
+
+## Use the implementation's duplicate rule
+
+Insert 8, 3, 10, and 3. A smaller value follows the left link; every other value follows the right. The second 3 is therefore placed to the right of the first 3. In-order traversal yields `[3, 3, 8, 10]`, preserving the duplicate. Searching for 3 returns a matching node without promising which duplicate it identifies.
+
+This insertion policy differs from an exercise that requires every key to be unique and bounds both subtrees strictly. In particular, use the separate validation lesson's stated contract before applying its checks to a tree built by this class.
+
+## Relate insertion and search to shape
+
+Both operations follow one downward path, taking O(h) time for height h. The class performs no rotations or balancing. Sorted input can build a chain with O(n) height, making a sequence of insertions quadratic overall. Calling it a binary search tree does not establish logarithmic worst-case operations.
+
+The tree owns or retains O(n) nodes. Iterative search uses constant additional traversal state. Check empty search, root search, an absent value, duplicate insertion, and both increasing and decreasing insertion orders. The standalone code includes the BinaryNode definition so it can be compiled outside the course editor. Removal and balancing are outside this excerpt's API; adding either requires its own invariants and tests.
+
+## Rust example and implementation choices
+
+The tree exclusively owns `Option<Box<BinaryNode>>` links. Insert walks a mutable link reference until it can install the new Box, without Rc or interior mutability. Search returns a borrowed node reference tied to the tree's lifetime. Equal values follow right links. The iterative operations avoid recursive traversal, although the owned boxed chain still has destruction-depth considerations for extremely skewed inputs.
+
+### Complete implementation
+
+```rust
+// The tree owns each of its nodes, so a Box is all we need here.
+// (The tree problems use Option<Rc<RefCell<BinaryNode>>>, which lets a node be shared.)
+struct BinaryNode {
+    data: i32,
+    left: Option<Box<BinaryNode>>,
+    right: Option<Box<BinaryNode>>,
+}
+
+impl BinaryNode {
+    fn new(data: i32) -> Self {
+        BinaryNode {
+            data,
+            left: None,
+            right: None,
+        }
+    }
+}
+
+struct BinarySearchTree {
+    root: Option<Box<BinaryNode>>,
+}
+
+impl BinarySearchTree {
+    fn new() -> Self {
+        BinarySearchTree { root: None }
+    }
+
+    fn insert(&mut self, data: i32) -> &mut Self {
+        let node = Box::new(BinaryNode::new(data));
+
+        // We hold the link we're looking at: the root, then a node's `left` or `right`.
+        // If the root is None, the first insert becomes the root.
+        let mut current_link = &mut self.root;
+
+        while let Some(current_node) = current_link {
+            current_link = if data < current_node.data {
+                // Continue by traversing left
+                &mut current_node.left
+            } else {
+                // Continue by traversing right
+                &mut current_node.right
+            };
+        }
+
+        // We reached a leaf's empty link (None), so we insert the node here
+        *current_link = Some(node);
+        self
+    }
+
+    fn search(&self, data: i32) -> Option<&BinaryNode> {
+        let mut current_node = self.root.as_deref();
+
+        while let Some(node) = current_node {
+            if data < node.data {
+                current_node = node.left.as_deref();
+            } else if data > node.data {
+                current_node = node.right.as_deref();
+            } else {
+                return Some(node);
+            }
+        }
+
+        None
+    }
+}
+```
+
+## Continue in Rust
+
+[Open Implement a Binary Search Tree](/course/implement-a-binary-search-tree) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Rust example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Rust interview preparation guide](/interview-prep/rust) connects these language choices with further practice and the cross-language operation reference.

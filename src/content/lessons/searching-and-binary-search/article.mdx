@@ -1,0 +1,82 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { ItemWithMargin } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import bigO from './bigO';
+
+import BinarySearch from './BinarySearch.mdx';
+
+<Section>
+
+Searching refers to finding an item in a data structure.
+The item may or may not actually exist.
+For example, find a number in an array of integers.
+
+In this article, we'll be focusing on searching linear data structures like arrays,
+and then in the <Link href={`/${PageRoot.Course}/trees`} passHref><a>tree</a></Link> and <Link href={`/${PageRoot.Course}/graphs`} passHref><a>graph</a></Link> sections, you'll expand on the intuition learned here when applying it to concepts such as binary search trees, depth-first search, and breadth-first search.
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+<p>
+ <BigOTable {...bigO} />
+</p>
+
+**Searching in Interviews**
+
+- Unique binary search examples (ex. rotated array, sparse array, no max size)
+- Compare multiple sorted arrays (ex. find the median of two sorted arrays)
+- Search a matrix
+- Find duplicates
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Linear Search</SubsectionHeader>
+
+Linear search is a naive and brute force approach to finding an item in a data structure.
+However, sometimes it is the only option we have.
+We use linear search when we can make no assumptions about the sort or ordering of data, so items can be randomly dispersed and found at any location.
+
+To perform a linear search, you start at the first spot and iterate through the data one-by-one until you find the item you are looking for.
+Since we would be required to visit every item in the worst case, it takes <BigO.n /> time.
+
+<Image src="/images/linear-search.gif" alt="Linear search checks array elements one at a time until it finds the target." width={960} height={206} />
+
+</Section>
+
+<Section>
+
+<BinarySearch />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Additional Resources</SubsectionHeader>
+
+Binary search can be understood best visually.
+
+If you need some additional practice or want to prove to yourself that it will always converge on the target, you can use the resources below.
+I also recommend creating some arrays and walking through binary search by hand.
+
+- <a href="https://algorithm-visualizer.org/branch-and-bound/binary-search" target="_blank" rel="noopener noreferrer">algorithm-visualizer.org</a>
+- <a href="https://www.cs.usfca.edu/~galles/visualization/Search.html" target="_blank" rel="noopener noreferrer">cs.usfca.edu</a>
+
+</Section>

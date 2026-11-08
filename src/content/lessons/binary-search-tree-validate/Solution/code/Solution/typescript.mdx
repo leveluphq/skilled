@@ -1,0 +1,33 @@
+```javascript
+function recursiveValidate(
+  root: BinaryNode,
+  lowerBound: number,
+  upperBound: number,
+): boolean {
+  // Base case 1 (reached leaf, valid)
+  if (root === null) {
+    return true;
+  }
+
+  // Base case 2 (invalid)
+  if (root.data <= lowerBound || root.data >= upperBound) {
+    return false;
+  }
+
+  // When we traverse left, the current node's value must be the newest upper bound
+  // This ensures it's always strictly decreaseing from the current node
+  const isValidLeft = recursiveValidate(root.left, lowerBound, root.data);
+
+  // When we traverse right, the current node's value must be the newest lower bound
+  // This ensures it's always strictly increasing from the current node
+  const isValidRight = recursiveValidate(root.right, root.data, upperBound);
+
+  // Both must be true for this to return true
+  return isValidLeft && isValidRight;
+}
+
+const isBST = (root: BinaryNode): boolean => {
+  const isValid = recursiveValidate(root, -Infinity, Infinity);
+  return isValid;
+}
+```

@@ -1,0 +1,14 @@
+```java
+class Solution {
+    public int findMaxDepth(BinaryNode root) {
+        if (root == null) {
+            return -1;
+        }
+
+        int leftDepth = findMaxDepth(root.left);
+        int rightDepth = findMaxDepth(root.right);
+
+        return Math.max(leftDepth, rightDepth) + 1;
+    }
+}
+```

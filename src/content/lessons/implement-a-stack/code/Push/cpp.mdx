@@ -1,0 +1,10 @@
+```cpp
+Node* push(int item) {
+    Node* previousLastItem = last;
+
+    last = new Node(item);
+    last->prev = previousLastItem;
+
+    return last;
+}
+```

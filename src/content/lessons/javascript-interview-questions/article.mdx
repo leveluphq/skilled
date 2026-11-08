@@ -1,0 +1,39 @@
+import * as React from 'react';
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import { Section } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import { Container } from 'style/elements';
+import OrderedQuestions from './OrderedQuestions';
+
+<Section>
+
+This article contains some of the most commonly asked JavaScript interview questions, and they are all rooted in the fundamentals.
+If you understand these, you will have the intuition and JavaScript foundation to perform well in interviews.
+
+This module also contains advanced JavaScript interview questions, including:
+
+- <Link href={`/${PageRoot.Course}/fix-this`} passHref><a>Fix <code>this</code></a></Link>
+- <Link href={`/${PageRoot.Course}/array-methods`} passHref><a>Array Methods</a></Link>
+- <Link href={`/${PageRoot.Course}/pub-sub-and-event-driven-programming`} passHref><a>Build a Pub-Sub</a></Link>
+- <Link href={`/${PageRoot.Course}/build-a-javascript-promise`} passHref><a>Build a Promise</a></Link>
+- <Link href={`/${PageRoot.Course}/debounce`} passHref><a>Debounce</a></Link>
+- <Link href={`/${PageRoot.Course}/throttle`} passHref><a>Throttle</a></Link>
+
+<React.Fragment>
+  {/* <Link href={`/${PageRoot.Course}/duplicate-function`} passHref><a>Duplicate</a></Link> */}
+</React.Fragment>
+
+This article has two goals:
+
+
+1. Test essential JavaScript knowledge and core fundamentals that are likely to come up in interviews
+2. Give examples of common questions. Some of these are "good" and some are not, but they are still asked frequently, so you need to know them.
+
+### Questions
+
+<OrderedQuestions />
+
+</Section>

@@ -1,0 +1,103 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Keep only strings whose characters can be rearranged into a palindrome, then group the retained strings by their character multiset. For `['naa', 'aan', 'todo', 'doto', 'code']`, only `naa` and `aan` qualify, so return one group containing those two strings. This task combines a palindrome-permutation filter with an anagram grouping step.
+
+## Test character-count parity
+
+A palindrome pairs equal characters around its center. Every character count must therefore be even, except that one character may have an odd count and occupy the center. Count each character and then count how many character frequencies are odd. The string qualifies exactly when that number is at most one.
+
+For `naa`, a appears twice and n appears once, so it qualifies. For `todo`, o appears twice while t and d each appear once. Two odd counts cannot share one center, so it fails. The original character order is irrelevant to this test; the question asks whether some rearrangement is a palindrome.
+
+## Group qualifying anagrams
+
+Sort a qualifying string's characters to form a canonical key. Any two strings with the same character multiset produce the same sorted key, and different multisets produce different keys. Append the original string to the group stored under that key. Return the groups after processing every input string.
+
+Both `naa` and `aan` produce key `aan`. A qualifying string such as `bob` produces a different key and belongs to another group. Keep the original strings in the output rather than their sorted keys. The keys are an internal lookup representation, not the requested answer.
+
+## Keep filtering separate from grouping
+
+Ordinary anagram grouping would retain `todo` and `doto` together. This lesson must exclude that entire group because neither can form a palindrome. Grouping first and forgetting the parity condition passes many familiar anagram examples while answering the wrong problem.
+
+An empty string has no odd counts and qualifies. A one-character string has one odd count and also qualifies. Duplicate input strings remain duplicate entries in their output group. The course comparator ignores group order and order within groups, but it still checks values and multiplicities. Replacing each group with a set would discard required occurrences.
+
+## Explain correctness through the key
+
+The parity test is necessary because all noncentral positions come in equal pairs. It is sufficient because even counts can be divided equally between the two sides, with the optional odd character placed in the center. Thus the filter retains exactly the eligible strings.
+
+For retained strings, equal sorted keys mean equal counts for every character, which is exactly the anagram relation. Appending each retained occurrence once preserves the input multiplicities. The result therefore partitions precisely the eligible input occurrences into the requested groups, without requiring an expensive generation of their possible palindromes.
+
+## Costs, text assumptions, and checks
+
+For n strings of length at most c, parity counting costs O(nc), and sorting keys costs O(nc log c). Stored keys and grouped text require space proportional to the retained input and distinct keys. A fixed alphabet can use a count-vector key in O(c) per string, but its serialization must distinguish counts unambiguously.
+
+The course uses lowercase alphanumeric text. General Unicode requires a defined unit and normalization policy before counting or sorting; byte order and displayed characters are different concepts. Test zero, one, and two odd counts, empty input, empty strings, duplicate strings, several eligible anagram groups, and ineligible anagrams. An independent oracle can compare frequency maps directly and use the parity rule without copying the implementation's sorted-key construction.
+
+## Rust implementation
+
+The key is rebuilt from sorted Unicode scalars. `HashMap` entry updates preserve each owned input string in the matching group.
+
+The course supplies any declared node types and invokes the entry in `impl Solution`, or the design constructor shown here. Owned values move unless borrowed or cloned; the signature makes that choice explicit. An `Option` separates a missing node or result from a valid value. The runner enables integer overflow checks, so wider constraints require deliberate type and arithmetic changes.
+
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn group_permutations_of_palindromes(strings: Vec<String>) -> Vec<Vec<String>> {
+        let mut permutations_of_palindromes: HashMap<String, Vec<String>> = HashMap::new();
+
+        // Iterate through all O(n) strings in our list
+        for string in strings {
+            // Check if each string is a palindrome O(c)
+            if is_permutation_of_palindrome(&string) {
+                // Sort our string's order O(c log c)
+                // Permutations will sort to the same string
+                let mut characters: Vec<char> = string.chars().collect();
+                characters.sort_unstable();
+                let sorted_string: String = characters.into_iter().collect();
+
+                // Initialize the key to an empty list if we
+                // haven't seen any of the string's permutations yet
+                permutations_of_palindromes
+                    .entry(sorted_string)
+                    .or_default()
+                    .push(string);
+            }
+        }
+
+        // This will return all the values of the hash table as a list
+        // Since the values are also lists, this is the form of the result we want
+        permutations_of_palindromes.into_values().collect()
+    }
+}
+
+// We use the modulo operator to determine if a number is odd
+fn is_odd(num: i32) -> bool {
+    num % 2 != 0
+}
+
+// All O(c) operations
+fn is_permutation_of_palindrome(string: &str) -> bool {
+    // Use a hash table to count the occurrence of each character in a string
+    // These are sequential O(c) operations
+    let mut character_count_table: HashMap<char, i32> = HashMap::new();
+
+    for character in string.chars() {
+        *character_count_table.entry(character).or_insert(0) += 1;
+    }
+
+    // Sum the number of characters that contain an odd count
+    let odd_character_count = character_count_table
+        .values()
+        .filter(|&&num_characters| is_odd(num_characters))
+        .count();
+
+    // If only one character has an odd count, this function returns true
+    odd_character_count <= 1
+}
+```
+
+## Practice this implementation
+
+[Open Group Permutations of Palindromes](/course/group-permutations-of-palindromes) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Rust conventions and practice problems, use the [Rust interview guide](/interview-prep/rust).

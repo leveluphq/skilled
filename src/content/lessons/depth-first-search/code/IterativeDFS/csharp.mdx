@@ -1,0 +1,27 @@
+```csharp
+void IterativeDepthFirstSearch(GraphNode startingNode) {
+    // Init our stack and set of visited nodes
+    var dfsStack = new Stack<GraphNode>();
+    var visitedNodes = new HashSet<GraphNode>();
+
+    dfsStack.Push(startingNode);
+
+    while (dfsStack.Count > 0) {
+        GraphNode node = dfsStack.Pop();
+
+        // A node can be added to the stack more than once, so skip it if we already visited it
+        if (visitedNodes.Contains(node)) {
+            continue;
+        }
+
+        Visit(node);
+        visitedNodes.Add(node);
+
+        foreach (GraphNode childNode in node.edges) {
+            if (!visitedNodes.Contains(childNode)) {
+                dfsStack.Push(childNode);
+            }
+        }
+    }
+}
+```

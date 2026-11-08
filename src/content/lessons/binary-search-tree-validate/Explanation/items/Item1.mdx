@@ -1,0 +1,17 @@
+import Image from 'content/blocks/Image';
+
+Let's take a simple case and think through how we set bounds.
+If we start at the root and walk left, every node must be smaller.
+We can restate this by saying that the value of the parent node becomes the upper bound of the nodes below it in its left subtree.
+If we move right, the node's value becomes the new lower bound because every nodes' value must be larger in its right subtree.
+If this is ever not the case we return false.
+
+So the lower and upper bounds are determined relative to any descendants' parents.
+
+We can then treat this as a repeating subproblem where we set a new upper bound when we move left and a new lower bound when we move right.
+We check that each node is between the lower and upper bound and propagate the true/false upward.
+If we reach our initial call with a true value from both its `left` and `right` branch, then all values must be true.
+
+<Image src="/images/valid-bst-bounds.gif" alt="Binary-search-tree validation carries ancestor-imposed lower and upper bounds into each subtree." width={400} height={304} />
+
+Now that we have the logic, we can cover the implementation details for the base cases and recursive cases.

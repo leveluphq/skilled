@@ -1,0 +1,10 @@
+```python
+from collections import deque
+
+def fifo_order(values: list[int]) -> list[int]:
+    queue = deque(values)
+    output = []
+    while queue:
+        output.append(queue.popleft())
+    return output
+```

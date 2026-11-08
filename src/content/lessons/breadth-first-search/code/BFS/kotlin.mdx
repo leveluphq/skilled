@@ -1,0 +1,23 @@
+```kotlin
+fun breadthFirstSearch(startingNode: GraphNode) {
+    // ArrayDeque as a queue: addLast to enqueue and removeFirst to dequeue
+    val bfsQueue = ArrayDeque(listOf(startingNode))
+    val visitedNodes = mutableSetOf<GraphNode>()
+
+    visitedNodes.add(startingNode)
+
+    while (bfsQueue.isNotEmpty()) {
+        val node = bfsQueue.removeFirst()
+
+        // Use node value for the question
+        visit(node)
+
+        for (childNode in node.edges) {
+            if (childNode !in visitedNodes) {
+                bfsQueue.addLast(childNode)
+                visitedNodes.add(childNode)
+            }
+        }
+    }
+}
+```

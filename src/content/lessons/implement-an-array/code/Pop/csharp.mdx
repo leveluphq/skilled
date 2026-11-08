@@ -1,0 +1,13 @@
+```csharp
+public T Pop() {
+    if (this.length == 0) {
+        return default;
+    }
+
+    T poppedItem = this.data[this.length - 1];
+    this.data.Remove(this.length - 1);
+    this.length--;
+
+    return poppedItem;
+}
+```

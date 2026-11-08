@@ -1,0 +1,36 @@
+```kotlin
+class Solution {
+    fun isBST(root: BinaryNode?): Boolean {
+        val stack = ArrayDeque<BinaryNode>()
+        var currentNode = root
+        // Smaller than every Int, like -Infinity
+        var inOrderValue = Long.MIN_VALUE
+
+        // Begin iterative in-order traversal
+        while (stack.isNotEmpty() || currentNode != null) {
+            // Traverse down a node's left children as long as they continue to exist
+            while (currentNode != null) {
+                stack.addLast(currentNode)
+                currentNode = currentNode.left
+            }
+
+            // Check nodes in-order, testing that their value is larger than the previous
+            val node = stack.removeLast()
+
+            // In-order traversal failed
+            if (node.data <= inOrderValue) {
+                return false
+            }
+
+            // Update value
+            inOrderValue = node.data.toLong()
+
+            // Continue in-order traversal to the current node's right path
+            currentNode = node.right
+        }
+
+        // Finish traversal and all values were valid
+        return true
+    }
+}
+```

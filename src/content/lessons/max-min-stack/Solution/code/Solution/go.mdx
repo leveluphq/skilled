@@ -1,0 +1,54 @@
+```go
+type MaxMinStack struct {
+	stack []int
+
+	// Stacks for internal tracking of the max/min
+	maxValueStack []int
+	minValueStack []int
+}
+
+func Constructor() MaxMinStack {
+	return MaxMinStack{}
+}
+
+func (this *MaxMinStack) Peek() int {
+	return this.stack[len(this.stack)-1]
+}
+
+func (this *MaxMinStack) Push(item int) int {
+	this.stack = append(this.stack, item)
+
+	if len(this.maxValueStack) == 0 || item >= this.GetStackMax() {
+		this.maxValueStack = append(this.maxValueStack, item)
+	}
+	if len(this.minValueStack) == 0 || item <= this.GetStackMin() {
+		this.minValueStack = append(this.minValueStack, item)
+	}
+
+	return item
+}
+
+func (this *MaxMinStack) Pop() int {
+	item := this.stack[len(this.stack)-1]
+	this.stack = this.stack[:len(this.stack)-1]
+
+	if item == this.GetStackMax() {
+		this.maxValueStack = this.maxValueStack[:len(this.maxValueStack)-1]
+	}
+	if item == this.GetStackMin() {
+		this.minValueStack = this.minValueStack[:len(this.minValueStack)-1]
+	}
+
+	return item
+}
+
+// Effectively a Peek() for the max/min values of the stack
+
+func (this *MaxMinStack) GetStackMax() int {
+	return this.maxValueStack[len(this.maxValueStack)-1]
+}
+
+func (this *MaxMinStack) GetStackMin() int {
+	return this.minValueStack[len(this.minValueStack)-1]
+}
+```

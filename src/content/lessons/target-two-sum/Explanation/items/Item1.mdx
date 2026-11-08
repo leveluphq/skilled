@@ -1,0 +1,13 @@
+import BigO from 'content/blocks/BigO';
+
+Imagine you are given a list of 1000 items on a piece of paper, and you want to find all the matching target pairs by hand.
+You would probably start at the first item,
+determine the number that would match it to sum to the target,
+and then walk through the list to look for this matching value.
+Then you would repeat this process for each item in the list until you reached the end.
+
+Seeing something like this should trigger you to recognize that it's a brute force solution.
+That is, `for` each item in the input array, we loop through the array to compare it to every other item to find the answer.
+Or in code, it would require nested `for` loops that lead to a horrible quadratic time complexity <BigO.n2 />.
+
+To understand why the brute force solution is bad, let's walk through it.

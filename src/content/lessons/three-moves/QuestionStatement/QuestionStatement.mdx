@@ -1,0 +1,23 @@
+import SampleInputOutput from './SampleInputOutput.mdx';
+import SolutionSignature from './inlineCode/SolutionSignature';
+import BoardExample from '../BoardExample';
+
+**Write a function <SolutionSignature /> that calculates the total ways to reach the last spot in a board using any combination of 1, 2, and 3 jumps.**
+**The input for the function is the length of the board.**
+
+You are developing a game where players can move 1, 2, or 3 steps.
+The board is a straight line, and you want to know the total number of ways you can reach the final spot for any combination of jumps.
+
+When we say "total number of ways", we mean the count of all the possible unique paths you can take to reach the end by jumping 1, 2, or 3 spots from any point.
+
+**NOTE: If the board length is 0 or 1, you can assume it is 1 total way in both cases**.
+This is an intentional decision by the interviewer which will allow you to focus on the logic of the solution.
+With a board length of 0, there is no board at all which is an edge case where the starting and ending location converge,
+so we'll say the total number of ways for the piece to exist in the game is still 1 which is not performing any jumps.
+With a board length of 1, the only combination of moves is using the 1-hop option.
+If we instead said for a board length of 0 that the total moves is 0, it complicates the base cases and doesn't really provide any additional meaning.
+There is an argument for length 0 to be either 0 or 1 moves with no "right answer", so we are opting for the simpler path.
+
+<SampleInputOutput />
+
+<BoardExample board={4} />

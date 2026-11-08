@@ -1,0 +1,9 @@
+```cpp
+void addEdge(const string& source, const string& destination) {
+    adjacencyList[source].push_back(destination);
+
+    if (undirected) {
+        adjacencyList[destination].push_back(source);
+    }
+}
+```

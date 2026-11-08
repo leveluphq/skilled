@@ -1,0 +1,6 @@
+```python
+def brute_force_first_bad_version(total_versions):
+    for current_version in range(1, total_versions + 1):
+        if is_bad_version(current_version):
+            return current_version
+```

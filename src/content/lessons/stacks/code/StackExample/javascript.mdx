@@ -1,0 +1,23 @@
+```javascript
+function run(id) {
+  return calculatePrice(new Item(id));
+}
+
+function calculatePrice(item) {
+  return item.price + calculateTax(item.price);
+}
+
+function calculateTax(price) {
+  return price * 0.1;
+}
+
+run('id1');
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run('id1')                            |
+------------------------------------------
+   Call Stack
+```

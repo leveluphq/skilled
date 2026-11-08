@@ -1,0 +1,32 @@
+```rust
+fn running_product_solution(input: &[i64]) -> Vec<i64> {
+    let mut results = Vec::new();
+    let length = input.len();
+
+    // Initialize our lookup arrays and fill them with 1's
+    let mut left_running_product = vec![1; length];
+    let mut right_running_product = vec![1; length];
+
+    // Begin creating the product arrays 1 element inward at i = 1
+    // since the first product in each array is supposed to be 1.
+    for i in 1..length {
+        left_running_product[i] = left_running_product[i - 1] * input[i - 1];
+
+        // We will fill our right product array from the end
+        let end_idx = length - 1 - i;
+        right_running_product[end_idx] = right_running_product[end_idx + 1] * input[end_idx + 1];
+    }
+
+    // We can now find the product of all the items other than the current index
+    // by multiplying the product of the elements to its left and right together.
+    for i in 0..length {
+        let left_product = left_running_product[i];
+        let right_product = right_running_product[i];
+        let product_except_self = left_product * right_product;
+
+        results.push(product_except_self);
+    }
+
+    results
+}
+```

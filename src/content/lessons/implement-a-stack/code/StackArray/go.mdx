@@ -1,0 +1,24 @@
+```go
+type Stack struct {
+	stack []int
+}
+
+func NewStack() *Stack {
+	return &Stack{stack: []int{}}
+}
+
+func (s *Stack) Peek() int {
+	return s.stack[len(s.stack)-1]
+}
+
+func (s *Stack) Push(item int) int {
+	s.stack = append(s.stack, item)
+	return item
+}
+
+func (s *Stack) Pop() int {
+	item := s.stack[len(s.stack)-1]
+	s.stack = s.stack[:len(s.stack)-1]
+	return item
+}
+```

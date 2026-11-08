@@ -1,0 +1,20 @@
+```javascript
+const stealPackages = (packageValues) => {
+  let maxAtTwoHousesBefore = 0;
+  let maxProfit = 0;
+
+  for (let currentValue of packageValues) {
+    // Temp variable to remember the max before reaching this house
+    let maxBeforeReachingCurrentHouse = maxProfit;
+
+    // Find the max between the previous house or the current house + the house two spots back
+    maxProfit = Math.max(maxAtTwoHousesBefore + currentValue, maxProfit);
+
+    // The max of the house before this one becomes the max of the house two spots back
+    // when entering the next iteration of the loop
+    maxAtTwoHousesBefore = maxBeforeReachingCurrentHouse;
+  }
+
+  return maxProfit;
+};
+```

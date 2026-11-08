@@ -1,0 +1,48 @@
+```javascript
+const tests = [
+  {
+    input: [[]],
+    expected: 0,
+    description: 'empty',
+  },
+  {
+    input: [['#']],
+    expected: 1,
+    description: 'one land',
+  },
+  {
+    input: [['~']],
+    expected: 0,
+    description: 'one water',
+  },
+  {
+    input: [
+      ['~', '~', '~', '~', '~', '~', '#', '#', '#', '#', '~', '~', '~', '~'],
+      ['~', '~', '~', '#', '#', '#', '#', '~', '~', '~', '~', '~', '~', '~'],
+      ['~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '#', '#', '#', '#'],
+      ['~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '#', '#', '#'],
+      ['~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '~', '#', '#', '#'],
+    ],
+    expected: 2,
+    description: 'two islands',
+  },
+  {
+    input: [
+      ['~', '~', '~', '#', '#'],
+      ['~', '~', '~', '#', '#'],
+      ['~', '#', '~', '~', '~'],
+      ['~', '~', '#', '~', '~'],
+      ['~', '~', '~', '~', '#'],
+    ],
+    expected: 4,
+    description: 'four islands',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = countIslands(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

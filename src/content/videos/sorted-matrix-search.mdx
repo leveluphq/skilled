@@ -1,0 +1,37 @@
+{/* Composed by contentgen:videos. Edit the shared curriculum chapter. */}
+
+Search a rectangular matrix whose rows and columns each increase in sorted order. Return `[row, column]` for a match, or `[-1, -1]` when the target is missing. This does not imply that flattening the matrix gives a sorted array. In `[[1, 4, 7], [2, 5, 8], [3, 6, 9]]`, the second row begins below the first row's final value.
+
+## Start at a corner with two useful directions
+
+The bottom-left cell has larger values to its right and smaller values above it. Compare that cell with the target. If it is too large, eliminate its entire row and move up. Every value to its right in that row is at least as large, so none can match. If it is too small, eliminate its column and move right. Every value above it in that column is no larger.
+
+Top-right is an equally useful starting corner, with left and down as the two moves. Top-left does not offer the same choice: both right and down increase values. A comparison there cannot generally tell which direction to choose without additional searching.
+
+## Trace a staircase
+
+Search the example for 5. Bottom-left is 3, which is too small, so move right to 6. Six is too large, so move up to 5 and return `[1, 1]`. The eliminated first column contained only 1, 2, and 3. The eliminated final row's remaining cells contained 6 and 9. Neither elimination discarded 5.
+
+For target 10, the search moves right across the bottom row and exits after column 2. For target 0, it moves up the first column and exits above row 0. Those exits mean the candidate rectangle has become empty, which is when the missing sentinel is appropriate.
+
+## Describe the remaining rectangle
+
+At each step, all possible matches lie in the rectangle above the current row and at or to the right of the current column, including the current cell. A too-large comparison removes one row from that rectangle. A too-small comparison removes one column. The ordering promises justify each removal independently.
+
+Every move advances one boundary and never reverses it. With r rows and c columns, there can be at most r upward moves and c rightward moves. Thus the time bound is O(r + c), with O(1) auxiliary storage. This is a dimension-based bound; calling it O(log(rc)) would describe a different search under a stronger ordering promise.
+
+## Read the shape and result contracts
+
+The course uses rectangular matrices and reports coordinates in row-first order. A ragged matrix needs separate bounds logic and may not describe a meaningful sorted grid at all. Several implementations avoid reading the first row for an empty outer array through a short-circuit condition; check that order when adapting the code.
+
+If duplicates are allowed, any matching coordinate may satisfy the search question, but an exact-output test can require a particular occurrence. The lesson examples use an unambiguous match. Do not add first-occurrence claims without changing the search rule. The input remains unchanged because the algorithm only reads cells and moves indexes.
+
+## Test elimination rather than one example
+
+Use a single row, a single column, a one-cell matrix, and targets at all four corners. Include a matrix that is row-and-column sorted but fails flattened ordering; it rejects an invalid binary-search shortcut. Missing targets should lie below the minimum, above the maximum, and inside a gap between existing values.
+
+For generated checks, create a strictly increasing row-and-column grid and compare the staircase result with a complete scan. For a follow-up, compare searching each row with binary search. That approach costs O(r log c) and may be reasonable for particular shapes, but it does not exploit column ordering as directly as the staircase.
+
+## Continue with the implementation
+
+Read the [JavaScript walkthrough](/course/sorted-matrix-search/javascript) for the current code and links to the other programming languages. Use the [original lesson](/course/sorted-matrix-search) for practice.

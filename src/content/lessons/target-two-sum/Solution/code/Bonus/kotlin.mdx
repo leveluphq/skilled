@@ -1,0 +1,26 @@
+```kotlin
+class Solution {
+    fun getTargetIndexes(array: IntArray, target: Int): List<List<Int>> {
+        val results = mutableListOf<List<Int>>()
+        val arrayElementAtIndex = mutableMapOf<Int, Int>()
+
+        for (i in array.indices) {
+            val currentValue = array[i]
+            val matchedValue = target - currentValue
+            val matchedIndex = arrayElementAtIndex[matchedValue]
+
+            if (matchedIndex != null && matchedIndex >= 0) {
+                results.add(listOf(i, matchedIndex))
+
+                arrayElementAtIndex[currentValue] = -1
+                arrayElementAtIndex[matchedValue] = -1
+            }
+
+            // Add values after we see them
+            arrayElementAtIndex[currentValue] = i
+        }
+
+        return results
+    }
+}
+```

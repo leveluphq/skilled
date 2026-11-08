@@ -1,0 +1,29 @@
+import * as React from 'react';
+import FourCharacters from './code/FourCharacters';
+
+Now let's consider the word `'code'`.
+
+<FourCharacters />
+
+If we continued to add characters, we would see this pattern repeat.
+There is a recursive subproblem where we freeze a character in a position and decrease the length of the string until we reach the base case of a single character.
+Then we combine that result, move a single character, pass the remaining recursively, and repeat.
+
+<React.Fragment>
+{/* BEGIN TALKING ABOUT BACKTRACKING HERE. We want to generate all the options, and this is an indication we will use recursion, and specifically backtracking.
+Take a character from the decision space (options for choice) and then pass the remaining items recursively.
+Repeat this for every option at every point.
+Backtracking: 1. decision, 2. constraints, 3. goal */}
+</React.Fragment>
+
+We want to generate all the options, and this is an indication we will use recursion and specifically backtracking.
+Take a character from the decision space, which is each of the characters at each depth of the recursive call, and then pass the remaining items recursively.
+
+No matter how large the string gets, it can be reduced to this simple and repeatable problem at each level.
+
+1. Take a character and treat it as the choice for each decision step
+2. Remove this character from the string and pass the remaining characters recursively
+3. Remove a new decision character at each lower depth until you only have one character remaining at the base case
+4. Repeat for every character at every depth and combine the results
+
+Now that you understand the thought process, you can return to the interactive permutation animation in the introduction to better visualize what's happening.

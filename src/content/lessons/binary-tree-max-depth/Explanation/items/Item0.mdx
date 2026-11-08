@@ -1,0 +1,12 @@
+import BigO from 'content/blocks/BigO';
+
+This problem can be solved either iteratively or recursively.
+The recursive solution is very clean and straightforward,
+but as with all recursive functions, it has the possibility to cause a stack overflow.
+
+I'll walk through the iterative solution because it will provide additional insight into how to traverse through a tree and also how to think about depth.
+I'll present the recursive solution as a bonus at the end.
+
+This question asks us to find the maximum depth, and this will correspond to the leaf node furthest from the root.
+Trees are non-linear and we have been given no information about its structure, so we can assume we'll need to visit all `n` nodes in <BigO.n /> time.
+We are only given the root node as an input, so we will also need to figure out our own way to track the depth.

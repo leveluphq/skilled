@@ -1,0 +1,69 @@
+```kotlin
+class Entry(val key: String, var value: Int)
+
+class HashTable(val size: Int) {
+    val table = arrayOfNulls<MutableList<Entry>>(size)
+
+    fun get(key: String): Int? {
+        val index = hash(key)
+        val bucket = table[index]
+
+        if (bucket != null) {
+            for (i in 0 until bucket.size) {
+                if (bucket[i].key == key) {
+                    return bucket[i].value
+                }
+            }
+        }
+
+        return null
+    }
+
+    fun insert(key: String, value: Int) {
+        val index = hash(key)
+        var bucket = table[index]
+
+        if (bucket == null) {
+            bucket = mutableListOf()
+            table[index] = bucket
+        }
+
+        for (i in 0 until bucket.size) {
+            if (bucket[i].key == key) {
+                bucket[i].value = value
+                return
+            }
+        }
+
+        bucket.add(Entry(key, value))
+    }
+
+    fun remove(key: String): Int? {
+        val index = hash(key)
+        val bucket = table[index]
+
+        if (bucket != null) {
+            for (i in 0 until bucket.size) {
+                if (bucket[i].key == key) {
+                    val value = bucket[i].value
+                    bucket.removeAt(i)
+
+                    return value
+                }
+            }
+        }
+
+        return null
+    }
+
+    fun hash(key: String): Int {
+        var hash = 0
+
+        for (i in 0 until key.length) {
+            hash = (hash + key[i].code) % size
+        }
+
+        return hash
+    }
+}
+```

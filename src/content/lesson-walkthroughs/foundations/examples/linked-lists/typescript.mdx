@@ -1,0 +1,16 @@
+```typescript
+function middleValue(values: readonly number[]): number | null {
+  class ListNode {
+    constructor(public value: number, public next: ListNode | null = null) {}
+  }
+  let head: ListNode | null = null;
+  for (let index = values.length - 1; index >= 0; index--) head = new ListNode(values[index], head);
+  let slow = head;
+  let fast = head;
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+  return slow === null ? null : slow.value;
+}
+```

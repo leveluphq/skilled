@@ -1,0 +1,26 @@
+```python
+def build_product_array_with_division(input):
+    # Zeroes are now an edge case because we can't divide by them
+    num_zeros = 0
+    # Init product to 1
+    product = 1
+
+    for element in input:
+        if element == 0:
+            num_zeros += 1
+        else:
+            product*=element
+
+    for i in range(len(input)):
+         # If no zeroes, don't worry about edge cases
+        if num_zeros == 0:
+            input[i] = product // input[i]
+        elif num_zeros == 1 and input[i] == 0:
+            # Handle the 1 zero where it will have the only non-zero product
+            input[i] = product
+        else:
+            # If we have more than one 0, they're all 0
+            input[i] = 0
+
+    return input
+```

@@ -1,0 +1,7 @@
+```rust
+fn arrays_insert(values: &[i32], index: i32, item: i32) -> Vec<i32> {
+    let mut copy = values.to_vec();
+    copy.insert(index as usize, item);
+    copy
+}
+```

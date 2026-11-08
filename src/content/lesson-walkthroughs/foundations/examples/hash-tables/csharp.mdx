@@ -1,0 +1,17 @@
+```csharp
+using System;
+using System.Collections.Generic;
+
+public static class FrequencyCountsExample {
+public static List<int> FrequencyCounts(List<int> values) {
+    var counts = new Dictionary<int, int>();
+    foreach (int value in values) {
+        counts.TryGetValue(value, out int count);
+        counts[value] = count + 1;
+    }
+    var output = new List<int>();
+    foreach (int value in values) output.Add(counts[value]);
+    return output;
+}
+}
+```

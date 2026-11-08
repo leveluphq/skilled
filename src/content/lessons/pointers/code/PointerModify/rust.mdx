@@ -1,0 +1,24 @@
+```rust
+println!(
+    "{}, {}",
+    parent.c1.as_ref().unwrap().borrow().mood,
+    child1.borrow().mood
+);
+// happy, happy
+
+child1.borrow_mut().mood = "sad";
+println!(
+    "{}, {}",
+    parent.c1.as_ref().unwrap().borrow().mood,
+    child1.borrow().mood
+);
+// sad, sad
+
+parent.c1.as_ref().unwrap().borrow_mut().mood = "stoked";
+println!(
+    "{}, {}",
+    parent.c1.as_ref().unwrap().borrow().mood,
+    child1.borrow().mood
+);
+// stoked, stoked
+```

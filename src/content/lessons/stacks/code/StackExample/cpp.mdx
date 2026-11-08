@@ -1,0 +1,23 @@
+```cpp
+double calculateTax(double price) {
+    return price * 0.1;
+}
+
+double calculatePrice(const Item& item) {
+    return item.price + calculateTax(item.price);
+}
+
+double run(const string& id) {
+    return calculatePrice(Item(id));
+}
+
+run("id1");
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run("id1")                            |
+------------------------------------------
+   Call Stack
+```

@@ -1,0 +1,9 @@
+```cpp
+#include <vector>
+
+std::vector<int> outDegrees(const std::vector<std::vector<int>>& graph) {
+    std::vector<int> degrees;
+    for (const auto& neighbors : graph) degrees.push_back(static_cast<int>(neighbors.size()));
+    return degrees;
+}
+```

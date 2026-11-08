@@ -1,0 +1,13 @@
+import BigO from 'content/blocks/BigO';
+
+We don't know the length of the blockchains,
+so we will need to iterate through them either iteratively with a `while` loop or recursively.
+
+The logic for each is similar, and they both operate in linear <BigO.n /> time.
+However, for the recursive solution, we will create a function call for the entire list until we reach our stopping condition,
+and this will add an additional <BigO.n /> space complexity to account for the call stack.
+For the iterative solution, we will only need to maintain pointers which means this can be accomplished in <BigO.constant /> constant space.
+
+Because of this, we'll work through the iterative solution, but the recursive solution will also be given at the end of the lesson for completeness.
+
+So what pointers do we need to maintain and how do we track them as we walk through the blockchains?

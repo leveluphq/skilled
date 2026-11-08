@@ -1,0 +1,148 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "no board"
+        input = None
+        self.actual_result = has_exit_path(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "invalid board"
+        input = []
+        self.actual_result = has_exit_path(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "no items"
+        input = [[]]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "one way through"
+        input = [
+                [0, 0, 0],
+                [0, 0, 1],
+                [0, 0, 1],
+                [1, 0, 2],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "random exit location"
+        input = [
+                [0, 1, 1, 0, 0],
+                [0, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0],
+                [1, 1, 0, 1, 0],
+                [0, 0, 2, 1, 0],
+                [0, 0, 0, 1, 0],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "many paths"
+        input = [
+                [0, 0, 1, 1],
+                [0, 0, 0, 1],
+                [0, 0, 0, 1],
+                [0, 0, 0, 2],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "open board"
+        input = [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 2],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "all right"
+        input = [
+                [0, 0, 0, 2],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_9(self):
+        self.description = "all down"
+        input = [
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [2, 0, 0, 0],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = True
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_10(self):
+        self.description = "open board, blocked exit"
+        input = [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 1, 2],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_11(self):
+        self.description = "blocked path"
+        input = [
+                [0, 0, 0, 0],
+                [1, 0, 0, 1],
+                [2, 1, 0, 0],
+                ]
+        self.actual_result = has_exit_path(input)
+        self.expected_result = False
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

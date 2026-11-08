@@ -1,0 +1,18 @@
+import Image from 'content/blocks/Image';
+import ConceptModal from 'content/blocks/ConceptModal';
+import InOrderTraversal from 'content/lessons/tree-traversal-in-order-pre-order-post-order/inorder.mdx';
+
+A binary search tree is an ordered tree.
+The node on the far left has the smallest value and the node on the far right is the largest value.
+For any given node, all the descendants to its left must be smaller and all the descendants to its right must be larger.
+
+This gives us two approaches to solve the problem:
+
+1) <ConceptModal content={<InOrderTraversal />}>Traverse in-order</ConceptModal> from the left node to the right and ensure it is always ascending.
+
+<Image src="/images/in-order-increase.gif" alt="In-order traversal checks that each visited binary-search-tree value is greater than the previous value." width={400} height={359} />
+
+2) For any node, show that all the left descendants are strictly decreasing and all the right descendants are strictly increasing.
+
+For this question, we'll recursively prove #2, that all the descendants decrease or increase correctly.
+As a bonus at the end, I'll provide a solution using an iterative in-order traversal.

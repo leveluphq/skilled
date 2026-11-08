@@ -1,0 +1,11 @@
+```python
+def alias_trace() -> list[int]:
+    original = {'value': 1}
+    alias = original
+    trace = [original['value']]
+    alias['value'] = 2
+    trace.append(original['value'])
+    alias = {'value': 9}
+    trace.extend([original['value'], alias['value']])
+    return trace
+```

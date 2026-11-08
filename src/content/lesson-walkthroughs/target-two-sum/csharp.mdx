@@ -1,0 +1,82 @@
+The C# Two Sum exercise returns every matching pair of original indexes from unique integers. For `[4, 1, 5, 2, 3]` and target `6`, both `[1, 2]` and `[0, 3]` must appear. Returning one pair early would leave part of the requested result out.
+
+We will use `Dictionary<int, int>` for earlier values and a `List<int[]>` while collecting answers. The final result is an `int[][]`, matching the exercise starter. Each successful match creates a fresh two-element array, and the caller's input is preserved.
+
+## Separate lookup success from the stored index
+
+`TryGetValue` reports membership as a Boolean and writes the stored index through its out parameter. This keeps an absent entry distinct from index zero, which is a valid answer. It also avoids exceptions for an ordinary unsuccessful lookup.
+
+```csharp
+using System.Collections.Generic;
+
+public class Solution {
+    public int[][] GetTargetIndexes(int[] array, int target) {
+        var seen = new Dictionary<int, int>();
+        var pairs = new List<int[]>();
+
+        for (int j = 0; j < array.Length; j++) {
+            long complement = (long)target - array[j];
+            if (complement >= int.MinValue && complement <= int.MaxValue
+                    && seen.TryGetValue((int)complement, out int i)) {
+                pairs.Add(new int[] { i, j });
+            }
+            seen[array[j]] = j;
+        }
+        return pairs.ToArray();
+    }
+}
+```
+
+The dictionary's indexer is used only for insertion after the lookup. Reading an absent key through the indexer would throw. The Boolean result from TryGetValue is the correct branch condition; checking whether the output index is nonzero would discard real matches.
+
+## Widen complement arithmetic before evaluating it
+
+`target` and `array[j]` each fit in `int`, but their difference may not. Casting the target to `long` makes the subtraction use 64-bit arithmetic. If that wider result falls outside the input element range, no earlier integer can equal it, so the lookup is skipped.
+
+Writing `(long)(target - array[j])` would widen only after narrow arithmetic had already occurred. Depending on the checked context, the original subtraction could wrap or throw before the cast. The placement of the conversion therefore affects correctness.
+
+For `[int.MaxValue, 1]` and target `int.MinValue`, wrapped arithmetic would falsely suggest a match. The mathematical sum is outside the target, and the implementation must return no pair. For `[int.MinValue, int.MaxValue]` with target `-1`, the pair is valid.
+
+## Keep the map restricted to earlier positions
+
+Before each iteration, the dictionary contains exactly the values at positions less than `j`. A lookup can therefore return only an earlier index. Insertion follows the lookup, so `[3]` with target `6` cannot pair index zero with itself.
+
+On `[4, 1, 5, 2, 3]`, the first two iterations store `4 → 0` and `1 → 1`. The later `5` finds `1`, then `2` finds `4`. The final `3` has no earlier equal partner under the unique-input contract. Accumulation continues until all positions have been visited.
+
+Each valid pair is emitted when its later member arrives, so reversed duplicates cannot occur. There is no need to delete matched values or maintain a separate collection of pairs already seen.
+
+## Allocate each answer independently
+
+An `int[][]` is a jagged array: an outer array containing references to inner arrays. The code allocates a new inner array for every pair. Reusing one mutable pair object and adding it repeatedly would make all entries point to the same final contents.
+
+`List<int[]>.ToArray()` creates the outer result array; it does not clone each inner array. Fresh allocation at `pairs.Add` is therefore part of preserving the answer. The working list handles an unknown number of matches without guessing output capacity.
+
+## Exercise the multi-answer contract
+
+```csharp
+public static class WalkthroughExamples {
+    public static void Check() {
+        var solution = new Solution();
+        int[] input = { 4, 1, 5, 2, 3 };
+        var pairs = solution.GetTargetIndexes(input, 6);
+        var keys = new List<string>();
+        foreach (var pair in pairs) {
+            keys.Add(System.Math.Min(pair[0], pair[1]) + ":" + System.Math.Max(pair[0], pair[1]));
+        }
+        keys.Sort(System.StringComparer.Ordinal);
+        if (string.Join(",", keys) != "0:3,1:2") throw new System.Exception("Missing pairs");
+        if (solution.GetTargetIndexes(new int[] { 3 }, 6).Length != 0) throw new System.Exception("Self-pair");
+        if (solution.GetTargetIndexes(new int[] { int.MaxValue, 1 }, int.MinValue).Length != 0) throw new System.Exception("Overflow match");
+    }
+}
+```
+
+Run the helper from a local console program. Add empty input, negative values, no answer, and a pair involving index zero. An independent nested-loop reference should add operands as long values so its own overflow does not conceal a defect.
+
+Keep both pair normalization and duplicate detection in the comparison. Finding the right distinct pairs is insufficient if the function also returns each one twice; converting directly to a set would erase evidence of that error.
+
+## Explain assumptions and expected bounds
+
+Under ordinary dictionary hashing assumptions, the scan takes expected `O(n + k)` time and `O(n)` dictionary storage, plus `O(k)` output. With unique input values, there are at most linearly many pairs. The [Dictionary documentation](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.dictionary-2) describes its retrieval and insertion operations.
+
+Repeated values would require multiple stored positions per value if all index pairs were requested. Null arrays are outside this exercise's input contract. Before practicing, explain lookup membership, the widening conversion, and the earlier-prefix invariant without relying on the example's specific numbers.

@@ -1,0 +1,13 @@
+```rust
+let string = "Hello, world!";
+let array = vec![
+    'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!',
+];
+
+// Transform an array to a string and compare it to the original string
+println!("{}", string == array.iter().collect::<String>());
+// returns true
+
+println!("{:?}", string.chars().collect::<Vec<char>>()); // Transform a string to an array
+// ['H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!']
+```

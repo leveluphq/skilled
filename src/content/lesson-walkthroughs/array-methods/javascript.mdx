@@ -1,0 +1,58 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+This lesson replaces six loop patterns with array methods whose names express the intended result. The exercises cover `map`, `filter`, `includes`, `find`, `every`, and `some`. Choosing among them starts with the output contract: a transformed array, a selected array, a matching item, or a boolean answer.
+
+## Distinguish transformation from selection
+
+Use map when each visited input element produces a corresponding result. Doubling each number is a transformation. Use filter when a predicate decides which original elements remain. Selecting positive numbers changes membership instead of changing each value. Both methods return new arrays, but their callbacks can still mutate shared objects or external state; allocating a new container does not guarantee deep immutability.
+
+If elements are objects, the selected references remain references to those same objects unless you explicitly copy them. A map that returns an existing object does not create a fresh version of that object. State whether your transformation is intended to preserve or replace identities.
+
+## Choose between an item and an existence answer
+
+Find returns the first element whose predicate succeeds, or undefined when none does. Some returns a boolean indicating whether any visited element satisfies its predicate. Every returns whether all visited elements satisfy theirs. Some and every can stop once the answer is determined, while collecting all matches with filter does unnecessary work for an existence-only question.
+
+Includes checks value membership using its equality rule. It is useful when you have the exact value rather than a more general predicate. With objects, equal-looking fields do not establish identity equality. If undefined can itself be a stored element, a find result of undefined alone cannot distinguish a found undefined from absence.
+
+## Test empty arrays and callback behavior
+
+For empty input, some is false and every is true. Those results follow from whether any counterexample or successful witness exists. Sparse arrays add method-specific behavior: several callback methods skip holes, while other operations can observe them differently. Follow the input contract rather than assuming every array is dense.
+
+Open the [current exercises](/course/array-methods) and predict each output before refactoring. Compare the result, ordering, mutation, and early-exit behavior with the original loop. The [JavaScript output quiz](/tools/javascript-output-quiz) offers further practice with language semantics; a concise expression is useful only when it preserves the required behavior.
+
+## Match each operation to its result
+
+For `[-2, 0, 3, 1]`, the example returns doubled values `[-4, 0, 6, 2]`, positive values `[3, 1]`, and a first positive value of 3. It also reports zero membership, whether every value is nonnegative, and whether any value is negative. None of these operations mutates the dense input array.
+
+An empty input produces empty mapped and filtered arrays. Every is true because there is no failing element; some is false because there is no satisfying element. Find returns undefined when there is no match, which this wrapper converts to null with a nullish fallback.
+
+## Keep the wrapper's assumptions visible
+
+The example accepts dense finite-number arrays. Sparse arrays introduce method-specific hole behavior; this page does not treat holes as explicit undefined values. Object arrays would also require a decision about whether returned elements share their original objects, because map and filter do not automatically deep-clone them.
+
+Each full pass is O(n), so a fixed number of these calls is still O(n) time. Map and filter return O(n) storage in the worst case. Find, some, and every can stop early, but their worst case still examines the whole input. Includes correctly finds a zero at any position. Avoid a truthiness-based replacement that mistakes index zero or a valid zero value for absence.
+
+## JavaScript example and implementation choices
+
+find can return undefined, so the wrapper converts only that nullish result into null. Using || would be unsafe for a different predicate that can legitimately find zero. includes tests value membership directly, while every and some express different quantified predicates. The function assumes a dense finite-number array and intentionally avoids sparse-hole or coercive-comparison questions in this worked result.
+
+### Worked example
+
+```javascript
+function summarize(values) {
+    return {
+        doubled: values.map(value => value * 2),
+        positives: values.filter(value => value > 0),
+        hasZero: values.includes(0),
+        firstPositive: values.find(value => value > 0) ?? null,
+        allNonNegative: values.every(value => value >= 0),
+        anyNegative: values.some(value => value < 0),
+    };
+}
+```
+
+## Continue in JavaScript
+
+[Open Array Methods](/course/array-methods) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

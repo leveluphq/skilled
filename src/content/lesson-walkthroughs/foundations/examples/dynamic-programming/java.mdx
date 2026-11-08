@@ -1,0 +1,20 @@
+```java
+import java.util.*;
+
+class MinimumCoinsExample {
+static int minimumCoins(List<Integer> coins, int amount) {
+    int impossible = amount + 1;
+    int[] best = new int[amount + 1];
+    Arrays.fill(best, impossible);
+    best[0] = 0;
+    for (int value = 1; value <= amount; value++) {
+        for (int coin : coins) {
+            if (coin <= value && best[value - coin] != impossible) {
+                best[value] = Math.min(best[value], 1 + best[value - coin]);
+            }
+        }
+    }
+    return best[amount] == impossible ? -1 : best[amount];
+}
+}
+```

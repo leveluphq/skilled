@@ -1,0 +1,20 @@
+```python
+# O(1) prepend
+def prepend(head, data):
+    # Create a new node to prepend
+    prepended_node = Node(data)
+    # Set its next to the current node
+    prepended_node.next = head
+
+    # Return our new node
+    return prepended_node
+
+head = Node(42)
+head.next = Node(9000)
+head.next.next = Node(10)
+head.next.next.next = Node(20)
+# 42 -> 9000 -> 10 -> 20
+
+head = prepend(head, 8)
+# 8 -> 42 -> 9000 -> 10 -> 20
+```

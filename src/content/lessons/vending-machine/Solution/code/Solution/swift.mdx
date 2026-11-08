@@ -1,0 +1,55 @@
+```swift
+class Solution {
+    // Int has no infinity, so the largest Int stands in for it
+    private let infinity = Int.max
+
+    func minCoinsForChange(_ denominations: [Int], _ target: Int) -> Int {
+        /*
+          Init all values to infinity which indicates there isn't a valid coin combination for an amount (yet)
+          This is our dp / memo array that we're using to memoize the solution to subproblems
+        */
+        var minCoinsForAmount = [Int](repeating: infinity, count: target + 1)
+
+        // Bottom-up, start with 0 which is always 0
+        minCoinsForAmount[0] = 0
+
+        /*
+          Begin at the smallest amount and build a running table of
+          the smallest values required to reach EVERY amount up to the target
+        */
+        for amount in 0..<minCoinsForAmount.count {
+            // Try each denomination to reach the current amount
+            for coin in denominations where coin <= amount {
+                // The current minimum (subproblem solution) found at this amount.
+                let existingMinCoinForAmount = minCoinsForAmount[amount]
+
+                // An amount we can't reach yet can't be reached with one more coin either
+                // (and adding 1 to Int.max would overflow)
+                let minCoinsForRest = minCoinsForAmount[amount - coin]
+                if minCoinsForRest == infinity {
+                    continue
+                }
+
+                /*
+                  Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                  Always increment by +1 because we are trying one additional coin.
+                */
+                let minAmountWithCurrentCoin = minCoinsForRest + 1
+
+                /*
+                  Memoize the minimum coins to reach the current amount.
+                  This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                  If there isn't a valid combination, this just remains infinity.
+                */
+                minCoinsForAmount[amount] = min(existingMinCoinForAmount, minAmountWithCurrentCoin)
+            }
+        }
+
+        /*
+          If we didn't find a combination that matched our target (target === infinity), return -1.
+          Otherwise, the target does exist for that amount and we return it.
+        */
+        return minCoinsForAmount[target] == infinity ? -1 : minCoinsForAmount[target]
+    }
+}
+```

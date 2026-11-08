@@ -1,0 +1,32 @@
+```go
+import "math"
+
+func recursiveValidate(root *BinaryNode, lowerBound int, upperBound int) bool {
+	// Base case 1 (reached leaf, valid)
+	if root == nil {
+		return true
+	}
+
+	// Base case 2 (invalid)
+	if root.Data <= lowerBound || root.Data >= upperBound {
+		return false
+	}
+
+	// When we traverse left, the current node's value must be the newest upper bound
+	// This ensures it's always strictly decreasing from the current node
+	isValidLeft := recursiveValidate(root.Left, lowerBound, root.Data)
+
+	// When we traverse right, the current node's value must be the newest lower bound
+	// This ensures it's always strictly increasing from the current node
+	isValidRight := recursiveValidate(root.Right, root.Data, upperBound)
+
+	// Both must be true for this to return true
+	return isValidLeft && isValidRight
+}
+
+func isBST(root *BinaryNode) bool {
+	// The smallest and largest ints stand in for minus and plus infinity
+	isValid := recursiveValidate(root, math.MinInt, math.MaxInt)
+	return isValid
+}
+```

@@ -1,0 +1,12 @@
+```go
+func LifoOrder(values []int) []int {
+    stack := append([]int{}, values...)
+    output := make([]int, 0, len(stack))
+    for len(stack) > 0 {
+        last := len(stack)-1
+        output = append(output, stack[last])
+        stack = stack[:last]
+    }
+    return output
+}
+```

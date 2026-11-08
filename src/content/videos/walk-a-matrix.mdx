@@ -1,0 +1,19 @@
+A spiral traversal reads the perimeter of a rectangle, then repeats on the remaining interior. Start with the top row from left to right, continue down the right column, return across the bottom, and move up the left column. Four boundaries describe the unvisited rectangle throughout the process.
+
+## Follow the changing boundaries
+
+For `[[1, 2, 3], [4, 5, 6], [7, 8, 9]]`, the first pass emits `1, 2, 3, 6, 9, 8, 7, 4`. The remaining rectangle contains only 5. The complete result therefore has nine values, each emitted once. Distinct values make duplicate visits easy to spot while tracing.
+
+Move each boundary after its edge is finished. Updating the top boundary before walking down the right side skips the already visited top-right corner. Updating the right boundary before crossing the bottom avoids repeating the bottom-right corner. The remaining row and column guards protect single-row and single-column interiors.
+
+The correction above concerns the upward walk. Its starting row must already exclude the bottom-left corner, which was consumed by the preceding edge. Compare that loop with the current implementation before copying code from the recording. The current lesson also handles an empty outer matrix before accessing its first row.
+
+## Check the work and storage
+
+The traversal visits each of r × c cells once, so time is O(r × c). The four bounds use constant auxiliary space. The returned sequence still occupies O(r × c) storage. The matrix does not need a visited flag or any cell mutation.
+
+Try a one-cell matrix, a single row, a single column, and a rectangle with unequal dimensions. A three-by-two example can expose assumptions hidden by a square input. Check the output length as well as its order: a plausible-looking spiral can still repeat one corner.
+
+## Continue with code and practice
+
+The [JavaScript walkthrough](/course/walk-a-matrix/javascript) includes the current implementation, a correctness argument, boundary tests, and links to the other nine programming languages. The [array topic path](/topics/arrays) connects spiral traversal with other matrix problems. Use the original lesson to practice; watching or reading does not create a separate progress record.

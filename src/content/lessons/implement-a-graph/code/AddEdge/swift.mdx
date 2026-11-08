@@ -1,0 +1,9 @@
+```swift
+func addEdge(_ source: String, _ destination: String) {
+    adjacencyList[source]?.append(destination)
+
+    if undirected {
+        adjacencyList[destination]?.append(source)
+    }
+}
+```

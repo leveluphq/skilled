@@ -1,0 +1,23 @@
+```cpp
+bool insert(int index, int item) {
+    // Ensure we're inserting inside a valid array length
+    if (index > length - 1 || index < 0) {
+        return false;
+    }
+
+    // Create our new length
+    length++;
+
+    // Shift items up one spot from the insertion index to the new final spot in the array.
+    // We iterate from the back since this is our new empty item
+    for (int i = length - 1; i > index; i--) {
+        data[i] = data[i - 1];
+    }
+
+    // Add the new item
+    data[index] = item;
+
+    // Report that the item was added
+    return true;
+}
+```

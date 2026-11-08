@@ -1,0 +1,51 @@
+```java
+class Solution {
+    private static final char LAND = '#';
+    private static final char WATER = '~';
+
+    public int countIslands(char[][] grid) {
+        if (grid.length == 0 || grid[0].length == 0) {
+            return 0;
+        }
+
+        int numRows = grid.length;
+        int numCols = grid[0].length;
+        int islandCount = 0;
+
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
+                // We found another uncounted island
+                if (grid[row][col] == LAND) {
+                    islandCount = islandCount + 1;
+                    // Mark all the pieces of land for the island as viewed
+                    markLandAsViewedDFS(grid, row, col);
+                }
+            }
+        }
+
+        return islandCount;
+    }
+
+    private void markLandAsViewedDFS(char[][] grid, int row, int col) {
+        int numRows = grid.length;
+        int numCols = grid[0].length;
+
+        // Stopping condition:
+        // 1. Outside of the map
+        // 2. Reached an adjacent water node
+        boolean isOutsideMap = row < 0 || col < 0 || row >= numRows || col >= numCols;
+        if (isOutsideMap || grid[row][col] == WATER) {
+            return;
+        }
+
+        // Recursive case:
+        // 1. Mark the node as viewed by flipping it to water
+        // 2. Check the nodes adjacent to the current
+        grid[row][col] = WATER;
+        markLandAsViewedDFS(grid, row - 1, col);
+        markLandAsViewedDFS(grid, row + 1, col);
+        markLandAsViewedDFS(grid, row, col - 1);
+        markLandAsViewedDFS(grid, row, col + 1);
+    }
+}
+```

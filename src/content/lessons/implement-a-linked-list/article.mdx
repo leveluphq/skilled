@@ -1,0 +1,109 @@
+import { Section } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Null from 'content/blocks/Null';
+import Image from 'content/blocks/Image';
+import DeleteNode from './DeleteNode.mdx';
+import NodeSimple from './code/NodeSimple';
+import Node from './code/Node';
+import Prepend from './code/Prepend';
+import Append from './code/Append';
+import InsertNode from './code/InsertNode';
+import DoublyLinkedList from './code/DoublyLinkedList';
+import Recursive from './code/Recursive';
+
+<Section>
+
+The most common way to be asked a linked list interview question is to be given the head node of a singly linked list.
+Since you are only given the head, you know that you don't have access to a wrapper class or the tail node,
+so all operations must happen by iterating from the beginning.
+
+<NodeSimple />
+
+When you are given this node as an input, it will already be instantiated and have a value for its `data` and `next`.
+
+Instead of creating a special linked list object, we will write functions that take a head node and performs a `prepend`, `append`, `insert`, and `delete` operation in the same manner as how you will use them in an interview.
+See the final implementation in a <a href="https://repl.it/@TreyHuffine/LinkedLists-Implementation-JavaScript#index.js" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Prepend and Append</SubsectionHeader>
+
+For `prepend`, we just want to insert a value before the head node we are given, and we can do this in constant <BigO.constant /> time.
+
+<Image src="/images/prepend-singly-linked-list.gif" isVisuAlgo alt="Prepending connects the new node to the old head and moves the head reference to the new node." width={800} height={262} />
+
+<Prepend />
+
+> Note that this is one of the advantages of a linked list over an array.
+> When you insert an item, you don't have to shift anything beyond it.
+> All that needs to be done is to update pointers.
+
+For `append`, we want to insert the value at the end.
+Since we don't have access to the tail, we must iterate through all `n` items until we reach the end.
+We know we have reached the tail when a node's `next` value is <Null />.
+
+<Image src="/images/append-singly-linked-list.gif" isVisuAlgo alt="Without a tail reference, appending traverses the linked list to find its final node." width={800} height={255} />
+
+<Append />
+
+Note: If we did have access to the `tail`, we could also append in <BigO.constant /> time.
+
+<Image src="/images/append-singly-linked-list-tail.gif" isVisuAlgo alt="Append a node by updating the current tail&#x27;s next pointer and moving the tail reference to the new node." width={800} height={139} />
+
+</Section>
+
+<Section>
+
+<DeleteNode />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Insert an Item</SubsectionHeader>
+
+To insert a node into a linked list, it requires <BigO.n /> time because we must iterate through the list to the index that we want to insert at.
+
+<Image src="/images/insert-singly-linked-list.gif" isVisuAlgo alt="Inserting a linked-list node updates its next pointer and its predecessor&#x27;s link." width={800} height={269} />
+
+<InsertNode />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Linked List Wrapper Object</SubsectionHeader>
+
+It is not as likely in an interview to be given a fully implemented linked list wrapper class,
+but it's good to understand it for clarity or if you are asked to build it yourself.
+
+The following is the implementation for a doubly linked list that has access to the `tail`.
+Since it is doubly linked, nodes will have a `prev` pointer.
+We will also track the length which is incremented each time a node is added.
+
+Since we're using a wrapper object, it manages the `head` and `tail` for us.
+
+You can interact with this doubly linked list wrapper class in a <a href="https://repl.it/@TreyHuffine/LinkedLists-Doubly-Implementation-JavaScript" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+<DoublyLinkedList />
+
+Our wrapper now tracks the `head` and `tail` nodes.
+When we `append`/`prepend`, we need to make sure we update our `head` or `tail` and also set the `next` and `prev` correctly.
+These can all be done in constant time <BigO.constant />.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Recursive Iteration</SubsectionHeader>
+
+We have used a `while` loop to iterate through our linked lists.
+Anytime we see a `while` loop, this is a clue that recursion would also work well.
+Let's see how to iterate a linked list recursively:
+
+<Recursive />
+
+</Section>

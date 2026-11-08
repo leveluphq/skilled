@@ -1,0 +1,23 @@
+```javascript
+class User {
+  constructor() {
+    this.username = '';
+  }
+
+  changeUsername(username) {
+    this.username = username;
+  }
+
+  getUsername() {
+    return this.username;
+  }
+
+  sayHello() {
+    console.log(`Hello, ${this.getUsername()}`);
+  }
+}
+
+const skilledUser = new User();
+skilledUser.changeUsername('Skilled.dev');
+skilledUser.sayHello();
+```

@@ -1,0 +1,72 @@
+```javascript
+const tests = [
+  {
+    input: {
+      matrix: [[]],
+      target: 1,
+    },
+    expected: [-1, -1],
+    description: 'empty',
+  },
+  {
+    input: {
+      matrix: [
+        [0, 2, 5, 8, 10],
+        [1, 4, 9, 15, 20],
+        [3, 7, 14, 19, 21],
+        [17, 22, 23, 24, 25],
+      ],
+      target: 19,
+    },
+    expected: [2, 3],
+    description: 'standard case',
+  },
+  {
+    input: {
+      matrix: [
+        [0, 2, 5, 8, 10],
+        [1, 4, 9, 15, 20],
+        [3, 7, 14, 19, 21],
+        [17, 22, 23, 24, 25],
+      ],
+      target: 0,
+    },
+    expected: [0, 0],
+    description: 'search to top left',
+  },
+  {
+    input: {
+      matrix: [
+        [0, 2, 5, 8, 10],
+        [1, 4, 9, 15, 20],
+        [3, 7, 14, 19, 21],
+        [17, 22, 23, 24, 25],
+      ],
+      target: 10,
+    },
+    expected: [0, 4],
+    description: 'search to top right',
+  },
+  {
+    input: {
+      matrix: [
+        [0, 2, 5, 8, 10],
+        [1, 4, 9, 15, 20],
+        [3, 7, 14, 19, 21],
+        [17, 22, 23, 24, 25],
+      ],
+      target: 6,
+    },
+    expected: [-1, -1],
+    description: 'item does not exist',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = searchMatrix(input.matrix, input.target);
+  const passed =
+    Array.isArray(userAnswer) && userAnswer[0] === expected[0] && userAnswer[1] === expected[1];
+
+  return { passed, description, expected, userAnswer };
+};
+```

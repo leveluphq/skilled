@@ -1,0 +1,9 @@
+```python
+def push(self, item):
+    previous_last_item = self.last
+
+    self.last = Node(item)
+    self.last.prev = previous_last_item
+
+    return self.last
+```

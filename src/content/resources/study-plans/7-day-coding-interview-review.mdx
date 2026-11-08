@@ -1,0 +1,73 @@
+This is a review plan for a developer who has already studied basic data structures and solved some coding problems. It assumes roughly 60 to 90 focused minutes each day. Seven days is enough to inspect weaknesses and rehearse familiar methods; it is not a reliable way to learn an unfamiliar curriculum from scratch.
+
+If the first day's work feels new, use the [30-day plan](/study-plans/30-day-coding-interview-plan) as a slower sequence. If you have less time on a day, complete one problem and its review carefully. Move unfinished material into a later session instead of compressing every explanation into a rushed pass.
+
+## Set up a review log
+
+Create a small record with columns for the problem, the approach you chose, the first failing case, the correction, and the date you will retry it. Keep the note specific enough that it identifies a decision. “Forgot to check the complement before insertion” is more useful than “need more practice.”
+
+Choose the language you can use comfortably in the interview environment. Review its queue, map, set, numeric sorting, and recursion behavior with the [JavaScript](/interview-prep/javascript), [TypeScript](/interview-prep/typescript), or [Python](/interview-prep/python) guide. Check that you can run code and read test feedback before a timed rehearsal.
+
+For each problem below, spend a few minutes restating the contract, attempt a solution without the answer open, then reserve time for testing and explanation. Reading a solution after getting stuck can help; mark that attempt as guided and retry it later from an empty editor.
+
+## Day 1: maps and a clear explanation
+
+Read [how to explain a solution](/guides/explain-your-interview-solution), then attempt [Target Two Sum](/course/target-two-sum). Explain the quadratic baseline before implementing the map-based approach. Test duplicate values, index zero, a single entry, and no valid answer.
+
+Your review question is why the map contains only earlier indices at the moment of lookup. If you can answer that precisely, move to the complexity statement and name the expected hash-operation assumption. End by writing two tests you would keep for the next attempt.
+
+If time remains, use [Catch the Hacker](/course/catch-the-hacker) to practice frequency counts. Notice how the map's meaning changes: it stores counts rather than original indices.
+
+## Day 2: arrays, strings, and pointer movement
+
+Work through [Product Array](/course/product-array). Explain what each prefix or suffix value represents and how zero entries affect the result. Check whether your implementation allocates additional arrays and include those arrays in its space analysis.
+
+Read the [two-pointers guide](/patterns/two-pointers) and trace a sorted pair search by hand. For every move, name the endpoint you can safely discard. Then inspect the negative-value counterexample in [sliding windows](/patterns/sliding-window) so you do not apply a variable-window rule outside its assumptions.
+
+The goal is to distinguish two approaches that both move indices forward but rely on different invariants. Record any boundary convention that caused an error.
+
+## Day 3: stacks and linked references
+
+Attempt [Valid Brackets](/course/valid-brackets). Test a closing bracket first, a mismatched type, an unclosed opening, and an empty input under the lesson's contract. Explain what remains in the stack after processing a prefix.
+
+Then attempt [Reverse a Linked List](/course/reverse-a-linked-list). Draw a three-node list and identify which next reference must be saved before redirecting a link. Check the empty list and a one-node list.
+
+Use the remaining review time to retry Day 1's first failing case from memory. A second attempt should show whether the correction transferred beyond the original code.
+
+## Day 4: recursive trees
+
+Use the [tree traversal tool](/tools/tree-traversal) to predict preorder, inorder, and postorder before advancing through the example. Apply a tree with a missing child so the exercise is more than reciting a balanced-tree sequence.
+
+Attempt [Binary Tree Max Depth](/course/binary-tree-max-depth), then read the [BST validation lesson](/course/binary-search-tree-validate). Explain why comparing only a node and its immediate children cannot enforce every ancestor constraint.
+
+Analyze a balanced tree and a chain separately when discussing recursion depth. Write down whether you are counting nodes or edges for depth, then make the empty-tree case agree with that choice.
+
+## Day 5: graphs and shortest paths
+
+Read [BFS versus DFS](/guides/bfs-vs-dfs), then use the [graph tool](/tools/graph-traversal) on a cyclic input. Predict the visit order and inspect the queue or active call path after each step.
+
+Attempt [Count Islands](/course/count-islands). State the allowed neighbor directions and whether visiting mutates the grid. Explain why starting a search at each unseen land cell counts regions rather than individual cells.
+
+If shortest paths are a weak area, use [Pilot a Rocket](/course/pilot-a-rocket) instead of adding another graph problem. State that BFS minimizes edge count for equal-cost edges. An explanation that silently assumes weighted edges needs correction.
+
+## Day 6: dynamic programming or language-specific work
+
+Choose the branch most relevant to the interview. For an algorithm-focused round, study the [dynamic-programming recurrence](/patterns/dynamic-programming) and attempt [Steal Packages](/course/steal-packages). State the complete cache key and compare memoization with bottom-up evaluation.
+
+For a JavaScript-focused round, implement [debounce](/course/debounce) or [throttle](/course/throttle), then test the contract with the [timing visualizer](/tools/debounce-throttle). Follow the output traces in the [event-loop guide](/guides/javascript-event-loop) if callback ordering is uncertain.
+
+Do one branch well before choosing an optional second branch. Reserve the final part of the session to revisit the most persistent error in your review log.
+
+## Day 7: timed rehearsal and final checks
+
+Choose a problem you have not just reviewed. Set a realistic interview-length timer, work in the expected environment, and explain the contract, baseline, implementation, tests, and complexity out loud. A peer can ask clarifying questions; a recording can also reveal where your explanation becomes vague.
+
+Review the attempt using observable questions. Did the code run? Did the tests cover the boundary that mattered? Could a listener identify your maintained state? Did you describe actual allocations and stack usage? Write one correction and retry the affected part.
+
+Use the last session for practical readiness: environment access, editor familiarity, how to share or submit code, and a concise explanation of a project you know well. Stop adding unfamiliar topics at the expense of correcting known errors.
+
+## Adapt the plan after the rehearsal
+
+A missed syntax detail and a missing algorithmic idea require different next sessions. Fix a collection API mistake with a small focused implementation. Fix a weak recurrence by writing states and transitions on paper before coding. Fix an unclear explanation by replaying a short part of the rehearsal and making the state definition explicit.
+
+Continue the review log after the seven days. Schedule another attempt for problems you completed with guidance. Use the broader course topics to fill the gaps the rehearsal exposed, rather than treating completion of the calendar as evidence that every topic is ready.

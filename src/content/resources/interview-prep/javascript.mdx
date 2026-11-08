@@ -1,0 +1,88 @@
+Prepare for a JavaScript coding interview by practicing two kinds of work: solving a problem and explaining the JavaScript behavior your solution depends on. A correct graph traversal can fail because of a queue implementation mistake. A debounce can look plausible while losing its receiver or firing twice for a single event.
+
+Use this guide to build a small set of reliable implementation habits. The course supports several languages, but choosing JavaScript should be a deliberate choice you can explain and use comfortably under time pressure. If you already solve problems in TypeScript, the [TypeScript preparation guide](/interview-prep/typescript) adds the type decisions that matter without changing the underlying algorithms.
+
+## Build a practical data structure toolkit
+
+Be comfortable with arrays, `Map`, and `Set` before memorizing more patterns. Use an array for indexed sequences and a stack with `push` and `pop`. Use a map when keys and associated values both matter, such as a value-to-index lookup or a frequency count. Use a set when you need membership without a separate value.
+
+A plain object can be useful for a constrained record, but an arbitrary input string used as a property name deserves care. `Map` avoids inherited object properties and makes key membership explicit. It also distinguishes keys by its own equality rules; two separate object values are separate keys even when their fields look identical.
+
+For a queue, a head index is a simple interview implementation. Repeatedly shifting a long array can add element-moving work in common array models. Keep a head pointer, append newly discovered items, and process while the head remains below the array length. The [BFS guide](/guides/bfs-vs-dfs) includes a complete example.
+
+Do not assume that a priority queue is a built-in general-purpose JavaScript collection. If the interview environment supplies one, learn its API. Otherwise, prepare a heap implementation or discuss an alternative whose complexity you can state accurately.
+
+## Practice numeric sorting and mutation
+
+A default array sort compares values after string conversion. Numeric problems normally need an explicit comparator such as `(a, b) => a - b`. Sorting `[2, 10, 3]` without that comparator does not produce numeric order.
+
+Also remember that `sort` changes the array it is called on. If the caller's input must be preserved, make an appropriate copy first and include its memory cost in the analysis. The sorting algorithm and its resource usage depend on the implementation; do not claim a specific engine's behavior as a language-wide time or space guarantee. See the [Array.sort reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) for the API contract.
+
+Stable ordering, comparator consistency, and equal values can matter when sorting structured records. A comparator should express the requested order and return zero for equivalent entries under that order. Returning only a boolean does not correctly represent all three comparison outcomes.
+
+## Use presence checks that preserve valid values
+
+Index zero, numeric zero, false, and an empty string can all be valid data. A truthiness check does not establish whether a map key is absent.
+
+```javascript
+function firstRepeatedIndex(values) {
+  const firstIndex = new Map();
+  for (let i = 0; i < values.length; i += 1) {
+    if (firstIndex.has(values[i])) return firstIndex.get(values[i]);
+    firstIndex.set(values[i], i);
+  }
+  return null;
+}
+```
+
+For `[8, 3, 8]`, this returns zero. A version that checked `if (firstIndex.get(values[i]))` would miss that earlier entry. This error appears in caches and dynamic-programming tables too, where a computed answer of zero must remain distinguishable from “not computed.”
+
+Choose a return convention and keep it explicit. If null means no answer, a successful index zero is easy to distinguish. If undefined can itself be a stored value, use `has` for presence rather than relying on `get` alone.
+
+## Know the string and number model
+
+JavaScript string indexing exposes UTF-16 code units. Iteration with `for...of` or spread operates on code points. Neither automatically treats every displayed character as one unit. An ASCII interview problem can avoid much of that complexity by stating its alphabet; a general text problem needs a more careful contract.
+
+String concatenation and slicing may allocate or copy data depending on the operation and implementation. A loop that repeatedly constructs a growing result deserves analysis beyond counting loop iterations. For large output, collecting pieces and joining them can be easier to reason about, but measure or qualify runtime-specific claims.
+
+For numbers, confirm whether the input consists of finite safely representable integers. JavaScript's `Number` does not exactly represent every possible integer magnitude. BigInt provides integer arithmetic with a different type and operation costs, and mixing it casually with Number arithmetic is an error. Do not switch numeric models halfway through a solution without revisiting inputs, comparisons, and output serialization.
+
+## Separate general algorithms from JavaScript utilities
+
+Array search, tree traversal, graph traversal, and dynamic programming are general algorithm skills. Debounce, throttle, promise aggregation, array-method behavior, and event emitters also exercise JavaScript-specific contracts.
+
+For utilities, start from observable behavior. A debounce needs a decision about leading/trailing calls and cancellation. A promise aggregator needs input-order preservation, rejection handling, and an empty-input result. An event emitter needs rules for duplicate subscriptions, listener removal, and changes made while publication is in progress.
+
+Those details produce better tests than a vague claim that the implementation “works like the native version.” Use [debounce versus throttle](/guides/debounce-vs-throttle), [Promise.all](/guides/implement-promise-all), and the [event-loop guide](/guides/javascript-event-loop) to practice behavior you can trace with specific examples.
+
+## Make recursion and mutation visible
+
+Recursive code uses the call stack. A chain-shaped tree or deep graph can exceed a runtime's recursion limit even when the asymptotic algorithm is correct. Learn an explicit-stack version of traversal and explain when it is appropriate.
+
+When backtracking, restore every shared-state change before trying the next branch. Push a choice, recurse, then pop it. If you save a result that should remain independent, copy the current path at the right point; saving the same mutable array reference repeatedly does not preserve different paths.
+
+For in-place algorithms, explain which part of the array is finalized and which part is unread. For linked structures, preserve the next reference before redirecting a link. Naming that state is more useful than narrating syntax.
+
+## Function calls and this
+
+A regular method called as `counter.increment()` receives `counter` as its receiver. Saving that method in a variable and calling `increment()` loses that receiver. A strict-mode regular function then receives undefined as `this`; a non-strict function can substitute the global object. Passing the method to an API delegates the call to that API, so inspect how the callback will be invoked. [MDN's this reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) explains the call and binding rules.
+
+Bind a method when the callback must keep a particular receiver: `counter.increment.bind(counter)` creates a bound function. Alternatively, an arrow callback such as `() => counter.increment()` makes the intended method call explicitly. Keep the same callback reference if an unsubscribe operation will need it later.
+
+An arrow function captures the enclosing `this` instead of receiving a new one from its call site. Replacing every method with an arrow can therefore change behavior you meant to preserve. For [Fix 'this'](/course/fix-this), identify the caller, receiver, and callback boundary before choosing a repair. Test both a direct method call and the callback path.
+
+## Practice with a repeatable sequence
+
+Start with [arrays](/topics/arrays), [hash tables](/topics/hashtables), and [strings](/topics/strings). Solve Two Sum with a map and explain why the lookup happens before insertion. Follow with bracket validation, linked-list reversal, and a binary-tree traversal. Then move into graphs and dynamic programming.
+
+Alongside that sequence, implement one JavaScript utility at a time. Test it with a small deterministic input trace before adding options. A single carefully tested debounce teaches more than copying several unexamined variations.
+
+If you have a month, use the [30-day plan](/study-plans/30-day-coding-interview-plan). If the fundamentals are already familiar and the interview is close, use the [seven-day review](/study-plans/7-day-coding-interview-review). Reduce the number of new topics when necessary, while preserving time to revisit and explain earlier solutions.
+
+## Check readiness with a timed rehearsal
+
+Choose a problem you have not just read. Clarify the contract, describe a baseline, implement a solution, and test the boundaries while explaining your decisions. Record which mistakes came from the algorithm and which came from language behavior.
+
+Review whether you can use a map without losing index zero, sort numbers correctly, preserve or disclose mutation, and analyze the actual structures your code allocates. For an asynchronous utility, check the callback order and error path as carefully as the successful case.
+
+Turn each failed case into a small regression test. On the next rehearsal, solve the problem again without the old implementation open. That gives you evidence of what you can reproduce when the code is no longer in short-term memory.

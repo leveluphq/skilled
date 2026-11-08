@@ -1,0 +1,9 @@
+```kotlin
+fun addEdge(source: String, destination: String) {
+    adjacencyList.getValue(source).add(destination)
+
+    if (undirected) {
+        adjacencyList.getValue(destination).add(source)
+    }
+}
+```

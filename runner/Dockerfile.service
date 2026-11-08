@@ -1,0 +1,21 @@
+# A language's runner image with the runner agent added (runner/agent), for
+# running lesson code on a hosted service: Cloudflare Containers, a Docker
+# host, or anything that runs containers. Built by scripts/runner-service.js
+# from the same images the app runs locally (scripts/runner-images.js).
+# Always passed by scripts/runner-service.js; the default only fails clearly
+ARG BASE_IMAGE=pass-the-base-image-build-arg
+
+# The agent is a static Go binary, cross-compiled for the target platform
+FROM --platform=$BUILDPLATFORM golang:1.27.2 AS agent
+ARG TARGETOS
+ARG TARGETARCH
+WORKDIR /src
+COPY agent/ ./
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags='-s -w' -o /skilled-runner-agent .
+
+FROM ${BASE_IMAGE}
+COPY --from=agent /skilled-runner-agent /usr/local/bin/skilled-runner-agent
+# The agent starts as root and runs each program as nobody
+USER root
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/skilled-runner-agent", "serve"]

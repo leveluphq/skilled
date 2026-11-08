@@ -1,0 +1,24 @@
+```rust
+// The test runner provides BinaryNode:
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct BinaryNode {
+//     pub data: i32,
+//     pub left: Option<Rc<RefCell<BinaryNode>>>,
+//     pub right: Option<Rc<RefCell<BinaryNode>>>,
+// }
+//
+// impl BinaryNode {
+//     pub fn new(data: i32) -> Self { ... }
+// }
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    /// Returns the depth of the deepest node (the root is at depth 0)
+    pub fn find_max_depth(root: Option<Rc<RefCell<BinaryNode>>>) -> i32 {
+        // Your solution here
+        0
+    }
+}
+```

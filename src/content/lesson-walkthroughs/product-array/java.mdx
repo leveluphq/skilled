@@ -1,0 +1,93 @@
+The Java Product Array starter accepts a `long[]` and returns a `long[]`. Each result entry is the product of every input value except the value at the same index. For `[2, 3, 4]`, the answer is `[12, 8, 6]`. Division is forbidden, and the returned array does not count toward the exercise's auxiliary-space allowance.
+
+The solution below uses the output to hold prefix products, then multiplies each by a running suffix. It preserves the original input and uses only a few scalar variables in addition to the output. Numeric overflow is a separate concern, which we will state explicitly rather than hide behind the linear-time analysis.
+
+## Assign every prefix into the output array
+
+Java initializes a newly allocated `long[]` to zeros. Multiplying those initial entries by a prefix would keep them zero. Instead, assign each prefix directly during the first pass. This also avoids a separate fill pass.
+
+```java
+class Solution {
+    public long[] buildProductArray(long[] nums) {
+        long[] results = new long[nums.length];
+        long prefix = 1L;
+
+        for (int i = 0; i < nums.length; i++) {
+            results[i] = prefix;
+            prefix *= nums[i];
+        }
+
+        long suffix = 1L;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            results[i] *= suffix;
+            suffix *= nums[i];
+        }
+
+        return results;
+    }
+}
+```
+
+At the moment a result entry is assigned, `prefix` contains only values to its left. At the moment that entry is multiplied during the reverse pass, `suffix` contains only values to its right. The current value is added to each running product afterward, preparing for the next index.
+
+The literal `1L` makes the intended numeric type visible. The indexes remain `int`, which is appropriate for Java array positions. There is no need to box products into `Long` objects or introduce collection classes for this array-based operation.
+
+## Trace the two invariants on one input
+
+For `[2, 3, 4]`, the forward pass writes `[1, 2, 6]`. The first entry receives the empty-left product, `1`. The second receives `2`, and the third receives `2 * 3`. None includes the number at its own index.
+
+Walking backward, the right product is initially `1`, so the final output entry remains `6`. After including the last input value, the suffix is `4`, and the middle output becomes `2 * 4 = 8`. After including `3`, the suffix is `12`, and the first output becomes `1 * 12 = 12`.
+
+Reversing the update order in either loop would include the excluded number. Running the suffix pass left to right would also break its meaning: it would no longer represent the portion strictly after the current position. The direction and timing follow from the segment each scalar represents.
+
+## Handle zeros through the same calculation
+
+An input of `[2, 0, 4]` produces `[0, 8, 0]`. Every output other than the zero's own position includes that zero. At the zero's position, the left and right products are `2` and `4`, so the correct nonzero answer survives.
+
+For `[0, 3, 0]`, every result is zero because excluding one position still leaves a zero elsewhere. This follows directly from the prefix/suffix construction; it needs no zero-count branch. Signs work the same way: `[-2, 3, -4]` produces `[-12, 8, -6]`.
+
+The method returns an empty array for empty input. A singleton returns `[1]`, following the conventional empty product. Null input is outside this implementation's contract. If production callers may supply null, decide explicitly whether to reject it with a documented exception or use another policy; silently treating null as an empty array would introduce a new meaning.
+
+## State the long overflow assumption
+
+Java `long` arithmetic is fixed-width. Widening from `int` to `long` increases the supported range but does not make products unlimited. This code assumes every running prefix, running suffix, and final result fits in a signed `long`. A complete running product can overflow even when individual output values fit, so checking only expected results is insufficient.
+
+If the requirement is to detect overflow, replace multiplications with `Math.multiplyExact` and document the resulting `ArithmeticException`. It may detect overflow in a full running product that is not used in the output. Supporting arbitrary exact products requires a contract using `BigInteger` rather than `long[]`. The [Math.multiplyExact API](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Math.html#multiplyExact(long,long)) specifies the checked behavior.
+
+Those options serve different numeric contracts. Choose deliberately rather than changing exception behavior as an incidental optimization. The bounded examples here stay within the stated `long` range.
+
+## Run examples and preserve the caller's array
+
+```java
+class ProductExamples {
+    static void check(long[] input, long[] expected) {
+        long[] before = input.clone();
+        long[] actual = new Solution().buildProductArray(input);
+        if (!java.util.Arrays.equals(actual, expected)) {
+            throw new AssertionError("Unexpected product array");
+        }
+        if (!java.util.Arrays.equals(input, before)) {
+            throw new AssertionError("Input was modified");
+        }
+    }
+
+    public static void main(String[] args) {
+        check(new long[] {}, new long[] {});
+        check(new long[] {7}, new long[] {1});
+        check(new long[] {2, 3, 4}, new long[] {12, 8, 6});
+        check(new long[] {2, 0, 4}, new long[] {0, 8, 0});
+        check(new long[] {0, 3, 0}, new long[] {0, 0, 0});
+        check(new long[] {-2, 3, -4}, new long[] {-12, 8, -6});
+        check(new long[] {3000000000L, 2, 3},
+              new long[] {6, 9000000000L, 6000000000L});
+    }
+}
+```
+
+The last example would not fit in a signed 32-bit result, so it helps catch an accidental switch back to `int`. The clone check catches an implementation that overwrites input values before the second pass needs them. The tests throw explicitly and therefore do not depend on Java's optional assertion flag.
+
+## Explain the actual storage budget
+
+For fixed-width inputs satisfying the overflow assumption, two scans take `O(n)` time. The output has `O(n)` entries, and the extra working state is `O(1)`. Separate prefix and suffix arrays would also be linear-time, but their additional storage would count against the exercise's budget.
+
+Reconstruct the code by first describing what belongs strictly to the left and right of an index. Then test an ordinary three-value input, one zero, and two zeros. Those cases check the loop direction, assignment order, and exclusion rule without relying on a large test input.

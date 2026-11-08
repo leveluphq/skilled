@@ -1,0 +1,23 @@
+```java
+static double run(String id) {
+    return calculatePrice(new Item(id));
+}
+
+static double calculatePrice(Item item) {
+    return item.price + calculateTax(item.price);
+}
+
+static double calculateTax(double price) {
+    return price * 0.1;
+}
+
+run("id1");
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run("id1")                            |
+------------------------------------------
+   Call Stack
+```

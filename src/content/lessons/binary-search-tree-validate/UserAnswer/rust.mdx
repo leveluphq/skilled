@@ -1,0 +1,24 @@
+```rust
+// The test runner provides BinaryNode:
+// #[derive(Debug, PartialEq, Eq)]
+// pub struct BinaryNode {
+//     pub data: i32,
+//     pub left: Option<Rc<RefCell<BinaryNode>>>,
+//     pub right: Option<Rc<RefCell<BinaryNode>>>,
+// }
+//
+// impl BinaryNode {
+//     pub fn new(data: i32) -> Self { ... }
+// }
+
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    /// Returns whether the tree is a binary search tree
+    pub fn is_bst(root: Option<Rc<RefCell<BinaryNode>>>) -> bool {
+        // Your solution here
+        false
+    }
+}
+```

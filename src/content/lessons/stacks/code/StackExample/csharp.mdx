@@ -1,0 +1,23 @@
+```csharp
+decimal Run(string id) {
+    return CalculatePrice(new Item(id));
+}
+
+decimal CalculatePrice(Item item) {
+    return item.price + CalculateTax(item.price);
+}
+
+decimal CalculateTax(decimal price) {
+    return price * 0.1m;
+}
+
+Run("id1");
+
+
+|  price * 0.1m                          |
+|  item.price + CalculateTax(item.price) |
+|  CalculatePrice(item)                  |
+|  Run("id1")                            |
+------------------------------------------
+   Call Stack
+```

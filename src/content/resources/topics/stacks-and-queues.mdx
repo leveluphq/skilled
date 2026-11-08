@@ -1,0 +1,41 @@
+Stacks and queues choose which pending item is processed next. A stack uses last-in-first-out order. A queue uses first-in-first-out order. That small difference changes how an algorithm handles nesting, traversal, and deferred work.
+
+Read [Stacks](/course/stacks) and [Queues](/course/queues), then implement each interface. Before moving to a problem, verify push/pop/peek or enqueue/dequeue on an empty structure, one item, and several alternating operations.
+
+## Let the processing order describe the problem
+
+Nested brackets need the most recent unmatched opening to be checked first, which is stack behavior. Breadth-first graph traversal needs the earliest discovered pending node to be processed first, which is queue behavior.
+
+The abstract name does not establish the implementation's operation cost. An array used as a stack can append and remove at the end. A queue implemented by repeatedly shifting a large array may do element-moving work. A deque, ring buffer, linked representation, or appropriate head-index strategy can provide the intended queue behavior.
+
+The [data structure reference](/reference/data-structure-time-complexity) explains those qualifications. Include retained processed entries when analyzing a simple head-index queue.
+
+## Match brackets with a stack invariant
+
+In [Valid Brackets](/course/valid-brackets), the stack represents openings in the processed prefix that still need a matching close. A new opening is added. A closing bracket must match the most recent opening's type, then remove it.
+
+A closing-first input fails because no opening is available. A mismatched type fails even when the total number of brackets is even. A nonempty stack at the end means openings remain unfinished.
+
+Use examples such as `([)]` to distinguish counts from correct nesting. Separate counters for each bracket type cannot capture the required order. Check how the exercise treats non-bracket characters before filtering them or treating them as errors.
+
+## Preserve aggregates across stack updates
+
+[Max Min Stack](/course/max-min-stack) asks for information beyond the top value. An auxiliary history can retain the aggregate state that should become visible after a pop.
+
+Duplicate minima or maxima expose incomplete implementations. If a minimum value appears twice, removing one copy must not remove the other occurrence's effect. Decide whether aggregate history stores every stack level or uses counted changes, and test the corresponding restoration rule.
+
+A method that scans the whole stack on every minimum query has a different complexity from one that retains sufficient state during pushes and pops. State the tradeoff between query cost and additional storage.
+
+## Connect the queue to graph traversal
+
+In BFS, the queue contains discovered nodes awaiting processing. Mark them when they are enqueued so several parents cannot add the same node repeatedly. Processing a node appends previously unseen neighbors behind the existing frontier.
+
+This ordering gives BFS its distance-layer behavior for equal-cost edges. Changing the queue to a stack changes the exploration order and invalidates that shortest-path argument. Use [BFS versus DFS](/guides/bfs-vs-dfs) and the [graph playground](/tools/graph-traversal) to inspect the difference.
+
+A disconnected node does not appear merely because the queue eventually empties. It requires another starting search if the task asks for a complete graph traversal.
+
+## Test sequences, not only isolated operations
+
+An interface can pass one push and one pop while failing after the final item is removed and a new item is added. Test alternating operations, empty-to-nonempty transitions, repeated values, and long sequences against a small reference model.
+
+Then explain what the structure holds at a chosen moment in the algorithm. For bracket matching, identify unmatched openings. For BFS, identify the frontier. A specific state definition lets you test correctness independently of the underlying storage choice.

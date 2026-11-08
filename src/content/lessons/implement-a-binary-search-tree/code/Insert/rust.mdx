@@ -1,0 +1,23 @@
+```rust
+fn insert(&mut self, data: i32) -> &mut Self {
+    let node = Box::new(BinaryNode::new(data));
+
+    // We hold the link we're looking at: the root, then a node's `left` or `right`.
+    // If the root is None, the first insert becomes the root.
+    let mut current_link = &mut self.root;
+
+    while let Some(current_node) = current_link {
+        current_link = if data < current_node.data {
+            // Continue by traversing left
+            &mut current_node.left
+        } else {
+            // Continue by traversing right
+            &mut current_node.right
+        };
+    }
+
+    // We reached a leaf's empty link (None), so we insert the node here
+    *current_link = Some(node);
+    self
+}
+```

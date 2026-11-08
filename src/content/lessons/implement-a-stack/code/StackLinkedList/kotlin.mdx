@@ -1,0 +1,34 @@
+```kotlin
+class Node(var data: Int) {
+    var prev: Node? = null
+}
+
+class Stack {
+    var last: Node? = null
+
+    fun peek(): Node? {
+        return last
+    }
+
+    fun push(item: Int): Node {
+        val previousLastItem = last
+
+        val newLastItem = Node(item)
+        newLastItem.prev = previousLastItem
+        last = newLastItem
+
+        return newLastItem
+    }
+
+    fun pop(): Node? {
+        val removedItem = last
+
+        // Update `last` as long as we have items left in the stack
+        if (removedItem != null) {
+            last = removedItem.prev
+        }
+
+        return removedItem
+    }
+}
+```

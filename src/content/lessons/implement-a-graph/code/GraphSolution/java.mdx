@@ -1,0 +1,38 @@
+```java
+import java.util.*;
+
+class Graph {
+    private Map<String, List<String>> adjacencyList;
+    private boolean undirected;
+
+    // The graph is undirected by default
+    public Graph() {
+        this(true);
+    }
+
+    public Graph(boolean undirected) {
+        this.adjacencyList = new HashMap<>();
+        this.undirected = undirected;
+    }
+
+    public void addVertex(String vertex) {
+        adjacencyList.put(vertex, new ArrayList<>());
+    }
+
+    public void addEdge(String source, String destination) {
+        adjacencyList.get(source).add(destination);
+
+        if (undirected) {
+            adjacencyList.get(destination).add(source);
+        }
+    }
+
+    public void removeVertex(String vertex) {
+        adjacencyList.remove(vertex);
+
+        for (String node : adjacencyList.keySet()) {
+            adjacencyList.get(node).removeIf(v -> v.equals(vertex));
+        }
+    }
+}
+```

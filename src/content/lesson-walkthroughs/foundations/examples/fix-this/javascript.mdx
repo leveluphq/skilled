@@ -1,0 +1,16 @@
+```javascript
+class Presenter {
+    constructor(name) {
+        this.name = name;
+    }
+    getName() { return this.name; }
+}
+function meetingCallbacks(presenter, names) {
+    const readPresenter = presenter.getName.bind(presenter);
+    const seats = [];
+    for (let index = 0; index < names.length; index++) {
+        seats.push(() => 'Seat ' + (index + 1) + ': ' + names[index]);
+    }
+    return { readPresenter, seats };
+}
+```

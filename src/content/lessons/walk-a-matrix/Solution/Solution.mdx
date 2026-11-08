@@ -1,0 +1,37 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+1. Start at the top-left node and walk around the entire perimeter.
+2. After we traverse all 4 sides, the problem repeats itself but with each side moved inward by 1 index (+1 lower bounds, -1 upper bounds).
+3. We repeat this `while` the upper bounds are `>=` lower bounds.
+4. Since we update the bounds after traversing its side, we need to check that we are still in bounds.
+This ensures we don't walk a side more than once when the upper and lower indexes are equal.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+This question can be solved in linear time <BigO.n /> and constant space <BigO.constant />.
+
+We have to walk through the matrix items once, so we know it can't be any better than linear time,
+and since we don't add any additional data structures (it asks for an array as the return type, so we won't count that against our space),
+we know we can solve it in constant space if we track our visited values with variables instead of an additional data structure.
+
+<VariationsSubtitle />
+
+There are a few different ways to test how you think through a matrix problem.
+Read through these and make sure you feel comfortable based on what you just learned.
+
+- What if we inverted the problem and provided an input integer `n` and want to build an `n x n` square matrix where the values are `1` to `n^2` printed clockwise from `matrix[0][0]` to the center.
+- Walking a matrix clockwise is only one way to do it.
+  Think through how you would handle other paths such as walking vertically column-by-column or in a zig-zag diagonally.
+- What if this was a 3-D+ array? It would be harder to visualize, but the solution builds off of what we just did.
+- How would you rotate a matrix (or image) 90°?
+- This can also be solved recursively.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

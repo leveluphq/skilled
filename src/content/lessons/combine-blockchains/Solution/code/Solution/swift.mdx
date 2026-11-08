@@ -1,0 +1,52 @@
+```swift
+class Solution {
+    func combineBlockchains(_ chainHead1: ListNode?, _ chainHead2: ListNode?) -> ListNode? {
+        // If either chain is empty, the other one is already the combined chain
+        guard let chainHead1, let chainHead2 else {
+            return chainHead1 ?? chainHead2
+        }
+
+        // Store the head of the first item in the combined chain
+        let resultHead = chainHead1.data < chainHead2.data ? chainHead1 : chainHead2
+        // Init the combined list with the first item
+        var combinedTail = resultHead
+        var currentNode1: ListNode? = chainHead1
+        var currentNode2: ListNode? = chainHead2
+
+        // Move the node forward that was already added to our resultHead
+        if chainHead1.data < chainHead2.data {
+            currentNode1 = chainHead1.next
+        } else {
+            currentNode2 = chainHead2.next
+        }
+
+        // We iterate through until one of the linked lists has been depleted
+        while let node1 = currentNode1, let node2 = currentNode2 {
+            // In either case, we do the same thing.
+            // We attach the node to our combined list,
+            // and then we move forward in the contributed chain's list
+            if node1.data < node2.data {
+                combinedTail.next = node1
+                currentNode1 = node1.next
+            } else {
+                combinedTail.next = node2
+                currentNode2 = node2.next
+            }
+
+            // Move to the new tail in the combined chain (we just attached it, so it exists)
+            combinedTail = combinedTail.next!
+        }
+
+        // One of the chains has been depleted (reached nil)
+        // The other has its remaining items in sorted order,
+        // so we can just set the next value of our
+        // combined list to the non-nil node
+        combinedTail.next = currentNode1 ?? currentNode2
+
+        // ^ NOTE: ?? gives currentNode1 if it has a value,
+        // and otherwise yields to currentNode2
+
+        return resultHead
+    }
+}
+```

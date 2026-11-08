@@ -1,0 +1,19 @@
+import { Container } from 'style/elements';
+import PlaceValue from './code/PlaceValue';
+
+The first challenge of this problem is deciding how to separate the digits so that they can be handled individually.
+Numbers and integers are primitive values that can't be iterated, and we can't change the data type of the input to something like a string or an array.
+
+A number can be viewed as a sum of its individual parts.
+Let's try to view the integer by decomposing it into a sum of its place-value parts.
+
+<PlaceValue />
+
+We can see that the sum of the digits is actually the sum of the item in its place-value divided by the power of that digit.
+
+So `1` can be immediately added since it's in the ones place.
+`20` is in the tens place, so we divided it by 10 and can add it to `1`.
+The same holds true for the `300` in the hundreds place where we divide it by 100 and `6000` in the thousands place where we divide it by 1000.
+Furthermore, each step can be viewed as divided by increments of `10`, so we can decompose the division by viewing `/ 1000` as `/ 10 / 10 / 10`.
+
+What we are doing is converting each digit to its representation in the ones place by dividing by factors of 10.

@@ -1,0 +1,23 @@
+```swift
+// Create a helper function to add visitedNodes to the signature
+// (inout, since a Swift Set is a value: every call updates the same set)
+func dfs(_ currentNode: GraphNode, _ visitedNodes: inout Set<ObjectIdentifier>) {
+    // Use node value for the question
+    visit(currentNode)
+
+    visitedNodes.insert(ObjectIdentifier(currentNode))
+
+    for childNode in currentNode.edges {
+        if !visitedNodes.contains(ObjectIdentifier(childNode)) {
+            dfs(childNode, &visitedNodes)
+        }
+    }
+}
+
+func recursiveDepthFirstSearch(_ startingNode: GraphNode) {
+    // Init our set of visited nodes
+    // (a Set of ObjectIdentifier tracks nodes by identity, since GraphNode isn't Hashable)
+    var visitedNodes = Set<ObjectIdentifier>()
+    dfs(startingNode, &visitedNodes)
+}
+```

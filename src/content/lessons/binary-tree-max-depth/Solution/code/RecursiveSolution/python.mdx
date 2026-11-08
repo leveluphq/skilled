@@ -1,0 +1,10 @@
+```python
+def find_max_depth(root):
+    if root == None:
+        return -1
+    
+    left_depth = find_max_depth(root.left)
+    right_depth = find_max_depth(root.right)
+
+    return max(left_depth, right_depth) + 1
+```

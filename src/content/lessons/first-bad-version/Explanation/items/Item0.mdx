@@ -1,0 +1,18 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+import IsBadVersion from '../../QuestionStatement/inlineCode/IsBadVersion.tsx';
+import BruteForce from './code/BruteForce';
+
+The brute force way to solve this is simple but effective.
+We can start at the beginning and test if each version is either good or bad. The first version that we reach that is bad must be the answer.
+
+<Image src="/images/first-bad-version-brute-force.png" alt="A linear scan checks versions in order and stops at the first bad result." width={1692} height={1174} />
+
+Translating this to code,
+we use a loop to start at 0 and iterate up to the input value that represents the total versions. We test each version with the <IsBadVersion /> function.
+
+> Note that we start at 1 instead of 0 because there isn't a version 0.
+
+<BruteForce />
+
+In the worst case, we iterate through all the items to find the bad version, making this solution <BigO.n /> linear time.

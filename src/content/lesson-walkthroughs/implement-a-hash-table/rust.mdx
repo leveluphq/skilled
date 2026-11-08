@@ -1,0 +1,115 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The lesson builds a fixed-size hash table with string keys, chained buckets, and three operations: `get`, `insert`, and `remove`. Its deliberately simple hash function makes collisions easy to see. The implementation is useful for understanding a table's mechanics; native maps usually add more sophisticated hashing and resizing policies.
+
+## Keep both the key and the value
+
+Hash a string to a bucket index by combining its character values and reducing the result to the table size. Different keys can produce the same index. Each occupied bucket therefore contains pairs, and a lookup scans those pairs for an equal key. Returning the first value in the bucket would fail as soon as two keys collide.
+
+To insert, create the bucket if necessary, then search for the key. Replace its value if it already exists; append a pair if it does not. Try inserting the same key twice with different values. The table should contain one entry for that key, and a later lookup should return the replacement.
+
+## Delete the pair and test reinsertion
+
+The current removal code deletes the matching pair from its bucket. Setting its value to `undefined` would leave a record behind and could confuse later membership or insertion logic. A regression sequence should insert a key, remove it, insert it again, then read the new value. Keep another colliding key in the same bucket to check that deletion does not damage its neighbor.
+
+Also test removal from a missing bucket, removal of a missing key from an occupied bucket, and removal of the final pair. Use the method's documented missing-value result consistently. If you extend the API to store arbitrary values, decide how callers will distinguish absence from a stored `undefined`.
+
+## Make the load factor part of the analysis
+
+With a suitable distribution, table size controls the average chain length. A size of one forces every key into the same bucket and exposes linear scanning. The lesson does not resize automatically, so an ever-growing collection cannot retain short chains at a fixed capacity indefinitely.
+
+Include key hashing and comparisons when keys have variable length. Compare the teaching implementation with [Hash Tables](/watch/hash-tables), then open the [current code](/course/implement-a-hash-table) and trace a collision through all three methods. Use distinct keys whose character sums match to make the collision intentional.
+
+## Force a collision to test the implementation
+
+Construct a table with a positive bucket count of one. Insert `ab` → 4 and `ba` → 9. Both keys must land in the same bucket. Looking up either key must compare stored keys inside the bucket; the bucket index alone cannot identify a pair. Inserting `ab` again updates its value while preserving `ba`.
+
+Removing `ab` should return its previous value and leave `ba` readable. A second removal returns an absent result. These operations exercise the collision chain more thoroughly than inserting several keys into conveniently different buckets.
+
+## Keep the teaching hash separate from production requirements
+
+The example adds character values modulo a fixed bucket count. It exposes indexing and separate chaining, but it is easy to collide deliberately and does not resize. With a long bucket, operations become linear in the number of stored pairs, plus the cost of hashing and comparing the key. Expected constant-time lookup needs assumptions about distribution and load; it is not guaranteed by the class name.
+
+Use a positive size, string keys, and integer values for the cross-language trace. Native string iteration units differ, so do not expect identical Unicode bucket indices in every version. That does not affect key/value correctness within one version. Test updates, colliding removals, missing keys, and values of zero. Zero must remain distinguishable from absence.
+
+## Rust example and implementation choices
+
+Each bucket is an `Option<Vec<(String, i32)>>`, and get_or_insert_with creates the vector only when needed. Stored keys are owned Strings, while method parameters borrow &str. Returning `Option<i32>` avoids ambiguity for zero. remove moves out the selected pair after finding its key. Character-based hashing may differ from byte-oriented versions without changing the map behavior of this instance.
+
+### Complete implementation
+
+```rust
+struct HashTable {
+    size: usize,
+    table: Vec<Option<Vec<(String, i32)>>>,
+}
+
+impl HashTable {
+    fn new(size: usize) -> Self {
+        HashTable {
+            size,
+            table: vec![None; size],
+        }
+    }
+
+    fn get(&self, key: &str) -> Option<i32> {
+        let index = self.hash(key);
+
+        if let Some(bucket) = &self.table[index] {
+            for (bucket_key, value) in bucket {
+                if bucket_key == key {
+                    return Some(*value);
+                }
+            }
+        }
+
+        None
+    }
+
+    fn insert(&mut self, key: &str, value: i32) {
+        let index = self.hash(key);
+        let bucket = self.table[index].get_or_insert_with(Vec::new);
+
+        for (bucket_key, bucket_value) in bucket.iter_mut() {
+            if bucket_key == key {
+                *bucket_value = value;
+                return;
+            }
+        }
+
+        bucket.push((key.to_string(), value));
+    }
+
+    fn remove(&mut self, key: &str) -> Option<i32> {
+        let index = self.hash(key);
+
+        if let Some(bucket) = &mut self.table[index] {
+            for i in 0..bucket.len() {
+                if bucket[i].0 == key {
+                    let (_, value) = bucket.remove(i);
+
+                    return Some(value);
+                }
+            }
+        }
+
+        None
+    }
+
+    fn hash(&self, key: &str) -> usize {
+        let mut hash = 0;
+
+        for character in key.chars() {
+            hash = (hash + character as usize) % self.size;
+        }
+
+        hash
+    }
+}
+```
+
+## Continue in Rust
+
+[Open Implement a Hash Table](/course/implement-a-hash-table) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Rust example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Rust interview preparation guide](/interview-prep/rust) connects these language choices with further practice and the cross-language operation reference.

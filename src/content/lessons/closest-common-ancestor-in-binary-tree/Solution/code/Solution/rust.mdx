@@ -1,0 +1,48 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    pub fn find_closest_ancestor(
+        root: Option<Rc<RefCell<BinaryNode>>>,
+        first_child_value: i32,
+        second_child_value: i32,
+    ) -> Option<Rc<RefCell<BinaryNode>>> {
+        // Base case 1: We recursed to the end of a path
+        let node = root?;
+        let (data, left, right) = {
+            let node = node.borrow();
+            (node.data, node.left.clone(), node.right.clone())
+        };
+
+        // Base case 2: We found one of the target child nodes
+        if data == first_child_value || data == second_child_value {
+            return Some(node);
+        }
+
+        /*
+          Continue searching left and right.
+          This ensures we check all the nodes below this one recursively before we handle the current value.
+          This is a post-order traversal.
+        */
+        let left_search_result =
+            Self::find_closest_ancestor(left, first_child_value, second_child_value);
+        let right_search_result =
+            Self::find_closest_ancestor(right, first_child_value, second_child_value);
+
+        /*
+          We found the common ancestor node.
+          Return it, and it will propagate up and be the solution.
+        */
+        if left_search_result.is_some() && right_search_result.is_some() {
+            return Some(node);
+        }
+
+        /*
+          Return whichever node isn't None.
+          If they both are None, it doesn't matter which we return.
+        */
+        left_search_result.or(right_search_result)
+    }
+}
+```

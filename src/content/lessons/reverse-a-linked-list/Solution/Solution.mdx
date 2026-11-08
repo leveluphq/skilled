@@ -1,0 +1,31 @@
+import BigO from 'content/blocks/BigO';
+import Null from 'content/blocks/Null';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+You have three pointers — to the previous, current, and following node.
+To reverse the list, at each item you set the current node's `next` pointer to the previous node.
+Then you move each pointer forward and repeat the process for every item.
+
+
+1. Set the temporary variable to point to the current node's `next` item
+2. Now set current node's `next` pointer to the previous node (this is where the reverse happens)
+3. Move the previous node forward to now point to the current node
+4. Move the current node forward to point to the node after it that we stored in the temporary variable
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.constant /> space.
+</p>
+
+- Time: We iterate through `n` linked list nodes
+- Space: We only create 3 pointers and no new data structures
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

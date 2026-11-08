@@ -1,0 +1,14 @@
+```javascript
+const array = [3, 6, 9];
+
+const atLeastOneEven = (numbers) => {
+  for (let i = 0; i < numbers.length; i++) {
+    if (numbers[i] % 2 === 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+console.log(atLeastOneEven(array)); // true
+```

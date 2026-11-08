@@ -1,0 +1,12 @@
+{
+  "name": "@skilled/scripts",
+  "version": "1.0.0",
+  "description": "Utility scripts for Skilled.dev",
+  "private": true,
+  "scripts": {
+    "check-lessons": "node check-lessons.js"
+  },
+  "devDependencies": {
+    "typescript-3.7": "npm:typescript@3.7.4"
+  }
+}

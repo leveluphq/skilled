@@ -1,0 +1,20 @@
+```javascript
+const apiRequest = () => {
+  return new Promise((resolve) => {
+    // do some async things for an unknown amount of time...
+    return resolve({ answer: 42 });
+  });
+}
+
+const run = () => {
+  apiRequest().then((response) => {
+    console.log(response);
+  });
+}
+
+// Since it's all just promises, you can mix and match with async/await
+const runAsAsyncAwait = async () => {
+  const response = await apiRequest();
+  console.log(response);
+}
+```

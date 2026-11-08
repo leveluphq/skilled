@@ -1,0 +1,21 @@
+import BigO from 'content/blocks/BigO';
+import RecursiveBruteForce from './code/RecursiveBruteForce';
+
+This recursive logic becomes pretty straight forward.
+
+<RecursiveBruteForce />
+
+We call our main function and then recursively walk through the matrix.
+If we hit a base case, we return true or false accordingly.
+Otherwise, we continue to recursively call the function by incrementing the row and column to step down and right.
+If either of the paths returns true, then we return true from the current node.
+If both of the paths through a node return false, then we return false from the current node.
+
+There is one big issue though.
+We may cross through the same node many times and end up following the same paths.
+
+In fact, in our worst case Big O complexity, we have <BigO.bin letter="r+c" /> time complexity
+because we perform two additional steps for every single node in the matrix.
+The space complexity is only <BigO.n letter="r+c" /> since we only ever move down or right, so the call stack holds at most one path through the matrix at a time.
+
+We must find a way to remove all this repeated work and only follow any given path once.

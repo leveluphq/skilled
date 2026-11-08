@@ -1,0 +1,43 @@
+import TrackingTable from './code/TrackingTable';
+
+We understand that we'll be using a graph data structure and that we'll find the shortest path from `base` to `ship` using BFS.
+
+When we're performing BFS, we'll find the shortest path to **_any node_** from the starting `base` node.
+If multiple paths go through the same node along the route to `ship`, we know that the only visit that matters is the first time we reach a node because it passed through the fewest number of nodes and must be the shortest path for any given location.
+By the definition of BFS, any subsequent visit to a node must have gone through a longer path of nodes, and we can ignore it.
+
+For example, look at our example data.
+Satellite 4 connects to satellite 5 which connects to the `ship`.
+There are three nodes that have an edge with satellite 4, but we only care about the path through satellite 0 because it will reach this point first which indicates the shortest path to satellite 4.
+
+From this logic, we can see that for _every node_ in our graph, we should track the node before it that led us to this point for the first time.
+This was the prior node that allowed us to reach any current node using the shortest path.
+
+Looking at our overall shortest path to get to `ship`:
+
+- The shortest path to `sat0` is from `base`
+- The shortest path to `sat4` is from `sat0`
+- The shortest path to `sat5` is from `sat4`
+- The shortest path to `ship` is from `sat5`
+
+Any other combination to reach any of those nodes must have gone through more items and would be a longer path.
+
+If we can track the shortest path to reach every node from the `base`,
+we can find the shortest path through the entire graph once we reach the `ship`.
+
+So for each node, we want to track the node that came one item before it.
+We can do this using an additional hash table where the key is a node,
+and the value for the key is the prior node in the path that got us to this current node for the first time.
+
+Once we reach the `ship`, we will know the node that we went through to get to this final spot.
+Then we can follow that backward to see the node that led us to one spot before that using the hash table that tracks the previous nodes in the path.
+We continue to follow each previous node before the current one and eventually unwind to our `base`.
+Following the node that got us to each point will produce the shortest route.
+
+What if we visit a node multiple times?
+We simply ignore the subsequent visits because their path to reach that node took longer.
+
+
+Using the sample input, the hash table with the shortest node paths would be the following:
+
+<TrackingTable />

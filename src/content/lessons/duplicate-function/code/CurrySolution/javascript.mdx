@@ -1,0 +1,30 @@
+```javascript
+// Solution 1
+function duplicate(numDuplicates) {
+  return function(array) {
+    return new Array(numDuplicates).fill(array).flat();
+  }
+}
+
+// Solution 2
+function duplicate(numDuplicates) {
+  return function(array) {
+    return new Array(numDuplicates)
+      .fill(null)
+      .reduce((acc) => [...acc, ...array], []);
+  }
+}
+
+// Solution 3
+function duplicate(numDuplicates) {
+  return function(array) {
+    const solution = [];
+
+    for (let i = 0; i < numDuplicates; i++) {
+      solution.push(...array);
+    }
+
+    return solution;
+  }
+}
+```

@@ -1,0 +1,19 @@
+Tree traversals visit the same nodes in different orders. Pre-order processes the current node before its children, in-order processes it between the left and right children, and post-order processes it after them. The recording traces these choices and also introduces breadth-first traversal. The order should follow what your algorithm needs from each node.
+
+## Put the visit at the right point
+
+Consider a root 2 with left child 1 and right child 3. Pre-order gives 2, 1, 3. In-order gives 1, 2, 3. Post-order gives 1, 3, 2. The recursive structure can remain the same while the placement of the processing step changes the result.
+
+In-order visits values in ascending order only when the tree satisfies the binary search tree ordering. An arbitrary binary tree with those same three positions can produce an unsorted sequence. A traversal defines when a node is visited; it does not change the values or enforce an ordering property.
+
+## Match traversal order to dependencies
+
+Pre-order is useful when a parent must be processed before descendants. Post-order supports calculations that need completed child results, such as deriving a subtree height. In-order can inspect ordered keys in a binary search tree. These examples describe dependencies rather than rules that one traversal is universally better.
+
+Breadth-first traversal uses a queue to visit one depth before the next. Start by checking for an empty root; the corrected code returns before trying to read missing node fields. If your input can contain shared descendants or cycles, it is no longer the simple tree assumed by these routines and needs explicit graph-style visitation rules.
+
+## Account for the unfinished work
+
+A traversal that visits every node takes linear time under bounded per-node work. Recursive auxiliary space follows tree height. A queue-based breadth-first traversal can retain a whole wide level. Any returned list also occupies linear space and should be counted separately from the traversal's worklist.
+
+Use the [tree traversal tool](/tools/tree-traversal) to compare the orders on one shape. Then draw a one-sided chain and a wide tree to compare memory needs. Continue with [Binary Tree Max Depth](/watch/binary-tree-max-depth) and explain why a parent combines completed child results even though the input links point from parent to child.

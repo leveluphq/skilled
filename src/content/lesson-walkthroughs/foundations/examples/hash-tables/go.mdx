@@ -1,0 +1,9 @@
+```go
+func FrequencyCounts(values []int) []int {
+    counts := make(map[int]int)
+    for _, value := range values { counts[value]++ }
+    output := make([]int, len(values))
+    for index, value := range values { output[index] = counts[value] }
+    return output
+}
+```

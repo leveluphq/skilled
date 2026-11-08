@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+This problem can be solved by iterating over the input string once.
+
+Every opening bracket must have a matching closing bracket.
+So when we encounter a closing bracket, we check the most recently seen opening bracket.
+Once the pair is validated we can then set them aside and check each additional pair.
+We achieve this by using a stack.
+
+We initialize a stack and begin iterating through the string.
+
+- If a character is an opening bracket, we `push` it to the stack.
+- If a character is a closing bracket, we `pop` the stack and compare the last seen opening bracket to this closing bracket.
+  If they don't match or the stack was empty, we return false.
+- Once we finish iterating through the input string, we check if any items remain in the stack. If it is empty, we know all brackets matched, and it will return true.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n /> time and <BigO.n /> space where <code>n</code> is the number of characters in the input string.
+</p>
+
+We iterate through all the characters of the string once and create an additional stack data structure to store the bracket characters.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

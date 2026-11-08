@@ -1,0 +1,10 @@
+```python
+def pop(self):
+    removed_item = self.last
+
+    # Update `last` as long as we have items left in the stack
+    if removed_item:
+        self.last = removed_item.prev
+
+    return removed_item
+```

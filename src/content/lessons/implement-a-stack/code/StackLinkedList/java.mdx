@@ -1,0 +1,43 @@
+```java
+class Node<T> {
+    T data;
+    Node<T> prev;
+
+    Node(T data) {
+        this.data = data;
+        this.prev = null;
+    }
+}
+
+class Stack<T> {
+    private Node<T> last;
+
+    public Stack() {
+        this.last = null;
+    }
+
+    public Node<T> peek() {
+        return this.last;
+    }
+
+    public Node<T> push(T item) {
+        Node<T> previousLastItem = this.last;
+
+        this.last = new Node<>(item);
+        this.last.prev = previousLastItem;
+
+        return this.last;
+    }
+
+    public Node<T> pop() {
+        Node<T> removedItem = this.last;
+
+        // Update `last` as long as we have items left in the stack
+        if (removedItem != null) {
+            this.last = removedItem.prev;
+        }
+
+        return removedItem;
+    }
+}
+```

@@ -1,0 +1,30 @@
+```python
+def get_max_value_knapsack(items, capacity):
+    """
+    max_value_at_weight[i][weight] is the max value we can fit in a bag that holds `weight`
+    using only the first i items. This is our dp / memo table for the subproblems.
+    Row 0 means we haven't tried any items yet, so every weight starts at 0.
+    """
+    max_value_at_weight = [[0 for _ in range(capacity + 1)] for _ in range(len(items) + 1)]
+
+    # Try each item at every weight from 0 up to the capacity
+    for i in range(1, len(items) + 1):
+        item = items[i - 1]
+
+        for weight in range(capacity + 1):
+            # Option 1: skip the current item and keep the best value from the previous items
+            value_without_item = max_value_at_weight[i - 1][weight]
+            max_value_at_weight[i][weight] = value_without_item
+
+            """
+            Option 2: if the item fits, take it and add its value to the best value
+            the previous items can fit in the weight that is left over.
+            We look at the previous row, so each item is only used once.
+            """
+            if item["weight"] <= weight:
+                value_with_item = item["value"] + max_value_at_weight[i - 1][weight - item["weight"]]
+                max_value_at_weight[i][weight] = max(value_without_item, value_with_item)
+
+    # The last cell has tried every item at the full capacity
+    return max_value_at_weight[len(items)][capacity]
+```

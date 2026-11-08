@@ -1,0 +1,9 @@
+```csharp
+public void RemoveVertex(string vertex) {
+    this.adjacencyList.Remove(vertex);
+
+    foreach (List<string> edges in this.adjacencyList.Values) {
+        edges.RemoveAll(v => v == vertex);
+    }
+}
+```

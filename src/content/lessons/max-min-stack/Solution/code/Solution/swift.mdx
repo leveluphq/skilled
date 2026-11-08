@@ -1,0 +1,50 @@
+```swift
+class MaxMinStack {
+    private var stack: [Int] = []
+
+    // Stacks for internal tracking of the max/min
+    private var maxValueStack: [Int] = []
+    private var minValueStack: [Int] = []
+
+    init() {}
+
+    func peek() -> Int {
+        return stack[stack.count - 1]
+    }
+
+    func push(_ item: Int) -> Int {
+        stack.append(item)
+
+        if maxValueStack.isEmpty || item >= getStackMax() {
+            maxValueStack.append(item)
+        }
+        if minValueStack.isEmpty || item <= getStackMin() {
+            minValueStack.append(item)
+        }
+
+        return item
+    }
+
+    func pop() -> Int {
+        let item = stack.removeLast()
+
+        if item == getStackMax() {
+            maxValueStack.removeLast()
+        }
+        if item == getStackMin() {
+            minValueStack.removeLast()
+        }
+
+        return item
+    }
+
+    // Effectively a "peek()" for the max/min values of the stack
+    func getStackMax() -> Int {
+        return maxValueStack[maxValueStack.count - 1]
+    }
+
+    func getStackMin() -> Int {
+        return minValueStack[minValueStack.count - 1]
+    }
+}
+```

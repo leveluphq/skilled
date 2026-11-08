@@ -1,0 +1,26 @@
+```go
+func iterativeDepthFirstSearch(startingNode *GraphNode) {
+	// Init our stack and set of visited nodes
+	dfsStack := []*GraphNode{startingNode}
+	visitedNodes := map[*GraphNode]bool{}
+
+	for len(dfsStack) > 0 {
+		node := dfsStack[len(dfsStack)-1]
+		dfsStack = dfsStack[:len(dfsStack)-1]
+
+		// A node can be added to the stack more than once, so skip it if we already visited it
+		if visitedNodes[node] {
+			continue
+		}
+
+		visit(node)
+		visitedNodes[node] = true
+
+		for _, childNode := range node.Edges {
+			if !visitedNodes[childNode] {
+				dfsStack = append(dfsStack, childNode)
+			}
+		}
+	}
+}
+```

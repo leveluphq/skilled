@@ -1,0 +1,83 @@
+import { Section } from 'style/elements/lesson';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import SubscribeMethod from './code/SubscribeMethod';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import PublishMethod from './code/PublishMethod';
+import UnsubscribeMethod from './code/UnsubscribeMethod';
+import PubSubSolution from './code/PubSubSolution';
+import ReduxImplementation from './code/ReduxImplementation';
+
+<Section>
+
+<SubsectionHeader>Pub-Sub Implementation</SubsectionHeader>
+
+Our Pub-Sub implementation will give us the ability to `subscribe` to an event, `publish` data to an event, and a place to store the subscribed callbacks.
+In the constructor, we initialized a `subscriptions` object whose key-value pairs will be the event channel which maps to an array of event callbacks.
+
+### `subscribe` method
+
+The first thing we should implement is the `subscribe` method.
+The function takes an `eventName` which is a string, and a `callback` which is a function that executes with the data.
+
+<SubscribeMethod />
+
+First we check if an array of callbacks in `subscribers` already exists for the `eventName` channel, and if it doesn't exist, we initialize it now.
+Then we push the `callback` to this array which is a function that takes a single argument.
+
+### `publish` method
+
+When we want to trigger an event, we `publish` under the `eventName` and pass it the `data` for that event.
+Our callbacks should take at most one argument, but it could take no arguments if it does not use the `data`.
+
+In our case, the `data` can be anything, but you could enforce it to be something specific either in your Pub-Sub implementation or by the `callback` for a specific `eventName`.
+
+When we `publish` an event, we first check that the `eventName` has been initialized and return early if it has not.
+If it does exist, we iterate through all the `subscribers` for that `eventName` and execute their callbacks.
+
+<PublishMethod />
+
+### `unsubscribe` method
+
+We want to allow our code to clean up a subscription and remove its listener.
+We pass an `eventName` and the same `callback` from the `subscribe` method to remove it.
+Then the callback is filtered out of our `subscribers` for that channel.
+
+> Functions are stored in memory as <ConceptModal content={<PointersConcept />}>pointers</ConceptModal> in JavaScript.
+> You must pass the exact same function you used originally which means you'll need to store it in a variable.
+> See how this is done in the solution REPL.
+
+<UnsubscribeMethod />
+
+### Full Implementation
+
+Interact with this solution in a <a href="https://repl.it/@TreyHuffine/PubSub-Implement-JavaScript#index.js" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+<PubSubSolution />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Wrap Up</SubsectionHeader>
+
+The publish-subscribe pattern is actually simple to implement, but the usage is very powerful.
+This is a common JavaScript interview question because it shows an understanding of an essential pattern
+and knowledge of fundamental JS concepts.
+
+One challenge developers have with a Pub-Sub is the terminology because it makes it sound much more challenging than it actually is.
+When we say a subscriber is "listening", all this means is that we have a hash table (object) that has an array of events for a given key.
+A subscriber adds its callback to this array, and the publisher just executes all the callback under that key when it "emits" the matching event.
+
+If you have used Redux, what's happening underneath the hood is almost the exact same.
+The only difference is that we are storing state inside our Pub-Sub, and the `eventName` (`action.type` now)
+is passing the action to every reducer, and they decide if they should update a piece of state based on the action.
+Below is a simple implementation with phrases changed to Redux terminology:
+
+<ReduxImplementation />
+
+For larger system Pub-Subs, message queues, and observers, it requires more robust storage and communication channels,
+but the fundamentals are still the exact same.
+Maintain channel names and a list of functions to execute.
+
+</Section>

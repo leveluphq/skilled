@@ -1,0 +1,3 @@
+table:
+  name: checkout_event_log
+  schema: public

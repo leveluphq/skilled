@@ -1,0 +1,22 @@
+```csharp
+// IsBadVersion(version) is provided by VersionControl
+public class Solution : VersionControl {
+    public int FirstBadVersion(int n) {
+        int lowerBound = 1; // Starts at v1
+        int upperBound = n;
+
+        while (lowerBound < upperBound) {
+            // Not (lowerBound + upperBound) / 2, which can overflow an int
+            int midpoint = lowerBound + (upperBound - lowerBound) / 2;
+
+            if (IsBadVersion(midpoint)) {
+                upperBound = midpoint;
+            } else {
+                lowerBound = midpoint + 1;
+            }
+        }
+
+        return lowerBound;
+    }
+}
+```

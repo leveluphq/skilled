@@ -1,0 +1,24 @@
+```javascript
+function scopeIdentityQuiz() {
+    const shared = { count: 1 };
+    let alias = shared;
+    alias.count = 2;
+    alias = { count: 9 };
+    const functionScoped = [];
+    const blockScoped = [];
+    for (var index = 0; index < 3; index++)
+        functionScoped.push(() => index);
+    for (let position = 0; position < 3; position++)
+        blockScoped.push(() => position);
+    const invalid = Number('not a number');
+    return {
+        originalCount: shared.count,
+        reboundCount: alias.count,
+        varResults: functionScoped.map(read => read()),
+        letResults: blockScoped.map(read => read()),
+        nanEqualsItself: invalid === invalid,
+        nanSameValue: Object.is(invalid, invalid),
+        distinctObjectsEqual: shared === alias,
+    };
+}
+```

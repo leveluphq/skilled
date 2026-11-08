@@ -1,0 +1,73 @@
+```rust
+impl Solution {
+    pub fn min_coins_for_change(denominations: Vec<i32>, target: i32) -> i32 {
+        if target < 1 {
+            return 0;
+        }
+
+        /*
+          Init all values to 0 which indicates no coins yet match the target
+          This is our dp / memo list that we're using to memoize the solution to subproblems
+        */
+        let mut min_coins_for_amount = vec![0; target as usize + 1];
+
+        min_coins_for_change_memo(&denominations, target, &mut min_coins_for_amount)
+    }
+}
+
+fn min_coins_for_change_memo(
+    denominations: &[i32],
+    remaining: i32,
+    min_coins_for_amount: &mut [i32],
+) -> i32 {
+    /*
+      Base case 1: Invalid remaining coins
+      We use -1 to indicate it's invalid
+    */
+    if remaining < 0 {
+        return -1;
+    }
+
+    // Reached zero, valid case
+    if remaining == 0 {
+        return 0;
+    }
+
+    // Check if we have a memoized (already calculated) value for this remaining amount
+    if min_coins_for_amount[remaining as usize] != 0 {
+        return min_coins_for_amount[remaining as usize];
+    }
+
+    // i32::MAX stands in for Infinity
+    let mut min_steps_for_remaining = i32::MAX;
+
+    // Subtract each coin from the current remaining amount (fork paths from this amount)
+    for &coin in denominations {
+        let steps_for_coin =
+            min_coins_for_change_memo(denominations, remaining - coin, min_coins_for_amount);
+
+        /*
+          If steps_for_coin >= 0, it's possible to make change with this denomination,
+          and the steps for this denomination is less than the current min,
+          we increment the steps to account for it as the new minimum.
+
+          steps_for_coin = -1 means it's invalid which is why we check for >= 0
+        */
+        if steps_for_coin >= 0 && steps_for_coin < min_steps_for_remaining {
+            min_steps_for_remaining = steps_for_coin + 1;
+        }
+    }
+
+    /*
+      If we're able to find a min_steps_for_remaining for the current subproblem, we memoize it.
+      If it's still i32::MAX (Infinity), it's not valid and we use our invalid placeholder -1.
+    */
+    min_coins_for_amount[remaining as usize] = if min_steps_for_remaining == i32::MAX {
+        -1
+    } else {
+        min_steps_for_remaining
+    };
+
+    min_coins_for_amount[remaining as usize]
+}
+```

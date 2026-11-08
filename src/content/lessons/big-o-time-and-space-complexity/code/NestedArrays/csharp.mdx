@@ -1,0 +1,37 @@
+```csharp
+int n = 1000000000; // or some large number
+var arrayOfN = new int[n];
+
+// O(n^3)
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        for (int k = 0; k < n; k++) {
+            // ...
+        }
+    }
+}
+
+// O(n^3)
+foreach (int i in arrayOfN) {
+    foreach (int j in arrayOfN) {
+        foreach (int k in arrayOfN) {
+            // ...
+        }
+    }
+}
+
+// O(n)
+for (int i = 0; i < n; i++) {
+    // ...
+}
+for (int j = 0; j < n; j++) {
+    // ...
+}
+for (int k = 0; k < n; k++) {
+    // ...
+}
+
+// Nested is 1000000000 ^ 3 = 1000000000000000000000000000
+// Sequential is 3000000000
+// Sequential is MUCH MUCH smaller
+```

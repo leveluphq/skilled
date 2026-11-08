@@ -1,0 +1,91 @@
+import Image from 'content/blocks/Image';
+import BigO from 'content/blocks/BigO';
+import { Container } from 'style/elements';
+
+Solving for a `target = 8` with `denominations = [2, 3]` is pretty easy to do in our head.
+We didn't have an issue maintaining all the combinations of denominations to find the minimum coins starting at 0 and summing to the `target`.
+However, with more/larger denominations or a higher `target`, it will quickly get out of control.
+Let's walk through how we would solve this first example using dynamic programming.
+
+**To solve this question, the subproblems are to find the minimum required coins for every `amount` from `0` to the `target`.**
+The only way to reach our target with the minimum number of coins is to find the minimum number of coins required to reach _every_ amount below the `target` amount.
+So for `target = 8`, we would find the minimum coins to reach `[0, 1, 2, 3, 4, 5, 6, 7, 8]`.
+Trying every possible combination of coins to reach our target may sound inefficient if you are new to dynamic programming,
+but if we're smart about how we approach our subproblems, we can remove duplicate work.
+
+<Image src="/images/no-number-vending-machine.gif" alt="A coin-change memo table is filled amount by amount, reusing the best result for smaller amounts." width={1174} height={701} />
+
+To reach 8, we can get there from either 5 (5 + 3 = 8) or 6 (6 + 2 = 8).
+This requires one additional coin in each case by adding either the 2 denomination or the 3 denomination.
+So if we can find the minimum number of coins to reach both 5 and 6, we just need +1 additional coin from either spot to reach the `target`.
+
+<Image src="/images/vending-machine-one-coin-to-8.png" alt="An amount of eight can be reached by adding one coin to a previously solved smaller amount." width={1466} height={760} />
+
+Using these `denominations`, there are two ways to reach 6 (4 + 2 or 3 + 3) and 5 (2 + 3 or 3 + 2).
+Then we need to find the minimum number of coins to reach those values.
+
+<Image src="/images/vending-machine-to-prior-coins.png" alt="The current coin-change result depends on memo entries for amounts one coin value smaller." width={1466} height={760} />
+
+These are the subproblems we need to solve.
+To find the minimum coins to reach `target = 8`, we need to know the minimum number of coins to reach a spot before it.
+Then to find the change combinations to reach these prior spots using the minimum number of coins, we need to know the minimum coins the amounts before them.
+
+We're going to do this bottom-up.
+We'll start at 0 and find the minimum coins required to reach each `amount` from 0 to 8.
+The minimum coins required to reach any `amount` depends on the minimum coins to reach prior amounts, so we memoize those so we can access them in future subproblems.
+This ensures we calculate each step once and store the subproblem results which removes any duplicate work.
+**Once we solve each of the subproblems locally, when we reach the `target` and solve its subproblem, we will have calculated the solution globally and have the answer to the question.**
+
+We're going to memoize the solutions to subproblems in an array.
+The indexes for the array are all the amounts from `0` to the `target`.
+The value stored at the index is the minimum coins required to reach this `amount`.
+
+<Image src="/images/vending-machine-table.png" alt="A memo table stores the minimum number of coins needed for each amount from zero through eight." width={1616} height={272} />
+
+To determine the minimum number of coins to reach any spot, we need to "look back" in the memoization array and determine the minimum coins to reach previous values.
+We iterate through each `amount` and subtract each of the denominations from it to find prior minimum coin combinations.
+Then using a denomination would be adding `+1` additional coin to reach the current `amount` from a previous value.
+
+<Container>
+
+```javascript
+// To look back
+current amount - denomination = prior amount
+// Then find the min coins to reach this amount in the memo array
+memo[prior amount] = min coins to reach prior amount
+```
+
+</Container>
+
+<Image src="/images/vending-machine-look-back.png" alt="For each coin, look up the memo result at the current amount minus that coin&#x27;s value." width={1658} height={1172} />
+
+
+So how do we actually build up the minimum coins combinations in the `memo` array?
+
+Let's quickly imagine we are _only considering a denomination of 2_ and want to find the minimum coins to reach 8.
+
+<Image src="/images/vending-machine-2-coins.png" alt="With only denomination 2 processed, even amounts are reachable and odd amounts remain unreachable." width={1726} height={748} />
+
+Using a denomination of only 2, we have the steps:
+
+1. It takes 0 coins to reach 0 (base case / minimum value)
+2. It takes 1 coin to reach 2
+3. It takes 2 coins to reach 4
+4. It takes 3 coins to reach 6
+5. It takes 4 coins to reach 8
+
+Let's consider the `amount` 6 from the table above.
+We subtract our denomination of 2 to find the minimum coins required to reach a prior spot which is stored in the memoization array — this is our "look back".
+`6 - 2 = 4`, and the minimum coins it took to reach the `amount` 4 required 2 coins.
+We're always trying to add 1 additional coin to a previous minimum coin subproblem solution, and in this instance the minimum coins to reach 6 is `2 + 1`.
+
+<Image src="/images/vending-machine-subtract-coin.png" alt="Subtracting a coin of value 2 from amount 8 leaves amount 6; add one coin to that subproblem&#x27;s result." width={2012} height={640} />
+
+Every time we try to solve the subproblem for the minimum coins to reach the current `amount`, we subtract each of our available denominations to find the minimum coins used to reach a prior `amount`.
+We move to the current value from a previous value by using one of our available denominations.
+So we **always increment by +1 because we are trying to use 1 additional coin each time**.
+
+This is the foundation for the solution logic.
+We just need to try all the possible `denominations` at each `amount` from `0` to `target` and keep the combination that reached the current step using the minimum number of coins and store this subproblem solution in the memoization array.
+
+Now that we have some intuition, let's actually walk through the `denominations = [2, 3], target = 8` example step-by-step.

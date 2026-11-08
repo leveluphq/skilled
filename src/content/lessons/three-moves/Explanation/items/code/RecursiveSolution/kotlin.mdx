@@ -1,0 +1,18 @@
+```kotlin
+class Solution {
+    fun countTotalMoves(boardLength: Int): Int {
+        if (boardLength < 0) {
+            // Base case 1: Invalid board length
+            return 0
+        } else if (boardLength == 0) {
+            // Base case 2: Introduction says length 0 is still 1 step
+            return 1
+        } else {
+            // Recursive case
+            return countTotalMoves(boardLength - 1) +
+                countTotalMoves(boardLength - 2) +
+                countTotalMoves(boardLength - 3)
+        }
+    }
+}
+```

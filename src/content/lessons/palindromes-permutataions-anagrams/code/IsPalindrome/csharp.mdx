@@ -1,0 +1,22 @@
+```csharp
+using System.Text.RegularExpressions;
+
+// Regex to remove non-alphanumeric
+string RemoveNonAlphanumeric(string s) => Regex.Replace(s, "[^0-9a-z]", "", RegexOptions.IgnoreCase);
+
+bool IsPalindrome(string s) {
+    // For simplicity, I'm doing the transforming here at an assumed O(n) cost
+    // You could also not transform it and consider this when you compare characters
+    string formattedString = RemoveNonAlphanumeric(s).ToLower();
+
+    // Walk from the beginning and end to the middle and compare each character
+    for (int i = 0; i < formattedString.Length / 2; i++) {
+        // If the characters are ever not equal, it's not a palindrome
+        if (formattedString[i] != formattedString[formattedString.Length - 1 - i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+```

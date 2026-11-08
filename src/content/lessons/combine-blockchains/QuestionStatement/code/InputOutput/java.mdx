@@ -1,0 +1,22 @@
+```java
+class ListNode {
+    int data; // the unix timestamp of when the block was added
+    ListNode next;
+
+    ListNode(int data) {
+        this.data = data;
+    }
+}
+
+// Input
+ListNode skilledChainHead = new ListNode(42);
+skilledChainHead.next = new ListNode(159);
+// many more additions to each...
+
+ListNode devCoinHead = new ListNode(123);
+devCoinHead.next = new ListNode(482);
+// many more additions to each...
+
+// Output: combineBlockchains(skilledChainHead, devCoinHead)
+42 -> 123 -> 159 -> 482 // ... and so on
+```

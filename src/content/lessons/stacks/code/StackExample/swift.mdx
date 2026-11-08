@@ -1,0 +1,23 @@
+```swift
+func run(_ id: String) -> Double {
+    return calculatePrice(Item(id))
+}
+
+func calculatePrice(_ item: Item) -> Double {
+    return item.price + calculateTax(item.price)
+}
+
+func calculateTax(_ price: Double) -> Double {
+    return price * 0.1
+}
+
+run("id1")
+
+
+|  price * 0.1                           |
+|  item.price + calculateTax(item.price) |
+|  calculatePrice(item)                  |
+|  run("id1")                            |
+------------------------------------------
+   Call Stack
+```

@@ -1,0 +1,24 @@
+```swift
+func bruteForceFindEmail(_ emails: [String]) -> String {
+    var maxCount = 0
+    var email = ""
+
+    // Nested for loops - immediately think O(n^2)
+    for i in 0..<emails.count {
+        let currentEmail = emails[i]
+        var currentCount = 0
+
+        for j in 0..<emails.count {
+            if emails[j] == currentEmail {
+                currentCount += 1
+            }
+        }
+
+        let isNewMax = currentCount > maxCount
+        maxCount = isNewMax ? currentCount : maxCount
+        email = isNewMax ? currentEmail : email
+    }
+
+    return email
+}
+```

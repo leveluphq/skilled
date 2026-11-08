@@ -1,0 +1,19 @@
+```swift
+// sort() sorts a var array in place, and sorted() returns a new sorted array
+var numbers = [1, 50, 10000, 510, 5050, 60]
+numbers.sort() // [1, 50, 60, 510, 5050, 10000]
+
+// Pass a comparison to sort in a different order, such as descending
+numbers.sort(by: >) // [10000, 5050, 510, 60, 50, 1]
+
+// Strings sort as expected
+["March", "Jan", "Feb", "Dec"].sorted() // ["Dec", "Feb", "Jan", "March"]
+
+// Use a closure to sort by a property
+struct Player {
+    let score: Int
+}
+
+[Player(score: 20), Player(score: 100), Player(score: 5)].sorted { $0.score < $1.score }
+// => [Player(score: 5), Player(score: 20), Player(score: 100)]
+```

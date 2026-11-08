@@ -1,0 +1,27 @@
+```javascript
+// All rows in the matrix
+const rowCount = matrix.length;
+// All columns in the 0th row
+const columnCount = matrix[0].length;
+
+// Walk right (top row)
+for (let column = 0; column < columnCount - 1; column++) {
+  const nodeInFirstRow = matrix[0][column];
+}
+
+// Walk down (right column)
+for (let row = 0; row < rowCount - 1; row++) {
+  const nodeInLastColumn = matrix[row][columnCount - 1];
+}
+
+// Walk left (bottom row)
+for (let column = columnCount - 1; column >= 0; column--) {
+  const nodeInLastRow = matrix[rowCount - 1][column];
+}
+
+// Walk up (left column)
+// NOTE: notice stop before the 0th node at (1,0)
+for (let row = rowCount - 2; row >= 1; row--) {
+  const nodeInFirstColumn = matrix[row][0];
+}
+```

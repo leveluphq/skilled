@@ -1,0 +1,164 @@
+import { Section } from 'style/elements/lesson';
+import BlurredContent from 'content/blocks/BlurredContent';
+
+import Map from './code/Map';
+import MapSolution from './code/MapSolution';
+import Filter from './code/Filter';
+import FilterSolution from './code/FilterSolution';
+import Includes from './code/Includes';
+import IncludesSolution from './code/IncludesSolution';
+import Find from './code/Find';
+import FindSolution from './code/FindSolution';
+import Every from './code/Every';
+import EverySolution from './code/EverySolution';
+import Some from './code/Some';
+import SomeSolution from './code/SomeSolution';
+
+import { Line, BlurredContentWrapper } from './styles';
+
+<Section>
+
+JavaScript's array methods are becoming increasingly utilized in production, with many developers preferring them over the standard `for` loop.
+The most common array methods include: `forEach`, `map`, `filter`, `reduce`, `find`, `some`, `every`, `includes`.
+You can find a full list on <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array#Instance_methods" target="_blank" rel="noopener noreferrer">MDN</a>.
+
+You likely won't be forced to use them in an interview, and often it may even be easier to display logic using a standard `for` loop (as I do in this course).
+However, being able to integrate them into a solution can show you have command over the language and understand effective patterns.
+
+Benefits of array methods include:
+
+- Succinct syntax
+- Declarative behavior
+- Enforce immutability
+- Minimize risk of side-effect behavior
+- Explicit intent (array methods have a specific purpose which provides someone reading your code more context)
+
+Below you will be given different `for` loop code blocks, and it is your job to refactor them to use an array method.
+
+Two methods will not be used:
+
+ - `forEach`: it is more of a catch-all method that has many uses
+ - `reduce`: this is more complex and also can be used for different intents
+
+</Section>
+
+<Section>
+
+### Question 1
+
+<Map />
+
+### Solution 1
+
+<BlurredContentWrapper>
+<BlurredContent>
+
+<MapSolution />
+
+This is a perfect opportunity to use the `map` function.
+`map` is used when we want to perform the same transformation on every item in an array.
+In this case, we multiply everything by 2.
+
+You can recognize needing a map function if you see a `for` loop that makes a change to every `i` item.
+
+The `map` method returns a new array with the updated items.
+
+</BlurredContent>
+</BlurredContentWrapper>
+
+<Line />
+
+### Question 2
+
+<Filter />
+
+### Solution 2
+
+<BlurredContentWrapper>
+<BlurredContent>
+
+<FilterSolution />
+
+The `filter` method is used to remove items that don't match a condition specified by the callback function.
+If the callback returns `true`, the item is added to the output array.
+If the callback returns `false`, an item is not included.
+
+A good candidate for `filter` is when you use an `if` inside of a `for` loop to conditionally include items in your results.
+
+</BlurredContent>
+</BlurredContentWrapper>
+
+<Line />
+
+### Question 3
+
+<Includes />
+
+### Solution 3
+
+<BlurredContentWrapper>
+<BlurredContent>
+
+<IncludesSolution />
+
+The `includes` method will return `true` or `false` if an item exists in an array.
+
+</BlurredContent>
+</BlurredContentWrapper>
+
+<Line />
+
+### Question 4
+
+<Find />
+
+### Solution 4
+
+<BlurredContentWrapper>
+<BlurredContent>
+
+<FindSolution />
+
+The `find` method will return the first item that matches a condition in the callback.
+If no items match, it will return `undefined`.
+
+</BlurredContent>
+</BlurredContentWrapper>
+
+<Line />
+
+### Question 5
+
+<Every />
+
+### Solution 5
+
+<BlurredContentWrapper>
+<BlurredContent>
+
+<EverySolution />
+
+The `every` method will return `true` if _all_ items match a condition.
+If at least one doesn't match, it will return `false`.
+
+</BlurredContent>
+</BlurredContentWrapper>
+
+<Line />
+
+### Question 6
+
+<Some />
+
+### Solution 6
+
+<BlurredContent>
+
+<SomeSolution />
+
+The `some` method will return `true` if at least one item matches a condition.
+If none match, it will return `false`.
+
+</BlurredContent>
+
+</Section>

@@ -1,0 +1,56 @@
+import { Section } from 'style/elements/lesson';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import ThrottleSolution from './code/ThrottleSolution';
+import ThrottleUsage from './code/ThrottleUsage';
+import ThrottleSolutionCommented from './code/ThrottleSolutionCommented';
+
+<Section>
+
+<SubsectionHeader>Throttling in the Context of Web Development</SubsectionHeader>
+
+Imagine you have a scroll event handler where you want to display new content to a user as they move down the page. If we executed the callback every time the user scrolls a single pixel, we would quickly get clogged with events if they rapidly scroll because it would send hundreds or thousands of events in quick succession. Instead, we throttle it so that we only check the distance scrolled every 100ms so that we're getting only 10 callbacks per second. The response will still feel instantaneous to the user but be much more efficient computationally.
+
+A throttle creates evenly-spaced function calls. Imagine if you were performing some heavy calculation or an API request in the event handler callback function. By throttling these callbacks, you prevent the app from freezing or unnecessarily hammering your server with requests.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Throttle Implementation in JavaScript</SubsectionHeader>
+
+Let's immediately jump into the code for a throttle. I'll describe it below and then also provide a commented version of the function.
+
+<ThrottleSolution />
+
+A throttle is a higher-order function, which is a function that returns another function (named `throttledEventHandler` here for clarity).
+This is done to form a closure around the `callback`, `delay`, `throttleTimeout`, `storedEvent`, and `hasStoredEvent` variables.
+This preserves the values of each variable to be read when `throttledEventHandler` is executed.
+The following is a definition of each variable:
+
+- `callback`: The throttled function that you want to execute at a given rate.
+- `delay`: The amount of time you want the throttle function to wait between executions of the `callback`.
+- `throttleTimeout`: The value used to indicate a running throttle created by our `setTimeout`.
+- `storedEvent`: The event that you want to handle with the throttled `callback`. This value will continually be updated until the throttle ends. Then it will execute `callback` with the most recent value.
+- `hasStoredEvent`: Whether an event came in while the throttle was active. We track this separately instead of checking `storedEvent` directly because the event itself could be falsy (or `undefined` if the handler is called with no argument).
+
+We can use our throttle as in the following code:
+
+<ThrottleUsage />
+
+Since a throttle returns a function, the `throttledEventHandler` from the first example and the `returnedFunction` function from the second example are actually the same function. Every time a user scrolls, it will execute `throttledEventHandler`/`returnedFunction`.
+
+Let's step through what happens when we throttle a function. First we create a closure around variables so they will be available to `throttledEventHandler` on every execution. `throttledEventHandler` receives 1 argument which is the event. It stores this event in the `storedEvent` variable and sets `hasStoredEvent` to `true`.
+
+Then we check if we have a timeout running (ie. an active throttle). If we do have a throttle, then `throttledEventHandler` has completed this execution and waits to execute the callback. If the throttle is not active, we are able to immediately handle the event with our callback function. We then call `setTimeout` and store the timeout value which indicates our throttle is running.
+
+While the timeout is active, the most recent event is always stored. The callback execution is bypassed which saves us from performing CPU intensive tasks or calling our API.
+
+When the `setTimeout` finishes, we null out the `throttleTimeout` indicating that the function is no longer throttled and can handle events. If there is a stored event (`hasStoredEvent` is `true`), we want to handle it immediately, and to do this we call `throttledEventHandler` recursively. The recursive call inside the `setTimeout` is what allows us to handle events at a constant rate. It will repeatedly execute the same process after a desired delay as long as new events continue to come in.
+
+See a throttle in action and play around with it in this <a href="https://codepen.io/treyhuffine/pen/mdyBEvM" target="_blank" rel="noopener noreferrer">Codepen</a>.
+
+A commented version of the function as well:
+
+<ThrottleSolutionCommented />
+
+</Section>

@@ -1,0 +1,14 @@
+```rust
+fn in_order(values: &[Option<i32>]) -> Vec<i32> {
+    fn walk(values: &[Option<i32>], index: usize, output: &mut Vec<i32>) {
+        if index >= values.len() { return; }
+        let Some(value) = values[index] else { return; };
+        walk(values, 2 * index + 1, output);
+        output.push(value);
+        walk(values, 2 * index + 2, output);
+    }
+    let mut output = Vec::new();
+    walk(values, 0, &mut output);
+    output
+}
+```

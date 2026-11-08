@@ -1,0 +1,12 @@
+```rust
+fn hash(&self, key: &str) -> usize {
+    let mut hash = 0;
+
+    // A char's integer value is its Unicode code point
+    for character in key.chars() {
+        hash = (hash + character as usize) % self.size;
+    }
+
+    hash
+}
+```

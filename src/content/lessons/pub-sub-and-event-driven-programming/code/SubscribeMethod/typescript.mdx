@@ -1,0 +1,13 @@
+```javascript
+type EventCallback = (data: any) => void;
+
+subscribe(eventName: string, callback: EventCallback) {
+  // Initialize a channel if it doesn't exist yet
+  if (!Array.isArray(this.subscribers[eventName])) {
+    this.subscribers[eventName] = [];
+  }
+
+  // Add a callback to the channel
+  this.subscribers[eventName].push(callback);
+}
+```

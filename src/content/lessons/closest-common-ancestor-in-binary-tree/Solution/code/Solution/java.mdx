@@ -1,0 +1,37 @@
+```java
+class Solution {
+    public BinaryNode findClosestAncestor(BinaryNode root, int firstChildValue, int secondChildValue) {
+        // Base case 1: We recursed to the end of a path
+        if (root == null) {
+            return null;
+        }
+
+        // Base case 2: We found one of the target child nodes
+        if (root.data == firstChildValue || root.data == secondChildValue) {
+            return root;
+        }
+
+        /*
+          Continue searching left and right.
+          This ensures we check all the nodes below this one recursively before we handle the current value.
+          This is a post-order traversal.
+        */
+        BinaryNode leftSearchResult = findClosestAncestor(root.left, firstChildValue, secondChildValue);
+        BinaryNode rightSearchResult = findClosestAncestor(root.right, firstChildValue, secondChildValue);
+
+        /*
+          We found the common ancestor node.
+          Return it, and it will propagate up and be the solution.
+        */
+        if (leftSearchResult != null && rightSearchResult != null) {
+            return root;
+        }
+
+        /*
+          Return whichever node isn't null.
+          If they both are null, it doesn't matter which we return.
+        */
+        return leftSearchResult != null ? leftSearchResult : rightSearchResult;
+    }
+}
+```

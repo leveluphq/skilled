@@ -1,0 +1,94 @@
+A prefix sum stores the total before each array boundary. Two boundaries then describe a range: subtract the earlier total from the later total to remove everything before the range. This works with negative values as well as positive ones, because the argument uses arithmetic rather than a rule about sums increasing.
+
+The same idea solves two different interview tasks. A prefix array answers repeated range-sum queries on static input. A frequency map of earlier prefixes counts subarrays whose sum equals a target. The second task needs counts because several boundaries can have the same cumulative sum.
+
+## Put zero before the first element
+
+Use half-open ranges, written `[left, right)`: include `left` and exclude `right`. An array of length n has n + 1 boundaries. Store zero at boundary zero, then let `prefix[i]` mean the sum of exactly the first i values.
+
+For `[3, -2, 5, 1]`, the prefixes are `[0, 3, 1, 6, 7]`. The range `[1, 3)` contains -2 and 5. Its sum is `prefix[3] - prefix[1]`, or 6 - 3 = 3. The leading zero makes a range starting at zero use the same formula. An empty range also works: subtracting a boundary from itself returns zero.
+
+```javascript
+function buildPrefix(values) {
+  const prefix = [0];
+  for (const value of values) {
+    prefix.push(prefix[prefix.length - 1] + value);
+  }
+  return prefix;
+}
+
+function rangeSum(prefix, left, right) {
+  const length = prefix.length - 1;
+  if (!Number.isInteger(left) || !Number.isInteger(right) ||
+      left < 0 || left > right || right > length) {
+    throw new RangeError('Expected 0 <= left <= right <= array length');
+  }
+  return prefix[right] - prefix[left];
+}
+```
+
+The construction assumes an array of numeric values whose cumulative sums are represented exactly. `rangeSum` expects a prefix array produced by that construction, including its leading zero. It validates range boundaries; it does not attempt to recognize an arbitrary corrupted prefix array.
+
+Preprocessing takes O(n) time and O(n) additional space. Each query takes O(1) time. If there is only one query, a direct scan can avoid the extra array and may be the clearer choice. State the number of queries before paying for preprocessing.
+
+## Count target sums by looking backward
+
+Let the current cumulative sum be S. A subarray ending here sums to K exactly when its earlier boundary has cumulative sum S - K. Each earlier occurrence of that value gives a different start boundary and therefore a different subarray.
+
+Store frequencies in a map. Begin with one occurrence of zero to represent the boundary before the input. At each value, update S, add the number of earlier occurrences of S - K to the answer, then record the new S.
+
+```javascript
+function countSubarraysSumK(values, target) {
+  const frequencies = new Map([[0, 1]]);
+  let sum = 0;
+  let count = 0;
+
+  for (const value of values) {
+    sum += value;
+    count += frequencies.get(sum - target) || 0;
+    frequencies.set(sum, (frequencies.get(sum) || 0) + 1);
+  }
+  return count;
+}
+```
+
+Count before inserting the current prefix. Inserting first would let the current boundary pair with itself when K is zero, counting an empty interval. The requested subarrays here are nonempty. The initial zero boundary is real bookkeeping for a range beginning at index zero; it is separate from an empty output interval.
+
+## Trace repeated prefixes
+
+For `[1, -1, 1]` and target 1, the answer is three: the first element, the last element, and the entire array. Two different start boundaries have prefix zero by the time the last element arrives.
+
+<table>
+<thead><tr><th>Value processed</th><th>Current sum S</th><th>Earlier S − 1 matches</th><th>Running answer</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>1</td><td>One zero boundary</td><td>1</td></tr>
+<tr><td>-1</td><td>0</td><td>No -1 boundary</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>Two zero boundaries</td><td>3</td></tr>
+</tbody>
+</table>
+
+A set would remember that zero exists but lose its multiplicity. A map from sum to one index would have the same problem for counting. If the task instead asks for a longest interval, an earliest-index map may be appropriate: for a fixed end, the earliest matching boundary gives the longest interval. Choose what each map entry means from the requested output.
+
+The frequency algorithm uses expected O(n) time under expected constant-time map operations and O(n) auxiliary space in the worst case. There can be n + 1 distinct prefix values. It counts answers without allocating an array for each matching subarray; returning every interval can require quadratic output space.
+
+## Why a sum window can fail on signed input
+
+Suppose the target is 3 and the input begins `[4, -1]`. A window rule that discards the left value as soon as its sum exceeds 3 removes the 4. It then misses the whole interval, which does sum to 3. A later negative value can reduce an oversized sum.
+
+Some positive-input sum problems permit a shrinking window because adding values cannot decrease a sum and removing them cannot increase it. That proof must follow from the exact constraints. Zeros can also change how many intervals match, so a counting algorithm needs more care than merely finding one valid window. Compare this example with the uniqueness invariant in the [sliding-window guide](/patterns/sliding-window).
+
+Sorting is also unsuitable for this task. Subarrays are contiguous in the original order. Sorting before counting changes the question, even if a two-pointer sum technique would work for choosing two independent values.
+
+## Static input and numeric limits
+
+Updating one original value changes every later prefix. A plain prefix array can therefore require O(n) repair time after a point update. If both updates and range queries are frequent, discuss a Fenwick tree or segment tree rather than promising constant-time queries with constant-time updates. A two-dimensional static sum table extends the same boundary idea through inclusion and exclusion, but it needs separate row and column boundary conventions.
+
+In JavaScript, require integer cumulative sums, target differences, and answer counts to stay within the safe-integer range. The largest possible count for n values is n(n + 1)/2, attained by an all-zero array with target zero. Floating-point equality can make the frequency-map version unsuitable for decimal measurements. [MDN documents the safe-integer limit](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER). For larger exact integer sums, use BigInt consistently for input values, target, and sum keys, and decide separately how to represent the answer count.
+
+## Test the contract
+
+Test an empty input, a range starting at zero, a range ending at n, and an empty range in the middle. For target counting, `[0, 0]` with target zero returns three; `[-1, -1, 1]` with target -1 returns three. A single nonmatching element returns zero. Verify the original array remains unchanged.
+
+Build a small independent reference with two loops: choose every start, extend the end one value at a time, and increment a counter whenever that running sum matches. Compare the map solution with it on short arrays containing negative values and zeros. This catches a missing initial zero, insertion in the wrong order, and a set mistakenly used in place of frequencies.
+
+For another cumulative-state exercise, explain the left and right products in [Product Array](/course/product-array). Products need their own treatment of zero and cannot always be queried by division. Then use the [pattern quiz](/tools/pattern-quiz) to distinguish a static range query from counting signed subarrays.

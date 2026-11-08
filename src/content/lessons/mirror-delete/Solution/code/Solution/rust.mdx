@@ -1,0 +1,62 @@
+```rust
+impl Solution {
+    pub fn mirror_delete(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
+        /*
+          We use 2 pointers (lead and follow) that start at the head.
+          Rust allows only one reference into the list while we change it,
+          so the lead pointer makes its trip first and counts the steps
+          the follow pointer will then take.
+        */
+        let mut lead = head.as_deref();
+
+        /*
+          Since we want to delete the k node,
+          we set our follow pointer to be one spot beyond the deleted node.
+
+          So instead of iterating `0 to i < k` as with most problems,
+          we iterate `0 to i < k + 1` to account for that extra spot.
+        */
+        for _ in 0..k + 1 {
+            match lead {
+                // If we hit the end, k is larger than our linked list,
+                // so we return the head without deleting an item.
+                None => return head,
+                Some(node) => lead = node.next.as_deref(),
+            }
+        }
+
+        /*
+          Our lead pointer will end exactly at the end of the list (None)
+          when the head node should be removed (k == linked list length - 1).
+
+          Since we iterate to k + 1, our lead pointer is 1 item past
+          the end of the linked list.
+        */
+        let Some(mut lead) = lead else {
+            return head.and_then(|node| node.next);
+        };
+
+        // Increment until lead reaches the tail.
+        // Once here, we know the node we want to delete is at k, and our follow is at k + 1.
+        let mut follow_steps = 0;
+        while let Some(next) = lead.next.as_deref() {
+            lead = next;
+            follow_steps += 1;
+        }
+
+        // Now the follow pointer takes the same steps from the head
+        let mut head = head;
+        let mut follow = head.as_deref_mut()?;
+        for _ in 0..follow_steps {
+            follow = follow.next.as_deref_mut()?;
+        }
+
+        // Delete the kth node (skip past it in our linked list)
+        let deleted = follow.next.take();
+        follow.next = deleted.and_then(|node| node.next);
+
+        // The head will be the same, but the list will not contain the node we deleted
+        head
+    }
+}
+```

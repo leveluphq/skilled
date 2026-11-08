@@ -1,0 +1,9 @@
+```csharp
+public void AddEdge(string source, string destination) {
+    this.adjacencyList[source].Add(destination);
+
+    if (this.undirected) {
+        this.adjacencyList[destination].Add(source);
+    }
+}
+```

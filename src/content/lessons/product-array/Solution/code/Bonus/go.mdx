@@ -1,0 +1,31 @@
+```go
+func buildProductArrayWithDivision(input []int64) []int64 {
+	// Zeroes are now an edge case because we can't divide by them
+	numZeros := 0
+	// Init product to 1
+	product := int64(1)
+
+	for _, element := range input {
+		if element == 0 {
+			numZeros++
+		} else {
+			product = product * element
+		}
+	}
+
+	for i := range input {
+		if numZeros == 0 {
+			// If no zeroes, don't worry about edge cases
+			input[i] = product / input[i]
+		} else if numZeros == 1 && input[i] == 0 {
+			// Handle the 1 zero where it will have the only non-zero product
+			input[i] = product
+		} else {
+			// If we have more than one 0, they're all 0
+			input[i] = 0
+		}
+	}
+
+	return input
+}
+```

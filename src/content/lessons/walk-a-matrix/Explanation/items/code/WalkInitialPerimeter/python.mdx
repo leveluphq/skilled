@@ -1,0 +1,23 @@
+```python
+# All rows in the matrix
+row_count = len(matrix)
+# All columns in the 0th row
+column_count = len(matrix[0])
+
+# Walk right (top row)
+for column in range(column_count - 1):
+    node_in_first_row = matrix[0][column]
+
+# Walk down (right column)
+for row in range(row_count - 1):
+    node_in_last_column = matrix[row][column_count - 1]
+
+# Walk left (bottom row)
+for column in range(column_count - 1, -1, -1):
+    node_in_last_row = matrix[row_count - 1][column]
+
+# Walk up (left column)
+# NOTE: notice stop before the 0th node at (1,0)
+for row in range(row_count - 2, 0, -1):
+    node_in_first_column = matrix[row][0]
+```

@@ -1,0 +1,19 @@
+```go
+func getMaxProfit(prices []int) int {
+	// No prices, no profit
+	if len(prices) == 0 {
+		return 0
+	}
+
+	maxProfit := 0
+	minPrice := prices[0]
+
+	for _, price := range prices {
+		profitAtCurrentDay := price - minPrice
+		maxProfit = max(maxProfit, profitAtCurrentDay)
+		minPrice = min(price, minPrice)
+	}
+
+	return maxProfit
+}
+```

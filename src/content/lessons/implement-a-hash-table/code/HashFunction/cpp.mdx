@@ -1,0 +1,11 @@
+```cpp
+int hash(const string& key) {
+    int hash = 0;
+
+    for (unsigned char c : key) {
+        hash = (hash + c) % size;
+    }
+
+    return hash;
+}
+```

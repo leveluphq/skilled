@@ -1,0 +1,26 @@
+```rust
+use std::collections::HashSet;
+
+// Create a helper function to add visited_nodes to the signature
+fn dfs(current_node: &Rc<RefCell<GraphNode>>, visited_nodes: &mut HashSet<i32>) {
+    let current_node = current_node.borrow();
+
+    // Use node value for the question
+    visit(&current_node);
+
+    visited_nodes.insert(current_node.data);
+
+    for child_node in &current_node.edges {
+        if !visited_nodes.contains(&child_node.borrow().data) {
+            dfs(child_node, visited_nodes);
+        }
+    }
+}
+
+fn recursive_depth_first_search(starting_node: &Rc<RefCell<GraphNode>>) {
+    // Init our set of visited nodes (each node's data is unique, so we track them by their data).
+    // The call stack is our stack.
+    let mut visited_nodes = HashSet::new();
+    dfs(starting_node, &mut visited_nodes);
+}
+```

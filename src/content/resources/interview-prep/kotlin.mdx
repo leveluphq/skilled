@@ -1,0 +1,86 @@
+Kotlin/JVM interview preparation should connect concise syntax to the collections and numeric operations it uses. A read-only List is a restricted view, a primitive IntArray has different storage from a boxed list, and a nullable map lookup can preserve a valid index of zero. Those details often decide whether a short solution matches its intended contract.
+
+The examples target Kotlin on the JVM and use ordinary functions plus Java's ArrayDeque. They do not require Kotlin/Native, coroutines, or a third-party collection library. Match the exercise's starter types and configured compiler before introducing APIs that its environment may not provide.
+
+## Choose primitive arrays or collection views deliberately
+
+IntArray stores primitive integer values. `Array<Int>` and `List<Int>` involve boxed integer elements on the JVM. Use the representation supplied by the exercise unless a conversion has a purpose. Converting an array into a list or repeatedly materializing a sequence adds work and storage that belong in the complexity analysis.
+
+Kotlin separates read-only collection interfaces from mutable interfaces. A List parameter prevents writes through that view, but another reference may still mutate the underlying collection. Declaring a mutable collection with val prevents rebinding the variable; it does not make the collection's contents immutable.
+
+The [collections overview](https://kotlinlang.org/docs/collections-overview.html) describes those interface distinctions. When an algorithm needs an independent result snapshot, copy the required storage rather than assuming a read-only type performed a copy.
+
+## Keep missing results and index zero separate
+
+A HashMap from Long to Int can store earlier indexes for Two Sum. Because this map never stores null values, a null lookup means absent. An earlier index of zero passes the explicit null check.
+
+```kotlin
+import java.util.ArrayDeque
+
+fun twoSum(values: IntArray, target: Int): IntArray? {
+    val previous = HashMap<Long, Int>()
+    for (index in values.indices) {
+        val complement = target.toLong() - values[index].toLong()
+        val earlier = previous[complement]
+        if (earlier != null) return intArrayOf(earlier, index)
+        previous[values[index].toLong()] = index
+    }
+    return null
+}
+
+fun bfsOrder(graph: Map<Int, List<Int>>, start: Int): List<Int> {
+    val queue = ArrayDeque<Int>()
+    val seen = HashSet<Int>()
+    val order = ArrayList<Int>()
+    seen.add(start)
+    queue.addLast(start)
+    while (queue.isNotEmpty()) {
+        val node = queue.removeFirst()
+        order.add(node)
+        for (neighbor in graph[node].orEmpty()) {
+            if (seen.add(neighbor)) queue.addLast(neighbor)
+        }
+    }
+    return order
+}
+```
+
+The pair search returns null for no answer and an independent two-element array for success. It checks before insertion, preserving distinct positions. Widening both operands before subtraction makes differences of Int inputs fit Long. It does not establish a safe policy for a future function accepting arbitrary Long values.
+
+The graph is stable during traversal. A missing key has no outgoing neighbors, and the supplied list order controls discovery order. Marking when adding to the queue prevents cycles or converging paths from producing repeated entries. Expected traversal work is O(V + E) under the usual bounded-key hash model, with O(V) retained visited, queue, and output state.
+
+## Use nullability to describe the domain
+
+The Elvis operator supplies a fallback when an expression is null. It is appropriate when that fallback matches the domain, such as an empty neighbor list for a missing adjacency key. A missing cached answer may need a different treatment if null is itself a valid computed result.
+
+For a map allowing nullable payloads, `map[key] == null` cannot always distinguish a missing entry from a present null. Use containsKey when presence matters. The example avoids that ambiguity by storing non-null indexes.
+
+Prefer a successful null check to an unexplained `!!`. A not-null assertion changes the failure behavior to an exception if the assumption is wrong; it does not validate a graph or prove a recursive child exists. Write the base case or presence branch where the algorithm needs it.
+
+## Compare values with the right operation
+
+Kotlin's `==` delegates to equality, while `===` asks about reference identity. Arrays need content comparison such as contentEquals for their element values; writing `a == b` for two IntArray results does not establish equal contents. This matters in tests that compare a returned pair with an expected array.
+
+If multiple pairs are valid, even contentEquals with one reference pair is too restrictive. Check bounds, distinct indexes, and the target sum. For graph labels represented by objects, define equality and hashing consistently with the vertex identity the problem uses.
+
+A data class can be a useful immutable coordinate key when its fields have the intended equality. Mutable key fields can invalidate a hash lookup after insertion. Saving a mutable object in a copied list still shares that object with other references.
+
+## Check numeric and text boundaries
+
+Int and Long arithmetic need a range argument. A comparator based on `a - b` can overflow; compareValues or an appropriate comparator expresses order without that subtraction. Integer division truncation also needs attention in midpoint and partition calculations, especially when negative values are involved.
+
+Kotlin/JVM strings and Char values use UTF-16 code units. Iterating ordinary characters is sufficient for an ASCII-constrained exercise, but supplementary code points can span two Char values. Java's code-point APIs can support a code-point model when that is what the problem requests. Grapheme clusters require another explicit segmentation choice.
+
+Repeated `substring` calls and collection transformations can hide copying. A concise chain of map, filter, and sorted may allocate intermediate collections. Use it when the resulting work is acceptable, and count the actual passes rather than equating fewer source lines with a lower complexity bound.
+
+## Plan stack depth and state restoration
+
+A recursive traversal consumes JVM call-stack space. A chain-shaped tree or graph can exceed the available stack even if its asymptotic algorithm is linear. The explicit ArrayDeque in the example gives a queue-based alternative; using removeLast instead would implement a different stack schedule.
+
+For backtracking, restore a mutable path after each recursive call and save an independent path copy when producing a result. Initialize grid rows separately, for example with a row-creation lambda, rather than returning the same mutable row object for every position. Nested reference sharing can make several apparent cells change at once.
+
+## Build a small boundary test set
+
+Compare Two Sum with exhaustive pairs using Long addition. Include empty input, a duplicate pair, a valid zero index, no answer, and Int extremes. Compare returned array contents only when the task specifies one answer; otherwise validate the pair contract.
+
+For BFS, check cycles, shared neighbors, missing keys, and a one-vertex graph. Verify input neighbor lists are unchanged. Then solve [Two Sum](/course/target-two-sum), [BFS](/course/breadth-first-search), and [permutations](/course/generate-all-permutations) in Kotlin when the editor offers it. Explain where null can occur, which collections can mutate, and which values remain shared between branches.

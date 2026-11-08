@@ -1,0 +1,9 @@
+```java
+public void removeVertex(String vertex) {
+    adjacencyList.remove(vertex);
+
+    for (String node : adjacencyList.keySet()) {
+        adjacencyList.get(node).removeIf(v -> v.equals(vertex));
+    }
+}
+```

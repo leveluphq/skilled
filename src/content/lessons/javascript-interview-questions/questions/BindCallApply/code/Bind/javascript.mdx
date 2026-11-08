@@ -1,0 +1,12 @@
+```javascript
+function sayHello() {
+  console.log(`Hello, ${this.name}!`);
+}
+
+const bob = { name: 'Bob' };
+
+// It creates a new function with its `this` set
+const sayHelloToBob = sayHello.bind(bob);
+// We can then execute the function later
+sayHelloToBob(); // Hello, Bob!
+```

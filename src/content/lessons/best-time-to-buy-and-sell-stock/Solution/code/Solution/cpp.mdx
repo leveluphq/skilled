@@ -1,0 +1,22 @@
+```cpp
+class Solution {
+public:
+    int getMaxProfit(vector<int>& prices) {
+        // With no prices there's no first price, and no trade
+        if (prices.empty()) {
+            return 0;
+        }
+
+        int maxProfit = 0;
+        int minPrice = prices[0];
+
+        for (int price : prices) {
+            int profitAtCurrentDay = price - minPrice;
+            maxProfit = max(maxProfit, profitAtCurrentDay);
+            minPrice = min(price, minPrice);
+        }
+
+        return maxProfit;
+    }
+};
+```

@@ -1,0 +1,7 @@
+```kotlin
+fun frequencyCounts(values: List<Int>): List<Int> {
+    val counts = mutableMapOf<Int, Int>()
+    for (value in values) counts[value] = (counts[value] ?: 0) + 1
+    return values.map { counts.getValue(it) }
+}
+```

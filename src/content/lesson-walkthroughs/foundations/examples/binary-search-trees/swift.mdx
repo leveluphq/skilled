@@ -1,0 +1,10 @@
+```swift
+func containsBST(_ values: [Int?], _ target: Int) -> Bool {
+    var index = 0
+    while index < values.count, let value = values[index] {
+        if value == target { return true }
+        index = target < value ? 2 * index + 1 : 2 * index + 2
+    }
+    return false
+}
+```

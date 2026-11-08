@@ -1,0 +1,13 @@
+```python
+parent["c1"] = None
+print(parent["c1"], child1["mood"]) # None, stoked
+
+parent["c1"] = child1
+
+child1 = 'no longer an object pointer'
+print(parent["c1"]["mood"], child1) # stoked, no longer an object pointer
+
+parent["c1"] = False
+child1 = None
+print(parent["c1"], child1) # False, None
+```

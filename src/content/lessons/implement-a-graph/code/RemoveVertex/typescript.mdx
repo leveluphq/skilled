@@ -1,0 +1,9 @@
+```javascript
+removeVertex(vertex: string): void {
+  delete this.adjacencyList[vertex];
+
+  Object.keys(this.adjacencyList).forEach(node => {
+    this.adjacencyList[node] = this.adjacencyList[node].filter(v => v !== vertex);
+  });
+}
+```

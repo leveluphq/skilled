@@ -1,0 +1,14 @@
+import BigO from 'content/blocks/BigO';
+import BruteForce from './code/BruteForce';
+
+Next we'll try a brute force solution.
+We can iterate through the input, and at each day, we determine the profit if we buy the stock on the current day and sell it at each day after.
+We do this for every item in the input and store the max profit in a variable at any point that we find a new one.
+We determine the possible max profits by finding the larger value between the current max profit that we stored and comparing it to the profit from buying at the current day and selling at each day in the future.
+
+<BruteForce />
+
+We perform this calculation in nested loops because we check each item against every other item, so this yields an <BigO.n2 /> solution.
+Notice we start the inner loop at one day past the day we buy so that we're never comparing to a past price or current day's price, meaning we'll only sell in the future.
+
+This works, but we can do better.

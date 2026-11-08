@@ -1,0 +1,17 @@
+```kotlin
+fun bfsOrder(graph: List<List<Int>>, start: Int): List<Int> {
+    if (start !in graph.indices) return emptyList()
+    val queue = java.util.ArrayDeque<Int>()
+    val visited = mutableSetOf(start)
+    val output = mutableListOf<Int>()
+    queue.addLast(start)
+    while (queue.isNotEmpty()) {
+        val node = queue.removeFirst()
+        output.add(node)
+        for (neighbor in graph[node]) {
+            if (visited.add(neighbor)) queue.addLast(neighbor)
+        }
+    }
+    return output
+}
+```

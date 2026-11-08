@@ -1,0 +1,26 @@
+```javascript
+type ResultTuple = [number, number];
+
+const getTargetIndexes = (array: number[], target: number): ResultTuple[] => {
+  const results = [];
+  const arrayElementAtIndex = {};
+
+  for (let i = 0; i < array.length; i++) {
+    const currentValue = array[i];
+    const matchedValue = target - currentValue;
+    const matchedIndex = arrayElementAtIndex[matchedValue];
+
+    if (matchedIndex >= 0) {
+      results.push([i, matchedIndex]);
+
+      arrayElementAtIndex[currentValue] = -1;
+      arrayElementAtIndex[matchedValue] = -1;
+    }
+
+    // Add values after we see them
+    arrayElementAtIndex[currentValue] = i;
+  }
+
+  return results;
+};
+```

@@ -1,0 +1,11 @@
+```kotlin
+fun push(item: Int): Node {
+    val previousLastItem = last
+
+    val newLastItem = Node(item)
+    newLastItem.prev = previousLastItem
+    last = newLastItem
+
+    return newLastItem
+}
+```

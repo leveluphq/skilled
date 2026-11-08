@@ -1,0 +1,27 @@
+```python
+# O(n) append
+def append(head, data):
+    # Create a new node to append
+    appended_node = Node(data)
+    # Start at the current node which is the head
+    current_node = head
+
+    # Iterate through our list until we reach the last node
+    while current_node.next != None:
+        # Step through nodes
+        current_node = current_node.next
+
+    current_node.next = appended_node
+
+    # Return the head of the list
+    return head
+
+head = Node(42)
+head.next = Node(9000)
+head.next.next = Node(10)
+head.next.next.next = Node(20)
+# 42 -> 9000 -> 10 -> 20
+
+head = append(head, 8)
+# 42 -> 9000 -> 10 -> 20 -> 8
+```

@@ -1,0 +1,43 @@
+```typescript
+type Settlement<T> =
+  | { state: 'pending' }
+  | { state: 'fulfilled'; value: T }
+  | { state: 'rejected'; reason: unknown };
+
+type Observer<T> = {
+  fulfilled: (value: T) => void;
+  rejected: (reason: unknown) => void;
+};
+
+class TeachingPromise<T> {
+  private result: Settlement<T> = { state: 'pending' };
+  private observers: Observer<T>[] = [];
+
+  constructor(executor: (resolve: (value: T) => void, reject: (reason: unknown) => void) => void) {
+    const settle = (result: Settlement<T>) => {
+      if (this.result.state !== 'pending') return;
+      this.result = result;
+      const waiting = this.observers;
+      this.observers = [];
+      for (const observer of waiting) this.schedule(observer, result);
+    };
+    try {
+      executor(value => settle({ state: 'fulfilled', value }),
+               reason => settle({ state: 'rejected', reason }));
+    } catch (reason) { settle({ state: 'rejected', reason }); }
+  }
+
+  observe(fulfilled: (value: T) => void, rejected: (reason: unknown) => void): void {
+    const observer = { fulfilled, rejected };
+    if (this.result.state === 'pending') this.observers.push(observer);
+    else this.schedule(observer, this.result);
+  }
+
+  private schedule(observer: Observer<T>, result: Settlement<T>): void {
+    setTimeout(() => {
+      if (result.state === 'fulfilled') observer.fulfilled(result.value);
+      else if (result.state === 'rejected') observer.rejected(result.reason);
+    }, 0);
+  }
+}
+```

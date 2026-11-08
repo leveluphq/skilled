@@ -1,0 +1,77 @@
+Python's dictionary fits this version of Two Sum well: store each earlier integer as a key and its original index as the value. The course asks for all matching index pairs, so the function accumulates answers until the entire input has been scanned. For `[4, 1, 5, 2, 3]` and target `6`, it must return the pairs using indexes `1, 2` and `0, 3`.
+
+The input integers are unique. A number cannot match itself, and a pair should appear only once. We return a list of two-element lists, preserving the index-based contract rather than returning the matching values. The input list is not modified.
+
+## Let enumerate carry the original positions
+
+`enumerate` gives us both the index and the value at each step. There is no need to maintain a separate counter or search the input with `list.index`. A second search would repeat work, and using the index from enumeration makes the meaning of each returned pair explicit.
+
+The dictionary contains only the part of the input already visited. Before adding the current number, ask whether its complement is present. If it is, the stored index is guaranteed to be earlier than the current index. This ordering is what prevents self-matching and reversed copies of the same pair.
+
+```python
+def get_target_indexes(array, target):
+    seen = {}
+    pairs = []
+
+    for j, value in enumerate(array):
+        complement = target - value
+        if complement in seen:
+            pairs.append([seen[complement], j])
+        seen[value] = j
+
+    return pairs
+```
+
+The dictionary is keyed by number, not by index. It answers “where have I seen the partner?” An index-keyed dictionary would answer the reverse question and would not remove the need to search for a value.
+
+## Walk through the dictionary state
+
+For `[4, 1, 5, 2, 3]` with target `6`, the first lookup asks for `2`. The dictionary is empty, so `4` is stored at index `0`. Next, `1` asks for `5`, finds nothing, and is stored at index `1`.
+
+When `5` arrives at index `2`, the dictionary already contains `1: 1`. Append `[1, 2]`. When `2` arrives at index `3`, the earlier `4` supplies index `0`, producing `[0, 3]`. The final `3` does not match itself, because its own entry is added only after the lookup.
+
+Notice that the function continues after either successful lookup. Many single-answer Two Sum examples return from inside the loop. Here that would miss a required pair. The return belongs after the loop, and an input with no matches naturally returns an empty list.
+
+## Membership is different from a truthy dictionary value
+
+Use `complement in seen` to test whether a key exists. `seen.get(complement)` returns the stored index when present, and index `0` is false in a Boolean context. An `if seen.get(complement)` check would silently miss a valid answer at the beginning of the input.
+
+An explicit `None` sentinel can also work if stored values are always integers: retrieve the value with `get`, then compare using `is not None`. Membership followed by indexing is easier to read in this example and avoids adding another local variable. Python's [dictionary documentation](https://docs.python.org/3/library/stdtypes.html#mapping-types-dict) describes key membership and the default behavior of `get`.
+
+Dictionary insertion order is not what makes the algorithm correct. Correctness comes from processing the input left to right and storing only earlier positions. We never iterate over the dictionary, so the output contract should not depend on dictionary ordering. The pair order remains unspecified even though this implementation produces a consistent order for a given input.
+
+## Use tests that expose incomplete answers
+
+The comparison below converts pairs into a sorted list of tuples. It preserves duplicates, so an implementation that emits a pair twice still fails. Converting answers to a set would hide that particular mistake.
+
+```python
+def normalized_pairs(pairs):
+    return sorted(tuple(sorted(pair)) for pair in pairs)
+
+
+two_sum_cases = [
+    ([], 6, []),
+    ([3], 6, []),
+    ([0, 6], 6, [[0, 1]]),
+    ([4, 1, 5, 2, 3], 6, [[0, 3], [1, 2]]),
+    ([-3, 7, 2, -2], 4, [[0, 1]]),
+    ([1, 2, 4], 10, []),
+]
+for values, target, expected in two_sum_cases:
+    before = values.copy()
+    actual = get_target_indexes(values, target)
+    assert normalized_pairs(actual) == normalized_pairs(expected)
+    assert values == before
+```
+
+A useful independent oracle uses two nested loops with `i` strictly less than `j`. It is slower, but its structure is different from the dictionary approach, which makes it useful for checking small randomly generated unique inputs. Compare normalized outputs, not just whether at least one pair was found.
+
+## Account for the input contract and integer size
+
+Repeated numbers change the storage requirement if every index pair must be returned. For `[3, 3, 3]` and target `6`, the required pairs would be `[0, 1]`, `[0, 2]`, and `[1, 2]`. A dictionary storing one index per value loses earlier occurrences. That input is outside this lesson's unique-integer contract; solving the generalized version requires storing a list of earlier positions for each value.
+
+Under the usual bounded-integer model, dictionary operations take expected constant time, giving expected `O(n + k)` work and `O(n)` dictionary space, plus the output. With unique integers, the number of pairs `k` is at most linear in `n`. Hash-table bounds are expected bounds rather than an unconditional worst-case guarantee.
+
+Python integers can grow beyond a machine word. That avoids the fixed-width overflow issue found in some other languages, but arithmetic and hashing of extremely large integers have costs that depend on their size. State the bounded-integer assumption when giving the conventional linear-time analysis.
+
+As a practice check, remove the code and reconstruct it from the sentence “the dictionary contains only earlier indexes.” Then test an answer involving index zero and an input with two valid pairs before trying a larger example.

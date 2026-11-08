@@ -1,0 +1,17 @@
+```rust
+fn get(&self, key: &str) -> Option<i32> {
+    let index = self.hash(key);
+
+    // Check if the key exists in the bucket, and return its value if found
+    if let Some(bucket) = &self.table[index] {
+        for (bucket_key, value) in bucket {
+            if bucket_key == key {
+                return Some(*value);
+            }
+        }
+    }
+
+    // Return None if the key is not found
+    None
+}
+```

@@ -1,0 +1,47 @@
+```java
+private static final int OPEN = 0;
+private static final int BLOCKED = 1;
+private static final int EXIT = 2;
+
+// Main function
+public boolean hasExitPath(int[][] roomMatrix) {
+    // Return false if the matrix is invalid
+    if (roomMatrix == null || roomMatrix.length == 0 || roomMatrix[0].length == 0) {
+        return false;
+    }
+
+    // Recursively walk through the room to check if there is a valid path
+    boolean isValidPath = walkThroughRoom(roomMatrix, 0, 0);
+
+    return isValidPath;
+}
+
+// Recursive helper function
+private boolean walkThroughRoom(int[][] roomMatrix, int row, int col) {
+    // Base case 1: Outside of room, so there can't be a path through this
+    boolean isOutsideRoom = row > roomMatrix.length - 1 || col > roomMatrix[0].length - 1;
+    if (isOutsideRoom) {
+        return false;
+    }
+
+    // Base case 2: A path successfully reached the end, so propagate this upward
+    boolean isExitNode = roomMatrix[row][col] == EXIT;
+    if (isExitNode) {
+        // Set the current node as true as well
+        return true;
+    }
+
+    // Base case 3: We reached a blocking node
+    boolean isBlockingNode = roomMatrix[row][col] == BLOCKED;
+    if (isBlockingNode) {
+        return false;
+    }
+
+    // Recursive case: move down and right
+    boolean downResult = walkThroughRoom(roomMatrix, row + 1, col);
+    boolean rightResult = walkThroughRoom(roomMatrix, row, col + 1);
+
+    // Returns true if either is successful
+    return downResult || rightResult;
+}
+```

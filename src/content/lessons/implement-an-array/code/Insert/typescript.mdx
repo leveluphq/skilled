@@ -1,0 +1,23 @@
+```javascript
+insert(index: number, item: any): HashTable {
+  // Ensure we're inserting inside a valid array length
+  if (index > this.length - 1 || index < 0) {
+    return undefined;
+  }
+
+  // Create our new length
+  this.length++;
+
+  // Shift items up one spot from the insertion index to the new final spot in the array.
+  // We iterate from the back since this is our new empty item
+  for (let i = this.length - 1; i > index; i--) {
+    this.data[i] = this.data[i - 1];
+  }
+
+  // Add the new item
+  this.data[index] = item;
+
+  // Return the array
+  return this.data;
+}
+```

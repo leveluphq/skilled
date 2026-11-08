@@ -1,0 +1,12 @@
+```swift
+let previousNodeInPath: [String: String] = [
+    // "base" is where we start, so no node comes before it and it has no entry
+    "sat0": "base",
+    "sat1": "sat0",
+    "sat3": "sat0", // Ignore sat2's connection
+    "sat4": "sat0", // Ignore sat2's and sat3's connection
+    "sat2": "sat1",
+    "sat5": "sat4",
+    "ship": "sat5",
+]
+```

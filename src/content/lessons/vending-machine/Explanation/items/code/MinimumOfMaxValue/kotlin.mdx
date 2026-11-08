@@ -1,0 +1,7 @@
+```kotlin
+// Careful: an Int can't hold more than Int.MAX_VALUE, so adding 1 overflows
+minOf(Int.MAX_VALUE, Int.MAX_VALUE + 1) // Int.MIN_VALUE, not Int.MAX_VALUE
+
+// So we skip the coin when minCoinsForAmount[amount - coin] is still Int.MAX_VALUE,
+// and the amount keeps Int.MAX_VALUE (no valid combination yet)
+```

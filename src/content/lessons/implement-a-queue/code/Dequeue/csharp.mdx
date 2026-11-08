@@ -1,0 +1,17 @@
+```csharp
+public Node Dequeue() {
+    Node removedItem = this.first;
+
+    if (removedItem == null) {
+        return null;
+    }
+
+    if (this.first == this.last) {
+        this.last = null;
+    }
+
+    this.first = removedItem.prev;
+
+    return removedItem;
+}
+```

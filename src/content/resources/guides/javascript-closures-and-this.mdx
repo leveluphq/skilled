@@ -1,0 +1,102 @@
+A closure retains access to bindings from the environment where a function was created. The value of `this` in an ordinary function instead depends on how that function is called. Those two rules meet in callbacks, event handlers, timers, and object methods, so interview questions often expose a mistaken assumption about one through the other.
+
+Work through the examples by naming the binding or receiver each function uses. Then change one call site and predict what changes. The goal is to explain the behavior from the code rather than memorize a list of surprising outputs.
+
+## Retain a binding across calls
+
+This counter factory creates a new binding each time it runs. The returned methods share that binding within one instance.
+
+```javascript
+function makeCounter(start = 0) {
+  let value = start;
+  return {
+    increment() {
+      value += 1;
+      return value;
+    },
+    read() {
+      return value;
+    },
+  };
+}
+
+const first = makeCounter(2);
+const second = makeCounter(10);
+const observedCounts = [first.increment(), first.read(), second.read()];
+// observedCounts is [3, 3, 10].
+```
+
+The outer call has returned, but its binding remains reachable through the returned methods. Calling `first.increment()` changes the binding read by `first.read()`. It does not change the separate binding created for `second`.
+
+The closure retains access to a binding, not a frozen copy of its initial value. If several callbacks close over the same mutable binding, they observe updates to that shared binding. An object reached through a constant binding can also have mutable properties; `const` prevents rebinding the variable, not every change to the referenced object.
+
+The language background is covered in [MDN's closure guide](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures). For an implementation exercise, identify the retained timer and latest arguments in [Debounce](/course/debounce), then explain which later call updates them.
+
+## Make loop bindings explicit
+
+A loop using `let` can give each iteration its own binding. That matters when callbacks run after the loop has advanced.
+
+```javascript
+function makeReaders(values) {
+  const readers = [];
+  for (let i = 0; i < values.length; i += 1) {
+    readers.push(() => values[i]);
+  }
+  return readers;
+}
+```
+
+Each reader retains its iteration's index. It still reads the shared `values` array when invoked, so changing an array entry afterward changes that reader's result. If a snapshot is required, copy the value into a new binding inside the loop and close over that binding instead.
+
+That distinction separates two questions: which index was retained, and when the indexed value was read. A test that invokes all callbacks immediately may miss a bug involving delayed invocation or later mutation. Test the factory, mutate one array entry, and then call the readers to see which contract the implementation actually provides.
+
+## Determine this from the ordinary call site
+
+An ordinary method called through an object expression receives that object as its receiver. Detaching the method and invoking it without a receiver changes the call. Strict-mode ordinary functions receive undefined for a plain call rather than an automatic object instance.
+
+```javascript
+function makeReceiverExample() {
+  return {
+    value: 7,
+    read() {
+      'use strict';
+      return this.value;
+    },
+  };
+}
+
+const receiverExample = makeReceiverExample();
+const boundRead = receiverExample.read.bind(receiverExample);
+```
+
+`receiverExample.read()` and `boundRead()` both return seven. A detached unbound `read` call fails when it tries to access `value` through undefined. Binding creates a callable with the chosen receiver; it does not change the original method into a different function body.
+
+A wrapper callback can also preserve a desired receiver by calling the method through its object: an arrow that evaluates `receiverExample.read()` performs a method call at invocation time. If the method property later changes, that wrapper sees the replacement, while a previously bound function still calls the function it originally bound. Choose based on the intended contract.
+
+## Use lexical this deliberately
+
+Arrow functions capture the surrounding `this` instead of defining their own call-site receiver. That can help a callback use the containing method's receiver, but it also means `call`, `apply`, or `bind` cannot replace the arrow's captured `this`.
+
+An arrow assigned as an object property is therefore not automatically a method that receives that object. Its surrounding creation context determines the receiver it captures. Avoid relying on top-level `this` in examples because scripts, modules, and host environments differ.
+
+For a timer wrapper, decide whether the eventual callback should receive the latest caller's receiver. A debounce implementation that only saves arguments can lose that part of the call. Tests should invoke the wrapper as a method and verify which object the final callback observes. The [debounce/throttle guide](/guides/debounce-vs-throttle) explains the related scheduling contract.
+
+## Treat lifetime and cleanup as part of the design
+
+A listener or timer can keep its callback reachable, and that callback can keep objects from its environment reachable. Retained access is useful state management, but it also means lifecycle decisions matter. Cancel an obsolete timer or remove a listener when its owner is disposed.
+
+Removing a listener requires the appropriate original listener identity and matching capture setting, or a supported abort-signal cleanup design. Calling `bind` again creates another function object, so passing a newly bound function to removal does not identify the earlier listener. Store the created callback or return an explicit cleanup function.
+
+The [event-delegation guide](/guides/frontend-event-delegation) provides a small handler with cleanup. A strong test installs it, activates it once, disposes it, and verifies that later activation does no work. That checks an observable lifecycle promise rather than merely asserting that a removal API was called.
+
+## Check receiver behavior after an asynchronous boundary
+
+A delayed callback does not inherit a receiver merely because the scheduling call happened inside a method. Retain the intended receiver through an arrow, a bound function, or an explicitly saved variable according to the API contract. Test with two independent objects using the same wrapper so state from the most recent call cannot accidentally leak across instances.
+
+Also check arguments at invocation time. A wrapper that saves an array reference can observe later changes to that array. If a stable snapshot is required, define what copying means for nested objects instead of assuming a shallow copy freezes the entire input.
+
+## Practice with changed assumptions
+
+Start with the [JavaScript output quiz](/tools/javascript-output-quiz), then implement the counter and readers from a blank file. Test separate factory calls, a shared mutable input, a detached method, and a bound receiver. Explain each result using one rule about bindings or invocation.
+
+For a follow-up, add a reset operation to the counter and decide what a previously returned reader should observe afterward. Then implement an unsubscribe function for [Pub-Sub](/course/pub-sub-and-event-driven-programming). State whether an already queued callback can still run after unsubscription. That contract question connects lexical state, callback identity, and scheduling in one concrete task.

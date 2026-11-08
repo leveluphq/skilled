@@ -1,0 +1,19 @@
+```swift
+func insert(_ key: String, _ value: Int) {
+    let index = hash(key)
+
+    // Arrays are values in Swift, so we change the bucket in place
+    // through table[index] instead of through a copy of it
+
+    // If the key already exists in the bucket, replace its value
+    for i in 0..<table[index].count {
+        if table[index][i].key == key {
+            table[index][i].value = value
+            return
+        }
+    }
+
+    // Otherwise, add the new key-value pair
+    table[index].append((key: key, value: value))
+}
+```

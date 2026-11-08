@@ -1,0 +1,21 @@
+import Image from 'content/blocks/Image';
+
+Our approach is reasonably simple.
+
+1. Determine if the half to the left or right of the midpoint is ordered correctly from smallest to largest (does not have the rotation).
+2. Determine if the target number is between the smallest or largest value in the correctly-ordered half. This comparison will let us know which half (either right or left) the target must exist in.
+3. Update either the start or end bound to encompass the half that we know our target must be contained in. This is analogous to how we update the start or end to the midpoint item in a standard binary search.
+
+Let's see the cases we need to consider.
+
+The left half is ordered correctly:
+
+<Image src="/images/left-correct-shifted-search.png" alt="When a rotated array&#x27;s left half is ordered, compare the target with that half&#x27;s bounds before choosing a side." width={2274} height={1400} />
+
+The right half is ordered correctly:
+
+<Image src="/images/right-correct-shifted-search.png" alt="When a rotated array&#x27;s right half is ordered, compare the target with that half&#x27;s bounds before choosing a side." width={2274} height={1404} />
+
+With that, we can update our bounds to converge on the target using a procedure that is nearly identical to binary search.
+
+<Image src="/images/shifted-search.gif" alt="Search in a rotated sorted array narrows its bounds by checking the ordered half on each iteration." width={1200} height={485} />

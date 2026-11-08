@@ -1,0 +1,36 @@
+```csharp
+public class Solution {
+    public bool IsBST(BinaryNode root) {
+        var stack = new Stack<BinaryNode>();
+        BinaryNode currentNode = root;
+        // Smaller than every int, so it works like -Infinity
+        long inOrderValue = long.MinValue;
+
+        // Begin iterative in-order traversal
+        while (stack.Count > 0 || currentNode != null) {
+            // Traverse down a node's left children as long as they continue to exist
+            while (currentNode != null) {
+                stack.Push(currentNode);
+                currentNode = currentNode.left;
+            }
+
+            // Check nodes in-order, testing that their value is larger than the previous
+            currentNode = stack.Pop();
+
+            // In-order traversal failed
+            if (currentNode.data <= inOrderValue) {
+                return false;
+            }
+
+            // Update value
+            inOrderValue = currentNode.data;
+
+            // Continue in-order traversal to the current node's right path
+            currentNode = currentNode.right;
+        }
+
+        // Finish traversal and all values were valid
+        return true;
+    }
+}
+```

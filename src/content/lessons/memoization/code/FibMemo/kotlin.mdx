@@ -1,0 +1,21 @@
+```kotlin
+val memo = HashMap<Int, Int>()
+
+fun fib(n: Int): Int {
+    if (n < 2) {
+        return n
+    }
+
+    // If we have the value in our hash table,
+    // return it instead of continuing with the recursive case
+    if (n in memo) {
+        return memo.getValue(n)
+    }
+
+    val nthFib = fib(n - 1) + fib(n - 2)
+
+    memo[n] = nthFib
+
+    return nthFib
+}
+```

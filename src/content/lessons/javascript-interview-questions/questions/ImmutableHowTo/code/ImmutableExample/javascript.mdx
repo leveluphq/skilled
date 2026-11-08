@@ -1,0 +1,25 @@
+```javascript
+// Spread operator in arrays
+const arr1 = [1, 2, 3];
+const arr2 = [...arr1];
+// This creates a brand new array with the same values
+arr1 === arr2; // false
+
+// Spread operator in objects
+const obj1 = { hi: 'world' };
+const obj2 = { ...obj1 };
+// This creates a brand new object with the same properties
+obj1 === obj2;// false
+
+// Object.assign
+const obj1 = { hi: 'world' };
+const obj2 = Object.assign({}, obj1);
+// This creates a brand new object with the same properties
+obj1 === obj2; // false
+
+// Array.slice
+const arr1 = [1, 2, 3];
+const arr2 = arr1.slice(1);
+console.log(arr1); // [1, 2, 3]
+console.log(arr2) ;// [2, 3]
+```

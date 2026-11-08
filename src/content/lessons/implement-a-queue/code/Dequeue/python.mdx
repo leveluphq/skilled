@@ -1,0 +1,14 @@
+```python
+def dequeue(self):
+    removed_item = self.first
+
+    if not removed_item:
+        return None
+
+    if self.first == self.last:
+        self.last = None
+
+    self.first = removed_item.prev
+
+    return removed_item
+```

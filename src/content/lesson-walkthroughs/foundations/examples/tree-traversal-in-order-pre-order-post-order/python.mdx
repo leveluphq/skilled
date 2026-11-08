@@ -1,0 +1,14 @@
+```python
+from typing import Optional
+
+def in_order(values: list[Optional[int]]) -> list[int]:
+    output = []
+    def walk(index):
+        if index >= len(values) or values[index] is None:
+            return
+        walk(2 * index + 1)
+        output.append(values[index])
+        walk(2 * index + 2)
+    walk(0)
+    return output
+```

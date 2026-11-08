@@ -1,0 +1,34 @@
+```swift
+@discardableResult
+func insert(_ data: Int) -> BinarySearchTree {
+    let node = BinaryNode(data)
+
+    // First insert becomes root
+    guard var currentNode = root else {
+        root = node
+        return self
+    }
+
+    while true {
+        if data < currentNode.data {
+            // Insert the node if you reach a leaf and return
+            guard let left = currentNode.left else {
+                currentNode.left = node
+                return self
+            }
+
+            // Continue by traversing left
+            currentNode = left
+        } else {
+            // Insert the node if you reach a leaf and return
+            guard let right = currentNode.right else {
+                currentNode.right = node
+                return self
+            }
+
+            // Continue by traversing right
+            currentNode = right
+        }
+    }
+}
+```

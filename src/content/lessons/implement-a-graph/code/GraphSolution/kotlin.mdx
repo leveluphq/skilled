@@ -1,0 +1,25 @@
+```kotlin
+class Graph(val undirected: Boolean = true) {
+    val adjacencyList = HashMap<String, MutableList<String>>()
+
+    fun addVertex(vertex: String) {
+        adjacencyList[vertex] = mutableListOf()
+    }
+
+    fun addEdge(source: String, destination: String) {
+        adjacencyList.getValue(source).add(destination)
+
+        if (undirected) {
+            adjacencyList.getValue(destination).add(source)
+        }
+    }
+
+    fun removeVertex(vertex: String) {
+        adjacencyList.remove(vertex)
+
+        for (edges in adjacencyList.values) {
+            edges.removeAll { v -> v == vertex }
+        }
+    }
+}
+```

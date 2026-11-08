@@ -1,0 +1,28 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+This question can be solved using a bottom-up dynamic programming solution.
+We build a table where each row adds one more item and each column is a weight limit from `0` up to the `capacity`.
+Each cell is a decision: we either skip the current item and keep the best value from the row above,
+or we take the item and add its value to the best value the row above found for the weight that is left over.
+Since we only look at the row above, each item is used at most once.
+Once we have tried every item at every weight, the last cell holds the answer.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.n letter="n x capacity" /> time and <BigO.n letter="n x capacity" /> space.
+</p>
+
+Here `n` is the number of items and `capacity` is the maximum weight.
+We try every item at every weight in nested loops, and we store each subproblem's result in a table with `(n + 1) x (capacity + 1)` cells.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

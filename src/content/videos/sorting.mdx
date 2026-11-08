@@ -1,0 +1,19 @@
+Sorting places values in an order defined by a comparison rule. It can simplify later searches, interval processing, and duplicate handling, but it also adds work and may mutate the input. The recording compares common sorting approaches. These notes focus on the properties you need to explain when choosing one for an interview solution.
+
+## Connect each method to its invariant
+
+Insertion sort grows a sorted prefix by placing the next value into that prefix. Merge sort recursively sorts parts and combines them in order. Quicksort partitions around a pivot and then handles the partitions. Tracing a small input should show what becomes true after each insertion, merge, or partition.
+
+Complexity depends on the algorithm and its implementation. A conventional merge sort takes O(n log n) time with linear auxiliary storage for merging. Quicksort has expected O(n log n) time under suitable pivot assumptions but can degrade to quadratic time. Its recursion depth also depends on partition balance; average stack usage is not a worst-case guarantee.
+
+## Define equality and stability
+
+A stable sort preserves the original order of elements that compare equal. That can matter when sorting records with more than one field. If an algorithm sorts intervals only by their start, consider whether ties need another comparison or whether any order of equal starts preserves the later invariant.
+
+In JavaScript, a comparator returns a negative number, zero, or a positive number. A boolean does not express both directions correctly. The default ordering also does not perform general numeric ascending comparison. Use an explicit numeric comparator when the contract is numeric, and define how unusual values should behave if they are permitted.
+
+## Include preparation in the full algorithm
+
+Sorting before a linear scan still gives an overall sorting-dominated bound. Copying first preserves input order but requires storage. An in-place sort may be acceptable for a disposable working array and surprising for an API whose caller expects the original order.
+
+Use the [sorting comparison tool](/tools/sorting-comparison) to inspect modeled comparisons and movements on the same input. Then try [Interview Scheduler](/watch/interview-scheduler), which sorts intervals before merging, and [Age Sort](/watch/age-sort), which can use a bounded key range instead of comparisons. State the key-range assumption before comparing its cost with a general-purpose sort.

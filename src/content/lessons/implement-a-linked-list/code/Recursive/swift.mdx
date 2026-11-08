@@ -1,0 +1,14 @@
+```swift
+func findTailNodeRecursively(_ node: Node) -> Node {
+    // Stopping condition when we find the tail node.
+    // We know that the `next` will be nil for the tail.
+    guard let nextNode = node.next else {
+        return node
+    }
+
+    // Continue to call our function recursively with the `next` node.
+    return findTailNodeRecursively(nextNode)
+}
+
+let tailNode = findTailNodeRecursively(head)
+```

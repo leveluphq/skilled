@@ -1,0 +1,22 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct BinaryNode {
+    // NOTE: We're defining the data as an i32 here, but in reality it can be any data type
+    pub data: i32,
+    pub left: Option<Rc<RefCell<BinaryNode>>>,
+    pub right: Option<Rc<RefCell<BinaryNode>>>,
+}
+
+impl BinaryNode {
+    pub fn new(data: i32) -> Self {
+        BinaryNode {
+            data,
+            left: None,
+            right: None,
+        }
+    }
+}
+```

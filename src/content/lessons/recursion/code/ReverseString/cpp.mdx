@@ -1,0 +1,22 @@
+```cpp
+string reverseString(const string& str) {
+    // Base case
+    if (str.empty()) {
+        return "";
+    }
+
+    // Recursively add the front character to end of the remaining string
+    return reverseString(str.substr(1)) + str[0];
+}
+
+reverseString("dev");
+// reverseString("dev")
+//   reverseString("ev")
+//     reverseString("v")
+//       reverseString("")
+//       return ""
+//     return "" + 'v'
+//   return "v" + 'e'
+// return "ve" + 'd'
+// -> "ved"
+```

@@ -1,0 +1,15 @@
+```typescript
+function minimumCoins(coins: readonly number[], amount: number): number {
+  const impossible = amount + 1;
+  const best = new Array<number>(amount + 1).fill(impossible);
+  best[0] = 0;
+  for (let value = 1; value <= amount; value++) {
+    for (const coin of coins) {
+      if (coin <= value && best[value - coin] !== impossible) {
+        best[value] = Math.min(best[value], 1 + best[value - coin]);
+      }
+    }
+  }
+  return best[amount] === impossible ? -1 : best[amount];
+}
+```

@@ -1,0 +1,13 @@
+```java
+parent.c1 = null;
+System.out.println(parent.c1 + ", " + child1.mood); // null, stoked
+
+parent.c1 = child1;
+
+child1 = new Child(5, "a different object");
+System.out.println(parent.c1.mood + ", " + child1.mood); // stoked, a different object
+
+parent.c1 = null;
+child1 = null;
+System.out.println(parent.c1 + ", " + child1); // null, null
+```

@@ -1,0 +1,10 @@
+```javascript
+true || true         returns true
+true || false        returns true
+false || true        returns true
+false || false       returns false
+
+// Short circuit with ||
+// Will only do the expensive request if the user doesn't exist in cache
+const user = cache.user || getUserFromExpensiveRequest();
+```

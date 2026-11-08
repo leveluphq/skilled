@@ -1,0 +1,40 @@
+```typescript
+function debounce<This, Args extends unknown[], Result>(
+  fn: (this: This, ...args: Args) => Result, wait: number,
+) {
+  if (typeof fn !== 'function') throw new TypeError('Expected a function');
+  if (!Number.isFinite(wait) || wait < 0 || wait > 2147483647)
+    throw new RangeError('wait must fit the timer range');
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  let latestArgs: Args | null = null;
+  let latestReceiver: This | undefined;
+
+  function invoke(): Result | undefined {
+    const args = latestArgs;
+    const receiver = latestReceiver;
+    latestArgs = null;
+    latestReceiver = undefined;
+    if (args !== null) return fn.apply(receiver as This, args);
+  }
+
+  function debounced(this: This, ...args: Args): void {
+    latestArgs = args;
+    latestReceiver = this;
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => { timer = null; invoke(); }, wait);
+  }
+  debounced.cancel = function (): void {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    latestArgs = null;
+    latestReceiver = undefined;
+  };
+  debounced.flush = function (): Result | undefined {
+    if (timer === null) return;
+    clearTimeout(timer);
+    timer = null;
+    return invoke();
+  };
+  return debounced;
+}
+```

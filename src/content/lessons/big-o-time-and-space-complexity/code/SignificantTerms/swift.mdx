@@ -1,0 +1,15 @@
+```swift
+func multipleTimeComplexities(_ input: [Int]) {
+    // O(n)
+    input.forEach { item in
+        /* do something */
+    }
+
+    // O(n^2)
+    input.forEach { item in
+        input.forEach { item in
+            /* do something */
+        }
+    }
+}
+```

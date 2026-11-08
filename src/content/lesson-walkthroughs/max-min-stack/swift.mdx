@@ -1,0 +1,96 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Build a stack with `push`, `pop`, `peek`, `getStackMax`, and `getStackMin`. Each operation should take constant time, apart from a dynamic array's occasional capacity growth. The course's push operation returns the value pushed. Tests never pop, peek, or request an extreme from an empty stack, so empty-operation behavior is outside the contract.
+
+## Keep histories of record values
+
+An ordinary stack already supports pushing and removing the most recent value. Scanning its contents for each minimum or maximum would make those queries O(n). Instead, keep two additional stacks containing the history of minimum and maximum values that may need to be restored after later pops.
+
+When pushing x, always push it onto the main stack. Also push it onto the maximum history when that history is empty or x is at least its top. Do the symmetric comparison for the minimum history. The tops of those histories then expose the current extrema without scanning the main stack.
+
+## Preserve duplicate extrema
+
+Push 4, then 9, then another 9. The maximum history must contain both occurrences of 9. Popping the latest 9 should reveal the earlier 9 as the maximum. If the history recorded only strict improvements, popping once would remove the only recorded 9 and incorrectly expose 4.
+
+The same issue occurs for repeated minima. Using `>=` and `<=` when adding history entries records duplicate records. An alternative stores a count beside each record value, but then pop must decrement that count and remove the record only when the count reaches zero.
+
+## Undo exactly the history created by a push
+
+Pop the main value. If it equals the top of the maximum history, pop that history too. Do the same for the minimum history. A value can match both, such as the only element or a stack of equal values, so the two checks must be independent rather than an either-or branch.
+
+For pushes `[4, 9, 2, 7]`, the maximum history is `[4, 9]` and the minimum history is `[4, 2]`. Popping 7 changes neither history. Popping 2 removes the minimum record and restores 4. Popping 9 removes the maximum record and restores 4. These histories describe earlier stack states, not sorted copies of the whole stack.
+
+## Prove the query invariant
+
+After every operation, each history's top equals the corresponding extreme of the main stack. A push that does not improve or equal an extreme leaves the correct top unchanged. A push that does records the new extreme. On pop, a non-record value cannot change the extreme; a record value reveals the previous valid record beneath it.
+
+That argument depends on recording equal extrema, because one occurrence can remain after another is removed. It also depends on updating the histories during pop. Returning the last value while leaving stale history entries would make a later query report a value that no longer exists in the stack.
+
+## Costs and operation-sequence tests
+
+Each method performs a fixed number of stack operations, giving O(1) query work and amortized O(1) pushes when backed by a growing array. The histories can each contain n entries, so storage is O(n). A strictly increasing input maximizes the maximum history, while equal values can fill both histories.
+
+Test increasing, decreasing, repeated, and mixed positive and negative values. Alternate queries with pops so restoration is exercised, not merely initial maxima. Compare generated legal operation sequences against a simple array model whose queries use a full scan. The oracle may be slow because it runs only in tests. As a follow-up, add a middle deletion operation and explain why these history stacks no longer support it with the same constant-time guarantees.
+
+## Swift implementation
+
+The class’s arrays hold the value stack and extrema histories. End operations avoid the shifts caused by front removal.
+
+The course uses the class shown here and supplies any declared node classes. Swift arrays have value semantics with copy-on-write storage, while class instances such as linked nodes retain reference identity. Optional values require an explicit absence case. Keep the starter's argument labels when calling the method. Swift integer overflow traps, so expanded constraints require a checked arithmetic policy.
+
+```swift
+class MaxMinStack {
+    private var stack: [Int] = []
+
+    // Stacks for internal tracking of the max/min
+    private var maxValueStack: [Int] = []
+    private var minValueStack: [Int] = []
+
+    init() {}
+
+    func peek() -> Int {
+        return stack[stack.count - 1]
+    }
+
+    func push(_ item: Int) -> Int {
+        stack.append(item)
+
+        if maxValueStack.isEmpty || item >= getStackMax() {
+            maxValueStack.append(item)
+        }
+        if minValueStack.isEmpty || item <= getStackMin() {
+            minValueStack.append(item)
+        }
+
+        return item
+    }
+
+    func pop() -> Int {
+        let item = stack.removeLast()
+
+        if item == getStackMax() {
+            maxValueStack.removeLast()
+        }
+        if item == getStackMin() {
+            minValueStack.removeLast()
+        }
+
+        return item
+    }
+
+    // Effectively a "peek()" for the max/min values of the stack
+    func getStackMax() -> Int {
+        return maxValueStack[maxValueStack.count - 1]
+    }
+
+    func getStackMin() -> Int {
+        return minValueStack[minValueStack.count - 1]
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Max Min Stack](/course/max-min-stack) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Swift conventions and practice problems, use the [Swift interview guide](/interview-prep/swift).

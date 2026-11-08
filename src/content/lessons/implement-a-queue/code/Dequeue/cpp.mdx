@@ -1,0 +1,18 @@
+```cpp
+Node* dequeue() {
+    Node* removedItem = first;
+
+    if (!removedItem) {
+        return nullptr;
+    }
+
+    if (first == last) {
+        last = nullptr;
+    }
+
+    first = removedItem->prev;
+
+    // The caller now owns removedItem and should delete it when done
+    return removedItem;
+}
+```

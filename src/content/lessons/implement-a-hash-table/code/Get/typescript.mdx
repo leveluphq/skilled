@@ -1,0 +1,18 @@
+```javascript
+get(key: string): any | undefined {
+  const index = this.hash(key);
+  const bucket = this.table[index];
+
+  // Check if the key exists in the bucket, and return its value if found
+  if (bucket) {
+    for (let i = 0; i < bucket.length; i++) {
+      if(bucket[i].key === key) {
+        return bucket[i].value;
+      }
+    }
+  }
+
+  // Return undefined if the key is not found
+  return undefined;
+}
+```

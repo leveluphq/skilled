@@ -1,0 +1,81 @@
+Product Array returns the product of every other input value at each position, without division. For `[2, 3, 4]`, the result is `[12, 8, 6]`. The course allows the returned array outside its auxiliary-space budget, so we can use that array to store intermediate prefix products.
+
+The TypeScript version below matches the starter's name and numeric types. It assumes a dense array of numbers and exact, safe-integer products. Those runtime assumptions are separate from the `number[]` annotation, which does not prove either density or integer precision.
+
+## Write the product strictly before the current index
+
+During the first pass, `prefix` contains all values to the left of `i`. Assign it to the result before multiplying by the current input. During the reverse pass, multiply each result by the values strictly to its right before extending the suffix.
+
+```typescript
+const buildProductArray = (input: number[]): number[] => {
+  const results = new Array<number>(input.length);
+  let prefix = 1;
+
+  for (let i = 0; i < input.length; i += 1) {
+    results[i] = prefix;
+    prefix *= input[i]!;
+  }
+
+  let suffix = 1;
+  for (let i = input.length - 1; i >= 0; i -= 1) {
+    results[i] = results[i]! * suffix;
+    suffix *= input[i]!;
+  }
+
+  return results;
+};
+```
+
+The two scalars start at `1`, multiplication's identity. The first and last positions therefore work without branches for missing left or right segments. Empty input executes neither loop and returns an empty output. A singleton returns `[1]`, using the empty-product convention.
+
+## Justify each indexed assertion
+
+With `noUncheckedIndexedAccess`, an indexed read may include undefined even when the programmer has a bounded loop. The `!` operators here assert that an entry exists. They do not emit a runtime test or create a missing value.
+
+The input assertions depend on the dense-array contract and the loop bounds. The result assertion has a different proof: the first pass assigns every output position before the second pass reads it. These are local reasons to trust those accesses; applying assertions indiscriminately would erase useful warnings.
+
+If input can be sparse or contain undefined from an external boundary, validate it first or throw on a missing read. A typed array parameter alone does not establish the runtime shape of parsed or untyped data. The [compiler-option documentation](https://www.typescriptlang.org/tsconfig/noUncheckedIndexedAccess.html) explains why the stricter setting exposes these reads.
+
+## Trace the state stored in results
+
+For `[2, 3, 4]`, the first loop writes `[1, 2, 6]`. The first output excludes `2`, the second excludes `3`, and the third excludes `4` from its left-side contribution. These are incomplete answers waiting for the right-side contribution.
+
+Walking backward, suffix begins at `1`, so the last output stays `6`. The suffix becomes `4`, turning the middle output into `8`. It then becomes `12`, turning the first output into `12`. The final array is `[12, 8, 6]`.
+
+Moving either scalar update before the corresponding result update would include the value we are supposed to exclude. Writing separate prefix and suffix arrays would make the same boundaries visible, but would spend extra linear storage.
+
+## Let zeros follow the multiplication rule
+
+For `[2, 0, 4]`, only the output at the zero's position excludes that zero, giving `[0, 8, 0]`. With two zeros, every output includes at least one zero, so every result is zero. No division or zero-count branch is required.
+
+Negative values also follow ordinary multiplication. `[-2, 3, -4]` produces `[-12, 8, -6]`. These cases are useful for finding accidental initialization to zero, a suffix loop running in the wrong direction, or multiplication performed in the wrong order.
+
+## Test results and input preservation
+
+```typescript
+const cases: Array<[number[], number[]]> = [
+  [[], []],
+  [[7], [1]],
+  [[2, 3, 4], [12, 8, 6]],
+  [[2, 0, 4], [0, 8, 0]],
+  [[0, 3, 0], [0, 0, 0]],
+  [[-2, 3, -4], [-12, 8, -6]],
+];
+for (const [input, expected] of cases) {
+  const before = JSON.stringify(input);
+  const actual = buildProductArray(input);
+  if (JSON.stringify(actual) !== JSON.stringify(expected) || JSON.stringify(input) !== before) {
+    throw new Error('Product result or input preservation failed');
+  }
+}
+```
+
+The output is a fresh array. Assigning `results = input` would alias the same mutable array, and overwriting its entries would corrupt values the reverse pass still needs. TypeScript does not automatically prevent aliasing between variables of type `number[]`.
+
+## State the numeric cost honestly
+
+Two scans take `O(n)` arithmetic operations. Working state beyond the output is constant, and the returned array occupies `O(n)` entries. Type annotations add no extra collection allocation to that analysis.
+
+Assume every running prefix, running suffix, and output product remains within JavaScript's safe integer range. The full running product can exceed that range even when some output values fit, so checking only the final answer's expected range is insufficient. Arbitrary exact integers would require a consistently typed bigint contract and different arithmetic-cost assumptions.
+
+Before opening the exercise, write down the proof for each `!` and describe which segment each scalar represents. Then reconstruct the loops and test an input with one zero to confirm the current position is excluded.

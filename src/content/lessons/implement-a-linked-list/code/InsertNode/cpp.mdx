@@ -1,0 +1,38 @@
+```cpp
+Node* insertNode(Node* head, int index, int value) {
+    // First check if we want to add a node at the head
+    if (index == 0) {
+        // Inserting at 0 is equivalent to prepending
+        return prepend(head, value);
+    }
+
+    // Create the node we want to insert
+    Node* insertedNode = new Node(value);
+    Node* precedingNode = head;
+
+    // Find the node that precedes the index of the node that we want to insert
+    for (int i = 0; i < index - 1; i++) {
+        precedingNode = precedingNode->next;
+    }
+
+    // Store the node that should come after the one we insert
+    Node* nodeAfterInserted = precedingNode->next;
+
+    // Insert our new node at the desired index
+    precedingNode->next = insertedNode;
+
+    // Set the inserted node's `next` pointer
+    insertedNode->next = nodeAfterInserted;
+
+    return head;
+}
+
+Node* head = new Node(42);
+head->next = new Node(9000);
+head->next->next = new Node(10);
+head->next->next->next = new Node(20);
+// 42 -> 9000 -> 10 -> 20
+
+head = insertNode(head, 2, 777);
+// 42 -> 9000 -> 777 -> 10 -> 20
+```

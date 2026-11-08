@@ -1,0 +1,14 @@
+```cpp
+#include <vector>
+#include <optional>
+
+bool containsBST(const std::vector<std::optional<int>>& values, int target) {
+    std::size_t index = 0;
+    while (index < values.size() && values[index]) {
+        const int value = *values[index];
+        if (value == target) return true;
+        index = target < value ? 2 * index + 1 : 2 * index + 2;
+    }
+    return false;
+}
+```

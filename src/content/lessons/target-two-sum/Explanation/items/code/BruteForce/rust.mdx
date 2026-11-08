@@ -1,0 +1,18 @@
+```rust
+fn brute_force_get_target_indexes(array: &[i32], target: i32) -> Vec<Vec<i32>> {
+    let mut results = Vec::new();
+
+    // Iterate through array to check each value against every other value
+    for i in 0..array.len() {
+        // We start j at i + 1 to make sure we don't compare the same index pairs more than once
+        for j in i + 1..array.len() {
+            // If the sum of the values equals the target, we return the pair in an array
+            if array[i] + array[j] == target {
+                results.push(vec![i as i32, j as i32]);
+            }
+        }
+    }
+
+    results
+}
+```

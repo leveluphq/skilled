@@ -1,0 +1,47 @@
+```go
+import "math"
+
+// More coins than any answer needs, standing in for infinity: Go's ints have
+// no infinity, and one more coin than this still fits in an int
+const infinity = math.MaxInt32
+
+func minCoinsForChange(denominations []int, target int) int {
+	// Init all values to infinity which indicates there isn't a valid coin combination for an amount (yet)
+	// This is our dp / memo slice that we're using to memoize the solution to subproblems
+	minCoinsForAmount := make([]int, target+1)
+	for amount := range minCoinsForAmount {
+		minCoinsForAmount[amount] = infinity
+	}
+
+	// Bottom-up, start with 0 which is always 0
+	minCoinsForAmount[0] = 0
+
+	// Begin at the smallest amount and build a running table of
+	// the smallest values required to reach EVERY amount up to the target
+	for amount := 0; amount < len(minCoinsForAmount); amount++ {
+		// Try each denomination to reach the current amount
+		for _, coin := range denominations {
+			if coin <= amount {
+				// The current minimum (subproblem solution) found at this amount.
+				existingMinCoinForAmount := minCoinsForAmount[amount]
+
+				// Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+				// Always increment by +1 because we are trying one additional coin.
+				minAmountWithCurrentCoin := minCoinsForAmount[amount-coin] + 1
+
+				// Memoize the minimum coins to reach the current amount.
+				// This is either a minimum we previously calculated or a new minimum we found with the current coin.
+				// If there isn't a valid combination, this just remains infinity.
+				minCoinsForAmount[amount] = min(existingMinCoinForAmount, minAmountWithCurrentCoin)
+			}
+		}
+	}
+
+	// If we didn't find a combination that matched our target (it's still infinity), return -1.
+	// Otherwise, the target does exist for that amount and we return it.
+	if minCoinsForAmount[target] == infinity {
+		return -1
+	}
+	return minCoinsForAmount[target]
+}
+```

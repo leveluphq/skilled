@@ -1,0 +1,8 @@
+import Modulo from './code/Modulo';
+
+How can we get the value at the ones place for each digit? We can calculate the modulo `% 10` of the number.
+
+<Modulo />
+
+So what we're doing is shrinking our integer by repeatedly dividing a factor of 10 each time, and then taking the modulo of 10 to get the number in the ones place.
+Dividing by 10 leaves a decimal part (`6321 / 10 = 632.1`), so we round down each time to keep it an integer (`Math.floor(n / 10)` in JavaScript or `n // 10` in Python; dividing two integers in Java, C++, C#, Go, Kotlin, Swift or Rust already drops the remainder).

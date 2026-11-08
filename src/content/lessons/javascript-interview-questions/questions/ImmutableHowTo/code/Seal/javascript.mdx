@@ -1,0 +1,11 @@
+```javascript
+var obj = {
+  hello: 'world',
+};
+
+Object.seal(obj);
+
+delete obj.hello;
+
+console.log(obj); // { hello: 'world' }
+```

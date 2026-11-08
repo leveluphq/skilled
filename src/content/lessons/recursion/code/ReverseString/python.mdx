@@ -1,0 +1,20 @@
+```python
+def reverse_string(str):
+  # Base case
+  if len(str) == 0:
+    return ''
+
+  # Recursively add the front character to end of the remaining string
+  return reverse_string(str[1:]) + str[0]
+
+reverse_string('dev')
+# reverse_string('dev')
+#   reverse_string('ev')
+#     reverse_string('v')
+#       reverse_string('')
+#       return ''
+#     return '' + 'v'
+#   return 'v' + 'e'
+# return 've' + 'd'
+# -> 'ved'
+```

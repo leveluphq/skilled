@@ -1,0 +1,133 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty"
+        input = { "denominations": [], "target": 5 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "simple case two coins"
+        input = { "denominations": [2, 3], "target": 8 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 3
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "simple case three coins"
+        input = { "denominations": [1, 5, 10], "target": 12 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 3
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "multiple options"
+        input = { "denominations": [5, 10], "target": 30 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 3
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "multiple options combined"
+        input = { "denominations": [5, 10], "target": 35 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 4
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "unreachable small"
+        input = { "denominations": [3, 6, 11], "target": 13 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "below minimum denomination"
+        input = { "denominations": [5, 10], "target": 2 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_8(self):
+        self.description = "three coin options"
+        input = { "denominations": [5, 10, 25], "target": 65 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 4
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_9(self):
+        self.description = "four coin options"
+        input = { "denominations": [1, 5, 10, 25], "target": 67 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 6
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+
+    def test_10(self):
+        self.description = "five coin options"
+        input = { "denominations": [5, 10, 25, 50, 100], "target": 190 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 5
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_11(self):
+        self.description = "unreachable large"
+        input = { "denominations": [5, 10, 25], "target": 53 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_12(self):
+        self.description = "change from top-down explanation"
+        input = { "denominations": [2, 3, 7], "target": 11 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 3
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_13(self):
+        self.description = "target is 0"
+        input = { "denominations": [2, 3, 7], "target": 0 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = 0
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_14(self):
+        self.description = "target is 1"
+        input = { "denominations": [2, 3, 7], "target": 1 }
+        self.actual_result = min_coins_for_change(input["denominations"], input["target"])
+        self.expected_result = -1
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+
+def runtests():
+    unittest.main(exit=False)
+```

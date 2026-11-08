@@ -1,0 +1,40 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+// The head and tail can point to the same node,
+// so the nodes are shared with Rc<RefCell<...>>
+struct Node {
+    data: i32,
+    next: Option<Rc<RefCell<Node>>>,
+}
+
+impl Node {
+    fn new(data: i32) -> Self {
+        Node { data, next: None }
+    }
+}
+
+struct LinkedList {
+    head: Option<Rc<RefCell<Node>>>,
+    tail: Option<Rc<RefCell<Node>>>,
+}
+
+impl LinkedList {
+    fn new(data: i32) -> Self {
+        let node = Rc::new(RefCell::new(Node::new(data)));
+        LinkedList {
+            head: Some(Rc::clone(&node)),
+            tail: Some(node),
+        }
+    }
+
+    fn append(&mut self, data: i32) {
+        // add item to back and update tail
+    }
+
+    fn prepend(&mut self, data: i32) {
+        // add item to front and update head
+    }
+}
+```

@@ -1,0 +1,9 @@
+```csharp
+void InOrderTraversal(BinaryTreeNode node) {
+    if (node != null) {
+        InOrderTraversal(node.left);
+        VisitNode(node);
+        InOrderTraversal(node.right);
+    }
+}
+```

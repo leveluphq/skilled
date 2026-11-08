@@ -1,0 +1,16 @@
+import BigO from 'content/blocks/BigO';
+import BruteForce from './code/BruteForce';
+
+Knowing we can't use division adds an extra challenge to this problem.
+If we could use division, we would just find the total product and then divide it by each item in the input to find the answer at that index.
+Now we have to be a little more creative.
+
+We can immediately recognize a brute force solution.
+We use nested `for` loops where we multiply all the values together except for the number at the current index.
+
+<BruteForce />
+
+This actually solves the problem under the constraint of only creating a `results` array.
+However, brute force <BigO.n2 /> for the time complexity is difficult to stomach, and we can do better.
+
+Let's think how we can get this down to linear time <BigO.n />.

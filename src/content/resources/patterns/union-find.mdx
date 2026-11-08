@@ -1,0 +1,88 @@
+Union-find maintains a partition of a fixed collection of elements. Initially each element belongs to its own component. A union joins two components, and a find operation returns a representative used to compare membership. This is useful when connections accumulate and the question is whether two vertices are connected, rather than which route connects them.
+
+For example, a network might receive links between numbered machines. Re-running a graph traversal after every link repeats work. Union-find retains the effect of earlier links in a compact forest. It can report how many components remain without preserving every adjacency list. If the task asks for a route, however, keep the graph and use a [graph traversal](/guides/bfs-vs-dfs).
+
+## Define the elements and operations
+
+The implementation below accepts a nonnegative integer count n, with elements numbered from zero through n minus one. The arrays must fit available memory. A find, union, or connected query rejects an index outside that domain. Component membership is undirected: a link between a and b makes them mutually connected, regardless of which endpoint was listed first.
+
+`union(a, b)` returns true only when it merges two previously separate components. A repeated link, a self-link, or a link whose endpoints already share a component returns false. The `count` field records the current number of components. Representatives are implementation choices; callers should compare them for equality without treating a particular representative as a permanent component identifier.
+
+## Keep a forest with weighted roots
+
+Each element stores a parent index. A root points to itself, and every other parent chain eventually reaches a root. Only a root's size entry describes a current component size. When two roots differ, attach the smaller component beneath the larger one, update the surviving root's size, and decrement the component count once.
+
+The find operation below shortens paths by halving: while following a parent chain, it makes the current vertex point to its grandparent. It changes the forest's shape while preserving the root reached by every affected vertex. A read-like connectivity query can therefore mutate internal parent pointers without changing the logical partition.
+
+```javascript
+class UnionFind {
+  constructor(n) {
+    if (!Number.isInteger(n) || n < 0) throw new RangeError('Invalid element count.');
+    this.parent = Array.from({ length: n }, (_, index) => index);
+    this.size = Array(n).fill(1);
+    this.count = n;
+  }
+
+  find(index) {
+    if (!Number.isInteger(index) || index < 0 || index >= this.parent.length) {
+      throw new RangeError('Invalid element index.');
+    }
+    while (index !== this.parent[index]) {
+      this.parent[index] = this.parent[this.parent[index]];
+      index = this.parent[index];
+    }
+    return index;
+  }
+
+  connected(a, b) {
+    return this.find(a) === this.find(b);
+  }
+
+  union(a, b) {
+    let rootA = this.find(a);
+    let rootB = this.find(b);
+    if (rootA === rootB) return false;
+    if (this.size[rootA] < this.size[rootB]) [rootA, rootB] = [rootB, rootA];
+    this.parent[rootB] = rootA;
+    this.size[rootA] += this.size[rootB];
+    this.count -= 1;
+    return true;
+  }
+}
+```
+
+As with the [trie implementation](/patterns/tries), these fields are visible to make the representation inspectable. Application callers should use the methods and leave parent, size, and count consistent. Directly assigning a parent can introduce a cycle, after which find may never reach a root.
+
+## Trace merges before thinking about compression
+
+Start with six elements and six components. Union zero with one, then two with three. There are four components: two pairs and the singleton elements four and five. Union one with three. Their roots represent different pairs, so this joins all four elements into one component and reduces the total count to three.
+
+Now union zero with two. They already reach the same root, so the method returns false and the count stays three. The operation can still shorten a parent path while searching. Next union four with five, reducing the count to two. A final link between any element of the first group and either four or five produces one connected component.
+
+The exact parent array can vary with equal-size tie choices and prior find calls. Tests that demand one particular forest shape can reject correct implementations. The observable requirements concern connectivity, successful merge results, component sizes at roots, and the component count.
+
+## Explain the time bound carefully
+
+Without path shortening, weighted attachment already bounds tree height logarithmically. Whenever an element's depth increases by one, its old component was no larger than the component it joined. The containing component therefore at least doubles in size. An element cannot experience more than logarithmically many such increases in a universe of n elements.
+
+Combining size or rank weighting with path compression gives an amortized bound expressed using the inverse Ackermann function. Princeton's [union-find reference implementation](https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/UF.java) documents that family of bounds and uses rank weighting with path halving. The size-weighted version here follows the same partitioning strategy, while storing actual component cardinalities at roots.
+
+For an interview, distinguish the sequence bound from a promise that every individual operation performs exactly constant work. Initializing n entries takes O(n) time and space. A sequence of m operations after initialization takes O(m α(n)) amortized work under this model; include the O(n) initialization when reporting total cost. The iterative find uses constant auxiliary space.
+
+## Use failed merges under the right graph contract
+
+When processing a simple undirected graph, an edge whose endpoints are already connected closes a cycle with the existing path. A false union result can detect that event. A self-loop is already a cycle under a convention that permits loops. Repeated copies of the same edge need a declared policy: they may be duplicate input to ignore, or distinct parallel edges in a multigraph. Do not label every duplicate record a newly discovered simple cycle without clarifying the model.
+
+Union-find also fits Kruskal's minimum-spanning-forest algorithm: sort weighted edges, then accept an edge only when it joins different components. The edge-order proof and minimum-weight objective are additional reasoning; the data structure supplies connectivity checks. This separates the [greedy correctness argument](/patterns/greedy-algorithms) from the mechanism used to reject cycles.
+
+## Recognize the operations it cannot answer
+
+The forest does not record an original route between vertices. Its parent links are bookkeeping links between representatives, and compression creates shortcuts unrelated to original graph edges. It also does not solve directed reachability: unioning a directed edge would incorrectly erase its direction.
+
+Ordinary union-find supports accumulating connections. Removing an edge can split a component, and there is no corresponding constant-size reversal in this representation. Offline deletion problems can sometimes be processed in reverse as additions. Rollback variants require different bookkeeping and usually avoid ordinary compression. Choose those deliberately rather than deleting one parent pointer.
+
+## Compare against a traversal baseline
+
+For small graphs, retain an adjacency list as an independent reference. After each proposed edge, use BFS to check whether the endpoints were already connected, then compare that result with union. Recount all components with traversal and compare every pair's membership. Exhaustive small graphs expose mistakes that a single chain example misses.
+
+Also test zero elements, isolated vertices, duplicate links, self-links, invalid indexes, long merge histories, and sizes that agree with the number of reference members. For grids, define the neighbor rule first: four-neighbor and diagonal connectivity produce different components. Connect this reasoning to [counting islands](/guides/count-islands-python), where iterative flood fill is often the simpler solution when the entire static grid is already available.

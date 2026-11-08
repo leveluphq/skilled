@@ -1,0 +1,82 @@
+Valid Brackets checks nesting of the ASCII delimiters `()`, `[]`, and `{}` while ignoring other text. Empty input is valid. `([)]` is invalid because its pairs cross even though the counts balance.
+
+Rust strings are UTF-8, and this fixed ASCII alphabet can be recognized directly from bytes. We will store unfinished opening bytes in a Vec and use its optional pop result to reject an absent or mismatched opener safely. The starter supplies the Solution type and accepts an owned String.
+
+## Match ASCII bytes and pop an Option
+
+The next closer must consume the most recent unmatched opener. Vec push and pop act on the same end, giving exactly that last-in, first-out ordering. Ordinary non-bracket bytes fall through without changing state.
+
+```rust
+impl Solution {
+    pub fn has_valid_brackets(s: String) -> bool {
+        let mut stack: Vec<u8> = Vec::new();
+        for c in s.bytes() {
+            match c {
+                b'(' | b'[' | b'{' => stack.push(c),
+                b')' | b']' | b'}' => {
+                    let expected = match c {
+                        b')' => b'(',
+                        b']' => b'[',
+                        _ => b'{',
+                    };
+                    if stack.pop() != Some(expected) { return false; }
+                }
+                _ => {}
+            }
+        }
+        stack.is_empty()
+    }
+}
+```
+
+In a standalone program, add `struct Solution;` before this impl. In the course, keep the implementation in the starter's supplied type context. The fallback expected opener `{` is reached only inside a branch already restricted to the three supported closers.
+
+## Let the pop result represent empty-stack failure
+
+Vec pop returns None on an empty vector. None differs from Some(expected), so a closer without an opener returns false. A wrong existing opener also differs from the required value. There is no indexing operation or unwrap that can panic for these ordinary invalid inputs.
+
+The [Vec.pop documentation](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.pop) describes this optional return. Its interface lets the code express both the removal and the absence check in one comparison.
+
+Popping a wrong opener changes only local state immediately before a false return. It cannot affect a later invocation because a fresh vector is created each time. Storing the stack in shared state would require reset rules that the function does not need.
+
+## Explain why bytes are enough here
+
+The supported bracket bytes are all below 128. Non-ASCII UTF-8 bytes cannot equal those ASCII byte values, so ignoring them does not miss a supported bracket. This includes emoji and combining marks around actual ASCII delimiters.
+
+Iterating chars would also work for this alphabet, but byte iteration avoids decoding information the Boolean check never uses. It does not justify arbitrary byte slicing of a String: Rust string slices still require UTF-8 boundaries.
+
+A later API reporting an error position must define whether it reports a byte offset, Unicode scalar index, or displayed-character position. This function deliberately reports only validity, so no user-facing coordinate conversion is necessary.
+
+## Trace the unfinished-openers invariant
+
+On `a[({b})]c`, letters are ignored, and the stack receives `[`, `(`, `{`. The next supported closers consume `{`, `(`, and `[` in reverse order. Nothing remains when the scan ends.
+
+For `([)]`, the top is `[` when `)` arrives. The required opener is `(`, so the function returns false. Looking deeper for a matching opener would skip an unfinished inner pair and permit crossing brackets.
+
+For `(()`, the encountered closer matches correctly but leaves one opener behind. The final is_empty check rejects it. This is why successful handling of every closer cannot support an early true return.
+
+## Test text, combining marks, and deep nesting
+
+```rust
+fn check_examples() {
+    let cases = [
+        ("", true), ("ordinary text", true), ("a + (b * [c])", true),
+        ("([]{})", true), ("([)]", false), ("]", false), ("(()", false),
+        ("🙂{x[y](z)}", true), ("(\u{0301})", true),
+    ];
+    for (text, expected) in cases {
+        assert_eq!(Solution::has_valid_brackets(text.to_owned()), expected);
+    }
+    assert!(Solution::has_valid_brackets("(".repeat(20000) + &")".repeat(20000)));
+}
+```
+
+Call the helper from main in a standalone program. The examples construct owned strings because the starter takes ownership. A general-purpose borrowed-string helper could take `&str` instead, but retaining the course signature avoids changing the exercise interface.
+
+The long example verifies iterative heap-backed stack storage rather than recursive nesting. It is also useful to run a failing input followed by a valid one when changing where the stack is allocated.
+
+## State the actual complexity
+
+Each input byte triggers a bounded amount of work with amortized Vec pushes. Time is `O(n)` in the byte length. Working storage is `O(d)` bytes for maximum unfinished nesting depth, with worst-case linear space. The input String is already owned by the function and is not cloned by the byte iterator.
+
+Quotes and comments have no parsing role here; bracket bytes inside them still count. Recognizing Rust source syntax while excluding literals requires a separate lexer. Before practicing, state the exact delimiter alphabet and reconstruct the match from the invariant that only the last unfinished opener may be consumed.

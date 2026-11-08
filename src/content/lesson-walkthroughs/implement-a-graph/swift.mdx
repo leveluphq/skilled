@@ -1,0 +1,77 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The lesson implements a graph as an adjacency list. Each vertex's unique data value identifies a key, and its entry stores neighboring vertices. The constructor chooses directed or undirected behavior, defaulting to undirected. This makes edge insertion and vertex removal concrete without requiring a separate object for every possible pair of vertices.
+
+## Establish vertices before connecting them
+
+Adding a vertex creates an empty neighbor collection. A newly created isolated vertex still belongs to the graph even though it has no edges. Decide what repeated insertion of the same key should do; blindly replacing an existing neighbor collection would erase connections.
+
+Adding an edge updates the source vertex's neighbors. In an undirected graph it must also update the reverse relationship. That symmetry is an invariant to check after every mutation. A directed graph adds only the requested direction. The choice affects reachability, so a traversal cannot infer the reverse edge unless it is actually stored or guaranteed by the model.
+
+## Remove incoming references as well as the vertex
+
+Deleting a vertex's own entry does not remove references to it from other adjacency lists. The removal operation must also delete those incoming edges. In an undirected graph, affected neighbors contain the reverse entries. In a directed graph, incoming edges may originate anywhere unless another index records them.
+
+Test a vertex with several neighbors, an isolated vertex, a self-loop if permitted, and a missing vertex. Decide whether repeated edges are allowed or whether neighbor collections represent sets. Arrays and sets provide different duplicate behavior and removal costs, so the API should choose deliberately.
+
+## Analyze operations using the stored collections
+
+An adjacency list occupies O(V + E) storage, counting an undirected edge in both endpoint lists. Adding a neighbor can be direct, while checking uniqueness or removing it from an array may require a scan. Removing a vertex may inspect many neighbor collections; it is not automatically constant time because a top-level key deletion is quick.
+
+Open the [current implementation](/course/implement-a-graph) and trace an add-remove-add sequence to check for stale edges. Then apply [Depth-First Search](/watch/depth-first-search) and [Breadth-First Search](/watch/breadth-first-search) to the same stored graph. A traversal should visit the structure left by its actual mutations, including isolated vertices when the task asks for complete coverage.
+
+## Follow a directed and an undirected edge
+
+Create vertices A, B, and C. In directed mode, adding A → B stores B in A's adjacency list only. In undirected mode, it also stores A in B's list. Removing B deletes its own list and filters B from every remaining list, including incoming directed edges.
+
+This implementation stores adjacency entries in lists, so duplicate edges are preserved. In undirected mode, adding a self-loop appends twice to the same list. Those are consequences of the shown representation, not a claim that every graph API chooses the same policies.
+
+## Establish preconditions before mutation
+
+Add each vertex once before adding edges. Calling addVertex again replaces that vertex's existing adjacency list in these teaching versions. Some languages also create or tolerate missing endpoint entries differently, so missing vertices are outside the shared cross-language contract. A product API should choose and enforce one policy explicitly.
+
+With ordinary map assumptions, adding a vertex and appending an edge have expected or amortized constant structural cost. Removing a vertex scans remaining adjacency lists, for O(V + E) work. Storage is O(V + E), counting every stored adjacency entry. Tests include directed edges, reciprocal edges, repeated edges, self-loops, and removal of a vertex with both incoming and outgoing edges. Compare adjacency counts by vertex rather than relying on hash-map iteration order.
+
+## Swift example and implementation choices
+
+The adjacency dictionary holds Array values, and mutation writes updated lists through dictionary access. Class Graph has reference semantics even though those nested containers use value semantics. Construct vertices before adding edges and avoid repeating addVertex, which replaces the list. Dictionary iteration order is not used as a graph-order guarantee. The undirected flag controls whether both endpoint arrays receive each edge.
+
+### Complete implementation
+
+```swift
+class Graph {
+    var adjacencyList: [String: [String]]
+    let undirected: Bool
+
+    init(undirected: Bool = true) {
+        self.adjacencyList = [:]
+        self.undirected = undirected
+    }
+
+    func addVertex(_ vertex: String) {
+        adjacencyList[vertex] = []
+    }
+
+    func addEdge(_ source: String, _ destination: String) {
+        adjacencyList[source]?.append(destination)
+
+        if undirected {
+            adjacencyList[destination]?.append(source)
+        }
+    }
+
+    func removeVertex(_ vertex: String) {
+        adjacencyList.removeValue(forKey: vertex)
+
+        for node in adjacencyList.keys {
+            adjacencyList[node]?.removeAll { $0 == vertex }
+        }
+    }
+}
+```
+
+## Continue in Swift
+
+[Open Implement a Graph](/course/implement-a-graph) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Swift example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Swift interview preparation guide](/interview-prep/swift) connects these language choices with further practice and the cross-language operation reference.

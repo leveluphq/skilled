@@ -1,0 +1,32 @@
+```csharp
+public class Solution {
+    public string FindHackerEmail(string[] emails) {
+        var emailCountTable = new Dictionary<string, int>();
+        int maxCount = 0;
+        string hackerEmail = "";
+
+        // Create a hash table that tracks the count of each email
+        // This is an O(n) operation
+        foreach (string email in emails) {
+            // If we haven't seen the email yet, add it to the table
+            if (!emailCountTable.ContainsKey(email)) {
+                emailCountTable[email] = 0;
+            }
+
+            // Increment the count for the email
+            emailCountTable[email]++;
+        }
+
+        // Iterate the hash table to find the email that appears the most
+        // This is an O(n) operation
+        foreach (var (email, count) in emailCountTable) {
+            if (count > maxCount) {
+                maxCount = count;
+                hackerEmail = email;
+            }
+        }
+
+        return hackerEmail;
+    }
+}
+```

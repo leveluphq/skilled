@@ -1,0 +1,27 @@
+```swift
+// Using a dynamic array as a queue
+// insert(_:at: 0) == enqueue
+// removeLast == dequeue
+func breadthFirstSearch(_ root: BinaryTreeNode?) {
+    guard let root else {
+        return
+    }
+
+    var currentNode = root
+    var queue = [currentNode]
+
+    while !queue.isEmpty {
+        currentNode = queue.removeLast()
+
+        visitNode(currentNode)
+
+        if let left = currentNode.left {
+            queue.insert(left, at: 0)
+        }
+
+        if let right = currentNode.right {
+            queue.insert(right, at: 0)
+        }
+    }
+}
+```

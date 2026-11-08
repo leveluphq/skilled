@@ -1,0 +1,37 @@
+```kotlin
+val n = 1000000000 // or some large number
+val arrayOfN = IntArray(n)
+
+// O(n^3)
+for (i in 0 until n) {
+    for (j in 0 until n) {
+        for (k in 0 until n) {
+            // ...
+        }
+    }
+}
+
+// O(n^3)
+arrayOfN.forEach { i ->
+    arrayOfN.forEach { j ->
+        arrayOfN.forEach { k ->
+            // ...
+        }
+    }
+}
+
+// O(n)
+for (i in 0 until n) {
+    // ...
+}
+for (j in 0 until n) {
+    // ...
+}
+for (k in 0 until n) {
+    // ...
+}
+
+// Nested is 1000000000 ^ 3 = 1000000000000000000000000000
+// Sequential is 3000000000
+// Sequential is MUCH MUCH smaller
+```

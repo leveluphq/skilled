@@ -1,0 +1,71 @@
+```swift
+class DynamicArray {
+    var length: Int
+    var data: [Int: Int]
+
+    init() {
+        length = 0
+        data = [:]
+    }
+
+    func get(_ index: Int) -> Int? {
+        return data[index]
+    }
+
+    func push(_ item: Int) -> Int {
+        data[length] = item
+        length += 1
+
+        return length
+    }
+
+    func pop() -> Int? {
+        if length == 0 {
+            return nil
+        }
+
+        let poppedItem = data[length - 1]
+        data.removeValue(forKey: length - 1)
+        length -= 1
+
+        return poppedItem
+    }
+
+    func insert(_ index: Int, _ item: Int) -> [Int: Int]? {
+        if index > length - 1 || index < 0 {
+            return nil
+        }
+
+        length += 1
+
+        for i in stride(from: length - 1, to: index, by: -1) {
+            data[i] = data[i - 1]
+        }
+
+        data[index] = item
+
+        return data
+    }
+
+    func remove(_ index: Int) -> Int? {
+        if length == 0 {
+            return nil
+        }
+
+        if index > length - 1 || index < 0 {
+            return nil
+        }
+
+        let itemToBeRemoved = data[index]
+
+        for i in index..<(length - 1) {
+            data[i] = data[i + 1]
+        }
+
+        data.removeValue(forKey: length - 1)
+        length -= 1
+
+        return itemToBeRemoved
+    }
+}
+```

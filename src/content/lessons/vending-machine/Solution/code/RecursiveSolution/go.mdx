@@ -1,0 +1,60 @@
+```go
+import "math"
+
+func minCoinsForChange(denominations []int, target int) int {
+	if target < 1 {
+		return 0
+	}
+
+	// Init all values to 0 which indicates no coins yet match the target
+	// This is our dp / memo slice that we're using to memoize the solution to subproblems
+	minCoinsForAmount := make([]int, target+1)
+
+	return minCoinsForChangeMemo(denominations, target, minCoinsForAmount)
+}
+
+func minCoinsForChangeMemo(denominations []int, remaining int, minCoinsForAmount []int) int {
+	// Base case 1: Invalid remaining coins
+	// We use -1 to indicate it's invalid
+	if remaining < 0 {
+		return -1
+	}
+
+	// Reached zero, valid case
+	if remaining == 0 {
+		return 0
+	}
+
+	// Check if we have a memoized (already calculated) value for this remaining amount
+	if minCoinsForAmount[remaining] != 0 {
+		return minCoinsForAmount[remaining]
+	}
+
+	// The largest int stands in for infinity
+	minStepsForRemaining := math.MaxInt
+
+	// Subtract each coin from the current remaining amount (fork paths from this amount)
+	for _, coin := range denominations {
+		stepsForCoin := minCoinsForChangeMemo(denominations, remaining-coin, minCoinsForAmount)
+
+		// If stepsForCoin >= 0, it's possible to make change with this denomination,
+		// and the steps for this denomination is less than the current min,
+		// we increment the steps to account for it as the new minimum.
+		//
+		// stepsForCoin = -1 means it's invalid which is why we check for >= 0
+		if stepsForCoin >= 0 && stepsForCoin < minStepsForRemaining {
+			minStepsForRemaining = stepsForCoin + 1
+		}
+	}
+
+	// If we're able to find a minStepsForRemaining for the current subproblem, we memoize it.
+	// If it's still infinity, it's not valid and we use our invalid placeholder -1.
+	if minStepsForRemaining == math.MaxInt {
+		minCoinsForAmount[remaining] = -1
+	} else {
+		minCoinsForAmount[remaining] = minStepsForRemaining
+	}
+
+	return minCoinsForAmount[remaining]
+}
+```

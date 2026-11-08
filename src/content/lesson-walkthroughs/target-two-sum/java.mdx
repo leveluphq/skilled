@@ -1,0 +1,99 @@
+This Java walkthrough follows the course's Two Sum contract: return every matching pair of original indexes from an array of unique integers. For `[4, 1, 5, 2, 3]` and target `6`, both pairs `[1, 2]` and `[0, 3]` are required. Finding one answer does not allow the function to stop.
+
+The result type is `int[][]`, matching the exercise starter. We use a list while building the answer because the number of pairs is unknown until the scan finishes. The input array is left unchanged; sorting it in place would destroy the index information the answer needs.
+
+## Choose the types before writing the loop
+
+`Map<Integer, Integer>` maps an earlier number to its index. Java's generic collections use reference types, so primitive values are boxed as `Integer`. `List<int[]>` stores each pair as a small primitive array, and `toArray(new int[0][])` converts that list to the required outer array.
+
+Complement arithmetic needs care. Even when the target and each input fit in an `int`, `target - value` may not. Cast the target to `long` before subtracting. If the complement is outside the `int` range, it cannot equal any element in this `int[]`, so that lookup can be skipped safely.
+
+```java
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+class Solution {
+    public int[][] getTargetIndexes(int[] array, int target) {
+        Map<Integer, Integer> seen = new HashMap<>();
+        List<int[]> pairs = new ArrayList<>();
+
+        for (int j = 0; j < array.length; j++) {
+            int value = array[j];
+            long complement = (long) target - value;
+
+            if (complement >= Integer.MIN_VALUE && complement <= Integer.MAX_VALUE) {
+                Integer i = seen.get((int) complement);
+                if (i != null) {
+                    pairs.add(new int[] {i, j});
+                }
+            }
+
+            seen.put(value, j);
+        }
+
+        return pairs.toArray(new int[0][]);
+    }
+}
+```
+
+Writing `(long) (target - value)` would be too late: Java would perform the subtraction as an `int` and only then widen the possibly wrapped result. Moving the cast before the arithmetic is a small detail with a visible correctness effect at the numeric boundaries.
+
+## Keep the map restricted to the earlier prefix
+
+Before index `j` is processed, `seen` contains the numbers from indexes `0` through `j - 1`. Check the complement against that map, then insert `value`. This guarantees that a match uses two different positions and that each pair is emitted in only one direction.
+
+On `[4, 1, 5, 2, 3]`, the first two iterations store `4 → 0` and `1 → 1`. The `5` at index `2` finds the earlier `1`, giving `[1, 2]`. The `2` at index `3` finds `4`, giving `[0, 3]`. The last value `3` does not pair with itself because it is absent when the lookup runs.
+
+If insertion came first, `[3]` with target `6` could incorrectly produce `[0, 0]`. If the function returned after its first match, the multi-answer example would be incomplete. Those two cases directly test the invariant and the accumulation behavior.
+
+## Check Integer for null before unboxing
+
+`Map.get` can return `null` for a missing key. Store the result in an `Integer` and test it before using it in `new int[]`. Assigning directly to an `int` would attempt to unbox `null` and throw a `NullPointerException` on a failed lookup.
+
+This map never stores null values, so `i != null` unambiguously means a match was found. Index zero works normally; it is not a special “not found” marker. The [HashMap documentation](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/HashMap.html) explains both null support and the assumptions behind its basic-operation performance.
+
+Every `pairs.add` allocates a fresh `int[]`. Reusing one two-element array and changing it in subsequent iterations would cause all list entries to refer to the same mutable object. The final conversion creates the outer array; it does not repair shared inner arrays.
+
+## Run tests with explicit failures
+
+Java language assertions are disabled unless the runtime enables them. The small test class below throws directly, so running it normally still checks the result. It compares normalized representations because pair order is unspecified.
+
+```java
+class TwoSumExamples {
+    static void check(int[] input, int target, int[][] expected) {
+        int[][] actual = new Solution().getTargetIndexes(input, target);
+        if (!normalize(actual).equals(normalize(expected))) {
+            throw new AssertionError("Unexpected Two Sum result");
+        }
+    }
+
+    static String normalize(int[][] pairs) {
+        java.util.List<String> keys = new java.util.ArrayList<>();
+        for (int[] pair : pairs) {
+            keys.add(Math.min(pair[0], pair[1]) + ":" + Math.max(pair[0], pair[1]));
+        }
+        java.util.Collections.sort(keys);
+        return keys.toString();
+    }
+
+    public static void main(String[] args) {
+        check(new int[] {}, 6, new int[][] {});
+        check(new int[] {3}, 6, new int[][] {});
+        check(new int[] {0, 6}, 6, new int[][] {{0, 1}});
+        check(new int[] {4, 1, 5, 2, 3}, 6, new int[][] {{0, 3}, {1, 2}});
+        check(new int[] {-3, 7, 2, -2}, 4, new int[][] {{0, 1}});
+        check(new int[] {Integer.MAX_VALUE, 1}, Integer.MIN_VALUE, new int[][] {});
+        check(new int[] {Integer.MIN_VALUE, Integer.MAX_VALUE}, -1, new int[][] {{0, 1}});
+    }
+}
+```
+
+The numeric-boundary tests distinguish a mathematical sum from Java's wrapped `int` arithmetic. A test oracle should also add operands as `long`; otherwise an overflowing oracle could agree with an overflowing implementation and hide the defect.
+
+## Explain the bounds and possible extensions
+
+Under ordinary hash-table assumptions, the function takes expected `O(n + k)` time and `O(n)` map storage, plus `O(k)` output space. With unique integers, each value has at most one complement in the input, so the number of pairs is linear at most. Boxing and pair allocations add real overhead without changing those asymptotic bounds.
+
+If repeated values become legal and every index pair is required, change the map values to lists of earlier indexes. The current one-index mapping intentionally implements the unique-input contract. Before coding that extension, decide whether the result should contain index pairs or distinct value pairs; those are different questions and can have different output sizes.

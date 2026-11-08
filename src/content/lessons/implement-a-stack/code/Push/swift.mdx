@@ -1,0 +1,10 @@
+```swift
+func push(_ item: Int) -> Node? {
+    let previousLastItem = last
+
+    last = Node(item)
+    last?.prev = previousLastItem
+
+    return last
+}
+```

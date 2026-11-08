@@ -1,0 +1,33 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import MaxProfit from './inlineCode/MaxProfit.tsx';
+import MinPrice from './inlineCode/MinPrice.tsx';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+We saw that we can solve this question by using a <a href="https://en.wikipedia.org/wiki/Greedy_algorithm" target="_blank" rel="noopener noreferrer">greedy algorithm</a>.
+
+We'll track two variables, the <MaxProfit /> and the <MinPrice />.
+
+The steps we follow are: prices
+
+1. Initialize <MaxProfit /> to 0
+2. Initialize <MinPrice /> to the price of the first item in the array
+3. Iterate through each price in the input
+4. Set the max profit to either the previous max profit or the profit of selling the current <MinPrice /> at this value
+5. Update the <MinPrice /> to either be the current <MinPrice /> or the price at the day we're on
+
+Following these steps, we ensure that we're buying at the lowest price and selling at the highest price based on the available information at the current day.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+This question can be solved in linear time <BigO.n /> and constant space <BigO.constant />.
+
+With the greedy approach, we walk through the input once and don't declare any new data structures.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

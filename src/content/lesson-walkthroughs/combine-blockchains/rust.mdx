@@ -1,0 +1,91 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Merge two nonempty singly linked chains whose timestamps are already sorted in ascending order. Return one chain containing every original timestamp in sorted order, including duplicates. For `[1, 4, 8]` and `[2, 4, 9]`, the merged values are `[1, 2, 4, 4, 8, 9]`. The blockchain framing does not require cryptographic operations; the task is sorted linked-list merging.
+
+## Compare the two remaining heads
+
+At any step, the smallest remaining timestamp must be at the head of one of the two unconsumed chains. Compare those heads, choose the smaller one, and advance only the chain that contributed it. There is no need to scan either chain to find another minimum because its own ordering already supplies that information.
+
+The implementation first selects a result head and initializes a result tail to it. It then repeats the same selection while both chains still have nodes. Attach the selected node after the result tail, advance the contributing pointer, and move the tail to the node just attached. Keep the result head fixed throughout the traversal.
+
+## Trace duplicate timestamps
+
+For the example, choose 1 before 2, then choose 2 before 4. Both remaining heads now contain 4. Either can be chosen first because the required output is ordered by timestamp alone. After consuming one four, the other still remains at its chain's head and will also be attached.
+
+Using a strict less-than comparison chooses from the second chain on a tie in several versions. That is a deterministic tie policy, but it does not promise stability across separate chains. If records carry an original global ordering that must be preserved, define that ordering explicitly and make the tie comparison reflect it.
+
+## Attach an exhausted chain's remainder
+
+Once one chain is empty, every node left in the other chain is already sorted. Its first node is no smaller than the current result tail, because the preceding selection chose the smallest available head. Connect that entire suffix to the result tail in one link assignment.
+
+The invariant is that the result prefix is sorted and contains exactly the nodes already consumed from the two inputs. Choosing the minimum head preserves both properties. Attaching the sorted remainder finishes the result without dropping or duplicating any timestamp. Returning the moving tail would expose only the last node; return the fixed result head.
+
+## Understand mutation and storage
+
+The reference-based versions reuse nodes by changing their next links. A caller should regard the original chains as consumed by the merge. Rust's owned representation makes that transfer explicit by taking nodes from their input options and moving them into the result. Do not claim the original separate chains remain intact unless the implementation deliberately clones them.
+
+For chain lengths n and m, time is O(n + m). Iterative relinking uses O(1) auxiliary link state. A recursive merge would use up to O(n + m) call frames. A version that creates replacement nodes instead of moving them needs O(n + m) new storage, so check the actual code when discussing a language adaptation.
+
+## Exercise the boundaries
+
+Use two singleton chains, one chain entirely before the other, alternating timestamps, equal timestamps across chains, and unequal chain lengths. Check that the output length is n + m and that its multiset of timestamps equals the union of the inputs. Traverse with a bound to detect accidental cycles.
+
+The lesson's chosen solution assumes both initial heads exist. Supporting an empty input requires an early return of the other chain before reading either head's data. For a follow-up with k sorted chains, a heap can choose the smallest available head in O(log k) per node. Repeatedly scanning all k heads would add a linear factor in k.
+
+## Rust implementation
+
+The contributing option is taken, its next link is detached, and the owned box moves to the result. No cloned suffix is needed.
+
+The course supplies any declared node types and invokes the entry in `impl Solution`, or the design constructor shown here. Owned values move unless borrowed or cloned; the signature makes that choice explicit. An `Option` separates a missing node or result from a valid value. The runner enables integer overflow checks, so wider constraints require deliberate type and arithmetic changes.
+
+```rust
+impl Solution {
+    pub fn combine_blockchains(
+        chain_head1: Option<Box<ListNode>>,
+        chain_head2: Option<Box<ListNode>>,
+    ) -> Option<Box<ListNode>> {
+        let mut current_node1 = chain_head1;
+        let mut current_node2 = chain_head2;
+        // The head of the combined chain, and its tail: the empty `next` where the
+        // following block goes. Each block is moved, so we hold the tail by reference.
+        let mut result_head: Option<Box<ListNode>> = None;
+        let mut combined_tail = &mut result_head;
+
+        // We iterate through until one of the linked lists has been depleted
+        while let (Some(node1), Some(node2)) = (&current_node1, &current_node2) {
+            // In either case, we do the same thing.
+            // We take the earlier block off the front of its chain (moving that chain forward),
+            // and we attach it to our combined chain
+            let contributing_chain = if node1.data < node2.data {
+                &mut current_node1
+            } else {
+                &mut current_node2
+            };
+
+            if let Some(mut node) = contributing_chain.take() {
+                *contributing_chain = node.next.take();
+
+                // Move to the new tail in the combined chain
+                combined_tail = &mut combined_tail.insert(node).next;
+            }
+        }
+
+        // One of the chains has been depleted (reached None)
+        // The other has its remaining items in sorted order,
+        // so we can just set the next value of our
+        // combined chain to the non-empty one
+        *combined_tail = current_node1.or(current_node2);
+
+        // ^ NOTE: `or` returns current_node1 if it has a value,
+        // otherwise it yields to current_node2
+
+        result_head
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Combine Blockchains](/course/combine-blockchains) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Rust conventions and practice problems, use the [Rust interview guide](/interview-prep/rust).

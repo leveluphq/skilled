@@ -1,0 +1,36 @@
+```go
+import "math"
+
+func isBST(root *BinaryNode) bool {
+	stack := []*BinaryNode{}
+	currentNode := root
+	inOrderValue := math.MinInt
+
+	// Begin iterative in-order traversal
+	for len(stack) > 0 || currentNode != nil {
+		// Traverse down a node's left children as long as they continue to exist
+		for currentNode != nil {
+			stack = append(stack, currentNode)
+			currentNode = currentNode.Left
+		}
+
+		// Check nodes in-order, testing that their value is larger than the previous
+		currentNode = stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		// In-order traversal failed
+		if currentNode.Data <= inOrderValue {
+			return false
+		}
+
+		// Update value
+		inOrderValue = currentNode.Data
+
+		// Continue in-order traversal to the current node's right path
+		currentNode = currentNode.Right
+	}
+
+	// Finish traversal and all values were valid
+	return true
+}
+```

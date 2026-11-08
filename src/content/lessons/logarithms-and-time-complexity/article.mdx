@@ -1,0 +1,77 @@
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { ItemWithMargin } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import CodeHighlight1 from './CodeHighlight1'
+import BigOChart from './BigOChart';
+
+<Section>
+
+Logarithms like `log(n)` can be intimidating at first because they feel so closely connected to math, similar to Big O.
+However, you only need to understand a few basic points about them to apply them to your coding interviews.
+This article will make logarithms dead simple and show you how to use the concept in interviews.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Simplifying the Math</SubsectionHeader>
+
+- Exponents => Multiplication
+- Logarithms => Division
+
+If we asked for an exponent <code>2<sup>3</sup> = ?</code>, you may recognize that the answer is 8.
+It reads as "if we multiplied 2 times itself 3 times, it would equal 8" or <code>2<sup>3</sup> = 2 x 2 x 2 = 8</code>.
+
+A logarithm is just the inverse of an exponent.
+If we had the equation <code>log<sub>2</sub>(8) = ?</code>, it would read as "if we divide 8 by 2, how many times would it take for the solution to become 1".
+This would be:
+
+<Container>
+<CodeHighlight1 />
+</Container>
+
+I stated logarithms and exponents are inverse operations, just like division and multiplication, but that may not have been immediately obvious.
+
+If you have <code>log<sub>2</sub>(8) = ?</code>, it's equivalent to saying <code>2<sup>?</sup> = 8</code>.
+
+<Image src="/images/log-math.png" alt="The equality 2 cubed equals 8 corresponds to log base 2 of 8 equaling 3." width={1664} height={380} />
+
+All logarithms need a base, and in the above example we used 2.
+When we've used the Big O complexity of <BigO.logn />, we're typically assuming a base of 2 for <em>O(log<sub>2</sub> n)</em>.
+The reason we assume a base of 2 is because the most common operation is to divide by 2 repeatedly each time we perform a step in the iteration over the input.
+Another way of saying this is that we divide the remaining items in half on each step.
+
+If we change the base though, the logic is still the same.
+For example, <code>log<sub>10</sub>(100) = 2</code>, <code>log<sub>10</sub>(1000) = 3</code>, <code>log<sub>10</sub>(10000) = 4</code>, and so on.
+
+So if we had an input size of 16, if we had a <BigO.logn /> algorithm, it would touch only ~4 items instead of all 16.
+
+<Image src="/images/visual-log-time.gif" alt="Binary search finds 16 by repeatedly halving the candidate range rather than checking every element." width={1920} height={454} />
+
+This is an example of a binary search.
+Each time we make a move, we cut out half the items because the list is sorted and we know 16 is larger than the current middle item.
+If we were to linearly search this, we would start at the beginning and iterate through all `n` items.
+
+<BigOChart />
+
+So you can see that as the number of items in our input increases, the linear <BigO.n /> complexity grows at the same rate, but <BigO.logn /> increases very slowly even for large input.
+For example, if you have an input size of 1,048,576, it would only take 20 operations for a <BigO.logn /> algorithm.
+This is because you divide the input by 2 each time, and you only need to do this 20 times for 1,048,576 to reach 1.
+
+In interviews, you most often see logarithmic time in binary search or iterating through a binary search tree.
+However, as long as you can recognize that your input is being divided on every iteration, this is an indication of <BigO.logn /> time.
+
+</Section>

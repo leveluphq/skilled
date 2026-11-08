@@ -1,0 +1,13 @@
+```java
+import java.util.*;
+
+class FrequencyCountsExample {
+static List<Integer> frequencyCounts(List<Integer> values) {
+    Map<Integer, Integer> counts = new HashMap<>();
+    for (int value : values) counts.put(value, counts.getOrDefault(value, 0) + 1);
+    List<Integer> output = new ArrayList<>();
+    for (int value : values) output.add(counts.get(value));
+    return output;
+}
+}
+```

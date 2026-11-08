@@ -1,0 +1,15 @@
+```go
+// If immutable, do operations on a growable buffer and combine
+func duplicateString(str string, numDuplicates int) string {
+	var builder strings.Builder
+
+	for range numDuplicates {
+		// WriteString appends like a push, without copying what's already been written
+		builder.WriteString(str)
+
+		// Faster than str += str which would be O(n) for copying each time
+	}
+
+	return builder.String()
+}
+```

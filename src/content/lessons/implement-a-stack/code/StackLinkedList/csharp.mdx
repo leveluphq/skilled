@@ -1,0 +1,43 @@
+```csharp
+public class Node {
+    public int data;
+    public Node prev;
+
+    public Node(int data) {
+        this.data = data;
+        this.prev = null;
+    }
+}
+
+public class Stack {
+    public Node last;
+
+    public Stack() {
+        this.last = null;
+    }
+
+    public Node Peek() {
+        return this.last;
+    }
+
+    public Node Push(int item) {
+        Node previousLastItem = this.last;
+
+        this.last = new Node(item);
+        this.last.prev = previousLastItem;
+
+        return this.last;
+    }
+
+    public Node Pop() {
+        Node removedItem = this.last;
+
+        // Update `last` as long as we have items left in the stack
+        if (removedItem != null) {
+            this.last = removedItem.prev;
+        }
+
+        return removedItem;
+    }
+}
+```

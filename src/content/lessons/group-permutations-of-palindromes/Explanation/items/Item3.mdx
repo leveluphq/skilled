@@ -1,0 +1,30 @@
+import BigO from 'content/blocks/BigO';
+import { Container } from 'style/elements';
+
+Now all we need to is group the strings that are permutations of each other.
+
+Strings that are permutations of each other have all the same characters.
+You may be tempted to count the number of characters again and then compare these counts to other words.
+That would actually be <BigO.n2 /> because we would have to compare all strings against each other.
+
+In this instance, it would actually be faster to sort the strings and then add the sorted string as a key to a hash table.
+By doing this, all permutations will be grouped together because they will have the same key in the hash table.
+The value for the key-value pair in the hash table will be an array containing the original strings.
+
+<Container>
+
+```javascript
+input      sorted (for hash table key)
+--------------------------------------
+racecar -> aaccerr
+acerrac -> aaccerr
+aaccerr -> aaccerr
+
+table = {
+  aaccerr: ['racecar', 'acerrac', 'aaccerr']
+}
+```
+
+</Container>
+
+Once we finish that hash table, we can return all of its values as the solution because they are already grouped in their sub-arrays of permutations.

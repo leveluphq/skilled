@@ -1,0 +1,14 @@
+```rust
+fn middle_value(values: &[i32]) -> Option<i32> {
+    struct ListNode { value: i32, next: Option<Box<ListNode>> }
+    let mut head = None;
+    for &value in values.iter().rev() { head = Some(Box::new(ListNode { value, next: head })); }
+    let (mut slow, mut fast) = (head.as_deref(), head.as_deref());
+    while let Some(node) = fast {
+        let Some(next) = node.next.as_deref() else { break; };
+        slow = slow.and_then(|node| node.next.as_deref());
+        fast = next.next.as_deref();
+    }
+    slow.map(|node| node.value)
+}
+```

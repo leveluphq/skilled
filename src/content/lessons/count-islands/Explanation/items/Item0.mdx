@@ -1,0 +1,9 @@
+While the path to solving this question may seem complex, it actually becomes very straightforward.
+
+First think about how you would solve this by hand.
+You would probably start by scanning through the items visually until you see a land piece `#`.
+Then you would increase the island count by 1 and mark off all the connected pieces of that island so that you don't count them again.
+
+This is exactly how we will solve it algorithmically as well.
+We will walk through all the items in the matrix.
+When we encounter a land piece, we will increment the island count and then traverse through all the horizontally and vertically connected land pieces so we can account for them being part of this island.

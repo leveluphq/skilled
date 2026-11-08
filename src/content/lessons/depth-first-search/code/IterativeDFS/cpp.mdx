@@ -1,0 +1,28 @@
+```cpp
+void iterativeDepthFirstSearch(GraphNode* startingNode) {
+    // Init our stack and set of visited nodes
+    stack<GraphNode*> dfsStack;
+    unordered_set<GraphNode*> visitedNodes;
+
+    dfsStack.push(startingNode);
+
+    while (!dfsStack.empty()) {
+        GraphNode* node = dfsStack.top();
+        dfsStack.pop();
+
+        // A node can be added to the stack more than once, so skip it if we already visited it
+        if (visitedNodes.contains(node)) {
+            continue;
+        }
+
+        visit(node);
+        visitedNodes.insert(node);
+
+        for (GraphNode* childNode : node->edges) {
+            if (!visitedNodes.contains(childNode)) {
+                dfsStack.push(childNode);
+            }
+        }
+    }
+}
+```

@@ -1,0 +1,23 @@
+```swift
+var memo: [Int: Int] = [:]
+
+func countByTwo(_ n: Int) -> Int {
+    // Check if we previously memoized the result and return early in O(1) time
+    if let memoized = memo[n] {
+        return memoized
+    }
+
+    var count = 0
+
+    for i in 0...n {
+        count = count + 2
+
+        // Store the result for this value
+        // It will return instantly if countByTwo is later called with one of these values
+        memo[i] = count
+    }
+
+    // We calculated and stored this value (and all previous values) in the for loop
+    return memo[n]!
+}
+```

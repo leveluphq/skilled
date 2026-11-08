@@ -1,0 +1,92 @@
+Java's PriorityQueue exposes the least element under its comparison rule. That makes it useful for repeatedly selecting a minimum, retaining a bounded set of strong candidates, or processing jobs by priority. It does not promise that iteration is sorted or that equal-priority elements preserve arrival order.
+
+Two worked examples below cover different output contracts. The first retains the K largest numeric arrivals and returns them without an ordering guarantee. The second processes jobs by ascending priority with a deliberate arrival-order tie break. Both use Java 17-compatible standard-library code.
+
+## Define which candidate belongs at the root
+
+To keep the K largest values, the useful root is the smallest among the retained candidates. It is the weakest current winner. Once the heap is full, a new value no larger than that root cannot improve the retained multiset. A larger value replaces the root.
+
+Using a maximum heap would expose the strongest retained value instead. Evicting that root would discard something the answer should keep. Describe the eviction rule before choosing heap orientation; the phrase “largest K” alone does not determine which root is useful.
+
+```java
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
+
+final class JavaPriorityQueues {
+    static int[] largestK(Iterable<Integer> values, int k) {
+        if (k < 0) throw new IllegalArgumentException("K must be nonnegative");
+        PriorityQueue<Integer> retained = new PriorityQueue<>();
+        for (int value : values) {
+            if (k == 0) continue;
+            if (retained.size() < k) retained.add(value);
+            else if (value > retained.peek()) {
+                retained.poll();
+                retained.add(value);
+            }
+        }
+        int[] result = new int[retained.size()];
+        int index = 0;
+        for (int value : retained) result[index++] = value;
+        return result;
+    }
+
+    record Job(String label, int priority) {}
+    record Scheduled(Job job, long sequence) {}
+
+    static List<Job> stablePriorityOrder(List<Job> jobs) {
+        Comparator<Scheduled> order = Comparator
+            .comparingInt((Scheduled item) -> item.job().priority())
+            .thenComparingLong(Scheduled::sequence);
+        PriorityQueue<Scheduled> queue = new PriorityQueue<>(order);
+        long sequence = 0;
+        for (Job job : jobs) queue.add(new Scheduled(job, sequence++));
+        List<Job> result = new ArrayList<>();
+        while (!queue.isEmpty()) result.add(queue.poll().job());
+        return result;
+    }
+}
+```
+
+Inputs contain non-null values or jobs. Numeric duplicates represent separate arrivals. If K exceeds the arrival count, every value is returned; K zero produces an empty result. The method uses the default queue constructor, so an enormous K does not immediately request an enormous backing array.
+
+The job sequence counts arrivals and is unique for this finite in-memory input. The record stores an immutable numeric priority and sequence. Returned jobs are the original job objects, rather than newly constructed payload copies.
+
+## Trace replacement without sorting the stream
+
+For `[5, 1, 9, 3, 9]` and K = 3, the first three arrivals fill the heap. Its minimum is 1. Arrival 3 replaces 1, and the final 9 replaces 3. The retained multiset is 5, 9, 9, regardless of the order in which the backing heap happens to iterate.
+
+The invariant after every completed arrival is that the heap contains the largest min(K, arrivals-so-far) values, counting duplicates. Filling preserves all candidates until capacity is reached. Afterward, discarding a value at or below the weakest retained candidate cannot remove a needed larger value. Replacing that weakest candidate with a larger arrival preserves the invariant.
+
+If the required answer is sorted, sort the result explicitly with the required direction or remove heap heads repeatedly into a new result. These are additional output operations. A test that expects the heap iterator itself to return ascending order is asserting a guarantee the collection does not provide.
+
+## Make equal-priority behavior part of the comparator
+
+Suppose jobs A and B both have priority four, while C has priority one. The second function emits C, A, B. The priority comparison chooses C first; the sequence comparison chooses A before B.
+
+A PriorityQueue without that sequence comparison can emit either equal-priority job first. A stable sort elsewhere does not make the heap stable, and comparable labels are not automatically an arrival-order rule. Include every ordering requirement in the comparator used by this queue.
+
+Use comparingInt, comparingLong, or the corresponding safe compare operations instead of subtracting priorities. A subtraction comparator can overflow for extreme values and reverse the ordering it is supposed to establish. Also keep comparison fields unchanged while elements are queued. Mutating a priority in place does not tell the heap to repair its position.
+
+## Distinguish heap operations from arbitrary search
+
+Peek inspects the current head without removing it. Poll removes that head and returns null when empty. The examples check emptiness or maintain positive capacity before reading those results, and PriorityQueue itself disallows null elements.
+
+Heap insertion and head removal have logarithmic repair work, while head inspection is constant-time. Finding an arbitrary element with contains or removing a particular object can require linear search. A heap is not an indexed dictionary simply because it also stores objects. The [PriorityQueue API](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/PriorityQueue.html) documents these operations and its iteration and tie behavior.
+
+If priorities must change frequently by job ID, discuss an indexed heap, a separate lookup structure, or versioned entries with stale-entry checks. Removing a matching object then reinserting it may be adequate for small inputs, but the removal cost belongs in the analysis.
+
+## Count retained values, output, and allocation
+
+For n arrivals and positive K, numeric selection uses O(n log(K + 1)) comparison work and at most min(n, K) retained values. The returned array adds output of the same bounded size. K zero still traverses the supplied iterable in this implementation, which is a deliberate behavior worth stating for a lazy or side-effecting source.
+
+The job example retains all n scheduled records, performs repeated heap insertion and removal, and returns n references. Its comparison work is O(n log n), with O(n) auxiliary and output storage. If all jobs are known in advance and only sorted order is needed once, sorting a copied list may be simpler than introducing a priority queue.
+
+Backing-array growth can occasionally copy storage. The collection bounds used here follow the usual amortized allocation model rather than promising identical latency for every insertion. For a static numeric array and K near n, compare the heap solution with sorting once before selecting a prefix.
+
+## Test ranking separately from ordering
+
+For largestK, sort a copy of the input descending and take its first K values as an independent reference. Compare multisets after sorting the result too. Include empty input, negative K, K zero, K one, K larger than n, repeated maxima, negative values, and extreme int values.
+
+For job processing, include equal priorities, extreme priorities, and several jobs with identical labels. Verify priority order, arrival order within ties, and original object identity. Then use the [Java preparation guide](/interview-prep/java), the [heap pattern](/patterns/heaps-and-priority-queues), and the [pattern quiz](/tools/pattern-quiz) to connect the language API to the algorithm's retention invariant.

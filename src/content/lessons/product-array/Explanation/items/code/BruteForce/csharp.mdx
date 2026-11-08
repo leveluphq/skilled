@@ -1,0 +1,19 @@
+```csharp
+public long[] BruteForceAnswer(long[] input) {
+    var results = new long[input.Length];
+
+    for (int i = 0; i < input.Length; i++) {
+        long product = 1;
+
+        for (int j = 0; j < input.Length; j++) {
+            if (i != j) {
+                product = product * input[j];
+            }
+        }
+
+        results[i] = product;
+    }
+
+    return results;
+}
+```

@@ -1,0 +1,75 @@
+import { Section } from 'style/elements/lesson';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import CorrectOutput from './code/CorrectOutput';
+import FixConstructor from './code/FixConstructor';
+import VarScope from './code/VarScope';
+import FixPrintSeatIIFE from './code/FixPrintSeatIIFE';
+import FixPrintSeatLet from './code/FixPrintSeatLet';
+import Solution from './code/Solution';
+
+<Section>
+
+This question is a bit open-ended because there are many ways to fix or refactor a problem.
+This also isn't a data structure and algorithm question, so we can't use Big O complexity as our guiding metric.
+Instead, we're told to fix the bugs in each case by performing as little refactoring as possible and by only changing `Meeting`.
+
+Once we have the code debugged, the actual output should be:
+
+<CorrectOutput />
+
+To solve our problem, we will focus on each issue separately.
+
+### getPresenterName()
+
+We set the `getPresenterName` function in the `contructor` of `Meeting`.
+At first glance, it seems pretty straightforward.
+We consider the first user to be the `presenter`, so we assign their `getName` method to `getPresenterName`.
+However, when we call it, we receive `undefined` when we're expecting it to be "Jeni".
+
+To begin debugging, we `console.log(presenter)` which does match the "Jeni" `User`.
+Let's now `console.log(this)` inside `getName`.
+When we do, we realize that `this` is pointing to `Meeting` even though we originally define `this.name` on the `User`.
+
+With JavaScript, the context of `this` is set based on where a function is called and not where it is defined.
+When we assign `this.getPresenterName = presenter.getName;`, we are changing the object that calls the method.
+To fix this bug, we need to bind `getName` with the presenter.
+
+<FixConstructor />
+
+### printSeatNumber()
+
+When we try to print the seat for any user, it logs 3 every time.
+This is interesting because the index 3 is larger than our input array, and it is duplicated for each user even though we use their index in each loop iteration.
+
+It appears that it is using the value of `i` after the loop ends  - `i < array.length` is `3 < 3` which is false and the terminating condition.
+
+We declared our variable `var i = 0`, and this makes it function scoped.
+Since `printSeatNumber` is a callback, it has formed a closure around `i` and the value is owned by the outer function scope.
+What happens is that the declaration of `var i` is hoisted outside the `for` loop to the top of the function and its value persists inside the entire scope.
+This means when `printSeatNumber` is executed, it uses the value that persisted in `i` which we ultimately incremented to `3`.
+
+<VarScope />
+
+One way to fix this would be to create a new scope inside our callback.
+We can create an IIFE (immediately invoked function expression) where we pass the index as a parameter, and then our callback will use this new value.
+
+<FixPrintSeatIIFE />
+
+There's an even more concise way to handle it though.
+In ES2015, there were two new ways to declare variables, `let` and `const`.
+These values are block scoped instead of function scoped.
+This means if we declare `let i = 0`, its value will only live inside a given iteration and will be what the callback has access to.
+
+<FixPrintSeatLet />
+
+### Solution
+
+This problem contained two very common issues in JavaScript.
+The first is using the correct `this` context since it changed based on where the method was called, which we solved by calling `bind` with the correct object.
+The other issue was a bug with our scope which we fixed by changing `var` to `let` so that the array index was retained within block scope instead of being controlled in the function scope of `setUserSeats`.
+
+The complete changes we make to `Meeting` to fix our code:
+
+<Solution />
+
+</Section>

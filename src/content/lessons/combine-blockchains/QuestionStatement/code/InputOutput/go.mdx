@@ -1,0 +1,18 @@
+```go
+type ListNode struct {
+	Data int // the unix timestamp of when the block was added
+	Next *ListNode
+}
+
+// Input
+skilledChainHead := &ListNode{Data: 42}
+skilledChainHead.Next = &ListNode{Data: 159}
+// many more additions to each...
+
+devCoinHead := &ListNode{Data: 123}
+devCoinHead.Next = &ListNode{Data: 482}
+// many more additions to each...
+
+// Output: combineBlockchains(skilledChainHead, devCoinHead)
+42 -> 123 -> 159 -> 482 // ... and so on
+```

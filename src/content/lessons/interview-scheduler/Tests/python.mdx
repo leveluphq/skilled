@@ -1,0 +1,82 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "empty"
+        input = []
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = []
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "one item"
+        input = [{ "start": 2, "end": 5 }]
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = [{ "start": 2, "end": 5 }]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "non-overlapping items"
+        input = [{ "start": 2, "end": 5 }, { "start": 10, "end": 11 }]
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = [{'start': 2, 'end': 5}, {'start': 10, 'end': 11}]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "overlapping items"
+        input = [
+                { "start": 9, "end": 10.5 },
+                { "start": 9.5, "end": 10 },
+                { "start": 10 , "end": 11 },
+                { "start": 10.5 , "end": 11.5 },
+                { "start": 13, "end": 14 },
+                { "start": 13.5, "end": 15 }
+                ]
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = [{'start': 9, 'end': 11.5}, {'start': 13, 'end': 15}]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_5(self):
+        self.description = "unsorted items"
+        input = [{ "start": 0, "end": 3 }, { "start": 7, "end": 10 }, { "start": 2, "end": 5 }]
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = [{ "start": 0, "end": 5 }, { "start": 7, "end": 10 }]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "touching items"
+        input = [{ "start": 0, "end": 5 }, { "start": 5, "end": 10 }]
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = [{ "start": 0, "end": 10 }]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_7(self):
+        self.description = "meeting inside another meeting"
+        input = [{ "start": 0, "end": 10 }, { "start": 3, "end": 6 }]
+        self.actual_result = merge_overlapping_intervals(input)
+        self.expected_result = [{ "start": 0, "end": 10 }]
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

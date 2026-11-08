@@ -1,0 +1,18 @@
+```go
+func bruteForceGetTargetIndexes(array []int, target int) [][]int {
+	results := [][]int{}
+
+	// Iterate through array to check each value against every other value
+	for i := range array {
+		// We start j at i + 1 to make sure we don't compare the same index pairs more than once
+		for j := i + 1; j < len(array); j++ {
+			// If the sum of the values equals the target, we return the pair in a slice
+			if array[i]+array[j] == target {
+				results = append(results, []int{i, j})
+			}
+		}
+	}
+
+	return results
+}
+```

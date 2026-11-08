@@ -1,0 +1,41 @@
+```javascript
+function debounce(fn, wait) {
+    if (typeof fn !== 'function')
+        throw new TypeError('Expected a function');
+    if (!Number.isFinite(wait) || wait < 0 || wait > 2147483647)
+        throw new RangeError('wait must fit the timer range');
+    let timer = null;
+    let latestArgs = null;
+    let latestReceiver;
+    function invoke() {
+        const args = latestArgs;
+        const receiver = latestReceiver;
+        latestArgs = null;
+        latestReceiver = undefined;
+        if (args !== null)
+            return fn.apply(receiver, args);
+    }
+    function debounced(...args) {
+        latestArgs = args;
+        latestReceiver = this;
+        if (timer !== null)
+            clearTimeout(timer);
+        timer = setTimeout(() => { timer = null; invoke(); }, wait);
+    }
+    debounced.cancel = function () {
+        if (timer !== null)
+            clearTimeout(timer);
+        timer = null;
+        latestArgs = null;
+        latestReceiver = undefined;
+    };
+    debounced.flush = function () {
+        if (timer === null)
+            return;
+        clearTimeout(timer);
+        timer = null;
+        return invoke();
+    };
+    return debounced;
+}
+```

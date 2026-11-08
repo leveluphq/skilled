@@ -1,0 +1,14 @@
+```javascript
+setTimeout(() => { console.log('hi') }, 1000);
+// Is the same as...
+
+// ... in the browser
+window.setTimeout(() => {
+  window.console.log('hi');
+}, 1000);
+
+// ... in Node
+global.setTimeout(() => {
+  global.console.log('hi');
+}, 1000);
+```

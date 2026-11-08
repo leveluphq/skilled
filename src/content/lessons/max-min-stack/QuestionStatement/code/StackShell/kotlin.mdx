@@ -1,0 +1,30 @@
+```kotlin
+class MaxMinStack {
+    // Any of the initial methods can be updated
+    private val stack = ArrayDeque<Int>()
+
+    fun peek(): Int {
+        return stack.last()
+    }
+
+    fun push(item: Int): Int {
+        stack.addLast(item)
+        return item
+    }
+
+    fun pop(): Int {
+        return stack.removeLast()
+    }
+
+    // You must implement the methods below
+    fun getStackMax(): Int {
+        // Return the largest integer currently in the stack (don't remove it)
+        return 0
+    }
+
+    fun getStackMin(): Int {
+        // Return the smallest integer currently in the stack (don't remove it)
+        return 0
+    }
+}
+```

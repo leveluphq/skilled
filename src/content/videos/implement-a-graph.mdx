@@ -1,0 +1,19 @@
+The lesson implements a graph as an adjacency list. Each vertex's unique data value identifies a key, and its entry stores neighboring vertices. The constructor chooses directed or undirected behavior, defaulting to undirected. This makes edge insertion and vertex removal concrete without requiring a separate object for every possible pair of vertices.
+
+## Establish vertices before connecting them
+
+Adding a vertex creates an empty neighbor collection. A newly created isolated vertex still belongs to the graph even though it has no edges. Decide what repeated insertion of the same key should do; blindly replacing an existing neighbor collection would erase connections.
+
+Adding an edge updates the source vertex's neighbors. In an undirected graph it must also update the reverse relationship. That symmetry is an invariant to check after every mutation. A directed graph adds only the requested direction. The choice affects reachability, so a traversal cannot infer the reverse edge unless it is actually stored or guaranteed by the model.
+
+## Remove incoming references as well as the vertex
+
+Deleting a vertex's own entry does not remove references to it from other adjacency lists. The removal operation must also delete those incoming edges. In an undirected graph, affected neighbors contain the reverse entries. In a directed graph, incoming edges may originate anywhere unless another index records them.
+
+Test a vertex with several neighbors, an isolated vertex, a self-loop if permitted, and a missing vertex. Decide whether repeated edges are allowed or whether neighbor collections represent sets. Arrays and sets provide different duplicate behavior and removal costs, so the API should choose deliberately.
+
+## Analyze operations using the stored collections
+
+An adjacency list occupies O(V + E) storage, counting an undirected edge in both endpoint lists. Adding a neighbor can be direct, while checking uniqueness or removing it from an array may require a scan. Removing a vertex may inspect many neighbor collections; it is not automatically constant time because a top-level key deletion is quick.
+
+Open the [current implementation](/course/implement-a-graph) and trace an add-remove-add sequence to check for stale edges. Then apply [Depth-First Search](/watch/depth-first-search) and [Breadth-First Search](/watch/breadth-first-search) to the same stored graph. A traversal should visit the structure left by its actual mutations, including isolated vertices when the task asks for complete coverage.

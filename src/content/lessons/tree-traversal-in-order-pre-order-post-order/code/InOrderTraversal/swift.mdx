@@ -1,0 +1,9 @@
+```swift
+func inOrderTraversal(_ node: BinaryTreeNode?) {
+    if let node {
+        inOrderTraversal(node.left)
+        visitNode(node)
+        inOrderTraversal(node.right)
+    }
+}
+```

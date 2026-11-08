@@ -1,0 +1,20 @@
+```cpp
+#include <vector>
+#include <deque>
+
+std::vector<int> bfsOrder(const std::vector<std::vector<int>>& graph, int start) {
+    if (start < 0 || start >= static_cast<int>(graph.size())) return {};
+    std::deque<int> queue{start};
+    std::vector<int> output;
+    std::vector<bool> visited(graph.size(), false);
+    visited[start] = true;
+    while (!queue.empty()) {
+        const int node = queue.front(); queue.pop_front();
+        output.push_back(node);
+        for (int neighbor : graph[node]) {
+            if (!visited[neighbor]) { visited[neighbor] = true; queue.push_back(neighbor); }
+        }
+    }
+    return output;
+}
+```

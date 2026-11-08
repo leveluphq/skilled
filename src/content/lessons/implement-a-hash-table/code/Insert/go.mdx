@@ -1,0 +1,23 @@
+```go
+func (ht *HashTable) Insert(key string, value any) {
+	index := ht.Hash(key)
+
+	// Initialize our bucket if it doesn't exist yet
+	if ht.table[index] == nil {
+		ht.table[index] = []entry{}
+	}
+
+	bucket := ht.table[index]
+
+	// If the key already exists in the bucket, replace its value
+	for i := range bucket {
+		if bucket[i].key == key {
+			bucket[i].value = value
+			return
+		}
+	}
+
+	// Otherwise, add the new key-value pair
+	ht.table[index] = append(bucket, entry{key, value})
+}
+```

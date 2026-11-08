@@ -1,0 +1,9 @@
+```python
+def fib_table(n: int) -> list[int]:
+    table = [0]
+    if n >= 1:
+        table.append(1)
+    for index in range(2, n + 1):
+        table.append(table[index - 1] + table[index - 2])
+    return table
+```

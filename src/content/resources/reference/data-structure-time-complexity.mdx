@@ -1,0 +1,73 @@
+Choose a data structure by the operations your algorithm repeats. A membership-heavy problem may benefit from a hash set. A workload that repeatedly takes the smallest available item may benefit from a heap. The table helps compare those choices, but each cost belongs to a representation and a set of assumptions.
+
+Here n is the number of stored entries, h is a tree's height, V is a graph's vertex count, and E is its edge count. Operations are modeled on fixed-size values unless stated otherwise. Hashing a long string, comparing large payloads, producing a large output, or running a user callback can add work beyond a table entry.
+
+## Arrays, maps, and linked structures
+
+<table>
+  <thead><tr><th>Structure</th><th>Operation</th><th>Cost</th><th>Qualification</th></tr></thead>
+  <tbody>
+    <tr><td>Dynamic array</td><td>Read/write an existing index</td><td>O(1)</td><td>Conventional contiguous-array model</td></tr>
+    <tr><td>Dynamic array</td><td>Append</td><td>O(1) amortized</td><td>An individual resize can copy O(n) entries</td></tr>
+    <tr><td>Dynamic array</td><td>Insert/remove near the front</td><td>O(n)</td><td>Remaining entries may need to move</td></tr>
+    <tr><td>Unsorted array</td><td>Find an arbitrary value</td><td>O(n)</td><td>A scan may inspect every entry</td></tr>
+    <tr><td>Sorted array</td><td>Binary search</td><td>O(log n)</td><td>Requires random access and a consistent order</td></tr>
+    <tr><td>Hash table</td><td>Lookup, insertion, deletion</td><td>O(1) expected/amortized in common models</td><td>Collisions, resizing, and key costs matter; worst case can be O(n)</td></tr>
+    <tr><td>Singly linked list</td><td>Access by index or search by value</td><td>O(n)</td><td>Traversal follows links</td></tr>
+    <tr><td>Singly linked list</td><td>Insert after a known node</td><td>O(1)</td><td>Finding the node is a separate operation</td></tr>
+    <tr><td>Singly linked list</td><td>Remove after a known predecessor</td><td>O(1)</td><td>Knowing the removed node alone may not provide its predecessor</td></tr>
+    <tr><td>Doubly linked list</td><td>Unlink a known node</td><td>O(1)</td><td>Includes updating neighbors and head/tail boundaries</td></tr>
+  </tbody>
+</table>
+
+A linked list does not make insertion at an arbitrary numeric position constant time. Locating that position can still require a traversal. A hash table does not make every key operation free; hashing or comparing a key may depend on key length. Keep the lookup cost and the work required to prepare a lookup separate.
+
+An array's occasional resize explains the difference between a single operation and a sequence of operations. With geometric capacity growth, many appends can have linear total copying work even though some individual appends are expensive. That is an amortized claim. It does not depend on a probability distribution over input values.
+
+## Stacks, queues, trees, and heaps
+
+<table>
+  <thead><tr><th>Structure</th><th>Operation</th><th>Cost</th><th>Qualification</th></tr></thead>
+  <tbody>
+    <tr><td>Stack</td><td>Push/pop/peek</td><td>O(1), possibly amortized</td><td>Depends on linked or dynamic-array representation</td></tr>
+    <tr><td>Queue</td><td>Enqueue/dequeue</td><td>O(1), possibly amortized</td><td>Use a deque, ring buffer, links, or a suitable head-index strategy</td></tr>
+    <tr><td>Unbalanced BST</td><td>Search/insert/delete</td><td>O(h), worst-case O(n)</td><td>Sorted insertions can produce a chain</td></tr>
+    <tr><td>Balanced search tree</td><td>Search/insert/delete</td><td>O(log n)</td><td>The implementation must maintain its balancing guarantees</td></tr>
+    <tr><td>Binary heap</td><td>Peek at minimum</td><td>O(1)</td><td>Minimum is at the root in a min-heap</td></tr>
+    <tr><td>Binary heap</td><td>Push or remove minimum</td><td>O(log n)</td><td>Restoring order follows a path through the heap</td></tr>
+    <tr><td>Binary heap</td><td>Find an arbitrary value</td><td>O(n)</td><td>The heap property does not fully sort the entries</td></tr>
+    <tr><td>Binary heap</td><td>Bottom-up construction</td><td>O(n)</td><td>Different from inserting n entries individually</td></tr>
+  </tbody>
+</table>
+
+A queue is an abstract behavior, not one specific implementation. Calling an array operation “dequeue” does not change the work the array must do. Similarly, a stack interface implemented with inefficient front insertion can have different costs from the intended stack model.
+
+A binary search tree's ordering property guides search but does not guarantee balance. State whether a problem supplies a balanced tree, an arbitrary BST, or an ordinary binary tree. A balanced shape in a drawing is not an implementation guarantee.
+
+A heap keeps enough order to expose one extreme efficiently. It does not support binary search over its underlying array as if that array were fully sorted. For repeated top-k work, compare maintaining a heap of size k with sorting the entire input once.
+
+## Traversal and search costs
+
+For an adjacency list, BFS and DFS can visit the reachable portion of a graph in O(V + E) time, counting vertices and edges examined. A visited set prevents repeated exploration of cycles. An adjacency matrix changes neighbor enumeration: scanning a row can inspect V potential neighbors for each processed node, leading to O(V²) traversal work for a full scan.
+
+Both approaches can retain O(V) bookkeeping. BFS may retain a broad frontier; recursive DFS may retain a deep active path. A collected output or parent map adds storage even if the frontier is small. See [BFS versus DFS](/guides/bfs-vs-dfs) for implementations and the unweighted shortest-path argument.
+
+For a binary-tree traversal, visiting every node takes O(n) time when node-local work is constant. Recursive auxiliary stack space is O(h). Returning an array of all visited values also creates O(n) output storage. Be explicit about whether the problem excludes required output from its auxiliary-space convention.
+
+## Expected, amortized, and worst-case are different labels
+
+Expected cost uses a probability model or randomized behavior. Amortized cost bounds a sequence while distributing occasional expensive work across operations. Worst-case cost concerns the most expensive allowed input or operation at a given size. A table is less useful when it removes those distinctions.
+
+Use the qualification in the explanation: “The pass uses expected constant-time map operations, so it has expected O(n) lookup work.” If an adversarial collision pattern or expensive key is relevant, discuss the changed assumption. Avoid claiming that a high-level language promises a particular hash-table implementation solely because its API is named Map.
+
+## Check the language and the operation you wrote
+
+JavaScript's `Map` API, Python dictionaries, and a custom interview hash table have different implementation contracts. A source expression can also allocate an intermediate collection or invoke user code. A library sort's exact space use should be checked for the implementation and assumptions being discussed.
+
+In Python, `deque` supplies the end operations useful for queues; the [collections reference](https://docs.python.org/3/library/collections.html#collections.deque) describes those operations. In JavaScript, a head-index queue is a practical teaching approach, while a long-running application may want to release processed entries deliberately.
+
+## Use the table to choose a solution
+
+List the repeated operations before choosing a structure. If you only need membership, a set can express the state more directly than a map with dummy values. If ordered range queries are central, a hash table's average lookup speed does not provide that ordering. If all results must be sorted once, a heap may add unnecessary complexity.
+
+Then account for preprocessing, retained state, and output. Compare the completed algorithms under the same contract. Use the [Big O guide](/guides/big-o-time-space-complexity) to derive the overall bound and the [growth explorer](/tools/big-o) to inspect how representative functions separate as n increases.

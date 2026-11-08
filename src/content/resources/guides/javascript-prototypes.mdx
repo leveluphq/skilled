@@ -1,0 +1,80 @@
+JavaScript property access can find a value on the object itself or continue through its prototype chain. That lookup rule explains inherited methods, property shadowing, class instances, and several mistakes in dictionary-style interview solutions. Start by identifying which object owns a property before explaining why a particular expression returns its value.
+
+A prototype is an object linked through an internal relationship. A property named prototype on a constructor function is a separate, ordinary property used when constructing instances. Giving any random object a prototype-named property does not change that object's internal inheritance link. Use Object.getPrototypeOf to inspect the link directly.
+
+## Trace own and inherited properties
+
+Create a shared object with a method, then create another object whose prototype is that shared object. Put a name directly on the child. A method lookup on the child finds the method through inheritance, while the method's receiver remains the child when called as child.describe().
+
+```javascript
+const profileMethods = {
+  describe() { return `User: ${this.name}`; },
+};
+const profile = Object.create(profileMethods);
+profile.name = 'Ada';
+
+function inspectProfile() {
+  return {
+    message: profile.describe(),
+    ownName: Object.prototype.hasOwnProperty.call(profile, 'name'),
+    ownDescribe: Object.prototype.hasOwnProperty.call(profile, 'describe'),
+    hasDescribe: 'describe' in profile,
+    directPrototype: Object.getPrototypeOf(profile) === profileMethods,
+  };
+}
+```
+
+The message is User: Ada. Name is an own property, describe is inherited, and the in operator sees describe because it includes prototype-chain lookup. The method reads this.name from its receiver. It does not automatically read from the object where the function was originally stored.
+
+The [prototype-chain reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain) describes this lookup model. To reason about the example, draw the child and shared method object as two separate objects with one prototype link. A copied method table would be a different structure, even if the first method call produced the same text.
+
+## Shadow a property without changing its owner
+
+For an ordinary writable inherited data property, assigning the same property name on a child normally creates an own property on that child. A later lookup finds the child's value first. Deleting that own property can expose the inherited value again. The assignment does not need to overwrite the prototype's shared data.
+
+```javascript
+function traceShadowing() {
+  const defaults = { color: 'blue' };
+  const item = Object.create(defaults);
+  const before = item.color;
+  item.color = 'green';
+  const during = item.color;
+  const parent = defaults.color;
+  delete item.color;
+  return [before, during, parent, item.color];
+}
+```
+
+The result is blue, green, blue, blue. Keep the writable-data-property condition in that explanation. An inherited setter can execute instead, and a nonwritable inherited property can prevent the assignment. Property descriptors and strict mode can therefore change what a superficially similar assignment does.
+
+Assigning undefined is also different from deleting the property. If item has an own color whose value is undefined, lookup stops at that property and returns undefined. It does not continue to find the inherited blue value. An ownership check still reports true. Delete removes the own property, which allows the inherited value to become visible again. Test those two operations separately when implementing a defaults mechanism.
+
+## Follow inherited accessors with the right receiver
+
+An inherited getter still runs with the original receiver. If a shared prototype has a getter that returns this.name, a child lookup can observe the child's own name. Reading the prototype object directly would use the prototype as the receiver and could produce a different result.
+
+This is why a simplistic hand-written lookup function that repeatedly assigns object = Object.getPrototypeOf(object) and then reads object[key] can fail to model normal accessors. It finds the owner but changes the receiver. Property lookup and receiver identity are related pieces of the language semantics, not interchangeable variables.
+
+For an interview, test both a plain inherited value and an inherited getter. Explain whether your utility is inspecting descriptors, reading values, or copying properties. Those tasks have different side effects. The [deep-clone guide](/guides/javascript-deep-clone) rejects accessors rather than silently executing them while copying data.
+
+## Connect constructor prototypes to instances
+
+A constructor's prototype object can become the internal prototype of instances created with new. Methods placed there are shared by those instances. Instance fields remain own properties. Class syntax uses the same broad prototype-based lookup model while adding its own rules for construction, methods, and private state.
+
+Reassigning a constructor's prototype property later does not rewrite existing instances' prototype links. New instances can inherit from the replacement object while old instances still reference the earlier one. Mutating the already shared prototype object, however, can affect lookup through every instance that still references it.
+
+Avoid changing built-in prototypes as part of an interview utility. Such a change affects unrelated code and can alter enumeration or lookup assumptions. A helper function that accepts its input explicitly is easier to test and avoids making every array or object in the environment inherit a new behavior.
+
+## Choose safe ownership checks for dictionaries
+
+Calling input.hasOwnProperty(key) assumes the input has a callable property with that name. A null-prototype object has no inherited method, and an ordinary object can shadow it with data. The explicit call form in the example uses the known built-in method while supplying the target object as its receiver.
+
+For a string-keyed frequency table, a Map avoids inherited object keys and distinguishes absent entries with has. Object.create(null) can also create a dictionary without the usual Object prototype. Those choices still have different APIs and key rules. A Map can use an object as a key; ordinary property keys are strings or symbols.
+
+The in operator asks whether lookup can find a property anywhere on the chain. Object.keys lists enumerable own string keys. Reflect.ownKeys includes all own string and symbol keys, regardless of enumerability. Choose the operation that matches your contract rather than treating these methods as equivalent ways to enumerate everything.
+
+## Test ownership, lookup, and mutation separately
+
+Check inspectProfile's five results and the four shadowing values. Add an inherited getter, an own property with the same name, a null-prototype dictionary, and a shadowed hasOwnProperty key. Verify that modifying one child's own data does not alter another child that shares only its prototype.
+
+When a function moves between objects, test it as a method and as a detached call. The [closures and this guide](/guides/javascript-closures-and-this) explains why inheritance does not bind a function permanently to the object where it was found. For a follow-up, compare prototype sharing with copying methods into every instance, including the different function identities and allocation costs.

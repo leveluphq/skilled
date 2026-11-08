@@ -1,0 +1,82 @@
+import { Section } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import Null from 'content/blocks/Null';
+import ConceptModal from 'content/blocks/ConceptModal';
+import PointersConcept from 'content/lessons/pointers/IntroductionWithHeader.mdx';
+import StackShell from './code/StackShell';
+import Peek from './code/Peek';
+import Push from './code/Push';
+import Pop from './code/Pop';
+import StackLinkedList from './code/StackLinkedList';
+import StackArray from './code/StackArray';
+
+<Section>
+
+With stacks, we only care about fast operations at the end.
+This makes a linked list the perfect data structure to implement them.
+
+> Stacks can also be implemented using a dynamic array, but we will gain a better understanding of how it functions by maintaining the stack ourselves.
+> When you are answering an interview question, you are totally fine to use a dynamic array as stack for simplicity.
+
+Our linked list will be built using `Node` objects that stores `data` and use the `prev` attribute to reference the node behind it in the stack.
+
+We will implement a `peek`, `pop`, and `push` method which operate in <BigO.constant /> time because our stack maintains a <ConceptModal content={<PointersConcept />}>pointer</ConceptModal> that references the `last` item.
+
+<StackShell />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>peek()</SubsectionHeader>
+
+Peek allows us to view the last item that is at the top of the stack.
+This is the newest item added to the stack.
+We simply return the value in our `last` pointer.
+
+<Peek />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>push(item)</SubsectionHeader>
+
+This adds an item to the end of the list.
+We create a new linked list node and point its `prev` to the item previously at the top.
+The previous last item would be <Null /> if this is the first item added to the list.
+
+<Push />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>pop()</SubsectionHeader>
+
+This function removes the last item from the list and returns it.
+If the list is empty, the function will return <Null />.
+Popping the last remaining item returns it and sets `last` to <Null />.
+
+<Pop />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Complete Stack Implementation</SubsectionHeader>
+
+Putting it all together, we have the following implementation. If you want to see it in action, you can use it in this <a href="https://repl.it/@TreyHuffine/Stacks-Implement-JavaScript-LinkedList" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+<StackLinkedList />
+
+### Stack Built with Array
+
+Stacks can be implemented very simply using a dynamic array.
+Operations at the end of an array all happen in <BigO.constant /> time, so we haven't sacrificed any Big O complexity.
+See the implementation in this <a href="https://repl.it/@TreyHuffine/Stacks-Implement-JavaScript-Array" target="_blank" rel="noopener noreferrer">REPL</a>.
+
+<StackArray />
+
+</Section>

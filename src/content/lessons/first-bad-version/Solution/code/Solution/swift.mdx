@@ -1,0 +1,23 @@
+```swift
+// isBadVersion(version) is provided by VersionControl
+class Solution: VersionControl {
+    func firstBadVersion(_ n: Int) -> Int {
+        var lowerBound = 1 // Starts at v1
+        var upperBound = n
+
+        while lowerBound < upperBound {
+            // (lowerBound + upperBound) / 2 can overflow a 32-bit int.
+            // Swift's Int is 64-bit, but this form is safe with any size.
+            let midpoint = lowerBound + (upperBound - lowerBound) / 2
+
+            if isBadVersion(midpoint) {
+                upperBound = midpoint
+            } else {
+                lowerBound = midpoint + 1
+            }
+        }
+
+        return lowerBound
+    }
+}
+```

@@ -1,0 +1,35 @@
+```go
+// A node on the stack, with its depth
+type nodeDepth struct {
+	node  *BinaryNode
+	depth int
+}
+
+func findMaxDepth(root *BinaryNode) int {
+	stack := []nodeDepth{}
+	maxDepth := -1 // Value to return if no node is given
+
+	if root != nil {
+		// Updates to the correct root depth of 0
+		maxDepth++
+		// Add the root to the stack
+		stack = append(stack, nodeDepth{node: root, depth: maxDepth})
+	}
+
+	for len(stack) != 0 {
+		// Remove top item on the stack and extract the node and its depth
+		top := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		node, depth := top.node, top.depth
+
+		// If the node exists, compare it to the current max and add its children to the stack
+		if node != nil {
+			maxDepth = max(maxDepth, depth)
+			stack = append(stack, nodeDepth{node: node.Right, depth: depth + 1})
+			stack = append(stack, nodeDepth{node: node.Left, depth: depth + 1})
+		}
+	}
+
+	return maxDepth
+}
+```

@@ -1,0 +1,19 @@
+```go
+func bruteForceAnswer(input []int64) []int64 {
+	results := make([]int64, len(input))
+
+	for i := range input {
+		product := int64(1)
+
+		for j := range input {
+			if i != j {
+				product = product * input[j]
+			}
+		}
+
+		results[i] = product
+	}
+
+	return results
+}
+```

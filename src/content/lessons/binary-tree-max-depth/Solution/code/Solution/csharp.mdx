@@ -1,0 +1,29 @@
+```csharp
+public class Solution {
+    public int FindMaxDepth(BinaryNode root) {
+        var stack = new Stack<(BinaryNode Node, int Depth)>();
+        int maxDepth = -1; // Value to return if no node is given
+
+        if (root != null) {
+            // Updates to the correct root depth of 0
+            maxDepth = maxDepth + 1;
+            // Add the root to the stack
+            stack.Push((root, maxDepth));
+        }
+
+        while (stack.Count != 0) {
+            // Remove top item on the stack and extract the node and its depth
+            var (node, depth) = stack.Pop();
+
+            // If the node exists, compare it to the current max and add its children to the stack
+            if (node != null) {
+                maxDepth = Math.Max(maxDepth, depth);
+                stack.Push((node.right, depth + 1));
+                stack.Push((node.left, depth + 1));
+            }
+        }
+
+        return maxDepth;
+    }
+}
+```

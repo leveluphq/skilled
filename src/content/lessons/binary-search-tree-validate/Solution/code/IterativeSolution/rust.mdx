@@ -1,0 +1,42 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+impl Solution {
+    pub fn is_bst(root: Option<Rc<RefCell<BinaryNode>>>) -> bool {
+        let mut stack = Vec::new();
+        let mut current_node = root;
+        // Below every i32 value, as -Infinity would be
+        let mut in_order_value = i64::MIN;
+
+        // Begin iterative in-order traversal
+        while !stack.is_empty() || current_node.is_some() {
+            // Traverse down a node's left children as long as they continue to exist
+            while let Some(node) = current_node {
+                current_node = node.borrow().left.clone();
+                stack.push(node);
+            }
+
+            // Check nodes in-order, testing that their value is larger than the previous
+            let Some(node) = stack.pop() else {
+                break;
+            };
+            let node = node.borrow();
+
+            // In-order traversal failed
+            if i64::from(node.data) <= in_order_value {
+                return false;
+            }
+
+            // Update value
+            in_order_value = i64::from(node.data);
+
+            // Continue in-order traversal to the current node's right path
+            current_node = node.right.clone();
+        }
+
+        // Finish traversal and all values were valid
+        true
+    }
+}
+```

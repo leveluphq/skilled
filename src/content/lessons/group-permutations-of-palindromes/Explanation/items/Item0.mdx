@@ -1,0 +1,33 @@
+import { Container } from 'style/elements';
+
+Let's understand what the problem is asking and what we're looking for.
+The input to our function will be an array of strings,
+and the output should be an array that contains arrays of grouped strings.
+
+We will include a string in the response **only if it can form a palindrome from a permutation of its characters.**
+
+<Container>
+
+```javascript
+input   |  possible palindrome formed from a permutation of the input
+---------------------------------------------------------------------
+aaccerr -> racecar
+acerrac -> racecar
+elevl   -> level
+bob     -> bob
+code    -> X (no palindromes possible)
+```
+
+</Container>
+
+If the characters can form a palindrome when rearranged, it will be grouped in an array with the other strings that are permutations of each other.
+
+In the above example, the strings that can be arranged to form the palindrome "racecar" would be grouped together.
+The other strings that can form a palindrome ("elevl" and "bob") would be in their own separate groups respectively.
+
+So re-stating this problem more simply, we are doing 2 things:
+
+1. Determine if a string is a permutation of a palindrome
+2. Group the strings with the other items that are permutations of each other
+
+Let's tackle these problems separately.

@@ -1,0 +1,20 @@
+```kotlin
+class Node(var data: Int) {
+    var next: Node? = null
+    var previous: Node? = null
+}
+
+class LinkedList(data: Int) {
+    var head: Node
+    var tail: Node
+
+    init {
+        val node = Node(data)
+        head = node
+        tail = node
+    }
+
+    fun append(data: Int) { /* add item to back and update tail */ }
+    fun prepend(data: Int) { /* add item to front and update head */ }
+}
+```

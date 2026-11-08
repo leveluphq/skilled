@@ -1,0 +1,30 @@
+```swift
+class Node {
+    var data: Int
+    var prev: Node?
+
+    init(_ data: Int) {
+        self.data = data
+    }
+}
+
+class Queue {
+    var first: Node?
+    var last: Node?
+
+    init() {
+        first = nil
+        last = nil
+    }
+
+    func peek() -> Node? {
+        // get the first item of the list
+    }
+    func enqueue(_ item: Int) -> Node {
+        // add an item to the end of the list
+    }
+    func dequeue() -> Node? {
+        // remove the first item from the list
+    }
+}
+```

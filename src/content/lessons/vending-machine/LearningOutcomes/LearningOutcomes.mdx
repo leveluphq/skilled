@@ -1,0 +1,9 @@
+This question is a classic example of dynamic programming.
+We saw that if we calculate the minimum coins needed for all the amounts from 0 to the `target`, we could build up our solution.
+Each step was its own subproblem, and finding the minimum coins needed locally at each subproblem allowed us to find the global solution once we reach the `target` which is the answer to the question.
+The solution to each subproblem required the answers to previous subproblems, so we memoized each local answer and used it to find the solution at each step without performing duplicate work.
+
+- Used dynamic programming to find an optimal solution
+- Solve subproblems to build up your solutions
+- Use memoization to remove duplicate work (we "look back" to old values in the memo table instead of recalculating them)
+- Walked through a bottom-up and top-down solution to a dynamic programming problem

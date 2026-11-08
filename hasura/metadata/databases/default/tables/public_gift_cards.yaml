@@ -1,0 +1,44 @@
+table:
+  name: gift_cards
+  schema: public
+object_relationships:
+- name: product
+  using:
+    foreign_key_constraint_on: productId
+- name: receiver
+  using:
+    foreign_key_constraint_on: receiverId
+- name: redeemer
+  using:
+    foreign_key_constraint_on: redeemerId
+- name: sale
+  using:
+    foreign_key_constraint_on: saleId
+- name: sender
+  using:
+    foreign_key_constraint_on: senderId
+select_permissions:
+- permission:
+    columns:
+    - code
+    - creditAmountDollars
+    - giftNote
+    - id
+    - productAccessDays
+    - productDescription
+    - productName
+    - productType
+    - receiverEmail
+    - redeemedAt
+    - senderEmail
+    - status
+    - type
+    filter:
+      _or:
+      - senderId:
+          _eq: X-Hasura-User-Id
+      - receiverId:
+          _eq: X-Hasura-User-Id
+      - redeemerId:
+          _eq: X-Hasura-User-Id
+  role: user

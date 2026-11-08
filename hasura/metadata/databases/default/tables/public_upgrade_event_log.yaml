@@ -1,0 +1,13 @@
+table:
+  name: upgrade_event_log
+  schema: public
+object_relationships:
+- name: giftCard
+  using:
+    foreign_key_constraint_on: giftCardId
+- name: sale
+  using:
+    foreign_key_constraint_on: saleId
+- name: user
+  using:
+    foreign_key_constraint_on: userId

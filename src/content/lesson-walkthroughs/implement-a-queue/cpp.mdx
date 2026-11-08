@@ -1,0 +1,110 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+The queue in this lesson keeps references to its first and last nodes. New items join at the last node, while removals happen at the first. The node's link is named `prev`, but in this representation it points toward the next item to leave after the current one. Follow the actual arrows rather than relying on the property name alone.
+
+## Maintain both endpoints
+
+An empty queue has no first or last node. Enqueuing its first item must set both references to the new node. For a nonempty queue, connect the old last node to the new node, then update last. The first reference stays unchanged because an older item remains at the front.
+
+For A followed by B and C, first reaches A and last reaches C. The link from A reaches B, and B reaches C. Peeking should inspect the front without moving either endpoint. The exact returned shape follows the current implementation, so distinguish returning a node from returning only its data when writing a compatible wrapper.
+
+## Reset the tail when the final item leaves
+
+Dequeuing saves the front node and advances first along its link. If that was the only node, last must also become empty. Leaving a stale last reference can cause the next enqueue to attach to a node that is no longer in the queue.
+
+Test this operation sequence explicitly: enqueue A, dequeue A, enqueue B, then dequeue B. Also enqueue several values, remove some, add more, and confirm the original FIFO order across the mixed sequence. Repeated operations often expose endpoint mistakes that a single enqueue and dequeue miss.
+
+## Compare representations under the same contract
+
+With retained endpoints, these linked operations use constant link changes. Traversing the whole list to find the back on every enqueue would lose that property. An array-backed circular buffer can also provide efficient queue operations; the lesson chooses links to expose the endpoint mechanics, not because arrays are incapable of FIFO behavior.
+
+Use the [current implementation lesson](/course/implement-a-queue) to inspect its empty-result contract. Then revisit [Queues](/watch/queues) and apply the representation to [Breadth-First Search](/watch/breadth-first-search). Check both the graph traversal's result and the queue operations behind its claimed running time.
+
+## Trace the final removal and the next insertion
+
+Enqueue 4 and 9. First points to 4, last points to 9, and the first node's link reaches 9. Dequeue returns 4 and advances first. Dequeue again returns 9 and must clear both endpoints. A new enqueue of 6 should then create a valid singleton queue with first and last referring to that same node.
+
+The code calls the link toward a newer item `prev`. Follow its actual direction when reading the snippet: dequeue advances from the oldest entry toward the next oldest. Renaming the field in a sketch is harmless only if every update still follows the same representation.
+
+## Check absence independently of payload values
+
+Peek and dequeue return an absent result for an empty queue. Most versions expose nodes; the Rust version returns the stored integer. The reading examples explain that return-type difference. A payload of zero is valid and cannot be used as an empty sentinel.
+
+Enqueue, peek, and dequeue perform O(1) structural work. Retained queue storage is O(n). An exposed removed node can still refer to later nodes in some versions, so holding it may retain more of the chain; a production API might return only a value or detach that link. Check empty reads, FIFO order, repeated values, and several empty/refill cycles. Endpoint invariants are as important as the sequence returned by one short run.
+
+## C++ example and implementation choices
+
+The queue owns nodes still linked from first and releases them in its destructor. Copying the queue is disabled to prevent duplicate ownership. dequeue transfers ownership of its returned raw pointer to the caller, which must delete it after use; peek remains borrowed. The removed node's prev field is nonowning in that ownership policy. Tests delete removed nodes after reading their payloads.
+
+### Complete implementation
+
+```cpp
+struct Node {
+    int data;
+    Node* prev;
+
+    Node(int data) : data(data), prev(nullptr) {}
+};
+
+class Queue {
+public:
+    Queue(const Queue&) = delete;
+    Queue& operator=(const Queue&) = delete;
+    ~Queue() {
+        while (first) { auto node = first; first = first->prev; delete node; }
+    }
+
+    Node* first;
+    Node* last;
+
+    Queue() {
+        first = nullptr;
+        last = nullptr;
+    }
+
+    // Get the first item
+    Node* peek() {
+        return first;
+    }
+
+    // Add a new last item
+    Node* enqueue(int item) {
+        Node* newLastNode = new Node(item);
+        bool isEmptyList = !first && !last;
+
+        if (isEmptyList) {
+            first = newLastNode;
+            last = newLastNode;
+        } else {
+            last->prev = newLastNode;
+            last = newLastNode;
+        }
+
+        return newLastNode;
+    }
+
+    // Remove the first item
+    Node* dequeue() {
+        Node* removedItem = first;
+
+        if (!removedItem) {
+            return nullptr;
+        }
+
+        if (first == last) {
+            last = nullptr;
+        }
+
+        first = removedItem->prev;
+
+        // The caller now owns removedItem and should delete it when done
+        return removedItem;
+    }
+};
+```
+
+## Continue in C++
+
+[Open Implement a Queue](/course/implement-a-queue) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the C++ example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [C++ interview preparation guide](/interview-prep/cpp) connects these language choices with further practice and the cross-language operation reference.

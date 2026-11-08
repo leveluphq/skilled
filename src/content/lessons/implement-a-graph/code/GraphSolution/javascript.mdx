@@ -1,0 +1,28 @@
+```javascript
+class Graph {
+  constructor(undirected = true) {
+    this.adjacencyList = {};
+    this.undirected = undirected;
+  }
+
+  addVertex(vertex)  {
+    this.adjacencyList[vertex] = [];
+  }
+
+  addEdge(source, destination) {
+    this.adjacencyList[source].push(destination);
+
+    if (this.undirected) {
+      this.adjacencyList[destination].push(source);
+    }
+  }
+
+  removeVertex(vertex) {
+    delete this.adjacencyList[vertex];
+
+    Object.keys(this.adjacencyList).forEach(node => {
+      this.adjacencyList[node] = this.adjacencyList[node].filter(v => v !== vertex);
+    });
+  }
+}
+```

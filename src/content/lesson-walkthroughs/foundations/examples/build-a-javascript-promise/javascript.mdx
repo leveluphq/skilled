@@ -1,0 +1,38 @@
+```javascript
+class TeachingPromise {
+    constructor(executor) {
+        this.result = { state: 'pending' };
+        this.observers = [];
+        const settle = (result) => {
+            if (this.result.state !== 'pending')
+                return;
+            this.result = result;
+            const waiting = this.observers;
+            this.observers = [];
+            for (const observer of waiting)
+                this.schedule(observer, result);
+        };
+        try {
+            executor(value => settle({ state: 'fulfilled', value }), reason => settle({ state: 'rejected', reason }));
+        }
+        catch (reason) {
+            settle({ state: 'rejected', reason });
+        }
+    }
+    observe(fulfilled, rejected) {
+        const observer = { fulfilled, rejected };
+        if (this.result.state === 'pending')
+            this.observers.push(observer);
+        else
+            this.schedule(observer, this.result);
+    }
+    schedule(observer, result) {
+        setTimeout(() => {
+            if (result.state === 'fulfilled')
+                observer.fulfilled(result.value);
+            else if (result.state === 'rejected')
+                observer.rejected(result.reason);
+        }, 0);
+    }
+}
+```

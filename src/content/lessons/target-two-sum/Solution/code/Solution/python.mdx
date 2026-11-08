@@ -1,0 +1,33 @@
+```python
+def get_target_indexes(array, target):
+    results = []
+    array_element_at_index = {}
+
+    # Loop through our input array and
+    # create a hash table that stores the array value and
+    # its corresponding index.
+    for i in range(len(array)):
+        element = array[i]
+        array_element_at_index[element] = i
+
+    for i in range(len(array)):
+        # We find the element that would be the match current value
+        # and check if it is our hash table.
+        current_value = array[i]
+        matched_value = target - current_value
+        matched_index = array_element_at_index.get(matched_value, -1)
+
+        # Check if our matched index is a valid array index
+        # ----
+        # NOTE: In JavaScript, matched_index will be undefined
+        # if it does not exist in the hash table, and
+        # undefined >= 0 would evaluate to false.
+        if (matched_index >= 0 and matched_index != i):
+            results.append([i, matched_index])
+
+            # Make sure we don't use these values again
+            array_element_at_index[current_value] = -1
+            array_element_at_index[matched_value] = -1
+
+    return results
+```

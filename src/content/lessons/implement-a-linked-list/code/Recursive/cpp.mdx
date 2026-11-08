@@ -1,0 +1,14 @@
+```cpp
+Node* findTailNodeRecursively(Node* node) {
+    // Stopping condition when we find the tail node.
+    // We know that the `next` will be nullptr for the tail.
+    if (node->next == nullptr) {
+        return node;
+    }
+
+    // Continue to call our function recursively with the `next` node.
+    return findTailNodeRecursively(node->next);
+}
+
+Node* tailNode = findTailNodeRecursively(head);
+```

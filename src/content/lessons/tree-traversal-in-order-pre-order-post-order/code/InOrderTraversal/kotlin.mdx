@@ -1,0 +1,9 @@
+```kotlin
+fun inOrderTraversal(node: BinaryTreeNode?) {
+    if (node != null) {
+        inOrderTraversal(node.left)
+        visitNode(node)
+        inOrderTraversal(node.right)
+    }
+}
+```

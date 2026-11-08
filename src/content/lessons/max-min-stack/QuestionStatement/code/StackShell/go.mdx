@@ -1,0 +1,38 @@
+```go
+// MaxMinStack is a stack that can also report its largest and smallest items.
+// Any of the initial fields and methods can be updated.
+type MaxMinStack struct {
+	stack []int
+}
+
+func Constructor() MaxMinStack {
+	return MaxMinStack{stack: []int{}}
+}
+
+func (this *MaxMinStack) Peek() int {
+	return this.stack[len(this.stack)-1]
+}
+
+func (this *MaxMinStack) Push(item int) int {
+	this.stack = append(this.stack, item)
+	return item
+}
+
+func (this *MaxMinStack) Pop() int {
+	item := this.stack[len(this.stack)-1]
+	this.stack = this.stack[:len(this.stack)-1]
+	return item
+}
+
+// You must implement the methods below
+
+func (this *MaxMinStack) GetStackMax() int {
+	// Return the largest integer currently in the stack (don't remove it)
+	return 0
+}
+
+func (this *MaxMinStack) GetStackMin() int {
+	// Return the smallest integer currently in the stack (don't remove it)
+	return 0
+}
+```

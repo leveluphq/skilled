@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="480" viewBox="0 0 1000 480" role="img" aria-labelledby="title description">
+  <title id="title">A small URL shortener with optional cache and analytics</title>
+  <desc id="description">A browser sends create and follow requests to a stateless application. The application reads and writes durable mappings in a database. An optional cache holds hot keys, and an optional queue receives click events without blocking redirects.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#34445c"/></marker></defs>
+  <rect width="1000" height="480" rx="12" fill="#f6f8fc"/>
+  <g fill="#fff" stroke="#34445c" stroke-width="2">
+    <rect x="25" y="180" width="180" height="90" rx="8"/>
+    <rect x="365" y="180" width="220" height="90" rx="8"/>
+    <rect x="785" y="180" width="190" height="90" rx="8"/>
+    <rect x="365" y="25" width="220" height="90" rx="8" stroke-dasharray="6 4"/>
+    <rect x="365" y="365" width="220" height="80" rx="8" stroke-dasharray="6 4"/>
+  </g>
+  <g fill="none" stroke="#34445c" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M205 225 H355"/><path d="M585 225 H775"/>
+    <path d="M475 180 V125" stroke-dasharray="6 4"/><path d="M475 270 V355" stroke-dasharray="6 4"/>
+  </g>
+  <g font-family="system-ui, sans-serif" fill="#182335" text-anchor="middle" font-size="21">
+    <text x="115" y="233">Browser</text><text x="475" y="218">Stateless app</text><text x="475" y="247" font-size="17">Validate, lookup, redirect</text>
+    <text x="880" y="218">Database</text><text x="880" y="247" font-size="17">Unique key mappings</text>
+    <text x="475" y="64">Optional cache</text><text x="475" y="93" font-size="17">Popular active links</text>
+    <text x="475" y="397">Optional queue</text><text x="475" y="426" font-size="17">Click analytics</text>
+    <text x="280" y="203" font-size="16">Create / follow</text><text x="685" y="203" font-size="16">Durable mapping</text>
+    <text x="550" y="151" font-size="16">Hot keys</text><text x="585" y="322" font-size="16">Async events</text>
+  </g>
+</svg>

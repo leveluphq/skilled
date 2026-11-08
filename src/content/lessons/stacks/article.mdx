@@ -1,0 +1,112 @@
+import * as React from 'react';
+import Link from 'next/link';
+import { PageRoot } from 'utils/constants/routes';
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import Image from 'content/blocks/Image';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import { ItemWithMargin } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import { Container } from 'style/elements';
+import { Section } from 'style/elements/lesson';
+import StackExample from './code/StackExample';
+import StackVisual from './StackVisual';
+import AnimatedStack from './AnimatedStack';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+import { SideBySide, SideBySideText } from './styles';
+
+<Section>
+
+<Container>
+
+<SideBySide>
+
+<SideBySideText>
+  <div>
+    A stack is a linear data structure that we use when we care most about the top item (the one that
+    is most recently added). Adding or removing is always done at the top and happens in{' '}
+    <BigO.constant /> time. <strong>Stacks operate in last-in-first-out (LIFO) order.</strong>
+    The last item (most recent) is the first one that will be removed.
+  </div>
+  <div style={{ marginTop: '24px' }}>
+    Think of your browser's "back" button — you only care about the page you most recently visited.
+    You add items to the stack as you visit more pages. When you click "back", the browser grabs the page
+    from the top of the stack and displays it to you. As you continue to click back, you get the
+    pages starting from the one most recently visited and move backward until you reach the page you
+    first visited.
+  </div>
+</SideBySideText>
+
+<AnimatedStack />
+
+</SideBySide>
+
+</Container>
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+<CheatSheetTables table={<BigOTable {...bigO} />} dataStructure={<StackVisual />} />
+
+<ProsCons pros={pros} cons={cons} />
+
+**Stacks in Interviews**
+
+- Balancing brackets / parentheses `([[()]])`
+- Managing minimum or maximum values
+- Build a queue using stacks
+
+<React.Fragment>{/* STACKS IN JAVASCRIPT */}</React.Fragment>
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Stacks" />
+
+A simple real-world analogy of a stack is a pile of dirty dishes in your sink.
+You can continue to add a dish to the top after every meal,
+and when you go to clean them, you start with the top dish (the last added) and work your way to the bottom (the first added).
+Adding or removing is always done at the top, and the plates are stored linearly.
+If you wanted to grab a dish in the middle, you would have to remove all the ones on top of it first.
+
+<React.Fragment>
+{/* [IS THIS GOOD OR TOO MUCH?!?!?!] */}
+</React.Fragment>
+
+Stacks are essential in computer science and foundational to how our code runs.
+You may have heard the terms "call stack", "stack trace", or "stack overflow".
+When we call functions or execute operations, they often call additional functions.
+These accumulate in a stack until you reach the last item called.
+Once the final function is called, it calculates its result, and then it passes that value to the item before it in the stack that needed it.
+Our code must execute in this order since each step requires a result from another function.
+It will work from the top of the stack down to the initial function that was executed.
+
+The below example is a high-level demo of what happens with a call stack.
+It builds the stack up to the final operation needed to calculate the total and unwinds once it gets back to the initial `run` function, at which point it is complete.
+The diagram shows the stack at its deepest point.
+Creating the `Item` also adds a call to the stack on top of `run`, but that call returns and is removed before `calculatePrice` is called.
+
+<StackExample />
+
+The call stack is this list of functions/operations that must occur in order for our code to run.
+A stack overflow happens when the call stack grows larger than the fixed amount of memory reserved for it, for example from a recursive function that never stops calling itself.
+A stack trace shows the order of the call stack when an error occurs so we can figure out where the bug happened.
+
+Higher-level implementations of stacks we see:
+
+- Undo button: it stores revisions linearly, and we can get to the most recent version of a document when we hit undo
+- Back button in a browser: the pages we visit are stored as a stack
+- Messages or emails are typically presented with the most recently added first
+- Depth-first search
+
+</Section>

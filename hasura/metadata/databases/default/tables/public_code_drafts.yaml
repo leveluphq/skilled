@@ -1,0 +1,45 @@
+table:
+  name: code_drafts
+  schema: public
+object_relationships:
+- name: lesson
+  using:
+    foreign_key_constraint_on: lessonId
+- name: user
+  using:
+    foreign_key_constraint_on: userId
+insert_permissions:
+- permission:
+    backend_only: false
+    check:
+      userId:
+        _eq: X-Hasura-User-Id
+    columns:
+    - code
+    - language
+    - lessonId
+    - userId
+  role: user
+select_permissions:
+- permission:
+    columns:
+    - code
+    - createdAt
+    - id
+    - language
+    - lessonId
+    - updatedAt
+    - userId
+    filter:
+      userId:
+        _eq: X-Hasura-User-Id
+  role: user
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - code
+    filter:
+      userId:
+        _eq: X-Hasura-User-Id
+  role: user

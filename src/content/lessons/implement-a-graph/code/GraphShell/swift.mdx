@@ -1,0 +1,24 @@
+```swift
+class Graph {
+    var adjacencyList: [String: [String]]
+    let undirected: Bool
+
+    init(undirected: Bool = true) {
+        self.adjacencyList = [:]
+        self.undirected = undirected
+    }
+
+    func addVertex(_ vertex: String) {
+        // Add a node to the adjacency list
+    }
+
+    func addEdge(_ source: String, _ destination: String) {
+        // Connect two nodes by an edge
+        // If undirected, create a reciprocal edge
+    }
+
+    func removeVertex(_ vertex: String) {
+        // Remove a vertex and clean up the edges pointing to it
+    }
+}
+```

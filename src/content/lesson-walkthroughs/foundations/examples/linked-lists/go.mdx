@@ -1,0 +1,15 @@
+```go
+func MiddleValue(values []int) *int {
+    type node struct { value int; next *node }
+    var head *node
+    for index := len(values)-1; index >= 0; index-- { head = &node{values[index], head} }
+    slow, fast := head, head
+    for fast != nil && fast.next != nil {
+        slow = slow.next
+        fast = fast.next.next
+    }
+    if slow == nil { return nil }
+    answer := slow.value
+    return &answer
+}
+```

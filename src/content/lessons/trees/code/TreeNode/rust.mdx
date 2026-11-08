@@ -1,0 +1,19 @@
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+struct TreeNode {
+    data: i32,
+    // Vec of TreeNode items
+    children: Vec<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    fn new(data: i32) -> Self {
+        TreeNode {
+            data,
+            children: Vec::new(),
+        }
+    }
+}
+```

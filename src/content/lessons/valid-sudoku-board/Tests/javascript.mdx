@@ -1,0 +1,101 @@
+```javascript
+const tests = [
+  {
+    input: [
+      [0, 0, 6, 0, 0, 4, 0, 0, 0],
+      [5, 0, 0, 1, 0, 0, 0, 0, 8],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 4, 0, 0, 0, 3, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0, 0, 0, 0, 0],
+      [4, 1, 0, 8, 0, 0, 9, 0, 0],
+      [7, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 6, 0, 0, 1],
+    ],
+    expected: true,
+    description: 'valid standard 9x9',
+  },
+  {
+    input: [
+      [0, 0, 6, 0, 0, 4, 0, 0, 0],
+      [5, 0, 0, 1, 0, 0, 0, 0, 8],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 4, 0, 0, 0, 3, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0, 0, 0, 0, 0],
+      [4, 1, 0, 8, 0, 0, 9, 0, 0],
+      [7, 0, 0, 0, 0, 0, 0, 0, 0],
+      [5, 0, 0, 0, 0, 6, 0, 0, 1],
+    ],
+    expected: false,
+    description: 'invalid (col) standard 9x9',
+  },
+  {
+    input: [
+      [0, 0, 6, 0, 0, 4, 0, 0, 0],
+      [5, 0, 0, 1, 0, 0, 0, 0, 8],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 4, 0, 0, 0, 3, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0, 0, 0, 0, 0],
+      [4, 1, 0, 8, 0, 0, 9, 0, 0],
+      [7, 0, 0, 0, 0, 7, 0, 0, 0],
+      [0, 0, 0, 0, 0, 6, 0, 0, 1],
+    ],
+    expected: false,
+    description: 'invalid (row) standard 9x9',
+  },
+  {
+    input: [
+      [0, 0, 6, 0, 0, 4, 0, 0, 0],
+      [5, 0, 0, 1, 0, 0, 0, 0, 8],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 4, 0, 0, 0, 3, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0, 0, 0, 0, 0],
+      [4, 1, 0, 8, 0, 0, 9, 0, 0],
+      [7, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 6, 0, 9, 1],
+    ],
+    expected: false,
+    description: 'invalid (sub-squares) standard 9x9',
+  },
+  {
+    input: [[1]],
+    expected: true,
+    description: 'valid 1x1',
+  },
+  {
+    input: [[]],
+    expected: false,
+    description: 'empty',
+  },
+  {
+    input: [[1, 2], [0, 1]],
+    expected: false,
+    description: '2x2 is invalid',
+  },
+  {
+    input: [[0, 0, 3, 0], [2, 0, 0, 1], [0, 0, 0, 0], [0, 4, 0, 0]],
+    expected: true,
+    description: 'valid 4x4',
+  },
+  {
+    input: [[0, 4, 2, 0], [4, 0, 0, 1], [0, 0, 0, 0], [0, 2, 0, 0]],
+    expected: false,
+    description: 'invalid 4x4',
+  },
+  {
+    input: [[0, 0, 3, 0], [2, 0, 0, 1], [0, 0, 0, 0]],
+    expected: false,
+    description: 'invalid shape',
+  },
+];
+
+const validate = ({ input, expected, description }) => {
+  const userAnswer = isValidSudokuBoard(input);
+  const passed = userAnswer === expected;
+
+  return { passed, description, expected, userAnswer };
+};
+```

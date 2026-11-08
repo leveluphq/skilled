@@ -1,0 +1,245 @@
+import BigO from 'content/blocks/BigO';
+import CheatSheetSubtitle from 'content/blocks/InstructionalArticles/CheatSheetSubtitle.mdx';
+import ExplanationSubtitle from 'content/blocks/InstructionalArticles/ExplanationSubtitle.mdx';
+import InLanguageHeader from 'content/blocks/InstructionalArticles/InLanguageHeader';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import ProsCons from 'content/blocks/InstructionalArticles/ProsCons';
+import BigOTable from 'content/blocks/BigOTable';
+import CheatSheetTables from 'content/blocks/InstructionalArticles/CheatSheetTables';
+import ArraySimple from 'content/blocks/DataStructures/ArraySimple';
+import { Section } from 'style/elements/lesson';
+import { Container } from 'style/elements';
+import { MarginContainerCenter } from 'content/blocks/styles';
+import ConceptModal from 'content/blocks/ConceptModal';
+import AmortizedTime from 'content/lessons/big-o-time-and-space-complexity/AmortizedTime.mdx';
+import DynamicArray from 'svg/DynamicArray';
+import InstantiateAnArray from './code/InstantiateAnArray';
+import bigO from './bigO';
+import pros from './pros';
+import cons from './cons';
+
+<Section>
+
+Arrays are a simple and intuitive data structure.
+We use them when we have a list of sequential items and want to iterate over the items one-by-one or access them by index.
+These items are also stored contiguously in memory.
+We use sequential integer indexes to access items arrays that operate in constant <BigO.constant /> time.
+
+We will typically assume we're using a dynamic array unless specified otherwise.
+A dynamic array means that it can change size during the lifetime of your program — you can continue to add items and let the list grow to an arbitrary size.
+In an upcoming section, we'll compare dynamic arrays to static arrays where the size must be set when the array is created.
+
+Let's dig in an see what this all means.
+
+</Section>
+
+<Section>
+
+<CheatSheetSubtitle />
+
+**Common names:** array, list, dynamic array, static array, matrix
+
+<CheatSheetTables table={<BigOTable {...bigO} />} dataStructure={<ArraySimple />} />
+
+<ProsCons pros={pros} cons={cons} />
+
+<InLanguageHeader dataStructure="Arrays" />
+
+<InstantiateAnArray />
+
+**Arrays in Interviews:**
+
+- Be able to iterate over and find items in an array
+- Know how to handle an array of objects or other data structures
+- Iterate a matrix (two-dimensional arrays and higher)
+- An array may or may not be sorted - you should typically ask if the prompt does not state
+- Assume sorting an array is <BigO.nlogn /> when using native sort functions
+- Know the implications of having sorted vs unsorted data
+- Know how to group/create subarrays from an input array
+- Compare multiple arrays based on values, lengths, etc.
+- Utilize an array for fast lookups like a hash table when the keys can be integers
+- Assume arrays are dynamic for higher-level or scripted languages (ie. JavaScript, Python)
+- Commonly assume you can use dynamic arrays for compiled languages unless a fixed size is given or memory management is important
+
+</Section>
+
+<Section>
+
+<ExplanationSubtitle name="Arrays" />
+
+Arrays store items sequentially in memory where items are any data type.
+When we create an array, our programming language finds contiguous memory slots, and the index of the array points directly to the location in memory.
+This direct mapping of an index to a memory location is how we get <BigO.constant /> lookups.
+
+<Container>
+
+```javascript
+array = ['h', 'e', 'l', 'l', 'o']
+
+// Underneath the hood...
+
+Index               0     1     2     3     4
+                    |     |     |     |     |
+Memory address     418   419   420   421   422
+                   ___   ___   ___   ___   ___
+Items              "h"   "e"   "l"   "l"   "o"
+```
+
+</Container>
+
+What actually happens is that our programming language remembers the first item's memory address, or the "datum".
+Then if we look up `arr[3]`, our programming language knows to immediately return the item 3 spots after our datum.
+
+When we push or pop items from the end of the array, these are also constant time <BigO.constant /> operations.
+
+Our array performs poorly when we want to search for a particular item.
+For example, if we want to find `"l"` in our array above, we would have a worst-case of needing to look through all `n` items.
+However, if the data is sorted, we can use a binary search which is much faster at <BigO.logn />.
+
+By nesting arrays, you can represent a matrix.
+For interviews, you should be comfortable iterating a matrix and also know how to swap items.
+
+<Container>
+
+```javascript
+// 3x3 matrix
+
+matrix = [            //             columns
+  ['a', 'b', 'c'],    //  r    "a"  |  "b"  |  "c"
+  ['z', 'y', 'x'],    //  o  -----------------------
+  ['i', 'j', 'k'],    //  w    "z"  |  "y"  |  "x"
+];                    //  s  -----------------------
+                      //       "i"  |  "j"  |  "k"
+
+
+// array[rowIndex][columnIndex]
+array[0][0] // "a"
+array[1][2] // "x"
+```
+
+</Container>
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Array Inserts are O(n)</SubsectionHeader>
+
+One of the things we love about arrays is that we get a list of items that are sequentially numbered with an index.
+
+This comes with a tradeoff though.
+If we want to insert an item in the middle of the array, we would have to shift and re-index each item after it in the array.
+So if we inserted an item at the beginning, we would have to re-index all `n` items.
+That means the previous `array[0]` item would have to be moved to the `array[1]` slot in memory,
+the previous `array[1]` item would have to be moved to the `array[2]` item slot in memory, and so on for each element.
+Given this worst-case, we can say inserting an array requires <BigO.n /> time.
+
+<Container>
+
+```javascript
+// Initial array
+  0    1    2    3
+['w', 'o', 'l', 'd'];
+          ^
+          |
+         "r"
+
+// We want to insert "r" at index 2 but there is already an item here,
+// We have to shift all the items that come after that spot and update their indexes
+               (2+1)(3+1)
+  0    1    2    3    4
+['w', 'o', 'r', 'l', 'd'];
+                ->   ->
+```
+
+</Container>
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Array Deletes are O(n)</SubsectionHeader>
+
+Deletes are very similar to inserts.
+The difference is that if we remove an item, all the elements that come after it must be shifted inward by one spot.
+By the same logic, this also results in an <BigO.n /> operation.
+
+<Container>
+
+```javascript
+// Initial array
+  0    1    2    3    4
+['l', 'e', 'a', 'r', 'n'];
+
+// We want to delete "l" which is at index 0
+// Shift all the items after the deleted one inward and update their indexes
+(1-1)(2-1)(3-1)(4-1)
+  0    1    2    3
+['e', 'a', 'r', 'n'];
+  <-   <-   <-   <-
+```
+
+</Container>
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Dynamic Arrays vs Static Arrays</SubsectionHeader>
+
+Dynamic arrays have become the most utilized array implementation in interview questions.
+In fact, in many high-level or scripted programming languages like JavaScript and Python, this is the only implementation of arrays.
+
+However, it's worth learning about another implementation which is static arrays.
+A static array is a fixed size which must be set when you declare the array.
+For example, in Java you can declare a static array as follows:
+
+<Container>
+
+```java
+int[] intArray = new int[20];
+```
+
+</Container>
+
+This array can only hold 20 items, and these items can only be of type integer.
+This means that when we create the array, our programming language finds 20 free memory slots and allocates them to our static array.
+
+> Technically it will find 80 `(4 x n)` bytes of memory because each Java `int` requires 4 bytes of storage on any operating system (a `long` would need 8 bytes).
+
+Static arrays require some additional thought upfront to decide the size and type, and they may even seem more complicated if you come from a language like JavaScript or Python.
+Beyond that though, nothing really happens — we just declare the size and type of data it holds, and then the memory is allocated to us accordingly.
+
+Dynamic arrays are easier to use as developers but are more complicated underneath the hood because it must handle the array's ability to change size and (in some languages) hold arbitrary types of data.
+The fundamentals of the array are the same, and it allocates contiguous blocks of memory.
+This means the size of your array is likely smaller than what has been allocated.
+While pushing items to the array, if you reach the maximum size, the programming language will then create a new array that is double the size and copy all the items over.
+
+> Doubling is a common way to handle it, but it is up to the programming language or operating system on how to handle the new memory allocation.
+
+So if we had a full dynamic array with 2 items and tried to push another item onto it,
+underneath the hood our programming language would create a new array of size 4, copy the items over, and add the new element to the end.
+Once we reached 4, it would double again to 8, and so on.
+
+<MarginContainerCenter>
+
+<DynamicArray />
+
+</MarginContainerCenter>
+
+For dynamic arrays, we must consider the _size_ vs. _capacity_.
+The size is the number of items in the array, or what we get if find its `length`.
+The capacity is the total number of memory slots allocated to the array.
+So `capacity >= size`, and the array will double its capacity if we try to push an additional item beyond the limit.
+
+We have stated that pushing items is <BigO.constant />, which is true when the capacity of our array is larger than the size.
+However, when we double the size, a dynamic array copies the elements to a new location in memory with the additional space, and this costs <BigO.n /> time.
+We have many more constant time pushes vs. one <BigO.n /> when we reach the array limit.
+As our number of items `n` grows, the number of constant <BigO.constant /> continues to grow but we still only have one <BigO.n />
+as size reaches the maximum capacity, and the constant time operations overpower the single linear time push, so we call it <BigO.constant />.
+This is an example of <ConceptModal content={<AmortizedTime />}>amortized time complexity</ConceptModal>.
+
+In summary: static arrays are fixed size and are set by the developer when the array is declared.
+Dynamic arrays grow in size which is managed underneath the hood by the programming language.
+
+</Section>

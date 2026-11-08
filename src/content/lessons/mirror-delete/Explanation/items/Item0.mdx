@@ -1,0 +1,23 @@
+import ConceptModal from 'content/blocks/ConceptModal';
+import DeleteNode from 'content/lessons/implement-a-linked-list/DeleteNode.mdx';
+import Image from 'content/blocks/Image';
+
+We already know how to <ConceptModal content={<DeleteNode />}>delete an item</ConceptModal> when we're given an index from the front of the list.
+Iterate to the node before the index and then set its `next` pointer to the node after the index.
+
+For this question, we're asked to do the opposite — remove a node `k` spots from the tail.
+
+This immediately presents some additional challenges:
+
+1. With a normal delete, we don't need to know the size of the linked list because we can just count from the beginning.
+With our mirror delete, without knowing the size, we can't determine the position of the `k` node in the list until we know where the tail is.
+2. We need to make sure that we get positioned correctly to delete the `k` node which adds additional difficulty by thinking through the problem backward.
+
+To delete the item at the `k` location, we actually want land at the `k + 1` spot.
+Then we point the `next` value of the pointer at `k + 1` to the node after the item at the `k` spot which deletes it.
+
+<Image src="/images/mirror-delete-example.png" alt="A linked-list deletion example counts from the tail to identify the node whose predecessor must be reconnected." width={2108} height={804} />
+
+In the above example, we want to delete `k = 2`.
+We need to figure out the best way to get to the `k = 3` spot.
+Once there, we point its `next` value to the node at `k = 1`.

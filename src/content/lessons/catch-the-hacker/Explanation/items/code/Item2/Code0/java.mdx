@@ -1,0 +1,24 @@
+```java
+public String bruteForceFindEmail(String[] emails) {
+    int maxCount = 0;
+    String email = "";
+
+    // Nested for loops - immediately think O(n^2)
+    for (int i = 0; i < emails.length; i++) {
+        String currentEmail = emails[i];
+        int currentCount = 0;
+
+        for (int j = 0; j < emails.length; j++) {
+            if (emails[j].equals(currentEmail)) {
+                currentCount++;
+            }
+        }
+
+        boolean isNewMax = currentCount > maxCount;
+        maxCount = isNewMax ? currentCount : maxCount;
+        email = isNewMax ? currentEmail : email;
+    }
+
+    return email;
+}
+```

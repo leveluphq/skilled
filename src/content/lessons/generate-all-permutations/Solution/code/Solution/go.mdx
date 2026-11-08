@@ -1,0 +1,30 @@
+```go
+func generatePermutations(s string) []string {
+	// ** Base case ** - if the string is empty or 1 character, we just return that value
+	if len(s) < 2 {
+		return []string{s}
+	}
+
+	permutations := []string{}
+
+	// Iterate through all the characters in the string
+	for i := 0; i < len(s); i++ {
+		// We move a character to the front and recursively find the permutations of all the characters after it
+		// Note that the "front" is relative to a given permutation depth
+		frontCharacter := s[i : i+1]
+
+		// Remove the new front character from the string
+		remainingChars := s[:i] + s[i+1:]
+
+		// Recursive call to generate the permutations of the remaining characters
+		remainingPermutations := generatePermutations(remainingChars)
+
+		// Add each permutation to the result for a given depth
+		for _, permutation := range remainingPermutations {
+			permutations = append(permutations, frontCharacter+permutation)
+		}
+	}
+
+	return permutations
+}
+```

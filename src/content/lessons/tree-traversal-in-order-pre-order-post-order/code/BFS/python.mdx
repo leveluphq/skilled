@@ -1,0 +1,21 @@
+```python
+# Using a dynamic array as a queue
+# insert == enqueue
+# pop == dequeue
+def breadth_first_search(root):
+    if root == None:
+        return
+
+    queue = [root]
+
+    while len(queue) > 0:
+        current_node = queue.pop()
+
+        visit_node(current_node)
+
+        if current_node.left != None:
+            queue.insert(0, current_node.left)
+
+        if current_node.right != None:
+            queue.insert(0, current_node.right)
+```

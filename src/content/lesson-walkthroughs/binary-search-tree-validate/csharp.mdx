@@ -1,0 +1,78 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Determine whether a binary tree obeys the strict binary-search-tree rule. Every value in a node's left subtree must be smaller than that node, and every value in its right subtree must be larger. Duplicate values are invalid. An empty tree is valid. The course supplies nodes with `data`, `left`, and `right` fields.
+
+## Carry ancestor bounds into each subtree
+
+Checking a node against only its immediate children is insufficient. Consider root 10, left child 5, and 5's right child 12. Twelve is greater than its parent 5, but it still belongs to the left subtree of 10 and violates that ancestor's constraint.
+
+Pass an allowed lower and upper bound into each recursive call. A node must fall strictly between them. Its left child inherits the lower bound and receives the current value as a new upper bound. Its right child receives the current value as a new lower bound and inherits the upper bound. A null child satisfies the rule because there are no values to violate it.
+
+## Trace a violation below a valid edge
+
+At root 10, the initial interval permits every input value. Descending left to 5 narrows the interval to values below 10. Descending right from 5 narrows it again to values greater than 5 but still below 10. Value 12 fails that combined interval immediately.
+
+For a valid tree with root 10, left child 5, and 5's right child 7, the same final interval accepts 7. The bounds summarize every ancestor decision on the path, so each node can be validated without rereading that path or scanning its entire subtree.
+
+## Prove the recursive condition
+
+A subtree is valid when its root satisfies the inherited bounds and both child subtrees satisfy their newly narrowed bounds. The left child's upper bound forces every descendant in that subtree below the current root. The right child's lower bound forces every descendant above it. Inherited bounds continue to enforce all earlier ancestors.
+
+The null base case and those two conditions establish the result by induction on subtree size. Returning true after checking only the current root would miss deeper violations. Returning the left result without the right result would ignore half the tree. Both recursive results are necessary, although a short-circuit implementation may stop after the first failure.
+
+## Choose sentinels that admit endpoint values
+
+An initial exclusive bound equal to the minimum input integer would incorrectly reject that exact integer as a root. JavaScript can use infinities; other implementations use a wider bound type or optional bounds. Inspect the code's actual choice before changing the input type. Arithmetic such as `value - 1` is unnecessary and can overflow at endpoints.
+
+An alternative validates that an in-order traversal produces strictly increasing values. That method also needs a safe representation for the absence of a previous value. It should reject equality rather than silently allowing duplicates. Both methods express the same strict ordering contract, but their state and implementation differ.
+
+## Costs and tests that reach ancestors
+
+The bound-based traversal visits at most n nodes, giving O(n) time. Recursive storage is O(h), where h is tree height. A balanced tree has logarithmic height; a chain has linear height. Large skewed inputs may need an explicit stack to avoid the language's recursion limit.
+
+Test empty and singleton trees, duplicate values on either side, minimum and maximum input integers, and a deep node that violates a distant ancestor while satisfying its parent. Include both left and right chains. For an independent oracle, collect an in-order sequence and require every adjacent pair to increase strictly. A follow-up can allow duplicates on one designated side, but then every equality rule and inherited bound needs to match that policy.
+
+## C# implementation
+
+The helper’s `long` bounds extend beyond the `int` node range. Strict comparisons encode the lesson’s duplicate-rejection rule.
+
+The runner constructs the solution class and supplies standard collection namespaces and any declared node types. Arrays, lists, and class instances share references when assigned. Follow the method's exact capitalization and return type from the starter. The integer operations in this implementation are bounded; wider inputs may require `long` intermediates and a corresponding change to the return contract.
+
+```csharp
+public class Solution {
+    public bool IsBST(BinaryNode root) {
+        // Every int is strictly between these, so they work like -Infinity and Infinity
+        bool isValid = RecursiveValidate(root, long.MinValue, long.MaxValue);
+        return isValid;
+    }
+
+    private bool RecursiveValidate(BinaryNode root, long lowerBound, long upperBound) {
+        // Base case 1 (reached leaf, valid)
+        if (root == null) {
+            return true;
+        }
+
+        // Base case 2 (invalid)
+        if (root.data <= lowerBound || root.data >= upperBound) {
+            return false;
+        }
+
+        // When we traverse left, the current node's value must be the newest upper bound
+        // This ensures it's always strictly decreasing from the current node
+        bool isValidLeft = RecursiveValidate(root.left, lowerBound, root.data);
+
+        // When we traverse right, the current node's value must be the newest lower bound
+        // This ensures it's always strictly increasing from the current node
+        bool isValidRight = RecursiveValidate(root.right, root.data, upperBound);
+
+        // Both must be true for this to return true
+        return isValidLeft && isValidRight;
+    }
+}
+```
+
+## Practice this implementation
+
+[Open BST Validate](/course/binary-search-tree-validate) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more C# conventions and practice problems, use the [C# interview guide](/interview-prep/csharp).

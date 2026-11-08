@@ -1,0 +1,43 @@
+A recursive call leaves work unfinished in its caller. The call stack records where that suspended work will resume. This visualizer lets you inspect that stack while counting ordered ways to climb stairs using hops of one or two steps.
+
+Choose a stair count from zero through ten. Plain recursion shows every repeated call. Memoized recursion shows the same dependency structure with reused answers. Bottom-up evaluation provides a comparison that fills answers without recursive frames. Each step names the call, return, or stored result it represents.
+
+## Define the result before tracing calls
+
+Let ways(n) count ordered hop sequences whose total is n. There is one way to climb zero steps: take no hops. There is one way to climb one step: take a single hop. For n at least two, a valid sequence starts with either one step or two steps.
+
+These first-hop choices divide the sequences into disjoint groups. The remaining suffix has n − 1 or n − 2 steps, so ways(n) equals ways(n − 1) plus ways(n − 2). For three stairs the sequences are 1,1,1; 1,2; and 2,1. The result is three.
+
+This recurrence is a teaching example. The course's [Three Moves](/course/three-moves) also allows a hop of three and therefore has different results. Use that exercise as a transfer task: write its state and recurrence rather than copying the two-hop answers from this page.
+
+## Read the active stack from oldest to newest
+
+The first card is the oldest active call. The last card is the call currently doing work. When ways(4) calls ways(3), the ways(4) frame remains active because it still needs the returned value and the second branch.
+
+An entry step pushes a frame. A resolution step computes that frame's answer while it remains visible. A return step removes the frame and exposes the caller that resumes. The final return leaves no active frames.
+
+Several cards can refer to the same numeric subproblem at different times. Those are separate invocations. A frame is a particular execution with its own suspended continuation; a state such as ways(2) names the mathematical question being answered. Confusing those ideas makes repeated computation harder to see.
+
+## Follow the left branch and then the right branch
+
+The tool evaluates ways(n − 1) before ways(n − 2). For ways(4), it first descends through 3, 2, and 1. After returning from ways(1), the ways(2) frame still needs ways(0). Only after those results combine can ways(2) return.
+
+Plain recursion later computes some of these same states again through another branch. The call counter includes each invocation, including base cases. The stack display shows only active frames, not every call that has happened previously or will happen later.
+
+Use Previous step to revisit the moment a caller resumes. Describe the value it just received and the work still outstanding. This is a practical way to debug a missing return, an incorrect base case, or an accidental global accumulator before the trace becomes too large to follow mentally.
+
+## Separate recursion depth from total calls
+
+The longest active path decreases the remaining stairs by one each time, so maximum depth grows linearly with n. Plain recursion can make exponentially many calls across the whole execution even though only a linear number of frames are active at once.
+
+Time measures all executed work. Auxiliary stack space measures the greatest simultaneous retained execution state. Counting every frame ever created as if all remained allocated overstates peak stack storage; counting only the final empty stack understates it.
+
+The demonstration stores every snapshot so you can navigate backward. That retained history is extra page memory. It is not the auxiliary-space requirement of an ordinary recursive implementation that discards returned frames.
+
+## Reuse answers without erasing the call stack
+
+Choose Memoized recursion and inspect the stored-answer table. A state is stored after its dependencies resolve. A later call for that same state returns the cached value instead of expanding its children again. The cache-hit counter distinguishes those returns from fresh computation.
+
+Memoization reduces repeated work, but the first deep branch still has active recursive frames. For large inputs that depth may exceed a language's practical stack limit even when the number of distinct states is modest. The [dynamic-programming explorer](/tools/dynamic-programming) focuses on choosing between cached recursion and table order.
+
+After tracing, open [recursion](/topics/recursion) and explain one base case, one decreasing measure, and one returned value. Then try [Sum Digits](/course/sum-digits). Write down what each frame contributes and what its caller expects before implementing the recursive expression.

@@ -1,0 +1,9 @@
+```java
+static void preOrderTraversal(BinaryTreeNode node) {
+    if (node != null) {
+        visitNode(node);
+        preOrderTraversal(node.left);
+        preOrderTraversal(node.right);
+    }
+}
+```

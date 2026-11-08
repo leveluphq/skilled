@@ -1,0 +1,30 @@
+```rust
+// Ex. factorial of 4: 4! = 4 * 3 * 2 * 1 = 24
+
+fn iterative_factorial(number: u64) -> u64 {
+    let mut factorial = 1;
+
+    for i in 1..=number {
+        factorial *= i;
+    }
+
+    factorial
+}
+
+// Same as:
+// 4! = 4 * 3 * 2 * 1
+//    = 4 * 3!
+//    = 4 * 3 * 2!
+//    = 4 * 3 * 2 * 1!
+//    = 4 * 3 * 2 * 1
+
+fn recursive_factorial(number: u64) -> u64 {
+    // Stop calling when the value is 1 or less
+    if number <= 1 {
+        return 1;
+    }
+
+    // Multiply a number by the factorial of the number that comes before it
+    number * recursive_factorial(number - 1)
+}
+```

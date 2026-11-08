@@ -1,0 +1,19 @@
+Memoization reuses a function result when the same relevant inputs appear again. The recording applies this idea to Fibonacci, turning repeated recursive branches into lookups. The cache must describe the function's actual state and must distinguish a missing entry from a stored answer, including answers such as zero or false.
+
+## Cache the answer to a defined question
+
+For a fixed Fibonacci definition, the integer n identifies the subproblem. After computing its answer, store that value under n. A later call can return it without expanding its children again. During one evaluation up to n, only a linear number of distinct nonnegative states need computation under the usual recurrence.
+
+The base cases still matter. A cached recurrence that calls itself forever never produces a value to store. For recurrences that can revisit an active state, such as some graph problems, a completed-result cache alone is not enough to resolve a cycle. Define progress or retain additional active-state information when the problem needs it.
+
+## Treat zero and false as real results
+
+A truthiness check loses valid stored answers. A path-existence calculation may correctly cache false, and a minimum-cost or count calculation may correctly cache zero. Use membership or a distinct missing marker. The cache's key must also include all relevant inputs; an amount solved with one coin set is not automatically reusable with another.
+
+In a general JavaScript memoizer, object arguments introduce identity choices. Two separately allocated but equal-looking objects are distinct identity keys. Serializing inputs chooses another equivalence relation and can fail on cycles or discard distinctions. The [JavaScript memoization guide](/guides/javascript-memoization) provides a concrete receiver-and-argument identity contract, including promise rejection behavior.
+
+## Count states, transitions, and retained memory
+
+Memoized Fibonacci uses linear stored state and linear recursion depth for its top-down form. Arithmetic cost grows with integer size if the result is not treated as bounded-width. A rolling bottom-up implementation can retain only the previous two values, but that is an additional storage optimization based on the recurrence's dependencies.
+
+Continue with [Bottom-Up vs. Top-Down](/watch/bottom-up-vs-top-down), then study [Vending Machine](/watch/vending-machine). Before adding a cache, write a sentence explaining the answer stored at each key and show a case in which two branches request that exact same state.

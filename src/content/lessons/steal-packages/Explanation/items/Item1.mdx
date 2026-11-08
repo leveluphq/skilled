@@ -1,0 +1,37 @@
+import FourItems from './code/FourItems';
+import FiveItemVisual from './code/FiveItemVisual';
+
+With four items, we have a few combinations we could make.
+We could take the sum of the first and fourth house, the first and third house, or the second and fourth house.
+Any other combination would be adjacent items.
+
+<FourItems />
+
+Five items create even more combinations, so let's just visualize those without numbers.
+
+<FiveItemVisual />
+
+One thing we can see is that the largest gap is two items.
+If there were three items between two nodes, we would also include the middle item since it must be positive and therefore adds to the total.
+
+So this is getting a bit abstract, but really I’m starting by pointing out the patterns to show that we don’t have to compute the solution for the entire array.
+We have subproblems that if we solve them for each of these points, we can then combine them to find the overall solution.
+
+At any house, we have a subproblem where we have a decision with two choices:
+
+1. Should I steal from the current house and add it to whatever the max profit was from two houses behind the current house
+2. Should I keep whatever the maximum profit was that I calculated from one house prior instead of stealing from the current house
+
+This is the essence of dynamic programming.
+We are solving the subproblem locally by making a decision at each point — will stealing this package increase my profit or should I use the max profit calculated from the house before?
+The only thing that changes at each subproblem is the input and the information we have available from the decisions to either steal or not steal from the prior houses.
+
+So we start with a max profit of 0, and we're going to iterate through the input array and build up the max profit.
+Since we can't steal from adjacent houses, we have a decision to either steal from the current house and add it to the max profit from two houses back or use the max profit from the previous house.
+
+Each time we make the decision to steal, the max profit is growing.
+We're looking back at previous max profits (the solution to prior subproblems) and then making the best decision at each current house.
+Once we reach the final item, the max profit will include the entire history of decisions.
+We make this final decision, and then we'll have the solution to the question.
+
+Finding the answer to each subproblem locally allows us to calculate the solution globally once we reach the end.

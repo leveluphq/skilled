@@ -1,0 +1,22 @@
+import { Container } from 'style/elements';
+
+What if we just maintained the current max or min in a variable?
+Let's visualize this scenario.
+
+<Container>
+
+```javascript
+stack = [];
+stack.push(1) // [1] -> max = min = 1
+stack.push(42) // [1, 42] -> max = 42, min = 1
+stack.push(3) // [1, 42, 3] -> max = 42, min = 1
+stack.pop() // [1, 42] -> max = 42, min = 1
+stack.pop() // [1] -> max = ???, min = 1
+```
+
+</Container>
+
+We can pretty quickly see that we have an issue if we remove the maximum or minimum item.
+In the example above, we remove the max value and would need to iterate through the stack to find the new max.
+
+This means we'll need to use a data structure to store the maximum and minimum values which would allow us to keep a history of them as we `push` and `pop`.

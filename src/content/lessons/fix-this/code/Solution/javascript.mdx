@@ -1,0 +1,21 @@
+```javascript
+class Meeting {
+  constructor(users) {
+    const presenter = users[0];
+
+    // Bind the presenter since this.name needs to refer to the user
+    // but is called in the Meeting object.
+    this.getPresenterName = presenter.getName.bind(presenter);
+
+    this.setUserSeats(users);
+  }
+  setUserSeats(users) {
+    // Use let instead of var which is block scoped
+    for (let i = 0; i < users.length; i++) {
+      users[i].printSeatNumber = () => {
+        console.log(i);
+      }
+    }
+  }
+}
+```

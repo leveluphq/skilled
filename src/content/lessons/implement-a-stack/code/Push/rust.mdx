@@ -1,0 +1,10 @@
+```rust
+fn push(&mut self, item: i32) -> i32 {
+    let previous_last_item = self.last.take();
+
+    let last = self.last.insert(Box::new(Node::new(item)));
+    last.prev = previous_last_item;
+
+    last.data
+}
+```

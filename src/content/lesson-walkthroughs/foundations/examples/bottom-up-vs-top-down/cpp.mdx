@@ -1,0 +1,10 @@
+```cpp
+#include <vector>
+
+std::vector<int> fibTable(int n) {
+    std::vector<int> table{0};
+    if (n >= 1) table.push_back(1);
+    for (int index = 2; index <= n; ++index) table.push_back(table[index - 1] + table[index - 2]);
+    return table;
+}
+```

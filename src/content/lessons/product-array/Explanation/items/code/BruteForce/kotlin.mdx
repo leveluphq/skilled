@@ -1,0 +1,19 @@
+```kotlin
+fun bruteForceAnswer(input: LongArray): LongArray {
+    val results = LongArray(input.size)
+
+    for (i in input.indices) {
+        var product = 1L
+
+        for (j in input.indices) {
+            if (i != j) {
+                product = product * input[j]
+            }
+        }
+
+        results[i] = product
+    }
+
+    return results
+}
+```

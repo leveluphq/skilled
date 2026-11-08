@@ -1,0 +1,43 @@
+import { Container } from 'style/elements';
+import ExampleProducts from './code/ExampleProducts';
+import { HightlightFrontPattern, HightlightBackPattern, SolutionHighlight } from '../../styles.ts';
+import CodeHighlight1 from './CodeHighlight1';
+import CodeHighlight2 from './CodeHighlight2';
+import CodeHighlight3 from './CodeHighlight3';
+
+What does it mean for an element to be the product of every item in the array except for itself?
+
+If we have an array of 6 numbers, the product at any given index will be the product of 5 items, or all the items other than the one at the given index.
+
+<ExampleProducts />
+
+This is really just our brute force solution written out explicitly.
+For each item in the results, we find the product of every other item other than the one at that index.
+
+Written out like this, we can see there is a lot of repeated work.
+We do the same multiplication over and over again.
+
+It also looks like we may have a pattern here.
+
+<Container>
+
+<CodeHighlight1 />
+
+</Container>
+
+Not only are we doing the same multiplication repeatedly, we are doing it in the same order.
+
+<Container>
+
+<CodeHighlight2 />
+
+</Container>
+
+So when we say something is the product of all the other items in the array,
+what this actually means is that it is the product of all the items to the left of it and the right of it.
+
+<Container>
+
+<CodeHighlight3 />
+
+</Container>

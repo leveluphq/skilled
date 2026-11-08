@@ -1,0 +1,9 @@
+```cpp
+void postOrderTraversal(BinaryTreeNode* node) {
+    if (node != nullptr) {
+        postOrderTraversal(node->left);
+        postOrderTraversal(node->right);
+        visitNode(node);
+    }
+}
+```

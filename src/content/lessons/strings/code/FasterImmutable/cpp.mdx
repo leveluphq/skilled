@@ -1,0 +1,15 @@
+```cpp
+// C++ strings are mutable, so we can append to one string, like pushing to an array
+string duplicateString(const string& str, int numDuplicates) {
+    string solution;
+
+    for (int i = 0; i < numDuplicates; i++) {
+        // += appends in place: O(1) per character (amortized)
+        solution += str;
+
+        // Faster than solution = solution + str which would be O(n) for copying each time
+    }
+
+    return solution;
+}
+```

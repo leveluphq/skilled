@@ -1,0 +1,11 @@
+```kotlin
+class Child(var age: Int, var mood: String)
+class Parent(var age: Int, var c1: Child?, var c2: Child?)
+
+var parent = Parent(age = 45, c1 = null, c2 = null)
+var child1 = Child(age = 10, mood = "happy")
+var child2 = Child(age = 12, mood = "bored")
+
+parent.c1 = child1
+parent.c2 = child2
+```

@@ -1,0 +1,30 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+Finding the permutations of a string is a perfect example of a complex problem that can be broken up into repeatable subproblems.
+
+Every recursive problem needs a base case. In this instance, it's when our string has 1 or fewer characters, meaning that there are no additional permutations that can be performed.
+
+We walk through each character and remove it from the string and pass the remaining characters recursively.
+If we do this for every character at every recursive level, it will generate all the permutations.
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+If you are asked to generate all the permutations, your interviewer is more interested in seeing if you understand recursion and can think through the problem.
+The goal of this question wasn't to understand Big O, but to see how powerful recursion can be.
+
+If you did look at the Big O, it would be... horrendous.
+But there is no avoiding it in this case.
+When generating all the permutations, it operates in factorial time <BigO.factorial />.
+We also perform nested <BigO.n /> operations such as slicing and joining strings, and we repeat them at each of the `n` levels of recursion,
+so the actual Big O is roughly <BigO.n letter="n²*n!" />.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

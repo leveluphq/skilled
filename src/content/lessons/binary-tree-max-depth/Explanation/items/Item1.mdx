@@ -1,0 +1,27 @@
+import Null from 'content/blocks/Null';
+import StackStorage from './code/StackStorage';
+
+To solve this problem, we'll need to track 3 things:
+
+1. The depth for a node when we encounter it
+2. The remaining unvisited nodes
+3. The maximum depth
+
+When we traverse a tree recursively, we build up the call stack with an additional item for each node.
+Our stopping condition is reaching a <Null /> value for both the `left` and `right` pointer, indicating a leaf node.
+
+We can do the same thing iteratively by using a stack data structure.
+As we encounter nodes, we push its `left` and `right` pointers to the stack,
+and we continue to iterate `while` the stack has values.
+
+The additional piece of information we need to track is the depth at a given node.
+So when we push a child node to the stack, we'll also include its depth which is just the current depth `+1` since we are moving one item further into the tree.
+
+<StackStorage />
+
+We know that the root node is a depth of 0.
+Since we begin iterating from the root, we can just increment by 1 at each level, allowing us to easily count up.
+
+Now that we're maintaining the stack and pushing the depth to it, we have covered points 1 and 2 above.
+We're traversing it iteratively and adding the depth alongside each unvisited node.
+Now we just need to determine the maximum depth.

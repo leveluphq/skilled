@@ -1,0 +1,31 @@
+```javascript
+// O(n + m) - we add sequential operations together
+function multipleInput(input1, input2) {
+  const n = input1.length;
+  const m = input2.length;
+
+  // O(n)
+  for (let i = 0; i < n; i++) {
+    /* do something */
+  }
+
+  // O(m)
+  for (let i = 0; i < m; i++) {
+    /* do something */
+  }
+}
+
+// O(nm) - we multiply nested input
+function multipleInput(input1, input2) {
+  const n = input1.length;
+  const m = input2.length;
+
+  // O(n)
+  for (let i = 0; i < n; i++) {
+    // O(m)
+    for (let j = 0; j < m; j++) {
+      /* do something */
+    }
+  }
+}
+```

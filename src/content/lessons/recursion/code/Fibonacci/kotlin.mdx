@@ -1,0 +1,11 @@
+```kotlin
+fun fibonacci(n: Int): Int {
+    // Base case
+    if (n < 2) {
+        return n
+    }
+
+    // Sum the two previous numbers to get the current value
+    return fibonacci(n - 1) + fibonacci(n - 2)
+}
+```

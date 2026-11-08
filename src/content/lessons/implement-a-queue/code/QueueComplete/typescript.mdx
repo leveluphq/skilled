@@ -1,0 +1,59 @@
+```typescript
+class QueueNode {
+  data: any;
+  prev: QueueNode | null;
+
+  constructor(data: any) {
+    this.data = data;
+    this.prev = null;
+  }
+}
+
+class Queue {
+  first: QueueNode | null;
+  last: QueueNode | null;
+
+  constructor() {
+    this.first = null;
+    this.last = null;
+  }
+
+  // Get the first item
+  peek(): QueueNode | null {
+    return this.first;
+  }
+
+  // Add a new last item
+  enqueue(item: any): QueueNode {
+    const newLastNode = new QueueNode(item);
+    const isEmptyList = !this.first && !this.last;
+
+    if (isEmptyList) {
+      this.first = newLastNode;
+      this.last = newLastNode;
+    } else {
+      this.last!.prev = newLastNode;
+      this.last = newLastNode;
+    }
+
+    return newLastNode;
+  }
+
+  // Remove the first item
+  dequeue(): QueueNode | null {
+    const removedItem = this.first;
+
+    if (!removedItem) {
+      return null;
+    }
+
+    if (this.first === this.last) {
+      this.last = null;
+    }
+
+    this.first = removedItem.prev;
+
+    return removedItem;
+  }
+}
+```

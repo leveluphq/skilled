@@ -1,0 +1,51 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Big O describes how an algorithm's resource use grows as its input grows. It gives you a way to compare approaches before measuring one particular machine. The recording moves from that intuition to a repeatable analysis process: identify the work, choose a case, remove constant factors, and retain every independent input dimension.
+
+## Count operations under a stated model
+
+A loop over n values performs linear work when each iteration does bounded work. Two full nested loops over the same n values perform quadratic work. Two separate loops add to a linear total. Nesting alone is not enough to determine a bound: a pointer that only advances across the input can limit total inner-loop work even when the code contains multiple loops.
+
+Also inspect called operations. Taking a slice copies elements. Looking up a known array index and searching for a value are different costs. An operation that looks like one line can dominate the surrounding loop. The recording's corrected slicing example illustrates why counting lines is an unreliable substitute for counting work.
+
+## Name the case and the input dimensions
+
+Worst-case analysis asks for a bound over every permitted input of a given size. Average-case analysis needs assumptions about a distribution. Amortized analysis spreads occasional expensive operations over a sequence. These descriptions answer different questions, so say which one supports your estimate.
+
+If one loop scans a values and another scans b values, the bound is O(a + b). If each of the a values is compared with every b value, it becomes O(a × b). Replacing both dimensions with n can hide an assumption that the inputs grow together. State whether string comparisons, integer arithmetic, or map operations are being treated as bounded work.
+
+## Separate auxiliary space from the answer
+
+A result array of n values occupies linear space even when the algorithm needs only a few counters beyond it. Recursive calls also consume stack frames. Discuss peak live storage rather than adding every allocation ever made. Input mutation may save allocation while changing the API's behavior.
+
+Use the [complexity practice tool](/tools/complexity-practice) to explain a cost before checking the answer. The [Big O visualizer](/tools/big-o) compares modeled growth curves; its numbers describe the model, not elapsed-time benchmarks for your computer.
+
+## Analyze a result that grows quadratically
+
+The example returns every nonempty suffix of its input. For `[2, 5, 9]`, the result is `[[2, 5, 9], [5, 9], [9]]`. The outer loop runs three times, but each iteration copies a different number of values. For n inputs, the number of copied values is n + (n − 1) + ... + 1, or n(n + 1)/2.
+
+That sum gives O(n²) time and O(n²) returned storage. Counting only the outer loop would miss the copy inside it. Calling the result “constant auxiliary memory” without discussing the returned arrays would also hide almost all the allocation. State explicitly whether your analysis includes output space.
+
+## Separate an abstract bound from a measurement
+
+The implementation creates independent suffix arrays, rather than views into one backing buffer. That choice makes later mutation of a result less surprising, but it is part of the cost. A view-based design would have a different ownership contract and could retain the original buffer.
+
+Try inputs of length zero, one, and four. At length four, ten elements appear across the returned suffixes. Doubling n approaches four times the number of copies as n grows. Actual elapsed time also includes allocation, compilation, and runtime effects, so a single stopwatch result cannot prove a complexity class. Use the operation count to justify the bound, then measure when choosing between implementations with the same growth rate.
+
+## Rust example and implementation choices
+
+to_vec clones each borrowed suffix into an owned `Vec<i32>`, and collect builds the outer vector. Because i32 is Copy, this is a direct element copy with no nested ownership to explain. Borrowing slices instead would require tying the result's lifetime to the input and would return a different type. The current owned result can outlive the original input vector.
+
+### Worked example
+
+```rust
+fn suffix_copies(values: &[i32]) -> Vec<Vec<i32>> {
+    (0..values.len()).map(|index| values[index..].to_vec()).collect()
+}
+```
+
+## Continue in Rust
+
+[Open Big O Notation Time and Space Complexity](/course/big-o-time-and-space-complexity) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Rust example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Rust interview preparation guide](/interview-prep/rust) connects these language choices with further practice and the cross-language operation reference.

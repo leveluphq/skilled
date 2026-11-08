@@ -1,0 +1,13 @@
+```cpp
+optional<int> pop() {
+    if (length == 0) {
+        return nullopt;
+    }
+
+    int poppedItem = data[length - 1];
+    data.erase(length - 1);
+    length--;
+
+    return poppedItem;
+}
+```

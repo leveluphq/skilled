@@ -1,0 +1,51 @@
+Practice complexity analysis by counting work before choosing a growth class. The eight questions ask about triangular loops, doubling counters, sequential passes, array-backed queue removal, graph edges, recursive depth, memoized states, and materialized permutations.
+
+Each prompt includes the assumptions needed for its answer. After choosing, read the explanation and connect it to a course problem or visualizer. The session records your latest checked answer per prompt. It does not estimate interview readiness, general algorithm knowledge, or how efficiently your own code runs.
+
+## Define the input size and counted operation
+
+A bound needs a variable with a concrete meaning. For an array, n may count entries. For a graph, V counts vertices and E counts adjacency entries or edges under a stated representation. For a numeric algorithm, the value of an integer and the length of its binary representation are different input measures.
+
+Then name the operation being counted. A comparison model can treat a numeric comparison as constant work within a fixed-width domain. Arbitrary-precision multiplication can become more expensive as values grow. An operation-count exercise should state its model rather than silently turn a classroom count into a universal runtime claim.
+
+The [Big O explorer](/tools/big-o) compares mathematical growth functions. This practice tool asks you to connect such a function to a concrete execution. Neither claims to infer complexity from arbitrary pasted source code.
+
+## Add sequential work and sum varying loop lengths
+
+Two n-entry scans perform about 2n body operations, so their total is linear. Nesting changes the analysis, but “two loops” alone is not a bound. A nested loop may have constant, logarithmic, linear, or varying inner work.
+
+When the inner loop runs i times on outer iteration i, sum the counts: zero through n − 1 totals n(n − 1)/2. The leading quadratic term determines the asymptotic class. A small trace can reveal that sum; the algebra explains why it persists as n grows.
+
+For a counter that doubles each iteration, solve for the number of doublings needed to reach n. After k steps the counter is 2 to the power k, so k is logarithmic in n. Exponential growth of the counter does not make the number of loop iterations exponential.
+
+## Expand collection operations when they move data
+
+A single method call can conceal work proportional to collection size. Removing the first array entry by moving all later entries left can cost linear work. Repeating that removal across a wide BFS frontier can accumulate quadratic movement.
+
+A head-index queue changes the representation so advancing the logical front does not move every remaining item. Occasional compaction needs its own accounting. The [JavaScript queue guide](/guides/javascript-queue) explains both retained storage and amortized work.
+
+Similarly, a slice inside every recursive call may copy a growing amount of data. A sort inside a loop may dominate a constant-time map operation nearby. Expand the operation that depends on input size before counting only the visible loop headers.
+
+## Separate total execution from peak retained state
+
+A recursive algorithm can make exponentially many calls over its lifetime while retaining only a linear-depth active stack. Time counts all calls and their work. Stack space counts the maximum number of simultaneously active frames.
+
+A skewed binary tree can have height n, so recursive traversal needs linear worst-case stack space. A logarithmic claim needs a balance assumption. Memoization can reduce repeated computation while leaving the initial deep chain in place.
+
+Required output also needs a clear convention. Product except self can use an n-entry output and constant additional scalar state. Report O(n) total output storage and O(1) auxiliary space excluding that output. Both statements can be accurate when their accounting boundaries are explicit.
+
+## Count distinct states and transition work
+
+For a memoized recurrence, ask how many different states can occur and how much work each one performs beyond its recursive dependencies. O(n) states with two constant-cost transitions each imply linear computation under the stated arithmetic model.
+
+A different recurrence may have O(n²) states or scan O(n) choices per state. Calling something “dynamic programming” does not supply its complexity. The state definition and transition loops do.
+
+The [dynamic-programming visualizer](/tools/dynamic-programming) makes this distinction visible with stored answers and cache hits. The [recursion visualizer](/tools/recursion-call-stack) shows why cached recursion still retains active frames.
+
+## Account for results that must be written
+
+Producing every permutation of n distinct values means writing n! separate arrangements. If each arrangement is materialized as an n-entry array, the output alone contains n times n! entries. No implementation can fully write that result in linear or merely factorial element-write work.
+
+A generator can reduce simultaneously retained output if its consumer processes results one at a time. It still performs work to produce every requested arrangement. Explain what the caller receives, what stays resident, and whether output copying is included.
+
+After the quiz, choose one implementation from [the course](/course), write its input variables and cost model, and derive its bound without looking at the answer. Use a small independent operation counter to test the derivation on several sizes. Agreement is useful evidence; the invariant and sum provide the general argument.

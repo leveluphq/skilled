@@ -1,0 +1,97 @@
+import { Section } from 'style/elements/lesson';
+import BigO from 'content/blocks/BigO';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import ArrayShell from './code/ArrayShell';
+import Get from './code/Get';
+import Push from './code/Push';
+import Pop from './code/Pop';
+import Insert from './code/Insert';
+import Remove from './code/Remove';
+import ArrayComplete from './code/ArrayComplete';
+
+<Section>
+
+We will implement an array using an object, and it will have the methods `get`, `push`, `pop`, `insert`, and `remove`.
+We will also need to track the `length` of the array. Calling `get`, `push`, `pop`, and `length` should all
+take <BigO.constant /> time, and `insert`/`remove` will take <BigO.n /> time.
+
+The reason `insert` and `remove` require <BigO.n /> time is that we need to shift the items to re-index them to their new spot in the array.
+
+Visually, what we're creating is:
+
+<ArrayShell />
+
+In the constructor, we initialize our `length` to 0 and the array's `data` to an empty hash table.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>get(index)</SubsectionHeader>
+
+This will be the most simple method in our object. Since we are storing the array in a hash table with the index as the key, we will just return the value set for that index.
+
+<Get />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>push(item)</SubsectionHeader>
+
+When we `push` an item to our array, we want to add this item after the last index. Since arrays are 0-based indexing, the current `length` will also be the new index which we are pushing onto.
+After adding the item, we need to increment our new `length`, and the function will return the new `length` of the array.
+
+<Push />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>pop()</SubsectionHeader>
+
+The `pop` method removes the last item from the array and returns it from the method.
+The last item will correspond to `length - 1`, so we will delete at that index, decrement our `length`, and then return the item.
+
+<Pop />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>insert(index, item)</SubsectionHeader>
+
+When we insert an item at an index, we change the index for all the items that come after it.
+This requires using a loop to update the index for each item individually which takes linear <BigO.n /> time.
+
+Notice that we start at the end of the array since this is where the empty spot is with the length increase.
+We increment inward until we have shifted all items from the end to the index.
+Now the new item can be added at that index.
+
+<Insert />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>remove(index)</SubsectionHeader>
+
+When we delete an item at an index, we again change the index for all the items that come after it.
+This requires using a loop to update the index for each item individually which takes linear <BigO.n /> time.
+
+This time we start at the item we're removing and replace the current value with the one that comes after.
+Once we reach the end of the array, we delete the last item since our length has shrunk by 1 and that item was moved inward.
+
+<Remove />
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Complete Array Implementation</SubsectionHeader>
+
+You can use the <a href="https://repl.it/@TreyHuffine/Arrays-Implement-JavaScript" target="_blank" rel="noopener noreferrer">implementation in a REPL</a> or see the completed code below:
+
+<ArrayComplete />
+
+</Section>

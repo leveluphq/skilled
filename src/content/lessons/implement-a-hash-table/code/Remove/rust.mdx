@@ -1,0 +1,19 @@
+```rust
+fn remove(&mut self, key: &str) -> Option<i32> {
+    let index = self.hash(key);
+
+    // Find the key in the bucket, delete the key-value pair, and return its value
+    if let Some(bucket) = &mut self.table[index] {
+        for i in 0..bucket.len() {
+            if bucket[i].0 == key {
+                let (_, value) = bucket.remove(i);
+
+                return Some(value);
+            }
+        }
+    }
+
+    // Return None if the key didn't exist
+    None
+}
+```

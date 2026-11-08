@@ -1,0 +1,22 @@
+import Image from 'content/blocks/Image';
+import Null from 'content/blocks/Null';
+
+We've seen how to iterate through a single linked list.
+We use a `while` loop and the pointer continues to move to the `next` node until it reaches <Null />.
+
+With two linked lists, we want to iterate until either one of the lists reaches <Null />.
+Why is that?
+
+Once we have depleted one list by using all of its nodes, we know that the other list must have remaining nodes since it hasn't reached <Null />.
+With one list remaining, there are no more comparisons to be done. Since the remaining list is already in order, we can simply attach it to the end of our combined list.
+
+<Image src="/images/combine-remaining-nodes.png" alt="Once one input chain is exhausted, attach the remaining nodes of the other chain to the merged list." width={1614} height={576} />
+
+During the `while` loop iteration, we will compare the timestamp of the pointers for the current smallest item from our input lists.
+Whichever is smaller, we will append that node to our combined list.
+If they are the same, it doesn't matter which we add.
+Then we will move the pointer of the input list we just used forward to its `next`, and we'll move the combined list tail pointer to its `next` so it is at the new tail.
+We are then ready to repeat these steps again for the next node comparison until one list reaches the end.
+
+Once the loop is complete and after we attach the nodes of the remaining list, it will be fully merged.
+We can return the head node pointer we created at the beginning which corresponds to the start of the combined sorted linked list.

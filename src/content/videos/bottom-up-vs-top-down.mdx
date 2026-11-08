@@ -1,0 +1,19 @@
+Top-down and bottom-up dynamic programming can evaluate the same recurrence in different orders. A top-down solution starts with the requested state and recursively requests dependencies, caching completed answers. A bottom-up solution chooses an order in which those dependencies are already available. The recording compares both approaches with factorial and Fibonacci.
+
+## Keep the recurrence unchanged while changing order
+
+Fibonacci of n depends on the two preceding values. A top-down implementation begins at n and descends until it reaches the base cases. A bottom-up implementation begins with zero and one, then computes increasing indexes. Both must agree on Fibonacci of zero; the scalar-returning version in the original course returns n when n is below two. A function returning the entire table instead returns a one-element table for zero.
+
+Write the meaning of a table entry before writing the loop. If an entry stores the answer for index i, its dependencies must already contain the answers the recurrence needs. In other problems, increasing numeric order may be wrong. The appropriate order follows the dependency graph, not a general rule that loops always count upward.
+
+## Compare reachable work and stack depth
+
+Top-down evaluation can avoid states that the requested result never reaches. It also retains recursive frames and can encounter a depth limit. Bottom-up evaluation makes the order explicit and often avoids that stack, but a rectangular table may compute unused states. Neither form fixes a recurrence that combines the wrong choices.
+
+Tail-call optimization does not generally remove top-down dynamic programming's storage costs. Fibonacci combines results after child calls return, and cached answers still occupy memory. If a solution depends on a runtime optimization, verify that the language, runtime, and call position actually support it before using it in the space analysis.
+
+## Reduce storage only after understanding dependencies
+
+For Fibonacci, the next value needs only the preceding two. A bottom-up loop can retain those values instead of the full table. Other recurrences may need a larger window, a complete row, or reconstruction information. Removing the table can make it impossible to recover the chosen solution even when the optimum value is still available.
+
+Use the [dynamic programming tool](/tools/dynamic-programming) to inspect state updates. Then compare [Three Moves](/watch/three-moves), which sums ways to reach a position, with [Steal Packages](/watch/steal-packages), which chooses the best legal value. Explain the dependency order before attempting a rolling-state optimization.

@@ -1,0 +1,25 @@
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+import OrderedIntegers from './code/OrderedIntegers';
+
+Typically with binary search, we have an array of ordered integers:
+
+<OrderedIntegers />
+
+To find a value in an ordered array of integers, we use binary search where go to a midpoint and determine if the item we want is smaller or larger than this midpoint value.
+By moving to the midpoint each time, we are able to eliminate half of the items in each step which means it operates in <BigO.logn /> time which is a great time complexity and much faster than <BigO.n />.
+
+We can treat the data for this question in the exact same manner.
+However, instead of being ordered as increasing numbers, its order is based on working and broken versions.
+
+To search this array, we find a midpoint in the same manner.
+If the item at the midpoint is working, we move right.
+If the item at the midpoint is broken, we move left.
+So each time we bring either the lower bound up or upper bound down.
+
+Once we reach the final item, we know it will be the first bad version.
+Let's visualize this:
+
+<Image src="/images/first-bad-version-binary-search.gif" alt="Binary search narrows the boundary between good and bad versions until the first bad version is located." width={1325} height={596} />
+
+With that logic, we can code the optimal solution.

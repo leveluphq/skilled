@@ -1,0 +1,9 @@
+```go
+func preOrderTraversal(node *BinaryTreeNode) {
+	if node != nil {
+		visitNode(node)
+		preOrderTraversal(node.Left)
+		preOrderTraversal(node.Right)
+	}
+}
+```

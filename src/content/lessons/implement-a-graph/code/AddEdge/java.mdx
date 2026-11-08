@@ -1,0 +1,9 @@
+```java
+public void addEdge(String source, String destination) {
+    adjacencyList.get(source).add(destination);
+
+    if (undirected) {
+        adjacencyList.get(destination).add(source);
+    }
+}
+```

@@ -1,0 +1,21 @@
+```rust
+use std::collections::VecDeque;
+
+fn bfs_order(graph: &[Vec<i32>], start: i32) -> Vec<i32> {
+    if start < 0 || start as usize >= graph.len() { return Vec::new(); }
+    let mut queue = VecDeque::from([start]);
+    let mut visited = vec![false; graph.len()];
+    let mut output = Vec::new();
+    visited[start as usize] = true;
+    while let Some(node) = queue.pop_front() {
+        output.push(node);
+        for &neighbor in &graph[node as usize] {
+            if !visited[neighbor as usize] {
+                visited[neighbor as usize] = true;
+                queue.push_back(neighbor);
+            }
+        }
+    }
+    output
+}
+```

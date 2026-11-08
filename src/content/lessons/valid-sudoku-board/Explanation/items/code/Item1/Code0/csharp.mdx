@@ -1,0 +1,19 @@
+```csharp
+private bool HasValidShape(int[][] board) {
+    // If we don't have any rows or columns, it must be false
+    if (board.Length == 0 || board[0].Length == 0) {
+        return false;
+    }
+
+    // # of rows and columns must be equal to be a square
+    int rowCount = board.Length;
+    int columnCount = board[0].Length;
+    bool isSquare = rowCount == columnCount;
+
+    if (!isSquare) {
+        return false;
+    }
+
+    // ... the sub-squares are checked next
+}
+```

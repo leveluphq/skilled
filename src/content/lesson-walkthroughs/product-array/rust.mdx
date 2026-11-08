@@ -1,0 +1,80 @@
+Product Array returns, for each position, the product of all other input values without division. `[2, 3, 4]` should produce `[12, 8, 6]`. The course's Rust signature consumes a Vec of i64 values and returns another Vec of i64 values.
+
+The output can hold each left-side product while a scalar later supplies the right-side product. This uses constant extra scalar state beyond the returned vector. We assume every running and final product fits in i64; overflow behavior is not a substitute for an exact arithmetic contract.
+
+## Store prefixes in the result vector
+
+At index i, prefix contains values strictly before i. Assign it before multiplying by nums[i]. The reverse pass uses the same ordering for values strictly after i, ensuring each output excludes its own position.
+
+```rust
+impl Solution {
+    pub fn build_product_array(nums: Vec<i64>) -> Vec<i64> {
+        let mut results = vec![1_i64; nums.len()];
+        let mut prefix = 1_i64;
+        for i in 0..nums.len() {
+            results[i] = prefix;
+            prefix *= nums[i];
+        }
+
+        let mut suffix = 1_i64;
+        for i in (0..nums.len()).rev() {
+            results[i] *= suffix;
+            suffix *= nums[i];
+        }
+        results
+    }
+}
+```
+
+The course supplies Solution. For a standalone program, declare `struct Solution;` before the impl and call the example helper from main. Keeping this type context clear avoids adding a duplicate declaration when pasting the method into the course starter.
+
+## Reverse a range that is already empty-safe
+
+The range `0..nums.len()` excludes the upper boundary and is empty when the vector is empty. Reversing it preserves those valid positions and visits index zero last. There is no unsigned subtraction from an empty length.
+
+A hand-written start of `nums.len() - 1` would underflow for empty input. The iterator-based range avoids that case rather than depending on a separate early return. Each index is also valid for results because the two vectors have the same length.
+
+A singleton yields `[1]`, following the empty-product convention: there are no values on either side, and each side contributes multiplication identity one. Empty input returns an empty vector.
+
+## Understand the owned input and the fresh output
+
+The input Vec moves into the function because that is the starter's signature. The implementation borrows its entries through indexing and never overwrites them. It does not clone the input or consume it with into_iter, so the second pass can still read the original values.
+
+The result is a separate allocation initialized with scalar i64 values. Repeating a Copy scalar does not introduce shared mutable state between positions. A different element type with shared reference ownership would require separate reasoning about cloning and aliasing.
+
+For a reusable library API, accepting `&[i64]` would let a caller retain its vector without cloning. That would change the interface, not the two-pass algorithm. The owned course version makes its ownership transfer explicit and returns ownership of the answer to the caller.
+
+## Trace prefixes, suffixes, and zeros
+
+For `[2, 3, 4]`, the first pass writes `[1, 2, 6]`. The backward scalar begins at one. The last answer stays six, then suffix becomes four, making the middle answer eight. Including three makes suffix twelve, which supplies the first answer.
+
+For `[2, 0, 4]`, only the zero's own position excludes it, producing `[0, 8, 0]`. With two zeros, every answer includes at least one zero. No division or special zero-count case is required.
+
+Negative values work through normal multiplication: `[-2, 3, -4]` becomes `[-12, 8, -6]`. These small cases expose update-order and initialization mistakes more clearly than a long positive-only example.
+
+## Run examples with explicit owned arguments
+
+```rust
+fn check_examples() {
+    let cases = [
+        (vec![], vec![]), (vec![7], vec![1]),
+        (vec![2, 3, 4], vec![12, 8, 6]),
+        (vec![2, 0, 4], vec![0, 8, 0]),
+        (vec![0, 3, 0], vec![0, 0, 0]),
+        (vec![-2, 3, -4], vec![-12, 8, -6]),
+    ];
+    for (input, expected) in cases {
+        assert_eq!(Solution::build_product_array(input), expected);
+    }
+}
+```
+
+The loop moves each input into the function and then compares the returned vector's contents. If a test needs to reuse an input for an independent oracle, clone it before the call; that test allocation is not part of the function's working-space bound.
+
+## State overflow assumptions separately from ownership
+
+Every running prefix, suffix, and output must fit in i64. Debug overflow checks may panic while other compilation settings can behave differently, so do not rely on a particular unchecked build's result. Checked multiplication can explicitly reject overflow; arbitrary exact products need a different numeric type.
+
+The [integer checked-arithmetic API](https://doc.rust-lang.org/std/primitive.i64.html#method.checked_mul) describes an Option-returning way to detect an invalid product. A checked version must still consider the full running products computed after the final useful result update.
+
+Within the fixed-width contract, time is `O(n)` arithmetic operations and extra scalar state is constant beyond the `O(n)` output. Before practicing, explain why the input remains available for both passes and why reversing a half-open range handles empty input safely.

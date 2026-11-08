@@ -1,0 +1,16 @@
+```python
+def get(self, key):
+    index = self.hash(key)
+    bucket = self.table[index]
+
+    if len(bucket) > 0:
+        for i in range(len(bucket)):
+            k = bucket[i]["key"]
+
+            if k == key:
+                return bucket[i]["value"]
+
+        return None
+
+    return None
+```

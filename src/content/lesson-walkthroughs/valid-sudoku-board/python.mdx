@@ -1,0 +1,132 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Check whether the filled entries of a Sudoku board violate any row, column, or subsquare rule. Zero denotes an empty cell and does not count as a placed digit. The board must be square with side length N whose square root is an integer, such as 1, 4, or 9. This validates existing entries; it does not solve the board or prove that a completion exists.
+
+## Validate the supported shape first
+
+An empty board or empty first row is invalid. The row count must equal the column count, and the square root of that size must be a whole number. For a nine-by-nine board, each subsquare is three by three. For a four-by-four board, it is two by two. A two-by-two board has no integral subsquare side under this contract.
+
+The course inputs are rectangular and use values from zero through N. A reusable validator accepting arbitrary external data should additionally check every row length and every cell's type and range. Shape shortcuts based on the first row alone are safe only under the rectangular-input promise. Keep those validation boundaries visible when adapting the implementation.
+
+## Track three kinds of membership
+
+Allocate one seen collection per row, one per column, and one per subsquare. Scan the cells. Skip zeros. For a filled value, check the collections for its row, column, and subsquare. If any already contains that value, the board is invalid. Otherwise record it in all three.
+
+For subsquare side s, cell `(r, c)` belongs to subsquare coordinates `(floor(r / s), floor(c / s))`. A one-dimensional tracker can flatten those coordinates into `floor(r / s) * s + floor(c / s)`. The division groups adjacent rows and columns into blocks; using the remainder would group positions within blocks instead.
+
+## Trace violations independently
+
+On a four-by-four board, values at `(0, 0)` and `(0, 3)` share a row but lie in different subsquares. Equal filled values there must fail the row check. Values at `(0, 0)` and `(3, 0)` instead test the column rule. Values at `(0, 0)` and `(1, 1)` share only the upper-left subsquare and test the block rule.
+
+Those three cases prevent an implementation from passing merely because its example happened to contain a duplicate that violated several rules at once. Repeated zeros should remain valid, since empty cells can occur many times in a row, column, or block.
+
+## Prove the scan's result
+
+Before visiting a cell, each tracker contains exactly the filled values already encountered in its corresponding region. A duplicate lookup therefore detects a real rule violation. Recording a previously absent value preserves that invariant. If the scan finishes without a duplicate, no region contains two equal placed values.
+
+This is a local consistency check. A board can satisfy all these constraints and still be impossible to finish because its remaining candidates conflict. Solvability requires a search or a stronger constraint solver. Returning true here promises only that the currently filled entries obey the tested rules.
+
+## Count storage and test generalized sizes
+
+The scan visits N² cells, with expected constant-time membership operations, for O(N²) time. Trackers may retain O(N²) entries in total. A fixed nine-by-nine puzzle makes the dimensions constant, but the generalized N-based bound explains the implementation's scaling. The board is read without changing its cells.
+
+Test a valid incomplete board, a filled valid board, each isolated duplicate type, all zeros, one-by-one input, valid four-by-four input, and invalid shape sizes. Compare with an independent oracle that extracts each complete row, column, and subsquare, filters zeros, and compares its length with its distinct-value count. If broader input validation is required, add ragged rows and out-of-range values with explicit expected failures.
+
+## Python implementation
+
+The region dictionaries are independent. Their counts ignore zeros and reject the second occurrence of any filled value in a region.
+
+Python entries use the function or class API shown in the lesson starter. Lists and dictionaries are mutable, and assignment shares those objects. Integer arithmetic has arbitrary precision, although the course input and output schema still has bounded integer types. Recursive solutions use Python call frames; an iterative rewrite is appropriate when input depth can exceed the interpreter's recursion limit.
+
+```python
+import math
+
+def is_valid_sudoku_board(board):
+    # Exit early if the board does not have a valid shape
+    if not has_valid_shape(board):
+        return False
+
+    return has_valid_cells(board)
+
+# The function to check for a valid shape is all constant time and space O(1)
+def has_valid_shape(board):
+    # We have an empty board, it is automatically invalid
+    if len(board) == 0 or len(board[0]) == 0:
+        return False
+
+    row_count = len(board)
+    column_count = len(board[0])
+    is_square = row_count == column_count
+
+    # The board is not a square, so we know it is invalid
+    if not is_square:
+        return False
+
+    # For a board to be composed of sub-squares,
+    # the square root of `k` must be a whole number
+    has_subsquares = math.sqrt(row_count) % 1 == 0
+    if not has_subsquares:
+        return False
+
+    # All conditions are met, so it is a valid shape
+    return True
+
+# Helper function to init our array of objects.
+def array_of_objects(size):
+    return [{} for _ in range(size)]
+
+def nested_array_of_objects(size):
+    return [array_of_objects(size) for _ in range(size)]
+
+def has_valid_cells(board):
+    # Get the dimensions of the board and sub-squares
+    size_of_board = len(board)
+    size_of_subsquare = math.sqrt(size_of_board)
+
+    # Create our one-dimensional array of hash tables for rows and columns
+    rows = array_of_objects(size_of_board)
+    columns = array_of_objects(size_of_board)
+
+    # Create a two-dimensional array of hash tables
+    # where there is a separate hash table for each sub-square
+    subsquares = nested_array_of_objects(int(size_of_subsquare))
+
+    for row in range(size_of_board):
+        for col in range(size_of_board):
+            cell_value = board[row][col]
+
+            # If we have a value, we need to add it to our hash tables
+            # and return false if a value already existed.
+            if cell_value > 0:
+                # Since the sub-square tracker is a 2D jxj array,
+                # we need to normalize the coordinates by j
+                subsquare_row = math.floor(row / size_of_subsquare)
+                subsquare_col = math.floor(col / size_of_subsquare)
+
+                # Initialize and/or increment the cell value for the corresponding row, column, sub-square
+                # rows and columns are a 1-D array where we look for the cell_value in a hash table
+
+                rows[row][cell_value] = (rows[row].get(cell_value) or 0) + 1
+                columns[col][cell_value] = (columns[col].get(cell_value) or 0) + 1
+
+                # subsquares is a 2-D matrix
+                subsquares[subsquare_row][subsquare_col][cell_value] = (subsquares[subsquare_row][subsquare_col].get(cell_value) or 0) + 1
+
+                # If the value is greater than 1, we have already seen this in the hash table
+                has_row_duplicate = rows[row][cell_value] > 1
+                has_column_duplicate = columns[col][cell_value] > 1
+                has_subsquare_duplicate = subsquares[subsquare_row][subsquare_col][cell_value] > 1
+
+                # Return if there are any duplicates
+                if (has_row_duplicate or has_column_duplicate or has_subsquare_duplicate):
+                    return False
+
+    # We iterated to the end and didn't find any duplicates
+    return True
+```
+
+## Practice this implementation
+
+[Open Valid Sudoku Board](/course/valid-sudoku-board) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Python conventions and practice problems, use the [Python interview guide](/interview-prep/python).

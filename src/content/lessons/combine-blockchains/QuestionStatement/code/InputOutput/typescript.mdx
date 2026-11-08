@@ -1,0 +1,23 @@
+```javascript
+class ListNode {
+  data: number; // the unix timestamp of when the block was added
+  next: ListNode;
+
+  constructor(data) {
+    this.data = data;
+    this.next = null;
+  }
+}
+
+// Input
+const skilledChainHead = new ListNode(42);
+skilledChainHead.next = new ListNode(159);
+// many more additions to each...
+
+const devCoinHead = new ListNode(123);
+devCoinHead.next = new ListNode(482);
+// many more additions to each...
+
+// Output: combineBlockchains(skilledChainHead, devCoinHead)
+42 -> 123 -> 159 -> 482 // ... and so on
+```

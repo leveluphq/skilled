@@ -1,0 +1,6 @@
+```swift
+func hiddenQuadratic(_ input: [Int]) {
+    // input[i...] is a view of the array, but Array(...) copies it, which is O(n)
+    input.indices.forEach { i in print(Array(input[i...])) }
+}
+```

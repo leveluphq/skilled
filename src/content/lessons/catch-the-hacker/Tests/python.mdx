@@ -1,0 +1,111 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "handles valid input"
+        input = [
+                'hey@skilled.dev',
+                'a@b.test',
+                'hey@skilled.dev',
+                'hey@skilled.dev',
+                'a@b.test',
+                'c@d.test',
+                'c@d.test',
+                ]
+        self.actual_result = find_hacker_email(input)
+        self.expected_result = 'hey@skilled.dev'
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_2(self):
+        self.description = "the hacker is the last email in the list"
+        input = [
+                'a@b.test',
+                'c@d.test',
+                'c@d.test',
+                'hey@skilled.dev',
+                'hey@skilled.dev',
+                'hey@skilled.dev',
+                ]
+        self.actual_result = find_hacker_email(input)
+        self.expected_result = 'hey@skilled.dev'
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_3(self):
+        self.description = "only one email"
+        input = [
+                'solo@skilled.dev',
+                ]
+        self.actual_result = find_hacker_email(input)
+        self.expected_result = 'solo@skilled.dev'
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "the hacker is first and their copies are spread out"
+        input = [
+                'hey@skilled.dev',
+                'a@b.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                'a@b.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                ]
+        self.actual_result = find_hacker_email(input)
+        self.expected_result = 'hey@skilled.dev'
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_5(self):
+        self.description = "the hacker has only one more copy than the others"
+        input = [
+                'a@b.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                'a@b.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                'a@b.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                'hey@skilled.dev',
+                ]
+        self.actual_result = find_hacker_email(input)
+        self.expected_result = 'hey@skilled.dev'
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_6(self):
+        self.description = "another email's copies are next to each other"
+        input = [
+                'a@b.test',
+                'a@b.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                'hey@skilled.dev',
+                'c@d.test',
+                'hey@skilled.dev',
+                ]
+        self.actual_result = find_hacker_email(input)
+        self.expected_result = 'hey@skilled.dev'
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

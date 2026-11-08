@@ -1,0 +1,32 @@
+```rust
+use std::collections::HashMap;
+
+impl Solution {
+    pub fn has_valid_brackets(s: String) -> bool {
+        let matching_brackets = HashMap::from([('(', ')'), ('[', ']'), ('{', '}')]);
+        // The keys are the opening brackets
+        let opening_brackets: Vec<char> = matching_brackets.keys().copied().collect();
+        // The values are the closing brackets
+        let closing_brackets: Vec<char> = matching_brackets.values().copied().collect();
+        let mut bracket_stack = Vec::new();
+
+        for character in s.chars() {
+            if opening_brackets.contains(&character) {
+                bracket_stack.push(character);
+            } else if closing_brackets.contains(&character) {
+                // There must be an opening bracket left, and this must be its closing bracket
+                let latest_bracket = bracket_stack.pop();
+                let matching_bracket =
+                    latest_bracket.and_then(|bracket| matching_brackets.get(&bracket));
+
+                if matching_bracket != Some(&character) {
+                    return false;
+                }
+            }
+        }
+
+        // check if we opened/closed all brackets which creates an empty stack.
+        bracket_stack.is_empty()
+    }
+}
+```

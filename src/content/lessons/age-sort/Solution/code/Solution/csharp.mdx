@@ -1,0 +1,25 @@
+```csharp
+public class Solution {
+    private const int MinAge = 0;
+    private const int MaxAge = 100;
+
+    public int[] SortByAge(int[] ageList) {
+        var sortedAgeList = new List<int>(ageList.Length);
+        var ageCount = new int[MaxAge + 1];
+
+        foreach (int age in ageList) {
+            ageCount[age]++;
+        }
+
+        for (int age = MinAge; age <= MaxAge; age++) {
+            int count = ageCount[age];
+
+            for (int i = 0; i < count; i++) {
+                sortedAgeList.Add(age);
+            }
+        }
+
+        return sortedAgeList.ToArray();
+    }
+}
+```

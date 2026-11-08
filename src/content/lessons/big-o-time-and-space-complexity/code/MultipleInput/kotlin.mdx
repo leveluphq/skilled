@@ -1,0 +1,31 @@
+```kotlin
+// O(n + m) - we add sequential operations together
+fun multipleInput(input1: IntArray, input2: IntArray) {
+    val n = input1.size
+    val m = input2.size
+
+    // O(n)
+    for (i in 0 until n) {
+        /* do something */
+    }
+
+    // O(m)
+    for (i in 0 until m) {
+        /* do something */
+    }
+}
+
+// O(nm) - we multiply nested input
+fun multipleInput(input1: IntArray, input2: IntArray) {
+    val n = input1.size
+    val m = input2.size
+
+    // O(n)
+    for (i in 0 until n) {
+        // O(m)
+        for (j in 0 until m) {
+            /* do something */
+        }
+    }
+}
+```

@@ -1,0 +1,20 @@
+```python
+def run(id):
+    return calculate_price(Item(id))
+
+def calculate_price(item):
+    return item.price + calculate_tax(item.price)
+
+def calculate_tax(price):
+    return price * 0.1
+
+run('id1')
+
+
+|  price * 0.1                            |
+|  item.price + calculate_tax(item.price) |
+|  calculate_price(item)                  |
+|  run('id1')                             |
+------------------------------------------
+   Call Stack
+```

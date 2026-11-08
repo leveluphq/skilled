@@ -1,0 +1,19 @@
+A hash table associates a key with a value. A hash function chooses a storage location, and the table resolves cases where different keys choose the same location. That makes it useful for frequency counts, membership checks, and finding a previously seen complement. The recording introduces the representation before the implementation lesson builds the operations.
+
+## Separate a key from its bucket
+
+Suppose two different names hash to bucket 3. Storing only a value at that index would lose the ability to distinguish the names. A chained table stores key-value pairs in the bucket and compares keys when looking up a match. The hash narrows the search; it does not prove that two keys are equal.
+
+Updating a key should replace that key's value without creating a duplicate entry. Removing one key must leave colliding neighbors intact. Missing keys also need a defined result. If a table permits storing an absent-looking value, use a membership operation when you need to distinguish that stored value from a missing entry.
+
+## Qualify the constant-time claim
+
+Expected constant-time lookup assumes a suitable hash distribution and a controlled load factor. A bucket holding every entry degenerates into a linear search. Growing a table can keep chains short, but rehashing moves existing entries and makes that particular operation more expensive. Explain the expected or amortized model instead of promising an unconditional constant worst case.
+
+String keys have a length too. Computing a hash may inspect their characters, and an equality check may compare multiple characters. Treating those costs as constant can be reasonable for bounded identifiers; name that assumption when comparing algorithms over arbitrary text.
+
+## Choose key semantics before writing the loop
+
+In JavaScript, a `Map` supports object identity keys and avoids the inherited-property behavior of an ordinary object. A dictionary intended for arbitrary string keys should handle those keys deliberately. The right representation depends on the contract, including whether two separately created objects count as the same key.
+
+Follow [Implement a Hash Table](/watch/implement-a-hash-table) to trace collisions and deletion. Then compare [Target Two Sum](/watch/target-two-sum), where the table remembers earlier indexes, with [Catch the Hacker](/watch/catch-the-hacker), where it accumulates counts. Both use a table, but they store different facts and maintain different invariants.

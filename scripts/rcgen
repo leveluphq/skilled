@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Add this to /usr/local/bin to use it globally
+
+NAME=$1
+
+mkdir "$NAME"
+
+cd "$NAME"
+
+touch index.ts
+touch "$NAME".tsx
+touch styles.ts
+touch props.ts
+
+echo "import "$NAME" from './$NAME';
+export default "$NAME";" >> index.ts
+
+echo "import styled from 'styled-components';
+
+export const Wrapper = styled.div\`\`;" >> styles.ts
+
+echo "export interface OwnProps {}
+
+export interface Props {}" >> props.ts
+
+echo "import * as React from 'react';
+import { Props } from './props';
+
+import { Wrapper } from './styles';
+
+const $NAME: React.FC<Props> = () => {
+  return <Wrapper></Wrapper>;
+};
+
+
+export default $NAME;" >> "$NAME".tsx

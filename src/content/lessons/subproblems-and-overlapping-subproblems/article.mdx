@@ -1,0 +1,101 @@
+import Link from 'next/link';
+import Image from 'content/blocks/Image';
+import { PageRoot } from 'utils/constants/routes';
+import { Section } from 'style/elements/lesson';
+import { Container } from 'style/elements';
+import SvgWrapper from 'content/blocks/SvgWrapper';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import BigO from 'content/blocks/BigO';
+
+<Section>
+
+From my experience, resources that teach dynamic programming gloss over subproblems and assume you already know them (or perhaps don't know how to teach it).
+You usually see a phrase like, "If you recognize overlapping subproblems, it's a great opportunity for dynamic programming."
+However, without understanding what a subproblem is, you can't feel confident implementing dynamic programming or possibly even recursion.
+
+### Subproblems
+
+I'll first define what a subproblem is, and then we'll walk through it step-by-step.
+**Solving subproblems means we take a function and call it multiple times with different input values.**
+**We start with the smallest value and build up to the largest (bottom-up) or recursively decrease the input from the largest value down to the smallest (top-down) until we reach the base.
+Then we combine the results of all the function calls to calculate the solution.**
+
+We previously saw that we could <Link href={`/${PageRoot.Course}/recursion`} passHref><a>recursively solve for the factorial</a></Link> for any number `n!`.
+It took the following form (ignoring the base case for now):
+
+<Container>
+
+```javascript
+factorial(n) = n * factorial(n - 1)
+```
+
+</Container>
+
+What we did was recognize a subproblem.
+To find the factorial of any number `n`, you can multiply `n * (n - 1)!`.
+And then this repeated because `(n - 1)! = (n - 1) * (n - 2)!`.
+So you need the number before the current `n` to find the solution, but then you need the number before `n - 1` to solve for that number.
+This logic continues until you reach the base case.
+
+The image below is a visual for factorial recursion.
+Each of the steps where you change the input the value to `factorial` is solving a different subproblem.
+You combine them by multiplying each current number by the result of the subproblem before it to eventually calculate `4!`.
+
+<Image src="/images/recursion-demo.gif" alt="Nested factorial calls wait for the base case, then return results as the call stack unwinds." width={600} height={241} />
+
+So to explicitly state what's happening, we can say `4! = 4 * 3!` which is `4! = 4 * 3 * 2!` which is `4! = 4 * 3 * 2 * 1`.
+
+You repeat the same logic over and over from the base case up to the `n!` you're looking for.
+The only thing that changes is the input value at each step.
+The solution for each step is returned to the function call that invoked it, and this function can then use this result to calculate the solution to its own subproblem.
+By building up the results to each subproblem, we can eventually calculate `n!` of the original function invocation.
+
+If we wanted to calculate `factorial(1000)`, we don't need to actually know what `factorial(999)` and `factorial(998)` are.
+By specifying the correct base case and recursive case, the result of all the preceding subproblems will produce the solution we need.
+
+### Overlapping Subproblems
+
+Up to this point in this article, we haven't discussed _overlapping_ subproblems, because there aren't any with the factorial function.
+They are all subproblems called with unique values.
+
+For overlapping subproblems to occur, our function will be called with the same input value multiple times.
+This most often happens when we have **more than one recursive call in a recursive function**.
+
+For example, the logic for finding a Fibonacci number is the following:
+
+<Container>
+
+```javascript
+fib(n) = fib(n - 1) + fib(n - 2)
+```
+
+</Container>
+
+We have subproblems where we can calculate the Fibonacci number for any value `n`.
+So then to calculate any given Fibonacci number, we just need the results of the Fibonacci numbers before it.
+
+We require two recursive function calls to calculate a number: `fib(n - 1)` and `fib(n - 2)`.
+So if we wanted `fib(100) = fib(99) + fib(98)`,
+both `fib(99)` and `fib(98)` would separately generate all the numbers `fib(97)` to `fib(1)`
+because <code>fib(99) = fib(98) + <strong>fib(97)</strong></code> and <code>fib(98) = <strong>fib(97)</strong> + fib(96)</code>.
+Each step generates many more function calls, and we call `fib` with repeated input values many times.
+This branches outward with each nested step continuing to do the same thing.
+
+If we look at `fib(7)`, we can see the repeated calculations:
+
+<Image src="/images/memofib.png" isVisuAlgo alt="A Fibonacci recursion tree highlights subproblem results that memoization can reuse." width={1804} height={1182} />
+
+The items highlighted in blue are repetitive functions calls that use the same input multiple times.
+These are the **overlapping subproblems**.
+When visualizing the recursive calls as a tree, the branching is a sign that we'll have subproblems that overlap.
+
+On the other hand, when calculating the factorial, we have subproblems, but we don't have overlapping subproblems.
+Every time we call `factorial`, we pass it a new value that we haven't calculated the subproblem answer for.
+So instead of creating a tree structure with branching, it simply forms a straight line.
+
+<Image src="/images/factorialstructure.png" alt="Factorial dependencies form a chain from 5 to 1, returning the products 1, 2, 6, 24, and 120." width={1324} height={396} />
+
+When we have overlapping subproblems like in the Fibonacci example, this is when we are able to use dynamic programming.
+With dynamic programming, we utilize <Link href={`/${PageRoot.Course}/memoization`} passHref><a>memoization</a></Link> to store the results of these repeated steps so that we only solve each overlapping subproblem once.
+
+</Section>

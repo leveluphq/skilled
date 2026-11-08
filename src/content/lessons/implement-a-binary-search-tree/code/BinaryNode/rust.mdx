@@ -1,0 +1,19 @@
+```rust
+// The tree owns each of its nodes, so a Box is all we need here.
+// (The tree problems use Option<Rc<RefCell<BinaryNode>>>, which lets a node be shared.)
+struct BinaryNode {
+    data: i32,
+    left: Option<Box<BinaryNode>>,
+    right: Option<Box<BinaryNode>>,
+}
+
+impl BinaryNode {
+    fn new(data: i32) -> Self {
+        BinaryNode {
+            data,
+            left: None,
+            right: None,
+        }
+    }
+}
+```

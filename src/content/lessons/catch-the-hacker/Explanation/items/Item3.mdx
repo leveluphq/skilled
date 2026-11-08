@@ -1,0 +1,12 @@
+import BigO from 'content/blocks/BigO';
+
+Sorting can be assumed to be an <BigO.nlogn /> which is immediately better than our brute force solution.
+By sorting, we would group all email addresses together that are the same.
+We could then iterate through the sorted array and count email addresses.
+When the email address sequence changes, we would compare this total to the max and then start counting the new addresses.
+This iteration would cost <BigO.n /> time complexity but is ignored since the sort complexity is larger.
+
+By sorting our list, we would get a time complexity of <BigO.nlogn /> and space complexity of <BigO.constant />.
+
+Typically we are fine with adding additional space complexity if we can improve the time complexity.
+This tradeoff happens by introducing another data structure that has faster operations than our array.

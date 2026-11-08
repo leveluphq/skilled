@@ -1,0 +1,21 @@
+```kotlin
+fun search(data: Int): BinaryNode? {
+    if (root == null) {
+        return null
+    }
+
+    var currentNode = root
+
+    while (currentNode != null) {
+        if (data < currentNode.data) {
+            currentNode = currentNode.left
+        } else if (data > currentNode.data) {
+            currentNode = currentNode.right
+        } else if (currentNode.data == data) {
+            return currentNode
+        }
+    }
+
+    return null
+}
+```

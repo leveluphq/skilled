@@ -1,0 +1,39 @@
+```javascript
+// The input is the index number, and the output will be the head node.
+const deleteNode = (head: Node, index: number): Node => {
+  // If we want to delete the current head node,
+  // we just return the node after the current head.
+  if (index === 0) {
+    return head.next;
+  }
+
+  let precedingNode = head;
+
+  // Find the node that precedes the index of the node that we want to delete
+  for (let i = 0; i < index - 1; i++) {
+    precedingNode = precedingNode.next;
+  }
+
+  // Skip past our node to be removed
+  // Equivalent to precedingNode.next = precedingNode.next.next
+  const nodeToBeRemoved = precedingNode.next;
+  precedingNode.next = nodeToBeRemoved.next;
+
+  // There are now no nodes in the linked list that are pointing to nodeToBeRemoved.
+  // The node that was before it is now pointing to the one after it.
+
+  return head;
+};
+
+let head = new Node(42);
+head.next = new Node(9000);
+head.next.next = new Node(10);
+head.next.next.next = new Node(20);
+// 42 -> 9000 -> 10 -> 20
+
+head = deleteNode(head, 2);
+// 42 -> 9000 -> 20
+
+head = deleteNode(head, 0);
+// 9000 -> 20
+```

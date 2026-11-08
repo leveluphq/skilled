@@ -1,0 +1,102 @@
+{/* Composed by contentgen:walkthroughs. Edit curriculum sources. */}
+
+Keep only strings whose characters can be rearranged into a palindrome, then group the retained strings by their character multiset. For `['naa', 'aan', 'todo', 'doto', 'code']`, only `naa` and `aan` qualify, so return one group containing those two strings. This task combines a palindrome-permutation filter with an anagram grouping step.
+
+## Test character-count parity
+
+A palindrome pairs equal characters around its center. Every character count must therefore be even, except that one character may have an odd count and occupy the center. Count each character and then count how many character frequencies are odd. The string qualifies exactly when that number is at most one.
+
+For `naa`, a appears twice and n appears once, so it qualifies. For `todo`, o appears twice while t and d each appear once. Two odd counts cannot share one center, so it fails. The original character order is irrelevant to this test; the question asks whether some rearrangement is a palindrome.
+
+## Group qualifying anagrams
+
+Sort a qualifying string's characters to form a canonical key. Any two strings with the same character multiset produce the same sorted key, and different multisets produce different keys. Append the original string to the group stored under that key. Return the groups after processing every input string.
+
+Both `naa` and `aan` produce key `aan`. A qualifying string such as `bob` produces a different key and belongs to another group. Keep the original strings in the output rather than their sorted keys. The keys are an internal lookup representation, not the requested answer.
+
+## Keep filtering separate from grouping
+
+Ordinary anagram grouping would retain `todo` and `doto` together. This lesson must exclude that entire group because neither can form a palindrome. Grouping first and forgetting the parity condition passes many familiar anagram examples while answering the wrong problem.
+
+An empty string has no odd counts and qualifies. A one-character string has one odd count and also qualifies. Duplicate input strings remain duplicate entries in their output group. The course comparator ignores group order and order within groups, but it still checks values and multiplicities. Replacing each group with a set would discard required occurrences.
+
+## Explain correctness through the key
+
+The parity test is necessary because all noncentral positions come in equal pairs. It is sufficient because even counts can be divided equally between the two sides, with the optional odd character placed in the center. Thus the filter retains exactly the eligible strings.
+
+For retained strings, equal sorted keys mean equal counts for every character, which is exactly the anagram relation. Appending each retained occurrence once preserves the input multiplicities. The result therefore partitions precisely the eligible input occurrences into the requested groups, without requiring an expensive generation of their possible palindromes.
+
+## Costs, text assumptions, and checks
+
+For n strings of length at most c, parity counting costs O(nc), and sorting keys costs O(nc log c). Stored keys and grouped text require space proportional to the retained input and distinct keys. A fixed alphabet can use a count-vector key in O(c) per string, but its serialization must distinguish counts unambiguously.
+
+The course uses lowercase alphanumeric text. General Unicode requires a defined unit and normalization policy before counting or sorting; byte order and displayed characters are different concepts. Test zero, one, and two odd counts, empty input, empty strings, duplicate strings, several eligible anagram groups, and ineligible anagrams. An independent oracle can compare frequency maps directly and use the parity rule without copying the implementation's sorted-key construction.
+
+## Java implementation
+
+`computeIfAbsent` creates one list per sorted key. The parity helper uses character counts before each eligible string joins its group.
+
+The course runner supplies standard `java.util` imports and calls the public methods on the class shown here. Keep helper methods inside that class. Java arrays and node objects are references, so changing an element or field can change the caller's data. The `int` arithmetic in the implementation is bounded; widen intermediate expressions when adapting it beyond the lesson constraints.
+
+```java
+class Solution {
+    public String[][] groupPermutationsOfPalindromes(String[] strings) {
+        Map<String, List<String>> permutationsOfPalindromes = new HashMap<>();
+
+        // Iterate through all O(n) strings in our array
+        for (String string : strings) {
+            // Check if each string is a palindrome O(c)
+            if (isPermutationOfPalindrome(string)) {
+                // Sort our string's order O(c log c)
+                // Permutations will sort to the same string
+                char[] characters = string.toCharArray();
+                Arrays.sort(characters);
+                String sortedString = new String(characters);
+
+                // Initialize the key to a list if we
+                // haven't seen any of the string's permutations yet
+                permutationsOfPalindromes.computeIfAbsent(sortedString, key -> new ArrayList<>()).add(string);
+            }
+        }
+
+        // Turn the values of the hash table into an array of arrays
+        // Since the values are lists of strings, this is the form of the result we want
+        return permutationsOfPalindromes.values().stream()
+            .map(group -> group.toArray(new String[0]))
+            .toArray(String[][]::new);
+    }
+
+    // We use the modulo operator to determine if a number is odd
+    private boolean isOdd(int num) {
+        return num % 2 != 0;
+    }
+
+    // All O(c) operations
+    private boolean isPermutationOfPalindrome(String string) {
+        // Use a hash table to count the occurrence of each character in a string
+        // These are sequential O(c) operations
+        Map<Character, Integer> characterCountTable = new HashMap<>();
+
+        for (char character : string.toCharArray()) {
+            characterCountTable.merge(character, 1, Integer::sum);
+        }
+
+        // Sum the number of characters that contain an odd count
+        int oddCharacterCount = 0;
+        for (int numCharacters : characterCountTable.values()) {
+            if (isOdd(numCharacters)) {
+                oddCharacterCount++;
+            }
+        }
+
+        // If only one character has an odd count, this function returns true
+        return oddCharacterCount <= 1;
+    }
+}
+```
+
+## Practice this implementation
+
+[Open Group Permutations of Palindromes](/course/group-permutations-of-palindromes) to run the implementation against the course tests, then change one boundary condition and explain the first failing case. The editor supplies the starter signature and any node types or helper APIs used above. Copy the implementation into that environment; the snippet is the solution body, without the input parser or test driver. Your saved progress belongs to the original lesson.
+
+For more Java conventions and practice problems, use the [Java interview guide](/interview-prep/java).

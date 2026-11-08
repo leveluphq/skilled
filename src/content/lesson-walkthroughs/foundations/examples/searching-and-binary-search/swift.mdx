@@ -1,0 +1,11 @@
+```swift
+func binarySearch(_ values: [Int], _ target: Int) -> Int {
+    var low = 0
+    var high = values.count
+    while low < high {
+        let middle = low + (high - low) / 2
+        if values[middle] < target { low = middle + 1 } else { high = middle }
+    }
+    return low < values.count && values[low] == target ? low : -1
+}
+```

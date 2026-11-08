@@ -1,0 +1,45 @@
+```rust
+impl Solution {
+    pub fn combine_blockchains(
+        chain_head1: Option<Box<ListNode>>,
+        chain_head2: Option<Box<ListNode>>,
+    ) -> Option<Box<ListNode>> {
+        let mut current_node1 = chain_head1;
+        let mut current_node2 = chain_head2;
+        // The head of the combined chain, and its tail: the empty `next` where the
+        // following block goes. Each block is moved, so we hold the tail by reference.
+        let mut result_head: Option<Box<ListNode>> = None;
+        let mut combined_tail = &mut result_head;
+
+        // We iterate through until one of the linked lists has been depleted
+        while let (Some(node1), Some(node2)) = (&current_node1, &current_node2) {
+            // In either case, we do the same thing.
+            // We take the earlier block off the front of its chain (moving that chain forward),
+            // and we attach it to our combined chain
+            let contributing_chain = if node1.data < node2.data {
+                &mut current_node1
+            } else {
+                &mut current_node2
+            };
+
+            if let Some(mut node) = contributing_chain.take() {
+                *contributing_chain = node.next.take();
+
+                // Move to the new tail in the combined chain
+                combined_tail = &mut combined_tail.insert(node).next;
+            }
+        }
+
+        // One of the chains has been depleted (reached None)
+        // The other has its remaining items in sorted order,
+        // so we can just set the next value of our
+        // combined chain to the non-empty one
+        *combined_tail = current_node1.or(current_node2);
+
+        // ^ NOTE: `or` returns current_node1 if it has a value,
+        // otherwise it yields to current_node2
+
+        result_head
+    }
+}
+```

@@ -1,0 +1,29 @@
+```swift
+// Recursive Binary Search
+func recursiveBinarySearch(_ array: [Int], _ target: Int, _ lowerBound: Int, _ upperBound: Int) -> Int {
+    // Base case 1: element not found
+    if lowerBound > upperBound {
+        return -1
+    }
+
+    // Int division drops the remainder, so this rounds down
+    let midpointIndex = (lowerBound + upperBound) / 2
+    let midpointItem = array[midpointIndex]
+
+    // Base case 2: target found
+    if midpointItem == target {
+        return midpointIndex
+    }
+
+    // Recursive case: tighten your bounds based on target location
+    if midpointItem < target {
+        return recursiveBinarySearch(array, target, midpointIndex + 1, upperBound)
+    }
+
+    if midpointItem > target {
+        return recursiveBinarySearch(array, target, lowerBound, midpointIndex - 1)
+    }
+
+    return -1
+}
+```

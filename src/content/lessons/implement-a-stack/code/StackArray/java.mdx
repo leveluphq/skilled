@@ -1,0 +1,22 @@
+```java
+class Stack<T> {
+    private List<T> stack;
+
+    public Stack() {
+        this.stack = new ArrayList<>();
+    }
+
+    public T peek() {
+        return this.stack.get(this.stack.size() - 1);
+    }
+
+    public T push(T item) {
+        this.stack.add(item);
+        return item;
+    }
+
+    public T pop() {
+        return this.stack.remove(this.stack.size() - 1);
+    }
+}
+```

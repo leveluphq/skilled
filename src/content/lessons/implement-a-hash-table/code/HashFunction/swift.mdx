@@ -1,0 +1,14 @@
+```swift
+import Foundation
+
+func hash(_ key: String) -> Int {
+    var hash = 0
+
+    // Normalize canonical spellings before summing Unicode scalar values
+    for character in key.precomposedStringWithCanonicalMapping.unicodeScalars {
+        hash = (hash + Int(character.value)) % size
+    }
+
+    return hash
+}
+```

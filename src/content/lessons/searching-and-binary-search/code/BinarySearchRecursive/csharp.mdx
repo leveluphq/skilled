@@ -1,0 +1,29 @@
+```csharp
+// Recursive Binary Search
+int RecursiveBinarySearch(int[] array, int target, int lowerBound, int upperBound) {
+    // Base case 1: element not found
+    if (lowerBound > upperBound) {
+        return -1;
+    }
+
+    // Integer division rounds down
+    int midpointIndex = (lowerBound + upperBound) / 2;
+    int midpointItem = array[midpointIndex];
+
+    // Base case 2: target found
+    if (midpointItem == target) {
+        return midpointIndex;
+    }
+
+    // Recursive case: tighten your bounds based on target location
+    if (midpointItem < target) {
+        return RecursiveBinarySearch(array, target, midpointIndex + 1, upperBound);
+    }
+
+    if (midpointItem > target) {
+        return RecursiveBinarySearch(array, target, lowerBound, midpointIndex - 1);
+    }
+
+    return -1;
+}
+```

@@ -1,0 +1,49 @@
+Compare representative growth functions by changing the input size. The chart shows how their work estimates separate; the table preserves magnitudes that exceed the chart's visible range. Use it after deriving a complexity bound from an algorithm, or to build intuition before reading the [worked analysis guide](/guides/big-o-time-space-complexity).
+
+Each function uses a coefficient of one. These are mathematical work proxies, not measurements of a programming language or computer. Two real implementations in the same Big O class can have different constants, allocation costs, and input-dependent behavior.
+
+## Understand the axes
+
+The horizontal axis uses doubling intervals. Moving one equal interval to the right multiplies n by two. This keeps a range of input sizes visible without giving almost the entire chart to the largest few values.
+
+The vertical axis shows powers of ten. A move from 10³ to 10⁶ represents a thousand-fold increase in the work estimate. Equal vertical distances represent multiplicative changes, not equal numbers of operations.
+
+Choose a ceiling of 10⁶, 10¹², or 10²⁴ work units. A curve stops once it reaches that ceiling. It does not become constant afterward; the table continues to show the larger estimate. This avoids silently flattening exponential and factorial growth into a misleading horizontal line.
+
+## What the curves represent
+
+The constant curve uses one unit. The logarithmic curve uses log₂ n, with a minimum displayed value of one at n = 1. The linear curve uses n. The linearithmic curve uses n times the same bounded logarithm. The remaining curves use n², n³, 2ⁿ, and n factorial.
+
+Those formulas are examples of growth shapes. An O(n) algorithm is not required to execute exactly n machine instructions. An O(log n) search can inspect fewer candidates for some successful inputs. The chart compares functions chosen to illustrate asymptotic behavior.
+
+At n = 64, the linear proxy is 64, the quadratic proxy is 4,096, and the cubic proxy is 262,144. Doubling n doubles the first, quadruples the second, and multiplies the third by eight. Those ratios are often more useful than a guessed execution time.
+
+## Distinguish a bound from an exact count
+
+Big O gives an asymptotic upper bound. A particular implementation might do `3n + 12` units of modeled work, which is still linear. A quadratic bound can be true but loose for a linear function. When an interview asks for complexity, give the tight useful bound you can justify and explain its assumptions.
+
+For pair enumeration with distinct indices, the exact number of pairs is n(n - 1)/2. The n² curve is a growth comparison, not that exact pair count. For binary search, the number of iterations follows interval halving and boundary conventions rather than a floating-point logarithm used directly as a loop count.
+
+Use the [complexity reference](/reference/data-structure-time-complexity) when a function calls maps, queues, trees, or heaps. Expected, amortized, and worst-case operation costs can change the overall claim you should make.
+
+## Explore one input family at a time
+
+Select a few curves that match the algorithms you are comparing. For an array lookup alternative, compare constant, logarithmic, and linear shapes. For repeated pair work, add quadratic. For subset enumeration, inspect exponential growth and remember that producing every subset already imposes a large output cost.
+
+The chart allows every curve to be selected, but fewer curves can make a specific comparison easier to read. Toggle a curve with its labeled button and use the numerical table to verify what the drawing suggests.
+
+Try n = 16, then 32, then 64. Write the change factor for each selected function. That exercise connects the drawing to an algebraic explanation you can use when discussing an algorithm.
+
+## Interpret large estimates carefully
+
+The tool stores logarithms of large magnitudes so the comparison does not immediately overflow ordinary numeric values. A displayed value such as `1.23 × 10^100` is a magnitude estimate, not an exact integer with all digits retained.
+
+For larger factorial inputs, the implementation uses Stirling's approximation with a correction term. Small integer factorial magnitudes are accumulated from logarithms directly. Rounding can affect the final displayed digits; use an exact arithmetic tool if the full integer is the actual task.
+
+A real runtime estimate would also require a definition of an operation, hardware, implementation details, memory behavior, and input characteristics. This tool deliberately reports work units instead of a universal seconds-per-algorithm claim.
+
+## Connect a curve to actual code
+
+Take a function you have written and count the repeated work. Two consecutive n-entry loops add to linear growth. Nested pair enumeration produces quadratic growth. A shrinking interval can produce logarithmic iterations. A sliding window can remain linear even with a nested while loop because each boundary advances only a bounded number of times.
+
+Plot the resulting class, then test the assumptions in your code. A hidden sort, slice, callback, or string copy can add work the outer loop does not reveal. The [sliding-window guide](/patterns/sliding-window) and [Big O walkthrough](/guides/big-o-time-space-complexity) show how to make that analysis explicit.

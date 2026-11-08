@@ -1,0 +1,9 @@
+```rust
+use std::collections::HashMap;
+
+fn frequency_counts(values: &[i32]) -> Vec<i32> {
+    let mut counts: HashMap<i32, i32> = HashMap::new();
+    for &value in values { *counts.entry(value).or_default() += 1; }
+    values.iter().map(|value| counts[value]).collect()
+}
+```

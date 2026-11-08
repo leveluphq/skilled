@@ -1,0 +1,51 @@
+```csharp
+public class Solution {
+    // Stands in for Infinity: no valid coin combination reaches an amount (yet)
+    private const int NoCombination = int.MaxValue;
+
+    public int MinCoinsForChange(int[] denominations, int target) {
+        /*
+          Init all values to NoCombination which indicates there isn't a valid coin combination for an amount (yet)
+          This is our dp / memo array that we're using to memoize the solution to subproblems
+        */
+        var minCoinsForAmount = new int[target + 1];
+        Array.Fill(minCoinsForAmount, NoCombination);
+
+        // Bottom-up, start with 0 which is always 0
+        minCoinsForAmount[0] = 0;
+
+        /*
+          Begin at the smallest amount and build a running table of
+          the smallest values required to reach EVERY amount up to the target
+        */
+        for (int amount = 0; amount < minCoinsForAmount.Length; amount++) {
+            // Try each denomination to reach the current amount
+            foreach (int coin in denominations) {
+                // Unlike Infinity, int.MaxValue + 1 overflows, so skip amounts no combination reaches
+                if (coin <= amount && minCoinsForAmount[amount - coin] != NoCombination) {
+                    // The current minimum (subproblem solution) found at this amount.
+                    int existingMinCoinForAmount = minCoinsForAmount[amount];
+                    /*
+                      Subtract (amount - coin) to find the min coins to reach this location from a prior value.
+                      Always increment by +1 because we are trying one additional coin.
+                    */
+                    int minAmountWithCurrentCoin = minCoinsForAmount[amount - coin] + 1;
+
+                    /*
+                      Memoize the minimum coins to reach the current amount.
+                      This is either a minimum we previously calculated or a new minimum we found with the current coin.
+                      If there isn't a valid combination, this just remains NoCombination.
+                    */
+                    minCoinsForAmount[amount] = Math.Min(existingMinCoinForAmount, minAmountWithCurrentCoin);
+                }
+            }
+        }
+
+        /*
+          If we didn't find a combination that matched our target (it's still NoCombination), return -1.
+          Otherwise, the target does exist for that amount and we return it.
+        */
+        return minCoinsForAmount[target] == NoCombination ? -1 : minCoinsForAmount[target];
+    }
+}
+```

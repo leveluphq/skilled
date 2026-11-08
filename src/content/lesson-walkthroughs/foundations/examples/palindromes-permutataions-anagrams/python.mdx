@@ -1,0 +1,13 @@
+```python
+def ascii_palindrome(text: str) -> bool:
+    clean = ''.join(character.lower() for character in text
+                    if 'a' <= character <= 'z' or 'A' <= character <= 'Z'
+                    or '0' <= character <= '9')
+    left, right = 0, len(clean) - 1
+    while left < right:
+        if clean[left] != clean[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+```

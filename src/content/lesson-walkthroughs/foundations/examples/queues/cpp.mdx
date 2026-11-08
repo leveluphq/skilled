@@ -1,0 +1,11 @@
+```cpp
+#include <vector>
+#include <deque>
+
+std::vector<int> fifoOrder(const std::vector<int>& values) {
+    std::deque<int> queue(values.begin(), values.end());
+    std::vector<int> output;
+    while (!queue.empty()) { output.push_back(queue.front()); queue.pop_front(); }
+    return output;
+}
+```

@@ -1,0 +1,29 @@
+```swift
+// O(n) append
+func append(_ head: Node?, _ data: Int) -> Node? {
+    // Create a new node to append
+    let appendedNode = Node(data)
+    // Start at the current node which is the head
+    var currentNode = head
+
+    // Iterate through our list until we reach the last node
+    while currentNode?.next != nil {
+        // Step through nodes
+        currentNode = currentNode?.next
+    }
+
+    currentNode?.next = appendedNode
+
+    // Return the head of our list
+    return head
+}
+
+var head: Node? = Node(42)
+head?.next = Node(9000)
+head?.next?.next = Node(10)
+head?.next?.next?.next = Node(20)
+// 42 -> 9000 -> 10 -> 20
+
+head = append(head, 8)
+// 42 -> 9000 -> 10 -> 20 -> 8
+```

@@ -1,0 +1,17 @@
+import BigO from 'content/blocks/BigO';
+import Code0 from './code/Item2/Code0';
+
+Anytime we see a problem to scan an array and compare items,
+we know there is almost always a brute force solution where we can iterate through nested lists to compare values against themselves.
+
+It's usually worth mentioning this to the interviewer that you recognize it but then look for a better way to handle it.
+However, if you're stuck, you could code out the brute force and then say you'll optimize it.
+In this question, the brute force would be <BigO.n2 /> and look something like the following:
+
+<Code0 />
+
+Seeing nested loops should immediately trigger your brain to realize a solution is <BigO.n2 />
+and likely can be improved. To improve an array search question, there are typically 2 paths:
+
+1. Sort the list
+2. Introduce another data structure

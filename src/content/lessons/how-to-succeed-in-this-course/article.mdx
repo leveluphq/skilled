@@ -1,0 +1,116 @@
+import SubmitFeedbackLink from 'components/blocks/Modal/FeedbackModal/SubmitFeedbackLink';
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import { Section } from 'style/elements/lesson';
+import { MarginContainer } from 'content/blocks/styles';
+
+<Section>
+
+The mission for the course (and my passion) is to help you grow or start your career as a software engineer.
+I will show you how to get the job and maximize your salary by teaching 3 things:
+
+1. Master the coding interview and feel comfortable approaching any problem
+2. Soft skills and why they are important
+3. Stand out in the job hunt and hiring process
+
+The interview questions in this course have been carefully selected to make sure they are comprehensive in covering the techniques that you will need to solve problems in your real interviews effectively.
+I not only provide you a solution but also walk you through how to think through the problem and how to arrive at the optimal solution.
+
+The course uses text, videos, and a code editor/runner for each lesson,
+so you have different tools based on your learning style or if you need additional explanation.
+
+Remember to <SubmitFeedbackLink /> often.
+I want to make sure you are getting maximum value from this course,
+and this is the best way for me to continue to improve the teaching methods.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Course Structure</SubsectionHeader>
+
+The course is grouped by concept (ie. data structure or algorithm) and ordered by importance.
+The topics that are more likely to show up in an interview or that other sections build off show up earlier in the course.
+However, you should consider every section essential and shouldn't skip any just because they are further down
+(aside from the JavaScript category if you are not applying for a frontend or Node position).
+
+The exception to this is the job hunt and soft skills category.
+This topic is at the end of the course,
+but you should go through it early in the process and definitely before applying to jobs.
+
+Each section is broken into two parts.
+In the first part, I teach you the data structure or algorithm and what you need to know about it for coding interviews.
+We will also implement them from scratch so you feel comfortable knowing what they do.
+My goal with these lessons is to be complete but concise, giving you everything you need to know for a programming interview without adding extraneous information.
+
+The second part is practicing the coding interview questions.
+These will present a prompt similar to how you will see it in an actual interview.
+You should start by trying to solve the question yourself.
+If you get stuck, you can step through an explanation from the beginning and see how to think through it.
+If you believe you have a solution, you can validate it to make sure you didn't miss any constraints or edge cases.
+Once you feel good about it, you can then run your code against our test cases to check it.
+Every question provides an optimal solution with its time and space complexity.
+
+I will show you how to think through the problems and give you the learning outcomes that can be applied to a broad range of questions.
+You will gain the intuition to recognize patterns in questions and how to apply the techniques that you will learn.
+
+I highly recommend you work through questions on a whiteboard or piece of paper so you get comfortable writing code by hand instead of on a computer.
+
+The course uses a combination of straightforward problems and questions that are asked as a "story".
+You could see both in a real interview, so it's important to understand how to approach each.
+In either case, you need to learn how to extract a question's pertinent information and understand what is expected from a solution.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>How to Get the Most Out of the Course</SubsectionHeader>
+
+The course is structured so that you can get value out of a lesson at any stage in the interview process.
+Each question goes incredibly in-depth to teach concepts/techniques that can help you pass the interview.
+However, the questions are also intended to be easily parsed so you can quickly glean the important information if you are reviewing or wanting to scan for learning outcomes.
+
+Some additional tips to maximize your learning:
+
+- Practice, practice, practice. The only way to learn to code is by doing it, failing, learning, and then doing it again. Programming interviews are no exception to this rule. Only reading or watching a video is not enough.
+- Work problems on paper or a whiteboard as far as you can, and then use the question explanation as needed.
+- Read code comments.
+- Go through everything - all content was added for a reason.
+- Make sure you understand the optimal solution and read through the breakdown to understand how we arrived there.
+- Review the learning outcomes from a question and understand why it was important.
+
+</Section>
+
+<Section>
+
+<SubsectionHeader>Syntax and Coding Style</SubsectionHeader>
+
+Initially the lessons are taught with JavaScript, but additional languages will be added quickly after the content is complete.
+This course is about teaching concepts and how to think through problems,
+and most developers have used JavaScript at some point, so it is a very universal language.
+JavaScript is also lightweight and easy to understand.
+
+The syntax uses modern JavaScript (ES6+).
+There are some instances when I'll use a simple `for` loop instead of newer methods such as `Array.reduce()`, or an object literal instead of a `Set`.
+The goal is for the teaching the be clear and the learning outcomes to be easy to pick up on,
+and I will favor clarity over newer syntax as needed.
+
+I also use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">arrow functions</a>.
+If you are not a JavaScript developer, then all you really need for arrow functions vs. functions declared with the `function` keyword is that an arrow function will return implicitly if the statement is only 1 line.
+
+<MarginContainer>
+
+```javascript
+function add(a, b) {
+  return a + b;
+}
+
+// is the same as
+
+const add = (a, b) => a + b;
+```
+
+</MarginContainer>
+
+**Thanks for joining and good luck on your journey to level up your career.**
+
+</Section>

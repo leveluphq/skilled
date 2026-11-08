@@ -1,0 +1,11 @@
+import BigO from 'content/blocks/BigO';
+
+To improve on the brute force solution, what if we captured these patterns and repeated operations.
+
+We know that for any item `results[i]`, we can calculate the answer from the product of all the items to the left and right.
+Arrays have constant time <BigO.constant /> lookup for indexes, so what if we created additional lookup arrays that would give us the left and right products at that index.
+
+We could accomplish this by adding two new arrays - one that stores the left products and another that stores the right products.
+Then the answer at any index would just be the running product from the right and left multiplied together.
+
+Think how you would construct these lookup arrays.

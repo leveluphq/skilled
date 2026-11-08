@@ -1,0 +1,25 @@
+```cpp
+// Iterative Binary Search
+int iterativeBinarySearch(const vector<int>& array, int target) {
+    int lowerBound = 0;
+    int upperBound = (int) array.size() - 1;
+
+    while (lowerBound <= upperBound) {
+        // Integer division rounds down
+        int midpointIndex = (lowerBound + upperBound) / 2;
+        int midpointItem = array[midpointIndex];
+
+        if (target == midpointItem) {
+            return midpointIndex;
+        }
+
+        if (midpointItem < target) {
+            lowerBound = midpointIndex + 1;
+        } else if (midpointItem > target) {
+            upperBound = midpointIndex - 1;
+        }
+    }
+
+    return -1;
+}
+```

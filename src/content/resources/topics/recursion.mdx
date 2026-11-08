@@ -1,0 +1,43 @@
+A recursive function solves a problem by calling the same kind of function on a smaller state. To explain it, define what one call promises to return, identify a stopping case, and show that every recursive branch makes progress toward that case.
+
+The [recursion lesson](/course/recursion) introduces call-stack behavior. Follow it with [Sum Digits](/course/sum-digits), where arithmetic reduces the remaining number, then [Generate All Permutations](/course/generate-all-permutations), where the function manages several choices and restores state between branches.
+
+## Give one call a contract
+
+For a digit sum, a call might return the sum of the digits remaining in the current nonnegative integer. Removing the final digit produces a smaller subproblem, and the removed digit contributes to the result. The base case must match the numeric and input constraints.
+
+For tree height, a call can return the height of the subtree rooted at its argument. Combining the two child results gives the parent's result. The empty-tree convention determines whether height is measured in nodes or edges.
+
+These contracts help you reason locally. You do not have to hold every call frame in your head at once, but you do need to verify that the recursive assumption applies to the arguments you pass.
+
+## Trace calls and returns separately
+
+Calling another function suspends the current call's unfinished work. After the child returns, the parent resumes with that result. A traversal's printed order and its return order can therefore differ.
+
+Use the [tree traversal tool](/tools/tree-traversal) to compare when values are processed in preorder, inorder, and postorder. Then add a return-value trace on paper. The tool shows visits, while a height computation depends on values returned after child calls finish.
+
+A missing return statement can discard a correct child result. A shared variable can accidentally mix answers from independent branches. Tests should inspect the final returned value, not only whether the expected nodes were touched.
+
+## Restore shared state during backtracking
+
+Permutation generation maintains a working choice path. Add one choice, recurse into the remaining problem, then undo the choice before trying another branch. Every mutation that belongs to one branch needs a corresponding restoration or an independent copy.
+
+When saving a completed path, copy it if later work will mutate the same array or list. Storing the same mutable reference several times does not preserve several arrangements.
+
+Repeated values also require a contract. Enumerating positions can produce duplicate-looking permutations. If the task asks for distinct arrangements, add a strategy that avoids or consolidates equivalent branches and include its work in the analysis.
+
+## Separate depth from total work
+
+A recursion can have a short depth and still create many calls across branches. Another can have one call per level but a deep stack. Count both the number of calls and the local work each performs.
+
+For a tree traversal, active recursion space follows height, while the total visit count follows the number of nodes. For a backtracking enumeration, output size may dominate. A copied path at every result has a different allocation pattern from a few scalar return values.
+
+A runtime's finite call stack can also constrain an otherwise correct algorithm. An explicit stack is useful when large input depth is allowed. Changing recursion limits does not reduce the memory the algorithm requires.
+
+## Recognize repeated states before memoizing
+
+If independent branches solve the same remaining state, caching may save repeated work. The cache key must include every fact that affects future choices. An index alone is sufficient for some suffix problems; capacity or previous-choice constraints can require more information.
+
+The [dynamic-programming guide](/patterns/dynamic-programming) starts from a recursive recurrence and develops memoization and tabulation. Learn that transition after you can explain the uncached recursion's state and stopping conditions.
+
+For your next attempt, choose a two- or three-entry input and draw every call and return. Mark where progress occurs and where shared state is restored. Then use an empty input and the smallest nonempty input to verify the base case independently.

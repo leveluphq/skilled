@@ -1,0 +1,11 @@
+```csharp
+public int FirstBadVersionBruteForce(int totalVersions) {
+    for (int currentVersion = 1; currentVersion <= totalVersions; currentVersion++) {
+        if (IsBadVersion(currentVersion)) {
+            return currentVersion;
+        }
+    }
+    // There is always a bad version, so we never get here
+    return -1;
+}
+```

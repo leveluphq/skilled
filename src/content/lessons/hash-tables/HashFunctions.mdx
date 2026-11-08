@@ -1,0 +1,56 @@
+import SubsectionHeader from 'content/blocks/SubsectionHeader';
+import { Container } from 'style/elements';
+import ShaExample from './ShaExample';
+
+<SubsectionHeader>Hashing, Hash Functions, and Hash Collisions</SubsectionHeader>
+
+Hash functions are a core component of hash tables, but we actually see them all over software development.
+For example, if you are using GitHub, you may have heard the phrase "commit hash" or noticed that there is a unique string that identifies a commit.
+Git uses a hash as a commit identifier. A fixed-width hash does not mathematically guarantee uniqueness; collision resistance makes accidental matches impractical for suitable algorithms and inputs.
+
+Hash functions take an input of any size and produce a fixed-size output (often an integer represented as a hexadecimal string).
+
+**Generate a SHA-256 hash for any input:**
+
+<ShaExample />
+
+There are many ways to implement a hash function, but fundamentally they follow the same format.
+SHA-256 is one cryptographic example. A hash table can use a faster noncryptographic hash when its requirements permit it.
+
+A teaching hash can also sum character or byte values. For the ASCII words below, the character values are the same as their UTF-8 bytes. Non-ASCII strings require an explicit representation and equality rule.
+
+Each actual input is finite, and an algorithm may impose a length limit. The set of supported inputs can still be larger than the set of possible outputs. Mapping that larger set into a fixed-width result means different inputs must sometimes produce the same hash.
+This is what's known as a hash collision.
+
+For example, a SHA-256 hash is always 256 bits.
+This corresponds to 64 hexadecimal characters which is an integer ranging from 0 through 2<sup>256</sup> − 1.
+Since the output size is constrained and a fixed length, we know that there are different strings that must produce the same result.
+This output size is large so a collision is very rare, but the tighter the range of numbers, the higher the likelihood of a collision.
+
+To visualize a hash collision, compare a simple sum of the bytes in these two ASCII words.
+
+<Container>
+
+```javascript
+s    k    i    l    l    e    d
+|    |    |    |    |    |    |
+115  107  105  108  108  101  100  =  744
+
+99   111  118  101  114  101  100  =  744
+|    |    |    |    |    |    |
+c    o    v    e    r    e    d
+```
+
+</Container>
+
+Totally different words produced the same hash.
+If we used `skilled` and `covered` as keys for a hash table with that hash function, it would cause a collision, and they would be in the same bucket.
+
+For the hash functions discussed here, check these properties:
+
+- A fixed-width result has a bounded set of possible values. A table reduces that result to one of its bucket indices.
+- The same input must produce the same result while the algorithm, encoding, and any seed stay fixed. The SHA-256 digest of the UTF-8 text `skilled.dev` is `4e6ef22a47c9abbf6f80680f5f814705bf8f793c73eae07e534212f1eb96a4d3`.
+- Useful distribution spreads the expected workload across buckets. Uniformity is a design goal, not a consequence of having a fixed output size. Our additive teaching hash handles anagrams poorly because changing character order leaves the sum unchanged.
+- The input representation must be defined. Files already contain bytes; structured values need a consistent encoding. A table's hash must also respect its key-equality rule.
+
+[Cryptographic hashes have additional requirements](https://csrc.nist.gov/glossary/term/Cryptographic_hash_function), including resistance to finding preimages or colliding inputs. Those requirements do not apply automatically to every table hash. Even a cryptographic digest can be compared against hashes of a small set of guessed inputs; it does not make predictable input secret.

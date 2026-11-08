@@ -1,0 +1,31 @@
+```javascript
+const runningProductSolution = (input: number[]): number[] => {
+  const results = [];
+  const len = input.length;
+  // Initialize our lookup arrays and fill them with 1's
+  const leftRunningProduct = Array(len).fill(1);
+  const rightRunningProduct = Array(len).fill(1);
+
+  // Begin creating the product arrays 1 element inward at i = 1
+  // since the first product in each array is supposed to be 1.
+  for (let i = 1; i < len; i++) {
+    leftRunningProduct[i] = leftRunningProduct[i - 1] * input[i - 1];
+
+    // We will fill our right product array from the end
+    const endIdx = len - 1 - i;
+    rightRunningProduct[endIdx] = rightRunningProduct[endIdx + 1] * input[endIdx + 1];
+  }
+
+  // We can now find the product of all the items other than the current index
+  // by multiplying the product of the elements to its left and right together.
+  for (let i = 0; i < len; i++) {
+    const leftProduct = leftRunningProduct[i];
+    const rightProduct = rightRunningProduct[i];
+    const productExceptSelf = leftProduct * rightProduct;
+
+    results.push(productExceptSelf);
+  }
+
+  return results;
+};
+```

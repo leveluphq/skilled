@@ -1,0 +1,19 @@
+The lesson builds a fixed-size hash table with string keys, chained buckets, and three operations: `get`, `insert`, and `remove`. Its deliberately simple hash function makes collisions easy to see. The implementation is useful for understanding a table's mechanics; native maps usually add more sophisticated hashing and resizing policies.
+
+## Keep both the key and the value
+
+Hash a string to a bucket index by combining its character values and reducing the result to the table size. Different keys can produce the same index. Each occupied bucket therefore contains pairs, and a lookup scans those pairs for an equal key. Returning the first value in the bucket would fail as soon as two keys collide.
+
+To insert, create the bucket if necessary, then search for the key. Replace its value if it already exists; append a pair if it does not. Try inserting the same key twice with different values. The table should contain one entry for that key, and a later lookup should return the replacement.
+
+## Delete the pair and test reinsertion
+
+The current removal code deletes the matching pair from its bucket. Setting its value to `undefined` would leave a record behind and could confuse later membership or insertion logic. A regression sequence should insert a key, remove it, insert it again, then read the new value. Keep another colliding key in the same bucket to check that deletion does not damage its neighbor.
+
+Also test removal from a missing bucket, removal of a missing key from an occupied bucket, and removal of the final pair. Use the method's documented missing-value result consistently. If you extend the API to store arbitrary values, decide how callers will distinguish absence from a stored `undefined`.
+
+## Make the load factor part of the analysis
+
+With a suitable distribution, table size controls the average chain length. A size of one forces every key into the same bucket and exposes linear scanning. The lesson does not resize automatically, so an ever-growing collection cannot retain short chains at a fixed capacity indefinitely.
+
+Include key hashing and comparisons when keys have variable length. Compare the teaching implementation with [Hash Tables](/watch/hash-tables), then open the [current code](/course/implement-a-hash-table) and trace a collision through all three methods. Use distinct keys whose character sums match to make the collision intentional.

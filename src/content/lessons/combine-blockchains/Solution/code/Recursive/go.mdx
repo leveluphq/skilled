@@ -1,0 +1,19 @@
+```go
+func combineBlockchains(chainHead1 *ListNode, chainHead2 *ListNode) *ListNode {
+	// Stopping condition when one of the lists is nil, we return the other
+	if chainHead1 == nil {
+		return chainHead2
+	}
+	if chainHead2 == nil {
+		return chainHead1
+	}
+
+	// Recursively call our function
+	if chainHead1.Data < chainHead2.Data {
+		chainHead1.Next = combineBlockchains(chainHead1.Next, chainHead2)
+		return chainHead1
+	}
+	chainHead2.Next = combineBlockchains(chainHead1, chainHead2.Next)
+	return chainHead2
+}
+```

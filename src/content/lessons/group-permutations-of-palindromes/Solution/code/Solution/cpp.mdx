@@ -1,0 +1,60 @@
+```cpp
+class Solution {
+public:
+    vector<vector<string>> groupPermutationsOfPalindromes(vector<string>& strings) {
+        unordered_map<string, vector<string>> permutationsOfPalindromes;
+
+        // Iterate through all O(n) strings in our array
+        for (const string& s : strings) {
+            // Check if each string is a palindrome O(c)
+            if (isPermutationOfPalindrome(s)) {
+                // Sort our string's order O(c log c)
+                // Permutations will sort to the same string
+                string sortedString = s;
+                sort(sortedString.begin(), sortedString.end());
+
+                // [] starts an empty group if we
+                // haven't seen any of the string's permutations yet
+                permutationsOfPalindromes[sortedString].push_back(s);
+            }
+        }
+
+        // Collect all the values of the hash table
+        // Since the values are also arrays, this is the form of the result we want
+        vector<vector<string>> groups;
+        for (auto& [sortedString, group] : permutationsOfPalindromes) {
+            groups.push_back(group);
+        }
+
+        return groups;
+    }
+
+private:
+    // We use the modulo operator to determine if a number is odd
+    bool isOdd(int num) {
+        return num % 2 != 0;
+    }
+
+    // All O(c) operations
+    bool isPermutationOfPalindrome(const string& s) {
+        // Use a hash table to count the occurrence of each character in a string
+        // These are sequential O(c) operations
+        unordered_map<char, int> characterCountTable;
+
+        for (char c : s) {
+            characterCountTable[c]++;
+        }
+
+        // Sum the number of characters that contain an odd count
+        int oddCharacterCount = 0;
+        for (const auto& [character, numCharacters] : characterCountTable) {
+            if (isOdd(numCharacters)) {
+                oddCharacterCount++;
+            }
+        }
+
+        // If only one character has an odd count, this function returns true
+        return oddCharacterCount <= 1;
+    }
+};
+```

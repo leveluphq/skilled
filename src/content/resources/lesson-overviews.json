@@ -1,0 +1,282 @@
+{
+  "age-sort": {
+    "focus": "Counting sort over a bounded integer domain",
+    "approach": "The ages are whole numbers from zero through one hundred. Count occurrences for each allowed age, then emit each age as many times as its count requires. The bounded key range lets the implementation avoid comparing every pair of input values. Keep duplicate ages; a set would lose required output entries.",
+    "checks": [
+      "Try an empty list and repeated copies of the same age.",
+      "Include the domain endpoints zero and one hundred.",
+      "Compare the result with an ordinary numeric sort while checking that every input occurrence remains present."
+    ],
+    "cost": "For n ages and a domain of k allowed ages, counting and reconstruction take O(n + k) time. Counts use O(k) auxiliary storage; the returned output contains n entries. Here k is fixed at 101."
+  },
+  "best-time-to-buy-and-sell-stock": {
+    "focus": "A running minimum with a forward-only buy/sell order",
+    "approach": "Choose at most one purchase followed by one sale. Scan prices in chronological order, retaining the smallest earlier purchase price and the best profit found so far. A globally smallest and globally largest price do not form a valid trade when their order is reversed. Initialize the no-trade result to zero so falling prices do not force a loss.",
+    "checks": [
+      "Empty input and one price both return zero.",
+      "For [9, 2, 4, 3, 8, 5], the best profit is six.",
+      "Test decreasing prices, repeated prices, and a late new minimum before a larger sale."
+    ],
+    "cost": "One scan uses O(n) time and O(1) auxiliary state. Use arithmetic that can represent the allowed price differences."
+  },
+  "binary-search-tree-validate": {
+    "focus": "Inherited bounds for every descendant of a strict BST",
+    "approach": "Carry the lower and upper bounds inherited from ancestors into each subtree. A node must satisfy both bounds before its children are considered. Comparing only immediate children misses a descendant that fits its parent but violates an older ancestor. This lesson uses a strict order, so an equal value also violates a bound.",
+    "checks": [
+      "Test a root alone and an unbalanced valid tree.",
+      "Put 12 below left child 5 of root 10: the local child relationship is valid but the whole tree is not.",
+      "Include duplicate values and values near the supported numeric limits without using them as accidental sentinel bounds."
+    ],
+    "cost": "Visit each node once for O(n) time. Recursive auxiliary storage is O(h) for height h and can reach O(n) on a skewed tree."
+  },
+  "binary-tree-max-depth": {
+    "focus": "Tree height measured in edges rather than nodes",
+    "approach": "The course counts edges: an empty tree has depth minus one, while a root with no children has depth zero. A node's depth is one plus the greater depth of its two subtrees. Choosing the empty-tree base case consistently lets leaf nodes follow the same recurrence. Do not import the node-count convention from a different problem without adjusting the contract.",
+    "checks": [
+      "Check the empty tree and a lone root before larger examples.",
+      "Use a one-sided chain to test both the returned height and recursive depth.",
+      "Compare trees with the same number of nodes but different shapes."
+    ],
+    "cost": "Examining every node takes O(n) time. Recursive stack space is O(h), where h can be linear for a skewed tree. An iterative traversal needs its own explicit frontier."
+  },
+  "catch-the-hacker": {
+    "focus": "Frequency counting while preserving the promised unique winner",
+    "approach": "Count how often each email appears and return the address with the largest frequency. Equal adjacent values are not required: the same email can be spread throughout the input. A set remembers presence but cannot distinguish frequencies. Keep the problem's promised frequency relationship explicit instead of inventing a tie policy for inputs the task does not define.",
+    "checks": [
+      "Put the winner first, last, and at separated positions.",
+      "Include a single email and a winner with only one extra occurrence.",
+      "Verify counts rather than relying on input adjacency or sorting."
+    ],
+    "cost": "A hash-map count takes expected O(n) lookups and O(u) entries for u distinct emails. String hashing and comparison also depend on the email lengths."
+  },
+  "closest-common-ancestor-in-binary-tree": {
+    "focus": "Lowest common ancestor by subtree membership and node identity",
+    "approach": "Find the deepest input-tree node that is an ancestor of both targets. A target may itself be the answer when the other target lies below it. In a general binary tree, value order does not tell you which subtree contains a target; a binary-search-tree shortcut would require a different contract. Return a reference to the original tree node, not a freshly allocated node with equal data.",
+    "checks": [
+      "Place targets on opposite sides of the root.",
+      "Make one target an ancestor of the other.",
+      "Use an unbalanced tree and verify that the returned node belongs to the input tree."
+    ],
+    "cost": "A full subtree search takes O(n) time with O(h) recursive stack space. If the contract changes to permit absent targets, the implementation must also establish whether both were found."
+  },
+  "combine-blockchains": {
+    "focus": "Merge two ordered linked chains without losing a successor",
+    "approach": "Each chain is already ordered by block timestamp and the prompt promises nonempty chains. Repeatedly choose the smaller available head and advance that chain. Preserve the next unprocessed node before changing links. When one chain is exhausted, append the remaining suffix of the other chain; it is already ordered. Equal timestamps still represent distinct blocks and must both remain in the result.",
+    "checks": [
+      "Try one block in each chain and interleaved timestamps.",
+      "Put every timestamp from one chain before the other.",
+      "Include equal timestamps and a chain that runs out early."
+    ],
+    "cost": "Merging m and n nodes takes O(m + n) time. Relinking existing nodes can use constant auxiliary references; allocating copied nodes changes the storage and identity contract."
+  },
+  "count-islands": {
+    "focus": "Four-neighbor flood fill with explicit land and water markers",
+    "approach": "The course grid represents land with # and water with ~. Scan cells and start a traversal whenever an unvisited land cell is found. That traversal marks its whole four-neighbor component, so the outer scan counts it once. Diagonal contact alone does not connect islands. Mark discovery before adding a neighbor to the frontier to avoid repeating the same work through several incoming paths.",
+    "checks": [
+      "Test an empty row, one water cell, and one land cell.",
+      "Separate land cells diagonally to check the four-neighbor rule.",
+      "Use a long narrow island and decide whether the implementation preserves or deliberately marks the input."
+    ],
+    "cost": "For r rows and c columns, the scan and flood fills take O(r · c) time. A visited set or an explicit traversal frontier can require O(r · c) auxiliary storage in the worst case."
+  },
+  "first-bad-version": {
+    "focus": "Binary search over a monotone predicate with one-based versions",
+    "approach": "Versions run from one through n, and once a version is bad every later version is bad. Ask the provided isBadVersion predicate about a midpoint, retaining the earliest bad candidate while discarding a proven-good prefix. The task promises a bad version in its tested domain. Do not read hidden test data or linearly query every version. Compute a midpoint without overflowing fixed-width integer addition.",
+    "checks": [
+      "Check n equal to one.",
+      "Place the first bad version at one, at n, and between them.",
+      "Use a large n that exposes an overflowing low-plus-high midpoint."
+    ],
+    "cost": "Halving the remaining interval uses O(log n) predicate calls. An iterative implementation uses O(1) auxiliary state under the predicate's stated cost model."
+  },
+  "generate-all-permutations": {
+    "focus": "Backtracking with explicit multiplicity and an empty permutation",
+    "approach": "Build arrangements by choosing one remaining position at each step, exploring its suffix, and undoing the choice before trying the next position. This lesson retains repeated permutations when repeated letters occupy different chosen positions. Deduplicating the result would change the required multiplicity. The empty string has one permutation, itself, because one completed arrangement remains when there are no positions left to choose.",
+    "checks": [
+      "The empty string returns a collection containing one empty string.",
+      "For two distinct letters, check both arrangements.",
+      "Include repeated letters and compare result multiplicities, not just a set of unique strings."
+    ],
+    "cost": "Materializing all n! positional arrangements of length n takes at least O(n · n!) character output work. Working path state can be linear; retained output is much larger."
+  },
+  "group-permutations-of-palindromes": {
+    "focus": "Palindrome-permutation eligibility followed by multiplicity grouping",
+    "approach": "First count each string’s characters and retain it only when at most one character has an odd count. That is the condition for rearranging the string into a palindrome. Then group retained strings by a canonical multiplicity signature. The input itself need not already read as a palindrome: naa and aan both qualify. Strings such as code, with several odd counts, are excluded rather than placed in another group.",
+    "checks": [
+      "Check empty input and a qualifying string alone.",
+      "Group naa with aan even though neither is displayed as a palindrome.",
+      "Exclude todo, doto, and code; compare eligible groups independently of group and member order."
+    ],
+    "cost": "Sorting each string to obtain a signature costs the sum of O(length · log length) over strings. The lowercase alphanumeric input domain also permits a fixed-alphabet frequency signature with linear total character work. First filter for at most one odd count; the returned groups retain only eligible input occurrences."
+  },
+  "interview-scheduler": {
+    "focus": "Merge overlapping and touching intervals in start order",
+    "approach": "Sort intervals by start time and compare each with the current merged interval. If they overlap or touch under the course contract, extend the current end to the larger end. Otherwise finish the current interval and start the next. Comparing only neighboring original inputs misses overlaps when intervals arrive unsorted. A contained interval must not shorten an already retained end.",
+    "checks": [
+      "Test no intervals and one interval.",
+      "Include unsorted, touching, nested, and separated meetings.",
+      "Use half-hour times such as 10.5 consistently with the lesson's representation."
+    ],
+    "cost": "Sorting n intervals takes O(n log n), followed by a linear merge. Output may contain n intervals. Auxiliary sorting and copying storage depends on the implementation and input-preservation policy."
+  },
+  "max-min-stack": {
+    "focus": "Keep extrema history synchronized with stack history",
+    "approach": "Support push, pop, peek, minimum, and maximum without rescanning the entire stack for each extrema query. Retain enough history to restore the previous minimum and maximum when the newest entry is removed. Repeated extrema require separate occurrences or counts: popping one copy must not discard another copy still present below it. The lesson does not call pop, peek, or extrema methods on an empty stack.",
+    "checks": [
+      "Push a new minimum and maximum, then pop them to restore older extrema.",
+      "Repeat the same minimum or maximum before popping one copy.",
+      "Verify that push returns the pushed item as the starter contract specifies."
+    ],
+    "cost": "With synchronized extrema state, the required stack operations can take O(1) time each. Stored values and extrema history require O(n) total storage."
+  },
+  "mirror-delete": {
+    "focus": "Delete by a zero-based offset from the linked-list tail",
+    "approach": "Here k equals zero for the tail, one for the preceding node, and so on. Use a leading pointer to establish the gap needed to locate the target or its predecessor in one pass. Deleting the head requires returning a different head reference. If k is at least the list length, the result remains unchanged. Trace the gap carefully rather than copying a one-based nth-from-end formula.",
+    "checks": [
+      "Delete the tail with k equal to zero.",
+      "Delete the head of a four-node list with k equal to three.",
+      "Use k equal to the length and greater than the length; both leave the chain unchanged."
+    ],
+    "cost": "A spaced-pointer implementation takes O(n) time and O(1) auxiliary references. The caller must receive the updated head when the original first node is removed."
+  },
+  "pilot-a-rocket": {
+    "focus": "A shortest unweighted route with BFS parent reconstruction",
+    "approach": "Treat satellites as vertices and available moves as edges. A FIFO frontier explores reachable vertices in nondecreasing hop count. Mark a vertex at discovery and remember its parent then, so the first discovered route establishes a shortest unweighted path. Reconstruct the answer by following parents backward from the target. A depth-first discovery route can be valid without being shortest.",
+    "checks": [
+      "Include a cycle so discovery marking must prevent repeated work.",
+      "Provide routes of different lengths and check the shorter one.",
+      "An unreachable ship returns null, which differs from an empty route."
+    ],
+    "cost": "BFS scans O(V + E) reachable graph structure and uses O(V) frontier, discovery, and parent storage. Efficient FIFO removal is required to preserve that time bound."
+  },
+  "product-array": {
+    "focus": "Prefix and suffix products that both exclude the current position",
+    "approach": "Write the product strictly to the left of each index into the output. Scan backward with a scalar product strictly to the right and multiply it into each output entry. Both accumulators start at one, the product of an empty segment. Update an accumulator after using it for the current position so the excluded value never enters its own result. Division is unnecessary, including when zeros occur.",
+    "checks": [
+      "Test empty input and a singleton, whose result is [1].",
+      "Try one zero, two zeros, and negative values.",
+      "Check input preservation and make the representable-product assumption explicit."
+    ],
+    "cost": "Two scans take O(n) time, with O(1) auxiliary scalar state beyond the required O(n) output. Arbitrary-precision integer multiplication needs an additional numeric-size cost model."
+  },
+  "reverse-a-linked-list": {
+    "focus": "Save the forward link before reversing it",
+    "approach": "Retain previous, current, and a saved successor. Before rewriting current.next to previous, save the old successor so the remaining suffix stays reachable. Then advance previous and current. At termination, previous is the new head and the original head is the tail. Reversing stored values is a different operation from relinking the original nodes.",
+    "checks": [
+      "An empty list returns an empty head.",
+      "A singleton retains the same node and ends at null.",
+      "Trace three nodes and verify their original identities appear in reverse link order."
+    ],
+    "cost": "Each node is visited once for O(n) time. Iterative reversal uses O(1) auxiliary references and assumes an acyclic, null-terminated input list."
+  },
+  "robot-maze": {
+    "focus": "Reachability in a grid with a restricted move set",
+    "approach": "The board marks open cells with zero, blocked cells with one, and an exit with two. Start at the top-left cell (0, 0) and move only down or right. Do not add diagonal or backward moves from a different maze problem. Reject blocked and out-of-bounds positions before exploring further, and retain repeated-state information when several move sequences can reach the same cell.",
+    "checks": [
+      "Empty boards and empty rows have no exit path.",
+      "Try a blocked starting route and an exit separated by walls.",
+      "Use an open board with several ways to reach the same cell and verify the algorithm avoids repeated subproblem work."
+    ],
+    "cost": "With each permitted grid state processed once, a board with r rows and c columns takes O(r · c) work and at most O(r · c) retained visited or memoized state. A naive branching search can repeat work."
+  },
+  "shifted-search": {
+    "focus": "Binary-search decisions in a rotated ordered array",
+    "approach": "At each midpoint, identify the ordered half of the current interval. Compare the target with that half's endpoints to decide whether it can contain the answer, then discard the other half. Return minus one when no position matches. The usual logarithmic argument relies on the ordering and uniqueness assumptions; repeated equal endpoints can require a different ambiguity policy.",
+    "checks": [
+      "Check empty input and a singleton with and without a match.",
+      "Place the target before and after the rotation boundary.",
+      "Test the first position, last position, and an absent value."
+    ],
+    "cost": "Under the distinct-value rotated-order contract, each step halves the candidate interval for O(log n) time. Iterative boundary state is O(1) auxiliary space."
+  },
+  "sorted-matrix-search": {
+    "focus": "Eliminate a row or column using both matrix orderings",
+    "approach": "Rows and columns are ordered, but the flattened matrix need not form one globally sorted sequence. Start at the top-right corner: if its value is too large, discard that column; if too small, discard that row. Each comparison eliminates candidates that cannot contain the target under the row and column order rules. Return the row and column, or [-1, -1] when absent.",
+    "checks": [
+      "Test an empty row and a missing target.",
+      "Place targets at the top-left and top-right corners.",
+      "Use a matrix where the first value of a row is smaller than the last value of the previous row, exposing an invalid flattened binary-search assumption."
+    ],
+    "cost": "The staircase path crosses at most r rows and c columns, giving O(r + c) time and O(1) auxiliary state. The matrix's ordering preconditions are part of that argument."
+  },
+  "steal-packages": {
+    "focus": "Choose or skip each package value without taking adjacent locations",
+    "approach": "At each location, compare skipping it with taking its value plus the best result before the adjacent predecessor. Retain the best result for earlier prefixes rather than greedily choosing a locally largest value. A large middle value can change which neighboring choices remain possible. The empty prefix contributes zero, matching the no-package result.",
+    "checks": [
+      "Test no locations and one location.",
+      "For [2, 3, 5, 1], the best total is seven.",
+      "Include repeated values and an input where the best choice skips more than one location between selected values."
+    ],
+    "cost": "A rolling-prefix DP uses O(n) time and O(1) auxiliary state when only the maximum total is required. Reconstructing selected locations requires additional retained decisions or another reconstruction strategy."
+  },
+  "sum-digits": {
+    "focus": "A decreasing numeric subproblem with a consistent zero case",
+    "approach": "For the lesson's nonnegative integer domain, separate the final decimal digit from the remaining prefix. Add that digit to the result for the prefix. Integer division must remove the digit rather than retain a fractional remainder. The zero case terminates the process and contributes zero. Negative-number handling would require a separate contract, especially for fixed-width minimum values.",
+    "checks": [
+      "Zero returns zero and a single digit returns itself.",
+      "For 123 the answer is six.",
+      "Use internal and trailing zeros, such as 50201 and 200, so digit removal cannot skip the remaining prefix."
+    ],
+    "cost": "Processing d decimal digits takes O(d) steps under fixed-width arithmetic. An iterative implementation uses constant auxiliary state; straightforward recursion retains O(d) frames."
+  },
+  "target-two-sum": {
+    "focus": "All original-index pairs using earlier-value lookup",
+    "approach": "The input values are unique and the output contains every matching pair of distinct original indexes. Before storing the current value, look up its complement among earlier positions. This order prevents matching the current position with itself. A map lookup must distinguish a stored index zero from an absent key. Sorting in place would change index meaning and violate input preservation.",
+    "checks": [
+      "Test an empty list, a missing answer, and a complement stored at index zero.",
+      "Include negative values and zero.",
+      "Compare all pairs with an independent nested-loop reference, normalizing only irrelevant pair order."
+    ],
+    "cost": "With expected constant-time hash operations, scanning n unique values takes expected O(n) time plus emitted output and O(n) retained map entries. Fixed-width complement subtraction needs a safe numeric policy."
+  },
+  "three-moves": {
+    "focus": "Count ordered sequences using moves of one, two, or three",
+    "approach": "A path of remaining length n can begin with a move of one, two, or three. Count the smaller suffix problems and add them because their first moves distinguish the groups. A negative remaining length contributes zero; zero remaining length contributes one completed empty sequence. Order matters, so a move of one followed by two differs from two followed by one.",
+    "checks": [
+      "Negative input returns zero, while zero returns one.",
+      "Lengths one, two, and three return one, two, and four.",
+      "Length four returns seven; a two-move stair recurrence would give a different result."
+    ],
+    "cost": "Memoizing or tabulating n nonnegative states takes O(n) work with constant transitions per state. A rolling three-answer implementation can use O(1) auxiliary storage when only the final count is needed. State the supported numeric range."
+  },
+  "valid-brackets": {
+    "focus": "Last-in-first-out matching of a fixed delimiter alphabet",
+    "approach": "Scan the string, pushing opening ASCII delimiters and matching each closing delimiter against the latest unmatched opener. Reject a close when the stack is empty or the delimiter types differ. Ordinary text is ignored under this lesson's contract. A final nonempty stack means an opener was never closed; equal counts alone cannot establish correct nesting.",
+    "checks": [
+      "Empty input is valid; a lone opener or closer is not.",
+      "The sequence ([)] is invalid despite matching delimiter counts.",
+      "Mix ordinary text with nested brackets and include a delimiter next to a combining mark in languages whose string iteration uses grapheme clusters."
+    ],
+    "cost": "One scan takes O(n) time in the chosen text representation. Up to O(n) unmatched opening delimiters may be retained. Be explicit about whether iteration visits bytes, UTF-16 units, Unicode scalars, or grapheme clusters."
+  },
+  "valid-sudoku-board": {
+    "focus": "Validate existing Sudoku entries across rows, columns, and sub-squares",
+    "approach": "Zero represents an empty cell. Validate the board's supported square shape and value range, then ensure every nonzero entry is unique within its row, column, and sub-square. A board can be incomplete and still valid; this task checks existing entries rather than solving the puzzle or proving it has a completion. A two-by-two board does not have an integer-sized square sub-grid under this contract.",
+    "checks": [
+      "Try valid one-by-one and four-by-four boards.",
+      "Create separate row-only, column-only, and sub-square conflicts.",
+      "Reject invalid shapes, an empty row, and unsupported sub-square dimensions."
+    ],
+    "cost": "For an N-by-N board, inspecting all cells takes O(N²) time. Retaining row, column, and sub-square membership can use O(N²) total entries, with a fixed nine-by-nine board being a bounded special case."
+  },
+  "vending-machine": {
+    "focus": "Minimum-coin dynamic programming with an unreachable sentinel",
+    "approach": "Find the fewest available coins whose values total the requested amount, allowing denominations to be reused. For each amount, compare reachable smaller amounts plus one coin. Keep unreachable states distinct from a valid zero-coin result. Choosing the largest coin first is not generally correct: a denomination system can make a smaller initial choice lead to fewer coins or the only reachable answer.",
+    "checks": [
+      "Return minus one when no denomination combination reaches the target.",
+      "Use coins [2, 3] and amount eight, which needs three coins.",
+      "Try a target below every denomination and a case where several combinations compete."
+    ],
+    "cost": "A table over amounts zero through A with c denominations takes O(A · c) time and O(A) auxiliary storage. This bound depends on the numeric amount, so it is pseudo-polynomial in a binary-encoded amount."
+  },
+  "walk-a-matrix": {
+    "focus": "Clockwise spiral traversal with shrinking boundaries",
+    "approach": "Track the top, bottom, left, and right edges of the unvisited rectangle. Walk one edge at a time in clockwise order, then move that boundary inward. Recheck whether a row or column remains before walking the opposing edge; otherwise a single remaining row or column can be emitted twice. Output uses the matrix values, not an assumed sequence of increasing integers.",
+    "checks": [
+      "An empty row produces an empty traversal.",
+      "Try one row, one column, and a singleton.",
+      "Use wide and tall rectangles with nonconsecutive values to check both bounds and output meaning."
+    ],
+    "cost": "Every cell is emitted once for O(r · c) time. Four boundary indexes use O(1) auxiliary state beyond the required O(r · c) output."
+  }
+}

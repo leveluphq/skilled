@@ -1,0 +1,29 @@
+import BigO from 'content/blocks/BigO';
+import ComplexitySubtitle from 'content/blocks/SolutionSection/ComplexitySubtitle.mdx';
+import VariationsSubtitle from 'content/blocks/SolutionSection/VariationsSubtitle.mdx';
+import LearningOutcomesSubtitle from 'content/blocks/SolutionSection/LearningOutcomesSubtitle.mdx';
+import SolutionSignature from '../QuestionStatement/inlineCode/SolutionSignature';
+import LearningOutcomes from '../LearningOutcomes';
+import SolutionCode from './code/Solution';
+
+We can solve this using a binary search with some modifications to get <BigO.logn /> time.
+
+1. Find the start and end values to locate the current midpoint
+2. Determine which half is ordered correctly (does not contain the rotation)
+3. Using the correctly-ordered half, determine if the `target` is between the value of the first and last item
+4. Update the start and end to the half that must contain the target
+5. Continue looping until the midpoint is the `target` value or the lower and upper bounds converge to the same value
+
+<SolutionCode />
+
+<ComplexitySubtitle />
+
+<p>
+  <BigO.logn /> time and <BigO.constant /> space.
+</p>
+
+We perform a binary search that is slightly modified to account for the direction we move at each point.
+We don't add any additional data structures.
+
+<LearningOutcomesSubtitle />
+<LearningOutcomes />

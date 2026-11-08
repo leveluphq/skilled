@@ -1,0 +1,56 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+A rooted tree organizes nodes through parent-child relationships. Each reachable nonroot node has one parent, and following children does not create a cycle. The recording introduces this vocabulary, common tree forms, and the costs of working with them. A binary tree limits each node to at most two children; it does not automatically impose a search ordering.
+
+## Name the shape before choosing an operation
+
+The root has no parent within the tree. A leaf has no children. A subtree consists of a node and all of its descendants. These terms let you describe a recursive function's input precisely: it often receives a subtree root and returns a fact about that complete subtree.
+
+Depth and height need a counting convention. The course's maximum-depth exercise counts edges, so a root-only tree has depth zero and an empty tree uses minus one. Other sources count nodes. State the convention before comparing results; two different numbers can come from two consistent definitions.
+
+## Keep binary shape separate from search order
+
+In a binary search tree, values in the left and right subtrees obey an ordering rule. In an ordinary binary tree, they do not. An in-order traversal produces sorted values only when the search-tree ordering holds. A balanced shape alone cannot create that ordering, and an ordered tree need not be balanced.
+
+Search-tree operations follow a path whose cost depends on height. Balanced trees can have logarithmic height. An unbalanced tree built from an unfortunate insertion sequence can become a chain and require linear work. Logarithmic search therefore requires a height or balance assumption; the tree's name alone does not establish it.
+
+## Decide what one recursive result means
+
+A depth calculation asks each child for its height, then combines the two returned values. An ancestor calculation returns a different kind of information. Returning a value, returning a node identity, and mutating the tree are distinct contracts even when they use the same traversal structure.
+
+Test an empty tree, a single node, a balanced shape, and a one-sided chain. Continue with [Tree Traversal](/watch/tree-traversal-in-order-pre-order-post-order), then try [Binary Tree Max Depth](/watch/binary-tree-max-depth). Use the [tree traversal tool](/tools/tree-traversal) to compare visit order without assuming that any particular traversal makes an arbitrary tree sorted.
+
+## Read the example's array representation carefully
+
+The function uses heap-indexed slots: the children of position i are at 2i + 1 and 2i + 2. A null slot means there is no node at that position. This is not the compact queue serialization used by some interview platforms.
+
+For `[8, 3, 10, null, 6]`, the root is 8, its left child is 3, and 3's right child is 6. The maximum edge depth is two. A singleton root has depth zero, and an empty tree has depth −1. A value placed below a null parent is unreachable and is ignored by the example's recursive traversal.
+
+## Count reachable nodes and active recursion
+
+For r reachable nodes and height h, the recursive visit uses O(r) calls and O(h) active stack frames. The input array may contain extra unreachable slots; the function does not scan every slot just to validate the representation. Building or validating a different external tree format would add its own cost.
+
+Test an empty input, a null root with trailing values, a singleton, a skewed shape, and a complete small tree. Explicitly state whether height counts edges or nodes: both conventions exist, and a one-node test reveals the difference immediately. The node-based implementations in other lessons use references instead of numeric slots, but the same parent/child reachability rule applies.
+
+## JavaScript example and implementation choices
+
+The input is a dense array whose missing nodes are explicit null values. Undefined holes are outside this representation contract. The helper checks the array bound before reading a slot, then returns −1 for a missing subtree. Math.max combines child heights. The number arithmetic assumes practical array sizes where computing child indices remains an exact safe-integer operation.
+
+### Worked example
+
+```javascript
+function maxDepth(values) {
+    function height(index) {
+        if (index >= values.length || values[index] === null)
+            return -1;
+        return 1 + Math.max(height(2 * index + 1), height(2 * index + 2));
+    }
+    return height(0);
+}
+```
+
+## Continue in JavaScript
+
+[Open Trees](/course/trees) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the JavaScript example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [JavaScript interview preparation guide](/interview-prep/javascript) connects these language choices with further practice and the cross-language operation reference.

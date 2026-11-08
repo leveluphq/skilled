@@ -1,0 +1,30 @@
+```go
+func buildProductArray(input []int64) []int64 {
+	results := make([]int64, len(input))
+	for i := range results {
+		results[i] = 1
+	}
+	leftRunningProduct := int64(1)
+
+	// First use our results slice as the running right product array.
+	// We fill from the right side.
+	for i := 1; i < len(input); i++ {
+		endIdx := len(input) - 1 - i
+		results[endIdx] = results[endIdx+1] * input[endIdx+1]
+	}
+
+	// Refill the results with the product at each point
+	for i := 0; i < len(input); i++ {
+		productExceptSelf := leftRunningProduct * results[i]
+
+		// We use results[i] above so now it can be replaced
+		results[i] = productExceptSelf
+
+		// Now that we have used our left product,
+		// we update it to include the current element.
+		leftRunningProduct = leftRunningProduct * input[i]
+	}
+
+	return results
+}
+```

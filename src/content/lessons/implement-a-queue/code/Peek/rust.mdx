@@ -1,0 +1,5 @@
+```rust
+fn peek(&self) -> Option<i32> {
+    self.first.as_ref().map(|first| first.borrow().data)
+}
+```

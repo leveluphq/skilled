@@ -1,0 +1,13 @@
+```rust
+fn pop(&mut self) -> Option<i32> {
+    if self.length == 0 {
+        return None;
+    }
+
+    // remove() deletes the item from the hash table and gives it back to us
+    let popped_item = self.data.remove(&(self.length - 1));
+    self.length -= 1;
+
+    popped_item
+}
+```

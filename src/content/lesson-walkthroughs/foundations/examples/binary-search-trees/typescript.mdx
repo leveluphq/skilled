@@ -1,0 +1,11 @@
+```typescript
+function containsBST(values: readonly (number | null)[], target: number): boolean {
+  let index = 0;
+  while (index < values.length && values[index] !== null) {
+    const value = values[index]!;
+    if (value === target) return true;
+    index = target < value ? 2 * index + 1 : 2 * index + 2;
+  }
+  return false;
+}
+```

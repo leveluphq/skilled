@@ -1,0 +1,37 @@
+```rust
+impl Solution {
+    pub fn merge_overlapping_intervals(mut intervals: Vec<Interval>) -> Vec<Interval> {
+        if intervals.is_empty() {
+            return vec![];
+        }
+
+        // Sort by start time to get the meetings in the order they occur throughout the day
+        intervals.sort_by(|a, b| a.start.total_cmp(&b.start));
+
+        // The combined intervals list is initialized to the first meeting
+        let mut merged_intervals = vec![intervals[0]];
+
+        for current_interval in intervals {
+            let last = merged_intervals.len() - 1;
+            let latest_merged_interval = &mut merged_intervals[last];
+            let is_overlapping = current_interval.start <= latest_merged_interval.end;
+
+            if is_overlapping {
+                // Get the latest end-time since they overlap and set it as the end time of the combined interval
+                latest_merged_interval.end = current_interval.end.max(latest_merged_interval.end);
+            } else {
+                /*
+                  Since current_interval had the earliest start time of the remaining items,
+                  no additional items can overlap the latest_merged_interval interval we compared current_interval to.
+
+                  Add the current_interval as the last item to the merged interval's output since it did not overlap.
+                  This will be the latest merged interval on the next iteration that we compare against.
+                */
+                merged_intervals.push(current_interval);
+            }
+        }
+
+        merged_intervals
+    }
+}
+```

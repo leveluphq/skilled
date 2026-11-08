@@ -1,0 +1,14 @@
+```cpp
+#include <vector>
+#include <functional>
+
+std::vector<int> fibCalls(int n) {
+    int calls = 0;
+    std::function<int(int)> fib = [&](int value) -> int {
+        ++calls;
+        return value < 2 ? value : fib(value - 1) + fib(value - 2);
+    };
+    const int answer = fib(n);
+    return {answer, calls};
+}
+```

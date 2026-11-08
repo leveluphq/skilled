@@ -1,0 +1,19 @@
+Big O describes how an algorithm's resource use grows as its input grows. It gives you a way to compare approaches before measuring one particular machine. The recording moves from that intuition to a repeatable analysis process: identify the work, choose a case, remove constant factors, and retain every independent input dimension.
+
+## Count operations under a stated model
+
+A loop over n values performs linear work when each iteration does bounded work. Two full nested loops over the same n values perform quadratic work. Two separate loops add to a linear total. Nesting alone is not enough to determine a bound: a pointer that only advances across the input can limit total inner-loop work even when the code contains multiple loops.
+
+Also inspect called operations. Taking a slice copies elements. Looking up a known array index and searching for a value are different costs. An operation that looks like one line can dominate the surrounding loop. The recording's corrected slicing example illustrates why counting lines is an unreliable substitute for counting work.
+
+## Name the case and the input dimensions
+
+Worst-case analysis asks for a bound over every permitted input of a given size. Average-case analysis needs assumptions about a distribution. Amortized analysis spreads occasional expensive operations over a sequence. These descriptions answer different questions, so say which one supports your estimate.
+
+If one loop scans a values and another scans b values, the bound is O(a + b). If each of the a values is compared with every b value, it becomes O(a × b). Replacing both dimensions with n can hide an assumption that the inputs grow together. State whether string comparisons, integer arithmetic, or map operations are being treated as bounded work.
+
+## Separate auxiliary space from the answer
+
+A result array of n values occupies linear space even when the algorithm needs only a few counters beyond it. Recursive calls also consume stack frames. Discuss peak live storage rather than adding every allocation ever made. Input mutation may save allocation while changing the API's behavior.
+
+Use the [complexity practice tool](/tools/complexity-practice) to explain a cost before checking the answer. The [Big O visualizer](/tools/big-o) compares modeled growth curves; its numbers describe the model, not elapsed-time benchmarks for your computer.

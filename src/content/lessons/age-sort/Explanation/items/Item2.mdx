@@ -1,0 +1,62 @@
+import * as React from 'react';
+import BigO from 'content/blocks/BigO';
+import Image from 'content/blocks/Image';
+import { Container } from 'style/elements';
+import ConceptModal from 'content/blocks/ConceptModal';
+import BucketSort from 'content/lessons/sorting/BucketSort.mdx';
+
+Now that we have buckets, we just need to figure out how to map that to a sorted array.
+
+Imagine we have 5 orders:
+
+<Container>
+
+```javascript
+ Customer | Age
+----------------
+    A     |  35
+    B     |  20
+    C     |  35
+    D     |  40
+    E     |  35
+```
+
+</Container>
+
+Our output would be `[20, 35, 35, 35, 40]`.
+We have three orders that match to a customer at 35 years old,
+but in the output it doesn't really matter which customer it is associated to.
+The 35 associated to Customer A is no different than the 35 associated with Customer C or E.
+We just know that we need to account for 35 three times in the output.
+
+All we need to know is the total number of customers in each age bucket.
+From that, we can construct our sorted output array.
+This fixed-range of possible values is exactly how <ConceptModal content={<React.Fragment><h2>Bucket Sort</h2><BucketSort /></React.Fragment>}>bucket sort</ConceptModal> improves over the standard sorting time complexity.
+
+So for our input above, we create buckets with counts like the following:
+
+<Container>
+
+```javascript
+ Age | Count
+------------
+ 20  |   1
+ 35  |   3
+ 40  |   1
+
+// Construct the solution based on the counts
+solution = [20, 35, 35, 35, 40]
+```
+
+</Container>
+
+We can also visualize a simple example of bucketing:
+
+<Image src="/images/bucket-sort.gif" maxWidth="500px" alt="Counting values into buckets allows the sorted output to be reconstructed from bucket frequencies." width={800} height={649} />
+
+Our solution algorithm will consist of two simple steps:
+
+1. Count the number of times every age occurs
+2. Iterate through all the ages and insert it into the solution array based on the total count
+
+With this, we only perform <BigO.n /> operations which reduces our overall time complexity from <BigO.nlogn /> to <BigO.n />.

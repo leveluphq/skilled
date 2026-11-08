@@ -1,0 +1,25 @@
+```kotlin
+class Entry(val key: String, var value: Int)
+
+class HashTable(val size: Int) {
+    // A bucket is created the first time a key is inserted at its index
+    val table = arrayOfNulls<MutableList<Entry>>(size)
+
+    fun get(key: String): Int? {
+        // get a value by key
+        TODO()
+    }
+    fun insert(key: String, value: Int) {
+        // add/update a value at a key
+        TODO()
+    }
+    fun remove(key: String): Int? {
+        // remove a value by key
+        TODO()
+    }
+    fun hash(key: String): Int {
+        // our custom hash function
+        TODO()
+    }
+}
+```

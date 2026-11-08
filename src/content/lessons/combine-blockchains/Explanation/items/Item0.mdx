@@ -1,0 +1,10 @@
+import Image from 'content/blocks/Image';
+
+We are given the head nodes of two sorted blockchains, and we know these blockchains can be represented as linked lists.
+As a result, we want to return the head of a blockchain that is a sorted version of the merged chains.
+
+Since we know that the two input lists are sorted,
+we can pretty quickly determine that we only need to compare the timestamps for the current front node of each list.
+Whichever timestamp is smaller, we add that item to a combined list and iterate past it so that we don't include it again.
+
+<Image src="/images/full-combine-blockchains.gif" alt="Merge two sorted linked chains by repeatedly attaching the smaller current node to the combined chain." width={600} height={338} />

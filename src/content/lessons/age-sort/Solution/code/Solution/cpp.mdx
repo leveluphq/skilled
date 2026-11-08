@@ -1,0 +1,26 @@
+```cpp
+const int MIN_AGE = 0;
+const int MAX_AGE = 100;
+
+class Solution {
+public:
+    vector<int> sortByAge(vector<int>& ageList) {
+        vector<int> sortedAgeList;
+        vector<int> ageCount(MAX_AGE + 1, 0);
+
+        for (int age : ageList) {
+            ageCount[age]++;
+        }
+
+        for (int age = MIN_AGE; age <= MAX_AGE; age++) {
+            int count = ageCount[age];
+
+            for (int i = 0; i < count; i++) {
+                sortedAgeList.push_back(age);
+            }
+        }
+
+        return sortedAgeList;
+    }
+};
+```

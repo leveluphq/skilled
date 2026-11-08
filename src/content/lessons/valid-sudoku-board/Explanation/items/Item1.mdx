@@ -1,0 +1,27 @@
+import Image from 'content/blocks/Image';
+import InlineCode0 from './inlineCode/Item1/Code0';
+import InlineCode1 from './inlineCode/Item1/Code1';
+import InlineCode2 from './inlineCode/Item1/Code2';
+import InlineCode3 from './inlineCode/Item1/Code3';
+import Code0 from './code/Item1/Code0';
+
+<Image src="/images/sudoku-dimensions.png" maxWidth="520px" alt="A nine-by-nine Sudoku board is divided into three-by-three sub-squares." width={1136} height={1136} />
+
+What does it mean for our board to be a valid shape?
+The most obvious thing to check for first is that the board is a square where the number of rows and columns are equal.
+
+In code, the board is represented as a two-dimensional array — or an array of arrays.
+
+First we need to check if the board has any rows <InlineCode3 />.
+
+If we look at `board[index]`, it will return an array for that row, and each item is the corresponding column.
+So to get the first row, we can look at the 0th index <InlineCode0 />.
+To get the total number of rows, we can do <InlineCode1 />.
+To get the total number of columns, we can look at the length of any row.
+For simplicity, we'll look at the first row <InlineCode2 />.
+
+To confirm that our board is a square, the number of rows must be equal to the number of columns.
+
+<Code0 />
+
+Now that we have determined if our board is square, we need to also check the sub-squares.

@@ -1,0 +1,22 @@
+```swift
+class Solution {
+    func combineBlockchains(_ chainHead1: ListNode?, _ chainHead2: ListNode?) -> ListNode? {
+        // Stopping condition when one of lists is nil, we return the other
+        guard let chainHead1 else {
+            return chainHead2
+        }
+        guard let chainHead2 else {
+            return chainHead1
+        }
+
+        // Recursively call our function
+        if chainHead1.data < chainHead2.data {
+            chainHead1.next = combineBlockchains(chainHead1.next, chainHead2)
+            return chainHead1
+        } else {
+            chainHead2.next = combineBlockchains(chainHead1, chainHead2.next)
+            return chainHead2
+        }
+    }
+}
+```

@@ -1,0 +1,9 @@
+```typescript
+function lifoOrder(values: readonly number[]): number[] {
+  const stack: number[] = [];
+  const output: number[] = [];
+  for (const value of values) stack.push(value);
+  while (stack.length > 0) output.push(stack.pop()!);
+  return output;
+}
+```

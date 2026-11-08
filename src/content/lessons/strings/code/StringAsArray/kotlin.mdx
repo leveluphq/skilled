@@ -1,0 +1,11 @@
+```kotlin
+val string = "Hello, world!"
+val array = charArrayOf('H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!')
+
+// Transform an array to a string and compare it to the original string
+println(string == array.joinToString(""))
+// returns true
+
+val chars = string.toCharArray() // Transform a string to an array
+// ['H','e','l','l','o',',',' ','w','o','r','l','d','!']
+```

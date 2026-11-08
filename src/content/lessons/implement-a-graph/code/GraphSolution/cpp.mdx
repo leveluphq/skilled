@@ -1,0 +1,36 @@
+```cpp
+#include <unordered_map>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class Graph {
+public:
+    unordered_map<string, vector<string>> adjacencyList;
+    bool undirected;
+
+    Graph(bool undirected = true) : undirected(undirected) {}
+
+    void addVertex(const string& vertex) {
+        adjacencyList[vertex] = {};
+    }
+
+    void addEdge(const string& source, const string& destination) {
+        adjacencyList[source].push_back(destination);
+
+        if (undirected) {
+            adjacencyList[destination].push_back(source);
+        }
+    }
+
+    void removeVertex(const string& vertex) {
+        adjacencyList.erase(vertex);
+
+        for (auto& [node, edges] : adjacencyList) {
+            edges.erase(remove(edges.begin(), edges.end(), vertex), edges.end());
+        }
+    }
+};
+```

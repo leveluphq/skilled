@@ -1,0 +1,17 @@
+```swift
+func aliasTrace() -> [Int] {
+    class Box {
+        var value: Int
+        init(_ value: Int) { self.value = value }
+    }
+    let original = Box(1)
+    var alias = original
+    var trace = [original.value]
+    alias.value = 2
+    trace.append(original.value)
+    alias = Box(9)
+    trace.append(original.value)
+    trace.append(alias.value)
+    return trace
+}
+```

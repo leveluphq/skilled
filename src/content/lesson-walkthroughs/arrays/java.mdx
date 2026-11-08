@@ -1,0 +1,57 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+An array puts an ordered sequence behind numeric indexes. The useful question in an interview is which operations can reach an element directly and which must move other elements. The recording introduces that distinction, then uses capacity and resizing to explain why a dynamic array can grow without making every append expensive.
+
+## Trace an insertion before naming its cost
+
+Start with `[10, 20, 30, 40]`. Reading index 2 gives 30 without scanning the preceding values. Inserting 15 at index 1 changes the positions of 20, 30, and 40. Those shifts explain the linear work. Removing index 1 closes the same gap in the other direction. Finding the value 30 is a separate operation from reading a known index: an unsorted array may need a scan to find it.
+
+Appending leaves existing indexes alone when spare capacity is available. A dynamic array occasionally allocates more storage and copies its elements. With geometric capacity growth, those copies add up to linear work over a long sequence of appends, giving amortized constant time per append. A single append that triggers a resize can still take linear time.
+
+## Keep the representation assumptions visible
+
+The contiguous, fixed-width array model gives a useful explanation for direct indexed access. A JavaScript array has additional language behavior, including holes and object properties, so that model does not describe every JavaScript array implementation detail. Use the model to reason about the exercise, and distinguish it from promises made by a particular runtime.
+
+An element's size and the complete array allocation are different quantities. Twenty Java integers require 80 bytes for their values; an actual array object has additional overhead. Changing the operating system does not change the Java integer's specified width.
+
+## Practice with operations that look similar
+
+Compare inserting at the beginning, middle, and end. State whether your estimate is worst-case, amortized, or conditional on spare capacity. Include the returned array separately when discussing extra storage. Try an empty array and a full-capacity example before claiming an operation always takes the same work.
+
+Continue with [Implement an Array](/watch/implement-an-array), where shifting and length updates become explicit code, or use the [array topic path](/topics/arrays) to move into matrix traversal and product problems.
+
+## Follow one insertion through the example
+
+Start with `[4, 8, 12]`, an insertion index of `1`, and a new value of `6`. The result should be `[4, 6, 8, 12]`. The prefix before index 1 stays in place. The original suffix moves one position right. The example constructs a separate result, so the caller still owns an unchanged three-element input after the function returns.
+
+Its contract accepts positions from zero through the input length, including insertion after the last element. That differs from the course's small map-backed DynamicArray, whose `insert` method accepts existing positions only. Use `push` to append in that implementation. A shared operation name does not guarantee identical boundary behavior.
+
+## Count copying and check the boundaries
+
+Copying the input and making room for the new value costs O(n) time and O(n) returned storage. An insertion at the beginning moves the largest suffix; an insertion at the end still copies the input in this particular function. Neither case is constant time merely because an array index is involved.
+
+Test an empty input, both endpoints, repeated values, and negative numbers. Check the original array afterward as well as the returned value. If you replace this function with an in-place operation, explain that changed mutation contract before comparing its memory use. The [array operation reference](/reference/data-structure-time-complexity) helps separate indexed access from operations that shift elements.
+
+## Java example and implementation choices
+
+The input is a List of boxed Integer values. Constructing an ArrayList copies its elements into a separate growable list, and add(index, item) shifts the suffix of that copy. The method accepts an insertion position equal to size. It does not mutate the original List, even if that input is an unmodifiable collection such as List.of.
+
+### Worked example
+
+```java
+import java.util.*;
+
+class ArraysInsertExample {
+static List<Integer> arraysInsert(List<Integer> values, int index, int item) {
+    List<Integer> copy = new ArrayList<>(values);
+    copy.add(index, item);
+    return copy;
+}
+}
+```
+
+## Continue in Java
+
+[Open Arrays](/course/arrays) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Java example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Java interview preparation guide](/interview-prep/java) connects these language choices with further practice and the cross-language operation reference.

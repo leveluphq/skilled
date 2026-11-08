@@ -1,0 +1,77 @@
+Event delegation attaches a handler to a containing element and interprets events from its descendants. It can serve a list whose rows change over time without installing a separate listener on every button. Correct delegation still needs a clear action boundary, valid targets, keyboard behavior, and cleanup.
+
+The example below handles native action buttons inside one container. It accepts nested spans or icons inside a button, ignores disabled controls, and refuses buttons owned by a nested delegation boundary. It returns a function that removes exactly the listener it installed.
+
+## Define the action boundary in the markup
+
+Mark each independently delegated region with `data-action-root`. Its action buttons carry `data-action` with an application-defined action name. A nested region gets its own boundary so the outer handler can distinguish its controls from the inner region's controls.
+
+A native button supplies ordinary keyboard activation, focus behavior, and a disabled state. Use `type="button"` when it should not submit a surrounding form. An action that navigates should normally use a real link instead of pretending a button is a link.
+
+The marker identifies event ownership; it is not an authorization mechanism. If an action changes server data, the server still checks the actual user's permissions and input. The client handler should map a small allowlist of action names to behavior rather than execute arbitrary code from an attribute.
+
+## Resolve nested targets before reading the action
+
+A click's target can be the button's label span or an element in an inline icon. Looking only at `event.target.dataset.action` misses those ordinary activations. Walk upward to the nearest eligible button, then verify that it belongs to the intended root.
+
+```javascript
+function delegateActions(root, onAction) {
+  const view = root.ownerDocument.defaultView;
+  if (!view || !root.matches('[data-action-root]')) {
+    throw new Error('Use an attached document element marked data-action-root.');
+  }
+  function handle(event) {
+    const target = event.target;
+    if (!(target instanceof view.Element)) return;
+    const button = target.closest('button[data-action]');
+    if (!button || !root.contains(button) || button.disabled) return;
+    if (button.closest('[data-action-root]') !== root) return;
+    const action = button.getAttribute('data-action');
+    if (action) onAction(action, button, event);
+  }
+  root.addEventListener('click', handle);
+  return () => root.removeEventListener('click', handle);
+}
+```
+
+The document's own Element constructor keeps the target check aligned with that document's realm, which matters for elements created in another window. The example does not cross shadow-root boundaries; a component using Shadow DOM needs an explicit composed-event and retargeting design.
+
+The closest-boundary check is separate from containment. An inner button can be physically contained by an outer root while belonging to a nested root. Both conditions matter when independent widgets share the page.
+
+## Distinguish target, currentTarget, and the resolved control
+
+The event target identifies where the event originated under the event system's retargeting rules. In this listener, currentTarget is the root because that is where the listener is registered. The resolved button is the control whose action the application wants to handle.
+
+Pass the resolved control explicitly rather than expecting currentTarget to become the button. Read the action before scheduling asynchronous work if the DOM might change. If later logic needs an identifier, copy the relevant value under a validated contract rather than depending on a mutable element remaining in the same place.
+
+Do not stop propagation merely because the event was handled. Other listeners may have legitimate work. Stop or cancel behavior only when the widget's interaction contract requires it, and test the consequence for its containing page.
+
+## Keep keyboard activation on the native control
+
+A native button emits click activation for supported keyboard interactions. The delegated click handler can therefore serve mouse, touch, and keyboard users without adding a separate keydown implementation that may double-trigger the action.
+
+Keep a visible focus indicator and a useful accessible name. A button with only an icon needs a label. A disabled native button should not trigger the action; the example checks the disabled property as well as relying on ordinary browser activation behavior.
+
+A custom clickable div would require additional semantics and keyboard work. Prefer an existing native element when its behavior matches the task. If the action changes a region without moving focus, provide an appropriate status announcement when the result would otherwise be hard to detect.
+
+## Dispose of the exact listener you installed
+
+The returned cleanup function closes over the handler identity and root. Calling it removes that listener. Repeating cleanup is harmless under the platform listener-removal behavior. Installing another independent handler creates another lifecycle that should be disposed separately.
+
+Anonymous callback recreation is a common removal mistake: a newly created function with identical source is still a different object. Similarly, repeatedly calling bind creates distinct function objects. Retain the original function or use an abort-signal lifecycle suitable for the widget.
+
+[MDN's addEventListener reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener) documents the platform registration and removal behavior. The [closures guide](/guides/javascript-closures-and-this) connects callback identity with retained state and receiver choices.
+
+## Keep dispatch separate from the model update
+
+Resolve the control and action first, then pass validated data into the application operation. A removed row can make a retained DOM reference stale while an asynchronous action is pending. Capture the stable record identifier, check that the operation still applies when it completes, and update the current model rather than assuming the old element remains the source of truth. This also makes action behavior testable independently of event propagation.
+
+## Test the boundary, not only a direct button click
+
+Install the handler, click a nested label element, and verify the callback receives the expected action and button. Add a new button after installation and verify it works without registering another listener. Mark a button disabled and verify it does no work.
+
+Create a nested action root and activate its button. The outer callback should remain untouched. Then remove the listener through cleanup and activate an outer button again. This last assertion checks the lifecycle result rather than only spying on removeEventListener.
+
+Also test a button without an action attribute, an empty action value, an unrelated descendant, and a target that is not an Element. The small contract keeps these cases understandable. If the widget later introduces links, shadow roots, or custom keyboard navigation, extend the contract and its tests deliberately.
+
+For practice, implement a dynamic list with add, remove, and archive buttons. Keep action dispatch separate from data mutation, and validate item identifiers before using them. Then explain how this design differs from a pub-sub system: DOM propagation carries an event through a tree, while [Pub-Sub](/course/pub-sub-and-event-driven-programming) uses an explicit subscription model that needs its own delivery and unsubscription rules.

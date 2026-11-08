@@ -1,0 +1,31 @@
+```java
+// O(n + m) - we add sequential operations together
+static void multipleInput(int[] input1, int[] input2) {
+    int n = input1.length;
+    int m = input2.length;
+
+    // O(n)
+    for (int i = 0; i < n; i++) {
+        /* do something */
+    }
+
+    // O(m)
+    for (int i = 0; i < m; i++) {
+        /* do something */
+    }
+}
+
+// O(nm) - we multiply nested input
+static void multipleInput(int[] input1, int[] input2) {
+    int n = input1.length;
+    int m = input2.length;
+
+    // O(n)
+    for (int i = 0; i < n; i++) {
+        // O(m)
+        for (int j = 0; j < m; j++) {
+            /* do something */
+        }
+    }
+}
+```

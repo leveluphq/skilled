@@ -1,0 +1,21 @@
+```csharp
+public class Solution {
+    public int GetMaxProfit(int[] prices) {
+        // A trade needs a day to buy and a later day to sell
+        if (prices.Length < 2) {
+            return 0;
+        }
+
+        int maxProfit = 0;
+        int minPrice = prices[0];
+
+        foreach (int price in prices) {
+            int profitAtCurrentDay = price - minPrice;
+            maxProfit = Math.Max(maxProfit, profitAtCurrentDay);
+            minPrice = Math.Min(price, minPrice);
+        }
+
+        return maxProfit;
+    }
+}
+```

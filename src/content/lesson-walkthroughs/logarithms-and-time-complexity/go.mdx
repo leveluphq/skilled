@@ -1,0 +1,53 @@
+{/* Composed by contentgen:walkthroughs. Edit foundation sources. */}
+
+Logarithmic time appears when an algorithm repeatedly reduces its remaining work by a constant factor. If each step halves a collection, the number of steps grows slowly even when the collection becomes large. The recording connects this process to logarithms so the notation follows from the work instead of becoming a formula to memorize.
+
+## Count the reductions on a small example
+
+Start with 32 candidates. Halving leaves 16, then 8, 4, 2, and 1. Five reductions are enough because 2 to the fifth power is 32. Starting with 64 candidates adds one reduction. Doubling the input therefore adds roughly one step rather than doubling the work.
+
+The logarithm's base reflects the reduction factor. Reducing by thirds gives a different exact count from reducing by halves, but those logarithms differ by a constant multiplier. Big O discards that constant, so both can be written O(log n) when the reduction factor stays fixed.
+
+## Include the work inside each reduction
+
+A binary search uses bounded work to examine a midpoint and select a remaining interval. If instead each level scans the entire remaining interval, the total cost needs an additional sum. Repeatedly halving the input does not by itself prove logarithmic time; it only bounds how many reduction levels occur.
+
+Storage also depends on implementation. An iterative search can track two boundaries and a midpoint with constant auxiliary space. A recursive version keeps an active call chain. Creating a fresh slice at every call introduces copying and allocation that an index-boundary version avoids.
+
+## Check whether the structure stays balanced
+
+A balanced binary search tree has logarithmic height. An ordinary unbalanced tree built from sorted inserts can become a chain and have linear height. The search rule alone does not guarantee a logarithmic path. State the balance assumption when comparing tree operations with binary search over a sorted array.
+
+Practice [Searching and Binary Search](/watch/searching-and-binary-search) with a target below every value, above every value, and absent between two values. Write the candidate interval after each step and explain why the discarded portion cannot contain the target. The [Big O visualizer](/tools/big-o) lets you compare logarithmic growth with linear and quadratic models without treating those models as machine benchmarks.
+
+## Count integer halvings precisely
+
+The example repeatedly divides a positive integer by two, discarding the fractional part, until the value is at most one. For 13, the visited values are 13, 6, 3, and 1, so the answer is three steps. For one, the answer is zero. The exact count for a positive integer n is floor(log₂ n).
+
+This loop is O(log n) time and O(1) additional storage under fixed-width arithmetic. The loop count is not n/2: that expression describes only the size after one reduction. Successive reductions multiply their effects, which is why powers of two provide useful boundaries.
+
+## Keep the rounding rule tied to the algorithm
+
+Check 7, 8, and 9. Their counts are two, three, and three. A process that rounds each division upward has a different exact count, even though it also has logarithmic growth. Binary search likewise needs an interval definition before you can count its exact comparisons.
+
+The example accepts positive integers and does not compute a floating-point logarithm. That avoids rounding near powers of two and makes the progress condition visible. Zero and negative inputs belong outside this contract; a caller that accepts arbitrary data should validate them. When explaining O(log n), say what shrinks, by what factor, and when it stops. Naming the logarithm alone does not explain why the loop terminates.
+
+## Go example and implementation choices
+
+The int parameter is copied into the function and repeatedly divided by two. For positive values, Go's integer division matches the required floor reduction. Its architecture-dependent width sets the available input range but does not change the loop invariant. Check seven, eight, and nine to expose the point where another binary digit adds exactly one step.
+
+### Worked example
+
+```go
+func HalvingSteps(n int) int {
+    steps := 0
+    for n > 1 { n /= 2; steps++ }
+    return steps
+}
+```
+
+## Continue in Go
+
+[Open Logarithms and Time Complexity](/course/logarithms-and-time-complexity) for the complete course explanation. The course keeps your saved programming-language choice. Use this standalone page to inspect the Go example and run it in your own local environment. Follow the original course sequence when you want the surrounding lesson context and related exercises.
+
+The [Go interview preparation guide](/interview-prep/go) connects these language choices with further practice and the cross-language operation reference.

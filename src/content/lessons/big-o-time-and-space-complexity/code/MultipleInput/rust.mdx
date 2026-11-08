@@ -1,0 +1,31 @@
+```rust
+// O(n + m) - we add sequential operations together
+fn multiple_input_sequential(input1: &[i32], input2: &[i32]) {
+    let n = input1.len();
+    let m = input2.len();
+
+    // O(n)
+    for i in 0..n {
+        // do something
+    }
+
+    // O(m)
+    for i in 0..m {
+        // do something
+    }
+}
+
+// O(nm) - we multiply nested input
+fn multiple_input_nested(input1: &[i32], input2: &[i32]) {
+    let n = input1.len();
+    let m = input2.len();
+
+    // O(n)
+    for i in 0..n {
+        // O(m)
+        for j in 0..m {
+            // do something
+        }
+    }
+}
+```

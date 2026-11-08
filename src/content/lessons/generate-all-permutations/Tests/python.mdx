@@ -1,0 +1,59 @@
+```python
+import unittest
+test_results = []
+
+class TestSum(unittest.TestCase):
+    
+    global test_results
+    test_passed = False
+    description = ""
+    actual_result = ""
+    expected_result = ""
+    
+    def tearDown(self):
+        test_results.append({ 'passed' : self.test_passed , 'description' :self.description, 'expected': self.expected_result , 'userAnswer': self.actual_result })
+        self.test_passed = False 
+
+    def test_1(self):
+        self.description = "0 characters"
+        input = ''
+        self.actual_result = generate_permutations(input)
+        self.expected_result = ['']
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+        
+    def test_2(self):
+        self.description = "1 character"
+        input = 'a'
+        self.actual_result = sorted(generate_permutations(input))
+        self.expected_result = ['a']
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_3(self):
+        self.description = "2 characters"
+        input = 'ab'
+        self.actual_result = sorted(generate_permutations(input))
+        self.expected_result = sorted(['ab', 'ba'])
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+    def test_4(self):
+        self.description = "3 characters"
+        input = 'dev'
+        self.actual_result = sorted(generate_permutations(input))
+        self.expected_result = sorted(['dev', 'dve', 'edv', 'evd', 'vde', 'ved'])
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+    
+    def test_5(self):
+        self.description = "repeated letters"
+        input = 'bob'
+        self.actual_result = sorted(generate_permutations(input))
+        self.expected_result = sorted(['bob', 'bbo', 'bob', 'bbo', 'obb', 'obb'])
+        self.assertEqual(self.actual_result, self.expected_result, self.description)
+        self.test_passed = True
+
+def runtests():
+    unittest.main(exit=False)
+```

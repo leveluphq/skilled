@@ -1,0 +1,38 @@
+```rust
+// Signed, as an end can move to before the first row or column
+let row_count = matrix.len() as i32;
+let column_count = matrix[0].len() as i32;
+let mut start_row = 0;
+let mut end_row = row_count - 1;
+let mut start_column = 0;
+let mut end_column = column_count - 1;
+let item_at = |row: i32, column: i32| matrix[row as usize][column as usize];
+
+// Walk right (top row)
+for column in start_column..=end_column {
+    let node_in_first_row = item_at(start_row, column);
+}
+// We have walked across the entirety of the starting row, so increment the index.
+start_row += 1;
+
+// Walk down (right column)
+for row in start_row..=end_row {
+    let node_in_last_column = item_at(row, end_column);
+}
+// We have walked across end column, so we decrement the index.
+end_column -= 1;
+
+// Walk left (bottom row)
+for column in (start_column..=end_column).rev() {
+    let node_in_last_row = item_at(end_row, column);
+}
+// We have walked across end row, so we decrement the index.
+end_row -= 1;
+
+// Walk up (left column)
+for row in (start_row..=end_row).rev() {
+    let node_in_first_column = item_at(row, start_column);
+}
+// We have walked across the starting column, so we increment the index
+start_column += 1;
+```

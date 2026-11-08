@@ -1,0 +1,19 @@
+# What a deploy uploads: only what `next build` needs. The Vercel CLI reads
+# this file instead of .gitignore, so anything not allowed here (.env,
+# internal-docs, secrets, notes) stays on this machine.
+#
+# Every path starts with /, so it matches only at the top of the repo. The CLI
+# drops a leading ./, so a line like ./runner becomes `runner`, which matches
+# every folder of that name, src/utils/shared/runner included.
+/*
+!/src
+!/public
+!/package.json
+!/package-lock.json
+!/.npmrc
+!/.nvmrc
+!/next.config.js
+!/next-env.d.ts
+!/additional.d.ts
+!/tsconfig.json
+!/vercel.json

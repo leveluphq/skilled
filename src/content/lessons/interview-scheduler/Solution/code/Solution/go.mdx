@@ -1,0 +1,39 @@
+```go
+import (
+	"cmp"
+	"slices"
+)
+
+func mergeOverlappingIntervals(intervals []Interval) []Interval {
+	if len(intervals) == 0 {
+		return []Interval{}
+	}
+
+	// Sort by start time to get the meetings in the order they occur throughout the day
+	slices.SortFunc(intervals, func(a, b Interval) int {
+		return cmp.Compare(a.Start, b.Start)
+	})
+
+	// The combined intervals slice is initialized to the first meeting
+	mergedIntervals := []Interval{intervals[0]}
+
+	for _, currentInterval := range intervals {
+		latestMergedInterval := &mergedIntervals[len(mergedIntervals)-1]
+		isOverlapping := currentInterval.Start <= latestMergedInterval.End
+
+		if isOverlapping {
+			// Get the latest end time since they overlap and set it as the end time of the combined interval
+			latestMergedInterval.End = max(currentInterval.End, latestMergedInterval.End)
+		} else {
+			// Since currentInterval had the earliest start time of the remaining items,
+			// no additional items can overlap the latestMergedInterval we compared currentInterval to.
+			//
+			// Add the currentInterval as the last item to the merged intervals since it did not overlap.
+			// This will be the latest merged interval on the next iteration that we compare against.
+			mergedIntervals = append(mergedIntervals, currentInterval)
+		}
+	}
+
+	return mergedIntervals
+}
+```

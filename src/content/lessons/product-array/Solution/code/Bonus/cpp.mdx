@@ -1,0 +1,34 @@
+```cpp
+class Solution {
+public:
+    vector<long long> buildProductArrayWithDivision(vector<long long>& nums) {
+        // Zeroes are now an edge case because we can't divide by them
+        int numZeros = 0;
+        // Init product to 1
+        long long product = 1;
+
+        for (long long element : nums) {
+            if (element == 0) {
+                numZeros++;
+            } else {
+                product = product * element;
+            }
+        }
+
+        for (size_t i = 0; i < nums.size(); i++) {
+            // If no zeroes, don't worry about edge cases
+            if (numZeros == 0) {
+                nums[i] = product / nums[i];
+            } else if (numZeros == 1 && nums[i] == 0) {
+                // Handle the 1 zero where it will have the only non-zero product
+                nums[i] = product;
+            } else {
+                // If we have more than one 0, they're all 0
+                nums[i] = 0;
+            }
+        }
+
+        return nums;
+    }
+};
+```

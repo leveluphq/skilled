@@ -1,0 +1,12 @@
+```csharp
+public Node Pop() {
+    Node removedItem = this.last;
+
+    // Update `last` as long as we have items left in the stack
+    if (removedItem != null) {
+        this.last = removedItem.prev;
+    }
+
+    return removedItem;
+}
+```

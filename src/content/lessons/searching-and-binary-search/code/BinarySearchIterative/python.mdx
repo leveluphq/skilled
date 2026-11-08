@@ -1,0 +1,20 @@
+```python
+# Iterative Binary Search
+def iterative_binary_search(array, target):
+    lower_bound = 0
+    upper_bound = len(array) - 1
+
+    while lower_bound <= upper_bound:
+        midpoint_index = (lower_bound + upper_bound) // 2
+        midpoint_item = array[midpoint_index]
+
+        if target == midpoint_item:
+            return midpoint_index
+
+        if midpoint_item < target:
+            lower_bound = midpoint_index + 1
+        elif midpoint_item > target:
+            upper_bound = midpoint_index - 1
+
+    return -1
+```
