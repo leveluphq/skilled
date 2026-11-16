@@ -3,11 +3,7 @@ import walkthroughs from 'content/lesson-walkthroughs/catalog.json';
 import videos from 'content/videos/catalog.json';
 export {};
 
-const original = {
-  ROOT_URL: process.env.ROOT_URL,
-  SITE_NAME: process.env.SITE_NAME,
-  SITE_SOURCE_URL: process.env.SITE_SOURCE_URL,
-};
+const original = { ROOT_URL: process.env.ROOT_URL, SITE_NAME: process.env.SITE_NAME };
 afterEach(() => {
   for (const [key, value] of Object.entries(original)) {
     if (value === undefined) delete process.env[key];
@@ -20,20 +16,15 @@ it('lists the complete public resource inventory with the configured publisher a
   jest.resetModules();
   process.env.ROOT_URL = 'https://school.example';
   process.env.SITE_NAME = 'School [Code]';
-  process.env.SITE_SOURCE_URL = 'https://code.example/school/site/';
   const { buildLlms } = require('../llms');
   const text = buildLlms();
   expect(text.startsWith('# School \\[Code\\]\n\n> ')).toBe(true);
   expect(text).not.toContain('skilled.dev');
-  const allLinks = Array.from(
+  // Only the site's own published pages: scripts/check-public-seo.py checks the same inventory
+  const links = Array.from(
     text.matchAll(/\]\((https:[^)]+)\)/g),
     (match: RegExpMatchArray) => match[1],
   );
-  // The one link off the site: its configured source repository, without the trailing slash
-  expect(allLinks.filter((url) => url.startsWith('https://code.example/'))).toEqual([
-    'https://code.example/school/site',
-  ]);
-  const links = allLinks.filter((url) => !url.startsWith('https://code.example/'));
   const expected = new Set([
     '/learn',
     '/interview-prep',
