@@ -13,7 +13,8 @@ import PageLayoutDefault from 'components/pages/PageLayout/Default';
 import AuthModal from 'components/blocks/Modal/AuthModal';
 import useSmoothScrollLinks from 'components/hooks/useSmoothScrollLinks';
 import { TREY_TWITTER, TREY_LINKEDIN, TREY_YOUTUBE, JOBS_LINK } from 'utils/constants/internal';
-import { LogoLinkedin20, LogoTwitter20, LogoYoutube20 } from '@carbon/icons-react';
+import { LogoGithub20, LogoLinkedin20, LogoTwitter20, LogoYoutube20 } from '@carbon/icons-react';
+import { site } from 'utils/shared/site';
 import SampleVideo from './SampleVideo';
 import SampleArticle from './SampleArticle';
 import LessonCard from './LessonCard';
@@ -66,6 +67,7 @@ import {
   GutterWrapper,
   BrandText,
   PurchaseButton,
+  GithubButton,
   Card,
   CardContent,
   IconList,
@@ -151,12 +153,10 @@ const HomePage: React.FC<Props> = () => {
           <Header>
             Skilled.dev{IS_FULL_COURSE_FREE ? ' - Free coding interview practice' : ''}
           </Header>
-          {IS_FULL_COURSE_FREE && (
-            <HeaderDescription>
-              Study data structures, algorithms, and JavaScript with explanations and coding
-              exercises. Full course access is currently free.
-            </HeaderDescription>
-          )}
+          <HeaderDescription>
+            Study data structures and algorithms with explanations and coding exercises in ten
+            languages. {IS_FULL_COURSE_FREE ? 'Free and open source.' : 'Open source.'}
+          </HeaderDescription>
           <Subheader>Ace Your Coding Interviews</Subheader>
           <TerminalWrapper>
             <GradientBorder
@@ -190,6 +190,10 @@ const HomePage: React.FC<Props> = () => {
                       </span>{' '}
                       <ArrowRight20 />
                     </PurchaseButton>
+                    <GithubButton href={site.sourceUrl} target="_blank" rel="noopener noreferrer">
+                      <LogoGithub20 />
+                      <span style={{ marginLeft: '12px' }}>Star on GitHub</span>
+                    </GithubButton>
                   </TerminalButtonWrapper>
                 </TerminalTextWrapper>
               </TerminalWindow>

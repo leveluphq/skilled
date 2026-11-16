@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Login16 } from '@carbon/icons-react';
+import { Login16, LogoGithub16 } from '@carbon/icons-react';
+import { site } from 'utils/shared/site';
 import { PageRoot } from 'utils/constants/routes';
 import getActiveLessonSlug from 'utils/client/getActiveLessonSlug';
 import { getHasSubscription } from 'utils/client/lesson';
@@ -106,6 +107,15 @@ const Navbar: React.FC<Props> = (props) => {
                 onBlur={handleNavbarBlur}
               >
                 Find a Job
+              </NavItem>
+              <NavItem
+                href={site.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onFocus={handleNavbarFocus}
+                onBlur={handleNavbarBlur}
+              >
+                <LogoGithub16 style={{ marginRight: '6px' }} /> GitHub
               </NavItem>
             </Section>
             <Section>

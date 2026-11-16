@@ -19,6 +19,8 @@ const site = {
   logo: new URL(process.env.SITE_LOGO || '/logo-square.png', publicOrigin).href,
   twitter:
     process.env.SITE_TWITTER || (publicOrigin === 'https://skilled.dev' ? '@skilled_dev' : ''),
+  // The open-source repository the site links to ("Star on GitHub", the footer, the docs).
+  sourceUrl: (process.env.SITE_SOURCE_URL || 'https://github.com/leveluphq/skilled').replace(/\/+$/, ''),
   indexable: process.env.APP_STAGE === 'production' && process.env.SITE_INDEXABLE !== 'false',
 };
 

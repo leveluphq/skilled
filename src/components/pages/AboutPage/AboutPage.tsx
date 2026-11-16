@@ -8,6 +8,7 @@ import StyledMarkdown from 'components/blocks/StyledMarkdown';
 
 import { Title, ContentWrapper } from './styles';
 import { TREY_LINKEDIN } from 'utils/constants/internal';
+import { site } from 'utils/shared/site';
 
 const AboutPage: NextPage = () => (
   <PageLayoutDefault>
@@ -114,6 +115,14 @@ const AboutPage: NextPage = () => (
         <p>
           I have put thousands of hours into research, writing content, and building the platform. I
           am incredibly excited to teach you everything that I know.
+        </p>
+        <p>
+          Skilled.dev is open source. The lessons, their tests, and the code runner are all{' '}
+          <a href={site.sourceUrl} target="_blank" rel="noopener noreferrer">
+            on GitHub
+          </a>
+          , so you can run the whole course on your own computer, fix a mistake you spot, or add a
+          language. The <a href="/docs">developer docs</a> show how to set it up.
         </p>
         <p>
           I have also built a bunch of tools on gitconnected.com to help you grow your career as a

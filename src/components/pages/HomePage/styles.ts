@@ -599,6 +599,32 @@ export const TerminalButtonWrapper = styled.div`
   margin-top: 3rem;
 `;
 
+/** The secondary call to action under the terminal's main button: an outline on the black terminal. */
+export const GithubButton = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 360px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 0.8rem 0.5rem;
+  font-size: 1em;
+  font-weight: 600;
+  border-radius: 2px;
+  border: 1px solid ${rgba(BasePalette.White, 0.5)};
+  color: ${BasePalette.White};
+  transition: background-color 250ms ease-in-out, border-color 250ms ease-in-out;
+
+  &:visited {
+    color: ${BasePalette.White};
+  }
+
+  &:hover {
+    background-color: ${rgba(BasePalette.White, 0.08)};
+    border-color: ${BasePalette.White};
+  }
+`;
+
 export const LinkSimple = styled.a`
   color: inherit;
   text-decoration: underline;
