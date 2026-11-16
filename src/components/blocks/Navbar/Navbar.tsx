@@ -20,6 +20,8 @@ import {
   NavItem,
   LogoLink,
   HiddenItem,
+  StarButton,
+  StarButtonText,
   FADE_TIMER_MS,
 } from './styles';
 
@@ -108,17 +110,18 @@ const Navbar: React.FC<Props> = (props) => {
               >
                 Find a Job
               </NavItem>
-              <NavItem
+            </Section>
+            <Section>
+              <StarButton
                 href={site.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 onFocus={handleNavbarFocus}
                 onBlur={handleNavbarBlur}
               >
-                <LogoGithub16 style={{ marginRight: '6px' }} /> GitHub
-              </NavItem>
-            </Section>
-            <Section>
+                <LogoGithub16 />
+                <StarButtonText>Star on GitHub</StarButtonText>
+              </StarButton>
               <AuthSection
                 {...props}
                 show={handleLoaded}

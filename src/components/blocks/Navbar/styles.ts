@@ -11,6 +11,7 @@ import {
   DropdownMenu,
 } from 'components/blocks/Dropdown/styles';
 import { pageWidthStyles } from 'style/elements';
+import { rgba } from 'style/utils/color';
 
 export const FADE_TIMER_MS = 200;
 const FONT_SIZE_EM = 0.9;
@@ -168,6 +169,62 @@ export const CTAButton = styled(RawButton)`
 
   &:focus {
     background-color: ${(props) => props.theme.color.cta};
+  }
+`;
+
+/** The navbar's call to star the open-source repository: a button, not a plain nav link. */
+export const StarButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  height: 34px;
+  margin-right: 16px;
+  padding: 0 14px;
+  border: 1px solid ${({ theme }) => rgba(theme.color.textPrimary, 0.28)};
+  border-radius: 6px;
+  background-color: ${({ theme }) => rgba(theme.color.textPrimary, 0.06)};
+  color: ${({ theme }) => theme.color.textPrimary};
+  font-size: ${FONT_SIZE_EM - 0.05}em;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease;
+
+  &:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  svg {
+    flex: none;
+    fill: currentColor;
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    color: ${({ theme }) => theme.color.brand};
+    border-color: ${({ theme }) => theme.color.brand};
+    background-color: ${({ theme }) => rgba(theme.color.brand, 0.1)};
+  }
+
+  ${tablet()} {
+    width: 34px;
+    margin-right: 4px;
+    padding: 0;
+    justify-content: center;
+  }
+`;
+
+/** Hidden on small screens, but still read by screen readers, so the icon-only button keeps its name. */
+export const StarButtonText = styled.span`
+  ${tablet()} {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 `;
 

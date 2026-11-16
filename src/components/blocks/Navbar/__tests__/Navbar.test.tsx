@@ -317,10 +317,10 @@ describe('Navbar account menu', () => {
     expect(within(dialog).getByText('Google')).toBeInTheDocument();
   });
 
-  it('links to the open-source repository', () => {
+  it('asks visitors to star the open-source repository', () => {
     renderNavbar({ loading: false });
 
-    const link = screen.getByRole('link', { name: 'GitHub' });
+    const link = screen.getByRole('link', { name: 'Star on GitHub' });
     expect(link).toHaveAttribute('href', 'https://github.com/leveluphq/skilled');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
