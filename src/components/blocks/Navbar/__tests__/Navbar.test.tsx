@@ -311,8 +311,19 @@ describe('Navbar account menu', () => {
     fireEvent.click(button);
 
     expect(screen.getByText('Sign Up or Log In')).toBeInTheDocument();
-    expect(screen.getByText('GitHub')).toBeInTheDocument();
-    expect(screen.getByText('Google')).toBeInTheDocument();
+    // The navbar has its own GitHub link (the source), so look inside the dialog
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByText('GitHub')).toBeInTheDocument();
+    expect(within(dialog).getByText('Google')).toBeInTheDocument();
+  });
+
+  it('links to the open-source repository', () => {
+    renderNavbar({ loading: false });
+
+    const link = screen.getByRole('link', { name: 'GitHub' });
+    expect(link).toHaveAttribute('href', 'https://github.com/leveluphq/skilled');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('shows the viewer’s current coding language as the switcher trigger', () => {

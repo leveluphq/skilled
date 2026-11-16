@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { site } from 'utils/shared/site';
 
 const Navigation = styled.nav`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
   min-width: 0;
   text-align: left;
@@ -43,16 +44,6 @@ const Navigation = styled.nav`
   @media (max-width: 600px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px 20px;
-    section:last-child {
-      grid-column: 1 / -1;
-      padding-top: 20px;
-      border-top: 1px solid ${({ theme }) => theme.color.border};
-    }
-    section:last-child ul {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
   }
 `;
 
@@ -78,6 +69,16 @@ const groups = [
     ],
   },
   {
+    title: 'Open source',
+    links: [
+      ['GitHub', site.sourceUrl],
+      ['Docs', '/docs'],
+      ['Run it locally', '/docs#install'],
+      ['Report a security issue', `${site.sourceUrl}/security/policy`],
+      ['License', `${site.sourceUrl}/blob/main/LICENSE`],
+    ],
+  },
+  {
     title: 'About',
     links: [
       ['About us', '/about'],
@@ -96,9 +97,15 @@ export default function FooterNavigation() {
           <ul>
             {group.links.map(([label, href]) => (
               <li key={href}>
-                <Link href={href}>
-                  <a>{label}</a>
-                </Link>
+                {/^https?:\/\//.test(href) ? (
+                  <a href={href} target="_blank" rel="noopener noreferrer">
+                    {label}
+                  </a>
+                ) : (
+                  <Link href={href}>
+                    <a>{label}</a>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

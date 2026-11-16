@@ -5,6 +5,7 @@ const original = {
   SITE_NAME: process.env.SITE_NAME,
   SITE_INDEXABLE: process.env.SITE_INDEXABLE,
   SITE_IMAGE: process.env.SITE_IMAGE,
+  SITE_SOURCE_URL: process.env.SITE_SOURCE_URL,
 };
 
 afterEach(() => {
@@ -48,4 +49,14 @@ it.each([
   process.env.SITE_INDEXABLE = indexable;
   const { site } = require('../site');
   expect(site.indexable).toBe(expected);
+});
+
+it('links to the upstream repository unless a fork names its own', () => {
+  jest.resetModules();
+  delete process.env.SITE_SOURCE_URL;
+  expect(require('../site').site.sourceUrl).toBe('https://github.com/leveluphq/skilled');
+
+  jest.resetModules();
+  process.env.SITE_SOURCE_URL = 'https://github.com/someone/skilled-fork/';
+  expect(require('../site').site.sourceUrl).toBe('https://github.com/someone/skilled-fork');
 });

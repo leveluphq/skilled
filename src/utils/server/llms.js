@@ -43,6 +43,8 @@ const buildLlms = () => {
       '/course',
       'Browse the curriculum and companion language guides; individual lesson access varies.',
     ),
+    entry('Developer docs', '/docs', 'Run the site, its lessons and its code runner locally.'),
+    `- [Source code](${site.sourceUrl}): ${inlineText('The open-source repository for this site.')}`,
     '',
   ];
   lines.push('## Programming-language lesson walkthroughs', '');

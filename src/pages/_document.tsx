@@ -173,6 +173,7 @@ export default class MyDocument extends Document {
                 name: site.name,
                 url: absoluteUrl('/'),
                 logo: site.logo,
+                sameAs: [site.sourceUrl],
               },
             ]}
           />

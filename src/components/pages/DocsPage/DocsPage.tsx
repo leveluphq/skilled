@@ -60,7 +60,11 @@ const DocsPage: NextPage = () => {
         <DocsContainer>
           <Title>Skilled.dev Developer Docs</Title>
           <Description>
-            This page is the web-accessible local setup guide. File-based version: <code>/docs/README.md</code>
+            How to run Skilled.dev on your own computer. The code is{' '}
+            <a href={site.sourceUrl} target="_blank" rel="noopener noreferrer">
+              open source on GitHub
+            </a>
+            , and this guide is also in the repository as <code>docs/README.md</code>.
           </Description>
 
           <DocsGrid>
