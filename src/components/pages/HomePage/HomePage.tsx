@@ -27,7 +27,6 @@ import SampleArticle from './SampleArticle';
 import { Props } from './props';
 
 import {
-  Page,
   Container,
   Hero,
   HeroEyebrow,
@@ -125,7 +124,7 @@ const HomePage: React.FC<Props> = () => {
   return (
     <>
       <PageLayoutDefault>
-        <Page>
+        <>
           <Hero>
             <Container>
               <HeroEyebrow>Free and open-source coding interview prep</HeroEyebrow>
@@ -413,7 +412,7 @@ const HomePage: React.FC<Props> = () => {
               </ButtonRow>
             </Container>
           </Closing>
-        </Page>
+        </>
       </PageLayoutDefault>
       <AuthModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>

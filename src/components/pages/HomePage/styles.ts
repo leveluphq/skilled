@@ -24,10 +24,6 @@ export const Container = styled.div`
   }
 `;
 
-export const Page = styled.div`
-  overflow-x: hidden;
-`;
-
 /* Type */
 
 export const Eyebrow = styled.p`
@@ -200,7 +196,7 @@ export const Hero = styled.section`
     z-index: 0;
     top: -260px;
     left: 50%;
-    width: 1100px;
+    width: min(1100px, 100%);
     height: 760px;
     transform: translateX(-50%);
     background: radial-gradient(
@@ -688,6 +684,12 @@ export const Teacher = styled.div`
 
 export const Closing = styled.section`
   position: relative;
+  overflow: hidden;
+
+  @supports (overflow: clip) {
+    overflow: clip;
+  }
+
   padding: 144px 0 152px;
   text-align: center;
 
@@ -697,7 +699,7 @@ export const Closing = styled.section`
     z-index: 0;
     left: 50%;
     bottom: -200px;
-    width: 1000px;
+    width: min(1000px, 100%);
     height: 640px;
     transform: translateX(-50%);
     background: radial-gradient(
