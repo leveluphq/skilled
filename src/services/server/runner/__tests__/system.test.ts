@@ -55,6 +55,16 @@ const isRunning = (pid: number) => {
   }
 };
 
+// A killed process still answers kill(pid, 0) until it's reaped, and an orphan is reaped
+// by init, which can take a moment on a busy machine (CI). Wait up to two seconds.
+const stopsRunning = async (pid: number) => {
+  const deadline = Date.now() + 2000;
+  while (isRunning(pid) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 25));
+  }
+  return !isRunning(pid);
+};
+
 describe('runOnSystem', () => {
   it('runs a JavaScript program on its stdin and reports it as Judge0 would', async () => {
     const outcome = await runJs(
@@ -95,7 +105,7 @@ describe('runOnSystem', () => {
     const sleeper = Number(outcome.stdout.toString().trim());
 
     expect(sleeper).toBeGreaterThan(0);
-    expect(isRunning(sleeper)).toBe(false);
+    expect(await stopsRunning(sleeper)).toBe(true);
   });
 
   it('ends what a program started when it exits, as a container would', async () => {
@@ -106,7 +116,7 @@ describe('runOnSystem', () => {
 
     expect(outcome.statusId).toBe(Judge0Status.Accepted);
     expect(Date.now() - started).toBeLessThan(5000);
-    expect(isRunning(Number(outcome.stdout.toString().trim()))).toBe(false);
+    expect(await stopsRunning(Number(outcome.stdout.toString().trim()))).toBe(true);
   });
 
   it('stops a busy program at the CPU limit, before the wall-clock one', async () => {
