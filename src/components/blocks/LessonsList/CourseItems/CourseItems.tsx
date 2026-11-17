@@ -1,7 +1,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { Container } from 'style/elements';
-import LessonCard from 'components/blocks/LessonCard';
+import { ArrowRight16 } from '@carbon/icons-react';
+import LessonStatusIcon from 'components/blocks/LessonStatusIcon';
 import FeedbackModal from 'components/blocks/Modal/FeedbackModal';
 import { GetCategoryLessonsQuery } from 'types/generated/client';
 import { PageRoot } from 'utils/constants/routes';
@@ -10,12 +11,15 @@ import { Tabs, TABS, Lessons } from '../props';
 
 import {
   SectionTitle,
+  SectionNumber,
   SectionSubtitle,
   SectionDescription,
   Section,
   List,
   StyledLink,
   Item,
+  ItemText,
+  ItemDescription,
   QuestionWrapper,
 } from '../styles';
 
@@ -37,18 +41,18 @@ const LessonList: React.FC<SectionProps & { title: string }> = ({ lessons, statu
     <QuestionWrapper>
       <SectionSubtitle>{title}</SectionSubtitle>
       <List>
-        {lessons.length > 0 &&
-          lessons.map((lesson) => {
-            return (
-              <Item key={lesson.id}>
-                <Link href={`/${PageRoot.Course}/${lesson.slug}`} passHref>
-                  <StyledLink>
-                    <LessonCard hoverable lesson={lesson} status={statuses[lesson.id]} />
-                  </StyledLink>
-                </Link>
-              </Item>
-            );
-          })}
+        {lessons.map((lesson) => (
+          <Item key={lesson.id}>
+            <ItemText>
+              <Link href={`/${PageRoot.Course}/${lesson.slug}`} passHref>
+                <StyledLink>{lesson.title}</StyledLink>
+              </Link>
+              {!!lesson.description && <ItemDescription>{lesson.description}</ItemDescription>}
+            </ItemText>
+            <LessonStatusIcon status={statuses[lesson.id]} />
+            <ArrowRight16 className="row-arrow" />
+          </Item>
+        ))}
       </List>
     </QuestionWrapper>
   );
@@ -89,7 +93,8 @@ const CourseItems: React.FC<MainProps> = ({ categories, statuses, activeTab }) =
           <Section id={category.slug} key={category.id}>
             <Container>
               <SectionTitle>
-                {index}. {category.title}
+                <SectionNumber>{String(index + 1).padStart(2, '0')}</SectionNumber>{' '}
+                {category.title}
               </SectionTitle>
               {!!category.description && (
                 <SectionDescription>{category.description}</SectionDescription>
