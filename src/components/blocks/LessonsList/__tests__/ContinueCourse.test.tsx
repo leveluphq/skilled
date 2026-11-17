@@ -91,7 +91,7 @@ describe('ContinueCourse', () => {
   it('links to the active lesson with its title and description', () => {
     renderContinue(withViewer());
 
-    expect(screen.getByText('Continue where you left off:')).toBeInTheDocument();
+    expect(screen.getByText('Continue where you left off')).toBeInTheDocument();
     expect(screen.getByRole('link')).toHaveAttribute('href', '/course/two-sum');
     expect(screen.getByText('Two Sum')).toBeInTheDocument();
     expect(screen.getByText('Find the pair that adds up')).toBeInTheDocument();
@@ -103,13 +103,15 @@ describe('ContinueCourse', () => {
       statuses: { l1: LessonStatus.NeedsReview },
     });
 
-    expect(container.querySelector('svg')).toBeInTheDocument();
+    // The status icon beside the title, plus the card's arrow
+    expect(container.querySelectorAll('svg')).toHaveLength(2);
   });
 
-  it('renders the card without an icon when the lesson has no status yet', () => {
+  it('renders the card without a status icon when the lesson has no status yet', () => {
     const { container } = renderContinue({ ...withViewer(), statuses: {} });
 
     expect(screen.getByRole('link')).toBeInTheDocument();
-    expect(container.querySelector('svg')).not.toBeInTheDocument();
+    // Only the card's arrow
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
   });
 });

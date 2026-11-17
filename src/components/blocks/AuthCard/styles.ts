@@ -1,29 +1,39 @@
 import styled, { css } from 'styled-components';
+import { BasePalette } from 'style/theme';
 import { rgba } from 'style/utils/color';
 import { RawButton } from 'style/elements';
 import { mobile } from 'style/breakpoints';
 
-export const Container = styled.div`
-  border: 2px solid ${({ theme }) => theme.color.basePalette.SkyBlue};
-  background-color: ${({ theme }) => rgba(theme.color.basePalette.SkyBlue, 0.1)};
-  padding: 1.5rem;
-`;
+/* A quiet prompt under the course header: a line of text and a button, not a boxed banner */
 
-export const Title = styled.h3`
-  font-weight: 400;
-  font-size: 1.25em;
-  text-align: center;
-  line-height: 1;
+export const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  padding: 16px 16px 16px 24px;
+  border-radius: 14px;
+  background-color: ${rgba(BasePalette.Brand, 0.08)};
 
   ${mobile()} {
-    line-height: 1.5;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
   }
+`;
+
+export const Title = styled.p`
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: ${({ theme }) => theme.color.textPrimary};
 `;
 
 export const ButtonWrapper = styled.div`
   display: flex;
-  margin-top: 1.5rem;
-  justify-content: center;
+  flex: none;
+  gap: 8px;
 
   ${mobile()} {
     flex-direction: column;
@@ -31,55 +41,46 @@ export const ButtonWrapper = styled.div`
 `;
 
 const buttonStyles = css`
-  border-radius: 2px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 200ms ease-in-out, opacity 200ms ease-in-out;
-  padding: 0.75rem;
-  width: 50%;
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
   line-height: 1;
-
-  &:first-child {
-    margin-right: 0.5rem;
-
-    ${mobile()} {
-      margin: 0;
-      margin-bottom: 1rem;
-    }
-  }
-
-  &:last-child {
-    margin-left: 0.5rem;
-
-    ${mobile()} {
-      margin: 0;
-    }
-  }
-
-  ${mobile()} {
-    width: 100%;
-  }
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color 150ms ease;
 `;
 
 export const RegisterButton = styled(RawButton)`
   ${buttonStyles};
-  color: ${(props) => props.theme.color.textPrimary};
-  background-color: ${({ theme }) => theme.color.cta};
-  font-weight: 600;
+  color: #0b0c0e;
+  background-color: ${({ theme }) => theme.color.brand};
 
   &:hover {
-    background-color: ${({ theme }) => rgba(theme.color.cta, 0.85)};
+    background-color: #f5e266;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.color.brand};
+    outline-offset: 2px;
   }
 `;
 
 export const UpgradeButton = styled.a`
   ${buttonStyles};
-  color: ${(props) => props.theme.color.textPrimary};
-  background-color: ${(props) => props.theme.color.alert};
-  font-weight: 600;
+  color: ${({ theme }) => theme.color.textPrimary};
+  background-color: ${rgba(BasePalette.White, 0.08)};
+
+  &:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
 
   &:hover {
-    background-color: ${(props) => props.theme.color.alertHover};
+    background-color: ${rgba(BasePalette.White, 0.14)};
   }
 `;

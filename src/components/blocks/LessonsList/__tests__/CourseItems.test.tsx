@@ -66,13 +66,11 @@ const renderItems = (props: any = {}) => render(ui(props));
 const lessonTitles = () => screen.getAllByRole('link').map((el) => el.textContent!.trim());
 
 describe('CourseItems', () => {
-  it('numbers the category headings starting from zero', () => {
+  it('numbers the category headings from 01, like the home page outline', () => {
     renderItems();
 
-    // BUG: the heading uses the raw array index, so the first category on the
-    // course page reads "0. Arrays" instead of "1. Arrays".
-    expect(screen.getByText(/Arrays/).textContent).toBe('0. Arrays');
-    expect(screen.getByText(/Graphs/).textContent).toBe('1. Graphs');
+    const headings = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
+    expect(headings).toEqual(['01 Arrays', '02 Graphs']);
   });
 
   it('anchors each section to the category slug for the sidebar jump links', () => {
@@ -162,7 +160,7 @@ describe('CourseItems', () => {
     expect(screen.queryAllByRole('link')).toHaveLength(0);
     expect(screen.queryByText('Questions')).not.toBeInTheDocument();
     // the headings survive so the page does not look broken
-    expect(screen.getByText('0. Arrays')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '01 Arrays' })).toBeInTheDocument();
   });
 
   it('refreshes the filtered list when statuses arrive after first paint', () => {
@@ -182,13 +180,11 @@ describe('CourseItems', () => {
     expect(lessonTitles()).toEqual(['Big O']);
   });
 
-  it('keeps the index cards compact by leaving descriptions off', () => {
+  it("shows each lesson's description under the link, so the link is named by the title", () => {
     renderItems({ categories: [categories[1]] });
 
-    // LessonCard only renders `description` when `showDescription` is passed,
-    // and the course index deliberately does not - only the "continue where you
-    // left off" card does.
-    expect(screen.queryByText('BFS description')).not.toBeInTheDocument();
-    expect(within(screen.getByRole('link')).getByText('BFS')).toBeInTheDocument();
+    expect(screen.getByText('BFS description')).toBeInTheDocument();
+    expect(screen.getByRole('link')).toHaveTextContent(/^BFS$/);
+    expect(within(screen.getByRole('link')).queryByText('BFS description')).not.toBeInTheDocument();
   });
 });
