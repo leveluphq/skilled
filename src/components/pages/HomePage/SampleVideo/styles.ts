@@ -19,8 +19,8 @@ export const Item = styled.div`
 `;
 
 export const ItemVideo = styled(Item)`
-  width: 60%;
-  padding-right: 0;
+  width: 62%;
+  padding: 0;
 
   ${mobile()} {
     margin-bottom: 1rem;
@@ -29,8 +29,35 @@ export const ItemVideo = styled(Item)`
   }
 `;
 
+/* The chapters as a plain list beside the video, not a stack of boxes */
 export const ItemContents = styled(Item)`
-  width: 40%;
+  width: 38%;
+  padding: 0 0 0 48px;
+
+  li {
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 15px;
+  }
+
+  button,
+  button:hover,
+  button:focus {
+    padding: 16px 0;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.07);
+  }
+
+  button:hover,
+  button:focus {
+    color: ${({ theme }) => theme.color.brand};
+  }
+
+  button span:last-child {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    color: ${({ theme }) => theme.color.textLight};
+  }
 
   ${mobile()} {
     width: 100%;
@@ -38,8 +65,18 @@ export const ItemContents = styled(Item)`
   }
 `;
 
+export const ChaptersTitle = styled.p`
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.color.textLight};
+`;
+
 export const StyledVideoBox = styled(VideoBox)`
-  box-shadow: ${({ theme }) => `${theme.shadow.stroke}, ${theme.shadow.high}`};
-  border: 6px solid ${({ theme }) => theme.color.brand};
-  border-radius: 6px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: #0b0c0e;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 80px -30px rgba(0, 0, 0, 0.6);
 `;
