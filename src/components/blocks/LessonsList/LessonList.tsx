@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { Container } from 'style/elements';
 import { Statuses } from 'utils/constants/lesson';
 import { Tabs, Props } from './props';
 import CourseItems from './CourseItems';
 import Sidebar from './Sidebar';
-import Title from './Title';
 
 import { Wrapper } from './styles';
 
@@ -23,9 +21,6 @@ const LessonList: React.FC<Props> = ({ data }) => {
   return (
     <div>
       <Wrapper>
-        <Container>
-          <Title />
-        </Container>
         <div>
           <CourseItems categories={categories} statuses={statuses} activeTab={activeTab} />
         </div>

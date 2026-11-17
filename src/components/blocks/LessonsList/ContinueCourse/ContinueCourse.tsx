@@ -1,11 +1,18 @@
 import * as React from 'react';
 import Link from 'next/link';
-import LessonCard from 'components/blocks/LessonCard';
+import { ArrowRight20 } from '@carbon/icons-react';
+import LessonStatusIcon from 'components/blocks/LessonStatusIcon';
 import getActiveLessonSlug from 'utils/client/getActiveLessonSlug';
 import { Container } from 'style/elements';
 import { Props } from './props';
 
-import { ContinueSectionTitle, Section, StyledLink } from '../styles';
+import {
+  Continue,
+  ContinueLink,
+  ContinueSectionTitle,
+  ContinueTitle,
+  ContinueDescription,
+} from '../styles';
 
 const ContinueCourse: React.FC<Props> = ({ data, statuses }) => {
   const viewer = data && data.users_by_pk;
@@ -17,21 +24,24 @@ const ContinueCourse: React.FC<Props> = ({ data, statuses }) => {
   }
 
   return (
-    <Section>
-      <Container>
-        <ContinueSectionTitle>Continue where you left off:</ContinueSectionTitle>
+    <Container>
+      <Continue>
         <Link href={href} passHref>
-          <StyledLink>
-            <LessonCard
-              hoverable
-              showDescription
-              lesson={activeLesson}
-              status={statuses[activeLesson.id]}
-            />
-          </StyledLink>
+          <ContinueLink>
+            <div>
+              <ContinueSectionTitle>Continue where you left off</ContinueSectionTitle>
+              <ContinueTitle>
+                {activeLesson.title} <LessonStatusIcon status={statuses[activeLesson.id]} />
+              </ContinueTitle>
+              {!!activeLesson.description && (
+                <ContinueDescription>{activeLesson.description}</ContinueDescription>
+              )}
+            </div>
+            <ArrowRight20 />
+          </ContinueLink>
         </Link>
-      </Container>
-    </Section>
+      </Continue>
+    </Container>
   );
 };
 

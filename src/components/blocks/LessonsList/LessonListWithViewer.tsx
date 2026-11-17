@@ -7,7 +7,6 @@ import SubscriptionSuccess from './SubscriptionSuccess';
 import ContinueCourse from './ContinueCourse';
 import CourseItems from './CourseItems';
 import Sidebar from './Sidebar';
-import Title from './Title';
 
 import { Wrapper, ButtonTab, TabWrapper } from './styles';
 
@@ -30,8 +29,7 @@ const LessonList: React.FC<PropsWithViewer> = ({ data }) => {
       <SubscriptionSuccess />
       <Wrapper>
         <Container>
-          <Title />
-          <TabWrapper>
+          <TabWrapper role="tablist" aria-label="Filter lessons by progress">
             <ButtonTab
               role="tab"
               aria-selected={activeTab === Tabs.All}
