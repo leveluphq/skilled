@@ -45,6 +45,9 @@ import {
   TerminalBody,
   TerminalLine,
   HighlightText,
+  HeroLanguages,
+  FollowRow,
+  JobLink,
   Section,
   SectionHeader,
   Eyebrow,
@@ -56,10 +59,8 @@ import {
   Feature,
   Demo,
   DemoFrame,
-  LanguageGrid,
   Outline,
   Teacher,
-  TeacherLinks,
   Closing,
   GiftCard,
 } from './styles';
@@ -178,6 +179,45 @@ const HomePage: React.FC<Props> = () => {
                   ))}
                 </TerminalBody>
               </Terminal>
+              <HeroLanguages>
+                <p>Practice in {languageGuides.length} languages</p>
+                <ul aria-label="Programming language guides">
+                  {languageGuides.map((guide) => {
+                    const language = guide.slug.toUpperCase() as CodingLanguage;
+                    return (
+                      <li key={guide.slug}>
+                        <Link href={resourcePath(guide)} passHref>
+                          <a>
+                            <img
+                              src={LANGUAGE_LOGOS[language]}
+                              alt=""
+                              aria-hidden="true"
+                              width={20}
+                              height={20}
+                            />
+                            {programmingLanguageLabel(guide.slug)}
+                          </a>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </HeroLanguages>
+              <FollowRow aria-label="Follow your teacher">
+                <span>Follow your teacher</span>
+                <a href={TREY_TWITTER} target="_blank" rel="noopener noreferrer">
+                  <LogoTwitter16 /> @treyhuffine
+                </a>
+                <a href={TREY_LINKEDIN} target="_blank" rel="noopener noreferrer">
+                  <LogoLinkedin16 /> LinkedIn
+                </a>
+                <a href={TREY_YOUTUBE} target="_blank" rel="noopener noreferrer">
+                  <LogoYoutube16 /> YouTube
+                </a>
+                <JobLink href={JOBS_LINK} target="_blank" rel="noopener noreferrer">
+                  When you're ready, find a job <ArrowRight16 />
+                </JobLink>
+              </FollowRow>
             </Container>
           </Hero>
 
@@ -197,8 +237,8 @@ const HomePage: React.FC<Props> = () => {
                   <dd>{videos.length}</dd>
                 </div>
                 <div>
-                  <dt>languages you can run code in</dt>
-                  <dd>{languageGuides.length}</dd>
+                  <dt>free and open source</dt>
+                  <dd>100%</dd>
                 </div>
               </Stats>
               <LogoCloud>
@@ -313,41 +353,6 @@ const HomePage: React.FC<Props> = () => {
           <Section>
             <Container>
               <SectionHeader>
-                <Eyebrow>Languages</Eyebrow>
-                <SectionTitle>Practice in the language you'll interview in</SectionTitle>
-                <SectionLead>
-                  Free guides for each language cover its collections, its quirks and worked
-                  algorithms. Each lesson's editor shows the languages it runs.
-                </SectionLead>
-              </SectionHeader>
-              <LanguageGrid aria-label="Programming language guides">
-                {languageGuides.map((guide) => {
-                  const language = guide.slug.toUpperCase() as CodingLanguage;
-                  return (
-                    <li key={guide.slug}>
-                      <Link href={resourcePath(guide)} passHref>
-                        <a>
-                          <img
-                            src={LANGUAGE_LOGOS[language]}
-                            alt=""
-                            aria-hidden="true"
-                            width={32}
-                            height={32}
-                            loading="lazy"
-                          />
-                          <span>{programmingLanguageLabel(guide.slug)}</span>
-                        </a>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </LanguageGrid>
-            </Container>
-          </Section>
-
-          <Section>
-            <Container>
-              <SectionHeader>
                 <Eyebrow>The course</Eyebrow>
                 <SectionTitle>Twelve topics, from Big O to dynamic programming</SectionTitle>
                 <SectionLead>
@@ -404,51 +409,22 @@ const HomePage: React.FC<Props> = () => {
           <Section>
             <Container>
               <Teacher>
-                <img
-                  src="/images/home/trey-teaching.jpg"
-                  alt="Trey Huffine teaching a room of developers"
-                  width={1080}
-                  height={810}
-                  loading="lazy"
-                />
                 <div>
                   <Eyebrow>Your teacher</Eyebrow>
                   <SectionTitle>Learn from someone who's hired engineers</SectionTitle>
+                </div>
+                <div>
                   <SectionLead>
                     I'm Trey Huffine. I received a Google offer after my first year as a software
                     engineer, then spent years in Silicon Valley startups interviewing candidates
                     and helping shape how they were hired. Skilled.dev is what I learned from both
                     sides of the table.
                   </SectionLead>
-                  <TeacherLinks>
-                    <li>
-                      <Link href={`/${PageRoot.About}`} passHref>
-                        <TextLink>
-                          More about me <ArrowRight16 />
-                        </TextLink>
-                      </Link>
-                    </li>
-                    <li>
-                      <TextLink href={TREY_TWITTER} target="_blank" rel="noopener noreferrer">
-                        <LogoTwitter16 /> @treyhuffine
-                      </TextLink>
-                    </li>
-                    <li>
-                      <TextLink href={TREY_LINKEDIN} target="_blank" rel="noopener noreferrer">
-                        <LogoLinkedin16 /> LinkedIn
-                      </TextLink>
-                    </li>
-                    <li>
-                      <TextLink href={TREY_YOUTUBE} target="_blank" rel="noopener noreferrer">
-                        <LogoYoutube16 /> YouTube
-                      </TextLink>
-                    </li>
-                    <li>
-                      <TextLink href={JOBS_LINK} target="_blank" rel="noopener noreferrer">
-                        Ready? Find a job <ArrowRight16 />
-                      </TextLink>
-                    </li>
-                  </TeacherLinks>
+                  <Link href={`/${PageRoot.About}`} passHref>
+                    <TextLink>
+                      More about me <ArrowRight16 />
+                    </TextLink>
+                  </Link>
                 </div>
               </Teacher>
             </Container>
