@@ -458,32 +458,47 @@ export const HeroLanguages = styled.div`
   }
 `;
 
+/* The teacher's profiles as chips in each network's color, and the job board in brand yellow */
 export const FollowRow = styled.nav`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 12px 24px;
-  margin-top: 36px;
-  font-size: 15px;
-  color: ${({ theme }) => theme.color.textLight};
+  gap: 10px;
+  margin-top: 32px;
+  font-size: 14px;
+
+  > span {
+    margin-right: 6px;
+    color: ${({ theme }) => theme.color.textLight};
+  }
 
   a {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background-color: ${rgba(BasePalette.White, 0.06)};
     font-weight: 600;
-    color: ${({ theme }) => theme.color.textSecondary};
+    color: ${({ theme }) => theme.color.textPrimary};
     text-decoration: none;
-    transition: color 150ms ease;
+    transition: background-color 150ms ease, transform 150ms ease;
   }
 
   a:visited {
-    color: ${({ theme }) => theme.color.textSecondary};
+    color: ${({ theme }) => theme.color.textPrimary};
   }
 
   a:hover {
-    color: ${({ theme }) => theme.color.textPrimary};
+    background-color: ${rgba(BasePalette.White, 0.12)};
+    transform: translateY(-1px);
+  }
+
+  a:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.color.brand};
+    outline-offset: 2px;
   }
 
   svg {
@@ -491,23 +506,40 @@ export const FollowRow = styled.nav`
     fill: currentColor;
   }
 
-  ${mobile()} {
-    gap: 12px 18px;
-    font-size: 14px;
+  a[href*='x.com'] svg {
+    fill: ${BasePalette.White};
+  }
 
+  a[href*='linkedin.com'] svg {
+    fill: #4a9eff;
+  }
+
+  a[href*='youtube.com'] svg {
+    fill: #ff4e45;
+  }
+
+  ${mobile()} {
     > span {
       flex-basis: 100%;
+      margin: 0 0 2px;
+    }
+
+    a {
+      height: 34px;
+      padding: 0 12px;
+      font-size: 13px;
     }
   }
 `;
 
 export const JobLink = styled.a`
   && {
+    background-color: ${rgba(BasePalette.Brand, 0.14)};
     color: ${({ theme }) => theme.color.brand};
   }
 
   &&:hover {
-    color: #f5e266;
+    background-color: ${rgba(BasePalette.Brand, 0.24)};
   }
 
   svg {
