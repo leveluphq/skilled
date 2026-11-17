@@ -55,10 +55,10 @@ export const Lead = styled.p`
 /* Viewer progress filter: a quiet segmented control */
 
 export const TabWrapper = styled.div`
-  display: inline-flex;
+  display: flex;
   gap: 4px;
-  max-width: 100%;
-  margin-top: 40px;
+  width: 100%;
+  margin-top: 32px;
   padding: 4px;
   overflow-x: auto;
   border-radius: 12px;
@@ -71,9 +71,11 @@ export const TabWrapper = styled.div`
 
 export const ButtonTab = styled(RawButton)<{ color: string; isActive?: boolean }>`
   display: inline-flex;
+  flex: 1;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  height: 36px;
+  height: 40px;
   padding: 0 16px;
   border-radius: 9px;
   font-family: inherit;

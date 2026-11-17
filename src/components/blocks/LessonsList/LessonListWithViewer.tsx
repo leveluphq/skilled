@@ -28,6 +28,8 @@ const LessonList: React.FC<PropsWithViewer> = ({ data }) => {
     <div>
       <SubscriptionSuccess />
       <Wrapper>
+        {/* Where to pick up comes first; the filter applies to the lessons below it */}
+        <ContinueCourse statuses={statuses} />
         <Container>
           <TabWrapper role="tablist" aria-label="Filter lessons by progress">
             <ButtonTab
@@ -69,7 +71,6 @@ const LessonList: React.FC<PropsWithViewer> = ({ data }) => {
           </TabWrapper>
         </Container>
         <div role="tabpanel" aria-label={activeTab}>
-          <ContinueCourse statuses={statuses} />
           <CourseItems categories={categories} statuses={statuses} activeTab={activeTab} />
         </div>
       </Wrapper>
