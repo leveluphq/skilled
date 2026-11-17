@@ -1,39 +1,27 @@
 import * as React from 'react';
-import { TREY_TWITTER, TREY_LINKEDIN, TREY_YOUTUBE } from 'utils/constants/internal';
-import { LogoLinkedin16, LogoTwitter16, LogoYoutube16 } from '@carbon/icons-react';
+import { publicCourse } from 'content/resources/publicCourse';
+import { LessonType } from 'utils/constants/lesson';
+import FollowTeacher from 'components/blocks/FollowTeacher';
 
-import { TitleWrapper, TitleText, FollowContainer, SocialMediaIcon, ShareTitle } from '../styles';
+import { Header, Eyebrow, TitleText, Lead } from '../styles';
 
-const Title = () => {
-  return (
-    <TitleWrapper>
-      <TitleText>Coding interview course</TitleText>
-      <FollowContainer>
-        <ShareTitle>Follow teacher</ShareTitle>{' '}
-        <SocialMediaIcon
-          href={TREY_TWITTER}
-          aria-label="Teacher on Twitter"
-          rel="noopener noreferrer"
-        >
-          <LogoTwitter16 />
-        </SocialMediaIcon>{' '}
-        <SocialMediaIcon
-          href={TREY_LINKEDIN}
-          aria-label="Teacher on LinkedIn"
-          rel="noopener noreferrer"
-        >
-          <LogoLinkedin16 />
-        </SocialMediaIcon>{' '}
-        <SocialMediaIcon
-          href={TREY_YOUTUBE}
-          aria-label="Teacher on YouTube"
-          rel="noopener noreferrer"
-        >
-          <LogoYoutube16 />
-        </SocialMediaIcon>
-      </FollowContainer>
-    </TitleWrapper>
-  );
-};
+const lessons = publicCourse.categories.reduce<
+  typeof publicCourse.categories[0]['lessons']
+>((all, category) => all.concat(category.lessons), []);
+const questions = lessons.filter((lesson) => lesson.type === LessonType.Question).length;
+
+/** The course page's header: what's in the course, and the teacher's links. */
+const Title = () => (
+  <Header>
+    <Eyebrow>The course</Eyebrow>
+    <TitleText>Coding interview course</TitleText>
+    <Lead>
+      {lessons.length} lessons across {publicCourse.categories.length} topics:{' '}
+      {lessons.length - questions} that teach the ideas, and {questions} interview questions you
+      solve and test in the editor.
+    </Lead>
+    <FollowTeacher align="start" showJob={false} />
+  </Header>
+);
 
 export default Title;

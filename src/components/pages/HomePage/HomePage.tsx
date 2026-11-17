@@ -8,13 +8,10 @@ import {
   Book24,
   Code24,
   LogoGithub20,
-  LogoLinkedin16,
-  LogoTwitter16,
-  LogoYoutube16,
   Video24,
 } from '@carbon/icons-react';
 import { IS_FULL_COURSE_FREE } from 'utils/constants/payments';
-import { CodingLanguage } from 'utils/constants/lesson';
+import { languageLogo } from 'utils/client/languageLogos';
 import { languageGuides, resourcePath } from 'content/resources';
 import videos from 'content/videos/catalog.json';
 import { programmingLanguageLabel } from 'utils/shared/programmingLanguages';
@@ -24,7 +21,7 @@ import { PageRoot } from 'utils/constants/routes';
 import PageLayoutDefault from 'components/pages/PageLayout/Default';
 import AuthModal from 'components/blocks/Modal/AuthModal';
 import useSmoothScrollLinks from 'components/hooks/useSmoothScrollLinks';
-import { TREY_TWITTER, TREY_LINKEDIN, TREY_YOUTUBE, JOBS_LINK } from 'utils/constants/internal';
+import FollowTeacher from 'components/blocks/FollowTeacher';
 import SampleVideo from './SampleVideo';
 import SampleArticle from './SampleArticle';
 import { Props } from './props';
@@ -46,8 +43,7 @@ import {
   TerminalLine,
   HighlightText,
   HeroLanguages,
-  FollowRow,
-  JobLink,
+  HeroFollow,
   Section,
   SectionHeader,
   Eyebrow,
@@ -119,22 +115,6 @@ const TERMINAL_LINES = [
   <>Never bomb an interview again.</>,
 ];
 
-// A logo for each language the code editor runs
-const LOGOS = 'https://gitconnected.com/public/images/tutorials/svg';
-const LANGUAGE_LOGOS: Record<CodingLanguage, string> = {
-  [CodingLanguage.Javascript]: `${LOGOS}/javascript.svg`,
-  [CodingLanguage.Typescript]: `${LOGOS}/typescript.svg`,
-  [CodingLanguage.Python]: `${LOGOS}/python.svg`,
-  [CodingLanguage.Java]: `${LOGOS}/java.svg`,
-  [CodingLanguage.Cpp]: `${LOGOS}/c-plus-plus.svg`,
-  [CodingLanguage.Csharp]: `${LOGOS}/c-sharp.svg`,
-  [CodingLanguage.Go]: `${LOGOS}/golang.svg`,
-  [CodingLanguage.Kotlin]: `${LOGOS}/kotlin.svg`,
-  [CodingLanguage.Swift]: `${LOGOS}/ios-swift.svg`,
-  // Rust's logo is black, so this copy is white for the dark background
-  [CodingLanguage.Rust]: '/images/languages/rust.svg',
-};
-
 const HomePage: React.FC<Props> = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const openSignUp = () => setIsOpen(true);
@@ -183,13 +163,12 @@ const HomePage: React.FC<Props> = () => {
                 <p>Practice in {languageGuides.length} languages</p>
                 <ul aria-label="Programming language guides">
                   {languageGuides.map((guide) => {
-                    const language = guide.slug.toUpperCase() as CodingLanguage;
                     return (
                       <li key={guide.slug}>
                         <Link href={resourcePath(guide)} passHref>
                           <a>
                             <img
-                              src={LANGUAGE_LOGOS[language]}
+                              src={languageLogo(guide.slug)}
                               alt=""
                               aria-hidden="true"
                               width={20}
@@ -203,21 +182,9 @@ const HomePage: React.FC<Props> = () => {
                   })}
                 </ul>
               </HeroLanguages>
-              <FollowRow aria-label="Follow your teacher">
-                <span>Follow your teacher</span>
-                <a href={TREY_TWITTER} target="_blank" rel="noopener noreferrer">
-                  <LogoTwitter16 /> @treyhuffine
-                </a>
-                <a href={TREY_LINKEDIN} target="_blank" rel="noopener noreferrer">
-                  <LogoLinkedin16 /> LinkedIn
-                </a>
-                <a href={TREY_YOUTUBE} target="_blank" rel="noopener noreferrer">
-                  <LogoYoutube16 /> YouTube
-                </a>
-                <JobLink href={JOBS_LINK} target="_blank" rel="noopener noreferrer">
-                  When you're ready, find a job <ArrowRight16 />
-                </JobLink>
-              </FollowRow>
+              <HeroFollow>
+                <FollowTeacher />
+              </HeroFollow>
             </Container>
           </Hero>
 
