@@ -389,6 +389,136 @@ export const HighlightText = styled.span<{ delaySeconds: number }>`
   }
 `;
 
+/* Under the terminal: the languages, then the teacher's links and the job board */
+
+export const HeroLanguages = styled.div`
+  margin-top: 64px;
+
+  p {
+    margin: 0 0 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: ${({ theme }) => theme.color.textLight};
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 14px 0 10px;
+    border-radius: 999px;
+    background-color: ${rgba(BasePalette.White, 0.05)};
+    font-size: 14px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.color.textPrimary};
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  a:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  a:hover {
+    background-color: ${rgba(BasePalette.White, 0.1)};
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    flex: none;
+  }
+
+  ${mobile()} {
+    margin-top: 48px;
+
+    a {
+      height: 34px;
+      font-size: 13px;
+    }
+
+    img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+`;
+
+export const FollowRow = styled.nav`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px 24px;
+  margin-top: 36px;
+  font-size: 15px;
+  color: ${({ theme }) => theme.color.textLight};
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.color.textSecondary};
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  a:visited {
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+
+  a:hover {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  svg {
+    flex: none;
+    fill: currentColor;
+  }
+
+  ${mobile()} {
+    gap: 12px 18px;
+    font-size: 14px;
+
+    > span {
+      flex-basis: 100%;
+    }
+  }
+`;
+
+export const JobLink = styled.a`
+  && {
+    color: ${({ theme }) => theme.color.brand};
+  }
+
+  &&:hover {
+    color: #f5e266;
+  }
+
+  svg {
+    transition: transform 150ms ease;
+  }
+
+  &:hover svg {
+    transform: translateX(2px);
+  }
+`;
+
 /* Proof: numbers and the companies learners went on to */
 
 export const Stats = styled.dl`
@@ -536,56 +666,6 @@ export const DemoFrame = styled.div`
   }
 `;
 
-/* Languages */
-
-export const LanguageGrid = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  a {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
-    border-radius: 12px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.color.textPrimary};
-    text-decoration: none;
-    transition: background-color 150ms ease;
-  }
-
-  a:visited {
-    color: ${({ theme }) => theme.color.textPrimary};
-  }
-
-  a:hover {
-    background-color: ${rgba(BasePalette.White, 0.05)};
-  }
-
-  img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    flex: none;
-  }
-
-  ${tablet()} {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  ${mobile()} {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    a {
-      padding: 12px 8px;
-    }
-  }
-`;
-
 /* Course outline: a numbered list, not a wall of cards */
 
 export const Outline = styled.ol`
@@ -639,21 +719,16 @@ export const Outline = styled.ol`
   }
 `;
 
-/* The teacher */
+/* The teacher: a title on the left, the bio on the right */
 
 export const Teacher = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: 72px;
 
-  img {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    border-radius: 16px;
+  ${SectionLead} {
+    margin: 0 0 24px;
   }
 
   ${tablet()} {
@@ -662,24 +737,7 @@ export const Teacher = styled.div`
 
   ${mobile()} {
     grid-template-columns: minmax(0, 1fr);
-    gap: 32px;
-  }
-`;
-
-export const TeacherLinks = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 28px;
-  margin: 32px 0 0;
-  padding: 0;
-  list-style: none;
-
-  a {
-    color: ${({ theme }) => theme.color.textSecondary};
-  }
-
-  a:visited {
-    color: ${({ theme }) => theme.color.textSecondary};
+    gap: 24px;
   }
 `;
 
