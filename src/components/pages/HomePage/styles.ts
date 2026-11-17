@@ -1,783 +1,748 @@
 import styled, { css, keyframes } from 'styled-components';
 import { BasePalette } from 'style/theme';
-import {
-  Container,
-  ActionButtonLink,
-  ButtonLink,
-  GhostButtonLink,
-  GhostButton,
-  Button,
-  CONTAINER_PAD,
-} from 'style/elements';
 import { mobile, tablet } from 'style/breakpoints';
 import { rgba } from 'style/utils/color';
-import companyStyle from 'style/company';
-import CardWrapper from 'components/blocks/Card';
 
-const homeButtonBaseStyles = css`
-  min-width: 200px;
-  height: 50px;
-  padding: 0px 24px;
+/*
+ * The home page. One type scale, one accent (the brand yellow) and whitespace
+ * instead of cards and borders: sections are separated by space, and surfaces
+ * are only used where something is a real window (the terminal, the editor).
+ */
+
+const CONTENT_WIDTH = 1180;
+const INK = '#0B0C0E';
+const MONO = "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace";
+
+export const Container = styled.div`
+  width: 100%;
+  max-width: ${CONTENT_WIDTH}px;
+  margin: 0 auto;
+  padding: 0 32px;
+
+  ${mobile()} {
+    padding: 0 20px;
+  }
+`;
+
+export const Page = styled.div`
+  overflow-x: hidden;
+`;
+
+/* Type */
+
+export const Eyebrow = styled.p`
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.color.brand};
+`;
+
+export const SectionTitle = styled.h2`
+  margin: 0;
+  max-width: 720px;
+  font-size: clamp(2rem, 3.6vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: ${({ theme }) => theme.color.textPrimary};
+`;
+
+export const SectionLead = styled.p`
+  margin: 18px 0 0;
+  max-width: 620px;
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: ${({ theme }) => theme.color.textSecondary};
+`;
+
+export const SectionHeader = styled.header<{ centered?: boolean }>`
+  margin-bottom: 56px;
+
+  ${({ centered }) =>
+    centered &&
+    css`
+      text-align: center;
+
+      ${SectionTitle}, ${SectionLead} {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    `}
+
+  ${mobile()} {
+    margin-bottom: 36px;
+  }
+`;
+
+export const Section = styled.section`
+  padding: 128px 0;
+
+  ${mobile()} {
+    padding: 80px 0;
+  }
+`;
+
+/* Buttons and links */
+
+const buttonBase = css`
   display: inline-flex;
+  align-items: center;
   justify-content: center;
-  text-align: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 26px;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
-  font-size: 1em;
-  font-weight: 400;
-  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
 
-  &:first-of-type {
-    margin-bottom: 24px;
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.color.brand};
+    outline-offset: 3px;
+  }
+
+  svg {
+    flex: none;
+    fill: currentColor;
+  }
+
+  ${mobile()} {
+    width: 100%;
+  }
+`;
+
+export const PrimaryButton = styled.button`
+  ${buttonBase};
+  background-color: ${({ theme }) => theme.color.brand};
+  color: ${INK};
+
+  &:hover {
+    background-color: #f5e266;
+  }
+`;
+
+export const SecondaryButton = styled.a`
+  ${buttonBase};
+  background-color: ${rgba(BasePalette.White, 0.07)};
+  color: ${({ theme }) => theme.color.textPrimary};
+
+  &:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  &:hover {
+    background-color: ${rgba(BasePalette.White, 0.12)};
+  }
+`;
+
+export const ButtonRow = styled.div<{ centered?: boolean }>`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: ${({ centered }) => (centered ? 'center' : 'flex-start')};
+
+  ${mobile()} {
+    flex-direction: column;
+    align-items: stretch;
+  }
+`;
+
+export const TextLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.color.textPrimary};
+  text-decoration: none;
+
+  &:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  svg {
+    flex: none;
+    fill: currentColor;
+    transition: transform 150ms ease;
+  }
+
+  &:hover {
+    color: ${({ theme }) => theme.color.brand};
+
+    svg {
+      transform: translateX(2px);
+    }
+  }
+`;
+
+/* Hero */
+
+export const Hero = styled.section`
+  position: relative;
+  padding: 112px 0 0;
+  text-align: center;
+
+  /* A soft light behind the headline instead of a box around it */
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    top: -260px;
+    left: 50%;
+    width: 1100px;
+    height: 760px;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      closest-side,
+      ${rgba(BasePalette.Brand, 0.13)},
+      ${rgba(BasePalette.Brand, 0)}
+    );
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  ${mobile()} {
+    padding-top: 64px;
+  }
+`;
+
+export const HeroEyebrow = styled.p`
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 28px;
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.color.textSecondary};
+
+  &::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.color.brand};
+    box-shadow: 0 0 0 4px ${rgba(BasePalette.Brand, 0.18)};
+  }
+`;
+
+export const HeroTitle = styled.h1`
+  margin: 0 auto;
+  max-width: 900px;
+  font-size: clamp(2.75rem, 7vw, 5rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: ${({ theme }) => theme.color.textPrimary};
+
+  span {
+    color: ${({ theme }) => theme.color.brand};
+  }
+`;
+
+export const HeroLead = styled.p`
+  margin: 28px auto 40px;
+  max-width: 640px;
+  font-size: clamp(1.075rem, 1.6vw, 1.25rem);
+  line-height: 1.6;
+  color: ${({ theme }) => theme.color.textSecondary};
+
+  ${mobile()} {
+    margin: 20px auto 32px;
+  }
+`;
+
+/* The terminal under the hero: the one framed object above the fold */
+
+const reveal = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 `;
 
 const highlight = keyframes`
   0%, 25% {
-    color: white;
+    color: inherit;
     background-color: transparent;
   }
 
-  40% {
-    background-color: #fff300;
-    color: black;
-  }
-
-  70% {
-    background-color: #fff300;
-    color: black;
+  40%, 70% {
+    color: ${INK};
+    background-color: ${BasePalette.Brand};
+    box-shadow: 0 0 0 3px ${BasePalette.Brand};
   }
 
   80%, 100% {
-    color: white;
+    color: inherit;
     background-color: transparent;
   }
 `;
 
-const reveal = keyframes`
-  from {
-    opacity: 0;
+export const Terminal = styled.div`
+  max-width: 860px;
+  margin: 72px auto 0;
+  border-radius: 16px;
+  background-color: ${INK};
+  box-shadow: 0 0 0 1px ${rgba(BasePalette.White, 0.06)}, 0 40px 120px -20px rgba(0, 0, 0, 0.7);
+  text-align: left;
+  overflow: hidden;
+
+  ${mobile()} {
+    margin-top: 48px;
+    border-radius: 12px;
+  }
+`;
+
+export const TerminalBar = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+
+  i {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background-color: ${rgba(BasePalette.White, 0.14)};
   }
 
-  to {
+  span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: ${MONO};
+    font-size: 13px;
+    color: ${({ theme }) => theme.color.textLight};
+    white-space: nowrap;
+  }
+`;
+
+export const TerminalBody = styled.div`
+  padding: 24px 40px 40px;
+  font-family: ${MONO};
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: ${({ theme }) => theme.color.textPrimary};
+
+  ${mobile()} {
+    padding: 16px 20px 28px;
+    font-size: 0.95rem;
+  }
+`;
+
+export const TerminalLine = styled.p<{ delay: number }>`
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 14px;
+  margin: 0 0 14px;
+  opacity: 0;
+  animation: ${reveal} 300ms ease-out forwards;
+  animation-delay: ${({ delay }) => delay}s;
+
+  &::before {
+    content: '$';
+    color: ${({ theme }) => theme.color.brand};
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
     opacity: 1;
+    animation: none;
   }
 `;
 
 export const HighlightText = styled.span<{ delaySeconds: number }>`
-  padding: 4px 3px;
+  border-radius: 3px;
   animation: ${highlight} 15s linear infinite;
   animation-delay: ${({ delaySeconds }) => delaySeconds}s;
-  border-top-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-`;
 
-export const Header = styled.h3`
-  color: ${(props) => props.theme.color.brand};
-  font-size: 1.5em;
-  line-height: 1;
-  text-align: center;
-  margin-top: 4rem;
-  margin-bottom: 0.5rem;
-  font-weight: 400;
-`;
-
-export const Subheader = styled.h1`
-  text-align: center;
-  font-size: 3em;
-  margin-bottom: 3rem;
-  font-weight: 700;
-`;
-
-export const DescriptionText = styled.div`
-  color: ${({ theme }) => theme.color.textSecondary};
-  max-width: 720px;
-  text-align: center;
-  font-size: 1.1em;
-  margin: 0 auto;
-  margin-top: 2rem;
-  line-height: 1.7;
-`;
-
-export const SectionSecondary = styled.div`
-  background-color: ${(props) => props.theme.color.backgroundSecondary};
-`;
-
-export const SectionDistinct = styled.div`
-  background-color: ${(props) => props.theme.color.navBackground};
-`;
-
-export const SectionTitle = styled.div`
-  font-weight: 700;
-  font-size: 3.5em;
-  text-align: center;
-
-  ${tablet()} {
-    font-size: 3em;
-  }
-
-  ${mobile()} {
-    font-size: 2.5em;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    color: ${INK};
+    background-color: ${BasePalette.Brand};
+    box-shadow: 0 0 0 3px ${BasePalette.Brand};
   }
 `;
 
-export const CompanySection = styled(SectionSecondary)`
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-`;
+/* Proof: numbers and the companies learners went on to */
 
-export const SectionSubtitle = styled.h2`
-  color: ${({ theme }) => theme.color.textSecondary};
-  font-size: 1.25em;
-  line-height: 1.425;
-  font-weight: 300;
-  max-width: 640px;
-  margin: 1rem auto;
-  margin-bottom: 3rem;
-  text-align: center;
-`;
-
-export const FlexItems = styled.div`
-  display: flex;
-  align-items: center;
-
-  ${tablet()} {
-    flex-direction: column;
-    text-align: center;
-  }
-`;
-
-export const FlexColumns = styled.div`
-  width: 50%;
-  padding: 0 16px;
-`;
-
-export const FlexStretch = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  flex-grow: 1;
-  flex-shrink: 0;
-`;
-
-export const CalloutTitle = styled.h2`
-  font-size: 3.5em;
-  letter-spacing: -1px;
-
-  ${mobile()} {
-    font-size: 2em;
-    margin-bottom: 2rem;
-  }
-`;
-
-export const CalloutSection = styled.div`
-  background-color: ${({ theme }) => theme.color.buttonPrimary};
-  padding: 4rem 0;
-`;
-
-export const ButtonSection = styled(FlexStretch)`
-  flex-grow: 0;
-  margin-left: 48px;
-  min-width: 1px;
-  max-width: 100%;
-
-  ${tablet()} {
-    margin-top: 48px;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 360px;
-    width: 100%;
-  }
-`;
-
-export const CalloutDescription = styled.div`
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.25em;
-`;
-
-export const ContainerFull = styled(Container)`
-  max-width: 1440px;
-`;
-
-export const ContainerWidest = styled(Container)`
-  max-width: 1200px;
-`;
-
-export const ContainerWide = styled(Container)`
-  max-width: 1048px;
-`;
-
-export const ActionButton = styled(ActionButtonLink)`
-  ${homeButtonBaseStyles};
-`;
-
-export const BlackButton = styled(GhostButton).attrs(() => ({
-  hoverable: true,
-  solid: true,
-  color: '#000',
-  textColor: '#FFF',
-}))`
-  ${homeButtonBaseStyles};
-`;
-
-export const WhiteButton = styled(GhostButtonLink).attrs(() => ({
-  hoverable: true,
-  solid: true,
-  color: '#FFF',
-  textColor: '#666',
-}))`
-  ${homeButtonBaseStyles};
-  margin-bottom: 0 !important;
-
-  svg {
-    fill: #666;
-    margin-left: 12px;
-  }
-`;
-
-export const CenterButtonWrapper = styled.div`
-  text-align: center;
-  margin-top: 4rem;
-
-  ${mobile()} {
-    margin-top: 2rem;
-  }
-`;
-
-export const CourseTools = styled.div`
-  display: flex;
-  width: 100%;
-
-  ${mobile()} {
-    flex-direction: column;
-  }
-`;
-
-export const CourseToolItem = styled.div`
-  width: ${100 / 3}%;
-  padding-left: 2rem;
-  padding-right: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  ${mobile()} {
-    width: 100%;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
-`;
-
-export const CourseToolImg = styled.img`
-  width: 144px;
-  height: 144px;
-  transition: all 0.25s ease-out;
-
-  &:hover {
-    transform: scale(1.15);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-`;
-
-export const CourseToolText = styled.div`
-  font-size: 1.75em;
-  font-weight: 600;
-  margin-top: 1.5rem;
-
-  ${mobile()} {
-    margin-top: 0.5rem;
-  }
-`;
-
-export const GradientTitle = styled.div`
-  background-color: ${(props) => props.theme.color.backgroundSecondary};
-  margin-bottom: 5rem;
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 800px;
-  text-align: center;
-  padding: 0 24px;
-`;
-
-export const Card = styled(CardWrapper)`
-  background-color: ${({ theme }) => theme.color.backgroundPrimary};
-  box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.25);
-  max-width: 560px;
-  margin: 0 auto;
-`;
-
-export const CardContent = styled.div`
-  padding: 1.5rem;
-
-  ${mobile()} {
-    padding: 0.75rem;
-  }
-`;
-
-export const BrandText = styled.span`
-  color: ${({ theme }) => theme.color.brand};
-  font-weight: 400;
-`;
-
-export const IconList = styled.div`
-  max-width: 72%;
-  margin: 48px auto;
-
-  ${mobile()} {
-    max-width: 100%;
-  }
-`;
-
-export const IconListItem = styled.div`
-  display: flex;
-  margin: 24px 0;
-`;
-
-export const IconListItemText = styled.div`
-  margin-left: 24px;
-`;
-
-export const PurchaseButton = styled(Button)`
-  background-color: ${({ theme }) => theme.color.cta};
-  color: ${BasePalette.White};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 360px;
-
-  width: 100%;
-  padding: 0.8rem 0.5rem;
-  font-size: 1em;
-  border-radius: 2px;
-  font-weight: 600;
-  transition: background-color 250ms ease-in-out, opacity 250ms ease-in-out;
-  box-shadow: ${({ theme }) => theme.shadow.stroke}, ${({ theme }) => theme.shadow.high};
-
-  &:hover {
-    background-color: ${({ theme }) => rgba(theme.color.cta, 0.85)};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    background-color: ${({ theme }) => theme.color.cta};
-    cursor: default;
-  }
-
-  ${mobile()} {
-    max-width: 100%;
-  }
-`;
-
-export const PurchaseButtonCenter = styled(PurchaseButton)`
-  margin: 0 auto;
-  max-width: 240px;
-  padding: 1.1rem 0.75rem;
-  font-size: 1.1em;
-`;
-
-export const FinePrint = styled.div`
-  color: ${({ theme }) => theme.color.textSecondary};
-  font-size: 0.9em;
-  text-align: center;
-  margin-top: 0.75rem;
-  line-height: 1.75;
-  font-weight: 300;
-  max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-
-  ${mobile()} {
-    max-width: 100%;
-  }
-`;
-
-export const LanguageContentWrapper = styled.div`
-  margin-top: 2rem;
-`;
-
-export const BaseLanguageImage = styled.img`
-  width: 56px;
-  height: 56px;
-  border-radius: 8px;
-`;
-
-export const PrimaryLanguageImage = styled(BaseLanguageImage)`
-  margin-right: 1.5rem;
-`;
-
-export const LanguageImage = styled(PrimaryLanguageImage)`
-  margin-right: 3rem;
-
-  &:last-of-type {
-    margin-right: 0;
-  }
-`;
-
-// Every language, five to a row
-export const LanguageGrid = styled.nav`
+export const Stats = styled.dl`
   display: grid;
-  grid-template-columns: repeat(5, minmax(90px, 110px));
-  gap: 2rem 1rem;
-  justify-content: center;
-  a {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+  margin: 0;
+
+  div {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
+  }
+
+  dt {
+    font-size: 15px;
+    line-height: 1.5;
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+
+  dd {
+    order: -1;
+    margin: 0 0 8px;
+    font-size: clamp(2.25rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  ${mobile()} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 20px;
+  }
+`;
+
+export const LogoCloud = styled.div`
+  margin-top: 96px;
+  text-align: center;
+
+  p {
+    margin: 0 0 28px;
     font-size: 14px;
-    line-height: 1.6;
-    text-align: center;
+    color: ${({ theme }) => theme.color.textLight};
   }
-  a:hover {
-    text-decoration: underline;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px 52px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
-  a:focus-visible {
-    outline: 3px solid ${({ theme }) => theme.color.brand};
-    outline-offset: 5px;
+
+  li {
+    display: flex;
+    align-items: center;
+    height: 32px;
+  }
+
+  img {
+    display: block;
+    width: auto;
+    height: 30px;
+    max-width: 104px;
+    /* Every logo as the same quiet white silhouette */
+    filter: brightness(0) invert(1);
+    opacity: 0.45;
+    transition: opacity 150ms ease;
+  }
+
+  li:hover img {
+    opacity: 0.85;
   }
 
   ${mobile()} {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2rem 1rem;
-    a {
-      font-size: 13px;
-      overflow-wrap: anywhere;
+    margin-top: 64px;
+
+    ul {
+      gap: 24px 32px;
+    }
+
+    img {
+      height: 24px;
     }
   }
 `;
 
-export const LanguageLogo = styled(BaseLanguageImage)`
-  display: block;
-  object-fit: contain;
+/* What's in the course */
 
-  ${mobile()} {
-    width: 44px;
-    height: 44px;
-  }
-`;
+export const Features = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 56px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-export const LanguageSection = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 3rem;
-  text-align: center;
-  flex-wrap: wrap;
-
-  &:nth-of-type(even) {
-    margin-bottom: 1.5rem;
+  ${tablet()} {
+    gap: 40px;
   }
 
   ${mobile()} {
-    ${LanguageImage} {
-      width: 50%;
-      margin: 0;
-      margin-bottom: 3rem;
-    }
+    grid-template-columns: minmax(0, 1fr);
   }
 `;
 
-export const LanguageText = styled.div`
-  font-size: 1.5em;
-`;
+export const Feature = styled.li`
+  > svg {
+    display: block;
+    margin-bottom: 20px;
+    fill: ${({ theme }) => theme.color.brand};
+  }
 
-export const PaddedSection = styled.div`
-  padding-top: 6rem;
-  padding-bottom: 8rem;
+  h3 {
+    margin: 0 0 10px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
 
-  ${mobile()} {
-    padding-top: 3.5rem;
-    padding-bottom: 4rem;
+  p {
+    margin: 0 0 16px;
+    line-height: 1.65;
+    color: ${({ theme }) => theme.color.textSecondary};
   }
 `;
 
-export const BorderBottom = styled.div`
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
+/* The three live demos */
+
+export const Demo = styled(Section)`
+  scroll-margin-top: 24px;
 `;
 
-export const TerminalWrapper = styled.div`
-  max-width: 816px;
-  margin-left: auto;
-  margin-right: auto;
+export const DemoFrame = styled.div`
   border-radius: 16px;
-  /* border: 1px solid ${({ theme }) => theme.color.border}; */
-  box-shadow: ${({ theme }) => `${theme.shadow.stroke}, ${theme.shadow.medium}`};
-`;
-
-export const TerminalTopBar = styled.div`
-  padding: 0.9rem;
-  border-bottom: 1px solid ${({ theme }) => theme.color.border};
-  background-color: ${({ theme }) => theme.color.blackPalette.Black0};
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  display: flex;
-  width: 100%;
-`;
-
-const buttonColors = ['#EE6A5D', '#F6BF4F', '#61C554'];
-
-export const TerminalButton = styled.div<{ idx: number }>`
-  cursor: pointer;
-  margin-right: 0.5rem;
-  box-shadow: ${({ theme }) => `${theme.shadow.stroke}, ${theme.shadow.medium}`};
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  transition: all 0.25s ease-out;
-  background-color: ${({ idx }) => buttonColors[idx]};
-
-  &:hover {
-    box-shadow: ${({ theme }) => `${theme.shadow.stroke}, ${theme.shadow.high}`};
-    transform: scale(1.2);
-  }
-
-  &:active {
-    box-shadow: ${({ theme }) => `${theme.shadow.stroke}, ${theme.shadow.low}`};
-    transform: scale(0.8);
-  }
-`;
-
-export const TerminalWindow = styled.div`
-  display: flex;
-  background-color: ${({ theme }) => theme.color.blackPalette.Black0};
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-  padding: 2rem 1.5rem;
-  padding-right: 2.6rem;
-  width: 100%;
+  overflow: hidden;
+  background-color: ${INK};
+  box-shadow: 0 0 0 1px ${rgba(BasePalette.White, 0.06)}, 0 30px 80px -30px rgba(0, 0, 0, 0.6);
 
   ${mobile()} {
-    padding: 1rem 0.5rem;
-    padding-right: 1.6rem;
-    padding-bottom: 1.5rem;
+    border-radius: 12px;
   }
 `;
 
-export const TerminalChevronWrapper = styled.div`
-  flex-shrink: 0;
-  margin-right: 1.5rem;
+/* Languages */
+
+export const LanguageGrid = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: ${({ theme }) => theme.color.textPrimary};
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  a:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  a:hover {
+    background-color: ${rgba(BasePalette.White, 0.05)};
+  }
+
+  img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex: none;
+  }
+
+  ${tablet()} {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 
   ${mobile()} {
-    margin-right: 0.5rem;
-  }
-`;
-
-export const TerminalChevron = styled.div`
-  width: 36px;
-  height: 36px;
-  line-height: 1;
-
-  svg {
-    width: 36px;
-    height: 36px;
-  }
-`;
-
-export const TerminalTextWrapper = styled.div`
-  width: 100%;
-  padding-top: 8px;
-`;
-
-export const TerminalText = styled.div<{ delay: number }>`
-  font-size: 1.2em;
-  line-height: 1.3;
-  margin-bottom: 1.5rem;
-  font-family: consolas, monospace;
-  opacity: 0;
-  animation: ${reveal} 150ms ease-in-out forwards;
-  animation-delay: ${({ delay }) => delay}s;
-  animation-iteration-count: 1;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-`;
-
-export const TerminalButtonWrapper = styled.div`
-  margin-top: 3rem;
-`;
-
-/** The secondary call to action under the terminal's main button: an outline on the black terminal. */
-export const GithubButton = styled.a`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 360px;
-  width: 100%;
-  margin-top: 12px;
-  padding: 0.8rem 0.5rem;
-  font-size: 1em;
-  font-weight: 600;
-  border-radius: 2px;
-  border: 1px solid ${rgba(BasePalette.White, 0.5)};
-  color: ${BasePalette.White};
-  transition: background-color 250ms ease-in-out, border-color 250ms ease-in-out;
-
-  &:visited {
-    color: ${BasePalette.White};
-  }
-
-  &:hover {
-    background-color: ${rgba(BasePalette.White, 0.08)};
-    border-color: ${BasePalette.White};
-  }
-`;
-
-export const LinkSimple = styled.a`
-  color: inherit;
-  text-decoration: underline;
-
-  &:hover {
-    text-decoration: underline;
-  }
-
-  &:visited {
-    color: inherit;
-  }
-`;
-
-export const GutterWrapper = styled.div`
-  padding: 0 ${CONTAINER_PAD}px;
-`;
-
-export const HeaderDescription = styled.div`
-  color: ${({ theme }) => theme.color.textSecondary};
-  max-width: 600px;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 20px;
-`;
-
-export const SocialContainer = styled.div`
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-`;
-
-export const SocialButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-
-  ${mobile()} {
-    flex-direction: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
     a {
-      margin-bottom: 8px;
+      padding: 12px 8px;
     }
   }
 `;
 
-export const TwitterButton = styled(ButtonLink)`
-  background-color: ${companyStyle.color[companyStyle.Company.Twitter]};
-  transition: background-color 150ms ease;
-  padding: 8px 16px;
-  border-radius: 3px;
-  font-weight: 600;
-  line-height: 1em;
-  font-size: 14px;
-  margin-left: 8px;
-  margin-right: 8px;
+/* Course outline: a numbered list, not a wall of cards */
 
-  &:hover {
-    background-color: ${companyStyle.hover[companyStyle.Company.Twitter]};
+export const Outline = styled.ol`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 48px;
+  margin: 0 0 48px;
+  padding: 0;
+  list-style: none;
+  counter-reset: topic;
+
+  li {
+    counter-increment: topic;
+  }
+
+  a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 18px 0;
+    font-size: 1.075rem;
+    font-weight: 600;
+    color: ${({ theme }) => theme.color.textPrimary};
+    text-decoration: none;
+    box-shadow: inset 0 -1px 0 ${rgba(BasePalette.White, 0.07)};
+    transition: color 150ms ease;
+  }
+
+  a:visited {
+    color: ${({ theme }) => theme.color.textPrimary};
+  }
+
+  a::before {
+    content: counter(topic, decimal-leading-zero);
+    font-family: ${MONO};
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: ${({ theme }) => theme.color.textLight};
+  }
+
+  a:hover {
+    color: ${({ theme }) => theme.color.brand};
+  }
+
+  ${tablet()} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   ${mobile()} {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    grid-template-columns: minmax(0, 1fr);
   }
 `;
 
-export const LinkedInButton = styled(ButtonLink)`
-  background-color: ${companyStyle.color[companyStyle.Company.Linkedin]};
-  transition: background-color 150ms ease;
-  padding: 8px 16px;
-  border-radius: 3px;
-  font-weight: 600;
-  line-height: 1em;
-  font-size: 14px;
-  margin-left: 8px;
-  margin-right: 8px;
+/* The teacher */
 
-  &:hover {
-    background-color: ${companyStyle.hover[companyStyle.Company.Linkedin]};
-  }
-
-  ${mobile()} {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-  }
-`;
-
-export const YoutubeButton = styled(ButtonLink)`
-  background-color: ${companyStyle.color[companyStyle.Company.Google]};
-  transition: background-color 150ms ease;
-  padding: 8px 16px;
-  border-radius: 3px;
-  font-weight: 600;
-  line-height: 1em;
-  font-size: 14px;
-  margin-left: 8px;
-  margin-right: 8px;
-
-  &:hover {
-    background-color: ${companyStyle.hover[companyStyle.Company.Google]};
-  }
-
-  ${mobile()} {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-  }
-`;
-
-export const FindJobButton = styled(ButtonLink)`
-  background-color: ${({ theme }) => theme.color.buttonPrimary};
-  color: ${BasePalette.White};
-  display: flex;
-  justify-content: center;
+export const Teacher = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  max-width: 412px;
-  margin: 0 auto;
+  gap: 72px;
 
-  width: 100%;
-  padding: 0.8rem 0.5rem;
-  font-size: 14px;
-  border-radius: 4px;
-  font-weight: 600;
-  transition: background-color 250ms ease-in-out, opacity 250ms ease-in-out;
-  box-shadow: ${({ theme }) => theme.shadow.stroke}, ${({ theme }) => theme.shadow.high};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.color.buttonHover};
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 16px;
   }
 
-  &:disabled {
-    opacity: 0.5;
-    background-color: ${({ theme }) => theme.color.buttonHover};
-    cursor: default;
+  ${tablet()} {
+    gap: 48px;
   }
 
   ${mobile()} {
-    max-width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
   }
 `;
 
-export const StatText = styled.div`
-  color: ${({ theme }) => theme.color.brand};
-  font-size: 5em;
-  font-weight: 700;
+export const TeacherLinks = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+
+  a {
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+
+  a:visited {
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+`;
+
+/* Closing call to action */
+
+export const Closing = styled.section`
+  position: relative;
+  padding: 144px 0 152px;
+  text-align: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    bottom: -200px;
+    width: 1000px;
+    height: 640px;
+    transform: translateX(-50%);
+    background: radial-gradient(
+      closest-side,
+      ${rgba(BasePalette.Brand, 0.1)},
+      ${rgba(BasePalette.Brand, 0)}
+    );
+    pointer-events: none;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  ${SectionTitle} {
+    margin: 0 auto;
+    font-size: clamp(2.5rem, 5.5vw, 4rem);
+    letter-spacing: -0.035em;
+  }
+
+  ${SectionLead} {
+    margin: 20px auto 40px;
+  }
+
+  ${mobile()} {
+    padding: 96px 0 104px;
+  }
+`;
+
+/* Only when the course isn't free: buy a gift card now, start later */
+
+export const GiftCard = styled.div`
+  margin-top: 64px;
+  max-width: 620px;
+
+  ul {
+    margin: 16px 0 24px;
+    padding-left: 20px;
+    line-height: 1.8;
+    color: ${({ theme }) => theme.color.textSecondary};
+  }
+
+  small {
+    display: block;
+    margin-top: 16px;
+    color: ${({ theme }) => theme.color.textLight};
+  }
 `;

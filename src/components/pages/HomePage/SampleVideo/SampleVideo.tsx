@@ -11,7 +11,7 @@ import {
   VideoTime,
   TimeButton,
 } from 'components/blocks/LessonVideo/styles';
-import { Wrapper, ItemVideo, ItemContents, StyledVideoBox } from './styles';
+import { Wrapper, ItemVideo, ItemContents, StyledVideoBox, ChaptersTitle } from './styles';
 
 const DEFAULT_WIDTH = 426;
 const DEFAULT_HEIGHT = 232;
@@ -23,7 +23,7 @@ const SampleVideo: React.FC = () => {
 
   return (
     <Wrapper>
-      <ItemVideo style={{ paddingRight: 0, paddingTop: '2px' }}>
+      <ItemVideo>
         <StyledVideoBox>
           <VideoWrapper videoWidth={videoWidth} videoHeight={videoHeight}>
             <ReactPlayer
@@ -46,6 +46,7 @@ const SampleVideo: React.FC = () => {
         </StyledVideoBox>
       </ItemVideo>
       <ItemContents>
+        <ChaptersTitle>Chapters</ChaptersTitle>
         <TableOfContents>
           <VideoTimeTable style={{ padding: 0 }}>
             {sampleLesson.video.segments.map((s) => (
